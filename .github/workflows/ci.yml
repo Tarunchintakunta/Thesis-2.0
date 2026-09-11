@@ -58,3 +58,44 @@ jobs:
         run: cfn-lint infra/lambda_app/template.yaml
       - name: smoke run of the whole pipeline
         run: make smoke PY=python
+
+  chaitanya-coldstart:
+    name: chaitanya / lambda-coldstart-isolation
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: chaitanya-thesis/lambda-coldstart-isolation
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: chaitanya-thesis/lambda-coldstart-isolation/requirements-dev.txt
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - uses: actions/setup-java@v4
+        with:
+          distribution: corretto
+          java-version: "21"
+          cache: maven
+          cache-dependency-path: chaitanya-thesis/lambda-coldstart-isolation/functions/java/*/pom.xml
+      - name: install
+        run: pip install -r requirements-dev.txt
+      - name: lint
+        run: ruff check src tests scripts
+      - name: unit + integration tests
+        run: python -m pytest
+      - name: sam template lint
+        run: cfn-lint infra/template.yaml
+      - name: build the six deployment packages
+        run: PY=python bash scripts/package_all.sh
+      - name: runtime gate (same digest in every runtime and package)
+        run: python scripts/check_digests.py --require python,nodejs,java
+      - name: init proxy smoke run
+        run: python scripts/local_init_bench.py --reps 2 --warmup 1 --out /tmp/bench_smoke
+      - name: whole pipeline on mock data
+        run: make mock-all PY=python
+      - name: citation gate (offline part)
+        run: python scripts/check_bib.py --offline
