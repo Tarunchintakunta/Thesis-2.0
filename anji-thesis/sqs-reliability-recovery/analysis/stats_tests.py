@@ -262,18 +262,35 @@ def required_repeats(sd: float, mde: float, alpha: float = 0.05, power: float = 
     return int(math.ceil(2 * ((z_a + z_b) * sd / mde) ** 2))
 
 
-def power_report(df: pd.DataFrame, plan: dict[str, Any], mde_recovery: float = 30.0, mde_dup: float = 0.02) -> dict[str, Any]:
+def power_report(df: pd.DataFrame, plan: dict[str, Any], mde_recovery: float = 30.0, mde_loss: float = 0.005,
+                 mde_dup: float = 0.02) -> dict[str, Any]:
+    """Repeats per cell from the pilot spread.
+
+    The recommendation is sized on the confirmatory DVs (loss rate, recovery
+    time). Duplicate rate is only exploratory, so its number is reported next
+    to it but does not drive the repeat count.
+    """
     fault = df[df["fault_mode"] != "none"]
     cells = fault.groupby(["fault_mode", "visibility_timeout", "max_receive_count", "batch_size"])
-    rec_sd = float(np.nanmax(cells["recovery_time_s"].std(ddof=1))) if len(cells) else math.nan
-    dup_sd = float(np.nanmax(cells["duplicate_rate"].std(ddof=1))) if len(cells) else math.nan
+
+    def worst_sd(col: str) -> float:
+        if not len(cells):
+            return math.nan
+        sds = cells[col].std(ddof=1).dropna()
+        return float(sds.max()) if len(sds) else 0.0
+
+    rec_sd, loss_sd, dup_sd = worst_sd("recovery_time_s"), worst_sd("loss_rate"), worst_sd("duplicate_rate")
     need_rec = required_repeats(0.0 if math.isnan(rec_sd) else rec_sd, mde_recovery, plan["alpha"])
+    need_loss = required_repeats(0.0 if math.isnan(loss_sd) else loss_sd, mde_loss, plan["alpha"])
     need_dup = required_repeats(0.0 if math.isnan(dup_sd) else dup_sd, mde_dup, plan["alpha"])
-    recommended = max(3, min(10, max(need_rec, need_dup)))
-    return {"max_cell_sd_recovery_s": rec_sd, "max_cell_sd_duplicate_rate": dup_sd,
-            "mde_recovery_s": mde_recovery, "mde_duplicate_rate": mde_dup,
-            "needed_for_recovery": need_rec, "needed_for_duplicates": need_dup,
-            "recommended_repeats": recommended, "plan_repeats": plan.get("repeats_per_cell")}
+    recommended = max(3, min(10, max(need_rec, need_loss)))
+    return {"max_cell_sd_recovery_s": rec_sd, "max_cell_sd_loss_rate": loss_sd,
+            "max_cell_sd_duplicate_rate": dup_sd, "mde_recovery_s": mde_recovery, "mde_loss_rate": mde_loss,
+            "mde_duplicate_rate": mde_dup, "needed_for_recovery": need_rec, "needed_for_loss": need_loss,
+            "recommended_repeats_confirmatory": recommended,
+            "needed_for_duplicates_exploratory": need_dup,
+            "plan_repeats": plan.get("repeats_per_cell"),
+            "plan_ok": plan.get("repeats_per_cell", 0) >= recommended}
 
 
 # ---------------------------------------------------------------------------

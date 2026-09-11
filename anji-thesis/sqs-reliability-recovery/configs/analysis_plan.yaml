@@ -76,4 +76,12 @@ exploratory:                # reported with effect sizes, not part of the family
   - {campaign: baseline_vt_batch, dv: throughput_msg_s, iv: batch_size}
   - {campaign: baseline_vt_batch, dv: throughput_msg_s, iv: visibility_timeout}
 
-amendments: []
+amendments:
+  - date: 2026-09-11
+    what: >
+      Pilot power check now sizes the repeat count on the confirmatory DVs
+      only (loss rate, recovery time). The pilot needed 3 per cell for those,
+      so repeats_per_cell stays at 5. Duplicate-rate comparisons would need
+      about 19 per cell for an MDE of 0.02, so duplicates are reported
+      descriptively / as exploratory only (they were never in the family).
+    why: the first version mixed an exploratory DV into the repeat decision
