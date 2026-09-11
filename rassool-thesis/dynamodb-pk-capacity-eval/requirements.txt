@@ -1,0 +1,8 @@
+# orchestration, analysis and plots (the Lambda itself only needs boto3 + numpy)
+boto3>=1.34
+numpy>=1.26
+pandas>=2.1
+scipy>=1.11
+statsmodels>=0.14
+matplotlib>=3.8
+pyyaml>=6.0

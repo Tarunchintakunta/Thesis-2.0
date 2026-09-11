@@ -1,0 +1,19 @@
+[project]
+name = "dynamodb-pk-capacity-eval"
+version = "0.1.0"
+description = "Partition-key design x capacity mode on Amazon DynamoDB under Lambda-driven workloads (MSc Cloud Computing, NCI)"
+requires-python = ">=3.11"
+authors = [{ name = "Rasool Basha Durbesula" }]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 110
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B"]
+ignore = ["E501"]
