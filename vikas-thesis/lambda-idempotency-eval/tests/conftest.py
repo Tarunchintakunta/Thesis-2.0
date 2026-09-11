@@ -1,9 +1,25 @@
+from pathlib import Path
+
 import boto3
 import pytest
+import yaml
 from moto import mock_aws
 
 REGION = "eu-west-1"
 TABLE = "idem-test"
+
+
+def moto_run(ddb, folder, phase: str, n: int) -> Path:
+    """A whole phase through the local driver plus the stream dump (inside the ddb fixture)."""
+    from driver import run, schedule
+    from driver.streams import dump_stream
+
+    cfg = yaml.safe_load(open("config/experiment.yaml"))
+    run.run_phase(schedule.build(cfg, phase, n_per_cell=n), run.LocalBackend("moto"), folder, 100_000,
+                  log=lambda *_: None)
+    arn = ddb.describe_table(TableName=TABLE)["Table"]["LatestStreamArn"]
+    dump_stream(boto3.client("dynamodbstreams", region_name=REGION), arn, Path(folder) / "stream.jsonl", pause=0)
+    return Path(folder)
 
 
 def make_table(client, name=TABLE):
