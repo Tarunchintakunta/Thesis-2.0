@@ -18,9 +18,15 @@ from pathlib import Path
 FIXED_TIME = (2024, 1, 1, 0, 0, 0)
 
 
+def shipped(p: Path) -> bool:
+    """Bytecode caches are never shipped: pip runs with --no-compile and a local
+    run must not change what goes to Lambda (or the package size)."""
+    return p.is_file() and "__pycache__" not in p.parts and p.suffix != ".pyc"
+
+
 def deterministic_zip(src_dir: str | Path, zip_path: str | Path) -> Path:
     src_dir, zip_path = Path(src_dir), Path(zip_path)
-    files = sorted(p for p in src_dir.rglob("*") if p.is_file())
+    files = sorted(p for p in src_dir.rglob("*") if shipped(p))
     with zipfile.ZipFile(zip_path, "w", compression=zipfile.ZIP_DEFLATED) as zf:
         for p in files:
             info = zipfile.ZipInfo(p.relative_to(src_dir).as_posix(), date_time=FIXED_TIME)
