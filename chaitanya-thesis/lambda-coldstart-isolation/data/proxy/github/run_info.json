@@ -1,0 +1,86 @@
+{
+  "what": "local process-start benchmark (init PROXY) - not AWS Lambda, not an Init Duration",
+  "started_utc": "2026-09-11T13:23:26+00:00",
+  "finished_utc": "2026-09-11T13:26:00+00:00",
+  "reps": 40,
+  "seed": 42,
+  "warmup_rounds": 2,
+  "variants": [
+    "python-default",
+    "python-optimised",
+    "nodejs-default",
+    "nodejs-optimised",
+    "java-default",
+    "java-optimised"
+  ],
+  "failed_runs": 0,
+  "machine": {
+    "platform": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+    "machine": "x86_64",
+    "processor": "x86_64",
+    "cpu_count": 4,
+    "python": "3.12.14",
+    "node": "v20.20.2",
+    "java": "openjdk version \"21.0.12.1\" 2026-08-18 LTS",
+    "github_actions": true,
+    "runner": "Linux ubuntu24",
+    "github_run_id": "34603856172",
+    "github_sha": "f5b5b4c4ff92e351dd85c8c07e6d72589eb8b92f"
+  },
+  "packages": [
+    {
+      "runtime": "java",
+      "variant": "default",
+      "artifact": "function.jar",
+      "zip_bytes": 6330300,
+      "unzipped_bytes": 14262569,
+      "files": 3978,
+      "sha256": "547805313b042a40f4f1ad06859505554d74054ec90e5067165c7ee44525dd5e"
+    },
+    {
+      "runtime": "java",
+      "variant": "optimised",
+      "artifact": "function.jar",
+      "zip_bytes": 4906,
+      "unzipped_bytes": 7021,
+      "files": 5,
+      "sha256": "065954b22c1c55ebc2bc6acf183e50f935bda2cd86f06e96df7dbfa4bb460fc3"
+    },
+    {
+      "runtime": "nodejs",
+      "variant": "default",
+      "artifact": "nodejs-default.zip",
+      "zip_bytes": 16467158,
+      "unzipped_bytes": 111459888,
+      "files": 4680,
+      "sha256": "84dee8e996afb0c64bf709db892ded416d1c32fffc107214d29a0985d5b2e7d2"
+    },
+    {
+      "runtime": "nodejs",
+      "variant": "optimised",
+      "artifact": "nodejs-optimised.zip",
+      "zip_bytes": 815,
+      "unzipped_bytes": 971,
+      "files": 2,
+      "sha256": "fa101dccc74e3d8a5b8d67e540ff6e6295d9aad1ac3537a8e11f70ccb6b4ce04"
+    },
+    {
+      "runtime": "python",
+      "variant": "default",
+      "artifact": "python-default.zip",
+      "zip_bytes": 21032138,
+      "unzipped_bytes": 49765599,
+      "files": 3751,
+      "sha256": "12babe74f1c3c8230cc7fe37c1dcc2fe3989396ba9e56344ba293fd7bc89353b"
+    },
+    {
+      "runtime": "python",
+      "variant": "optimised",
+      "artifact": "python-optimised.zip",
+      "zip_bytes": 604,
+      "unzipped_bytes": 854,
+      "files": 1,
+      "sha256": "cf9d26f0a48e810e17c6f86fc166109b39e5d1f0ce6057686ab2e45e0a1e17bc"
+    }
+  ]
+}
