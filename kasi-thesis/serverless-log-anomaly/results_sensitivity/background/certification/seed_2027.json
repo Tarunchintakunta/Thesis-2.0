@@ -1,0 +1,16 @@
+{
+  "certified": true,
+  "injections_overlapping_A": [],
+  "fault_signature_lines": {
+    "AccessDeniedException": 0,
+    "ResourceNotFoundException": 0,
+    "DownstreamTimeout": 0,
+    "Task timed out": 0,
+    "Runtime exited with error": 0
+  },
+  "http_5xx_in_A": 54,
+  "background_throttle_lines_in_A": 54,
+  "lines_in_A": 120048,
+  "seed": 2027,
+  "identifier_lines_after_scrub": 0
+}

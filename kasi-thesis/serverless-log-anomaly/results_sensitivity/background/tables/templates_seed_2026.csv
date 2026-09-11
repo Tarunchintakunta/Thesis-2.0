@@ -1,0 +1,17 @@
+cluster_id,size,template
+1,101737,START RequestId: <RID> Version: $LATEST
+2,94056,"[INFO] <TS> <RID> {""route"": <*> <*> ""status"": <*> ""latency_ms"": <FLOAT>, ""cold_start"": <*> ""error_type"": null, ""memory_mb"": <*> ""downstream_ms"": <FLOAT>}"
+3,101737,END RequestId: <RID>
+4,967,REPORT RequestId: <RID> Duration: <FLOAT> ms Billed Duration: <*> ms Memory Size: <*> MB Max Memory Used: <*> MB Init Duration: <FLOAT> ms
+5,99806,REPORT RequestId: <RID> Duration: <FLOAT> ms Billed Duration: <*> ms Memory Size: <*> MB Max Memory Used: <*> MB
+6,164,"[ERROR] <TS> <RID> {""route"": <*> <*> ""status"": 500, ""latency_ms"": <FLOAT>, ""cold_start"": <*> ""error_type"": ""ProvisionedThroughputExceededException"", ""memory_mb"": <*> ""downstream_ms"": <FLOAT>, ""error"": ""An error occurred (ProvisionedThroughputExceededException) when calling the <*> operation: The level of configured provisioned throughput for the table was exceeded. Consider increasing your provisioning level with the UpdateTable API.""}"
+7,1415,"[ERROR] <TS> <RID> {""route"": <*> <*> ""status"": 504, ""latency_ms"": <FLOAT>, ""cold_start"": <*> ""error_type"": ""DownstreamTimeout"", ""memory_mb"": 256, ""downstream_ms"": <FLOAT>, ""error"": ""Read timeout on endpoint URL: \""https://dynamodb.eu-west-1.amazonaws.com/\""""}"
+8,414,<TS> <RID> Task timed out after <FLOAT> seconds
+9,368,REPORT RequestId: <RID> Duration: <FLOAT> ms Billed Duration: <INT> ms Memory Size: 256 MB Max Memory Used: <*> MB Status: timeout
+10,3699,"[ERROR] <TS> <RID> {""route"": <*> <*> ""status"": 500, ""latency_ms"": <FLOAT>, ""cold_start"": <*> ""error_type"": ""ResourceNotFoundException"", ""memory_mb"": 256, ""downstream_ms"": <FLOAT>, ""error"": ""An error occurred (ResourceNotFoundException) when calling the <*> operation: Requested resource not found""}"
+11,1439,"[ERROR] <TS> <RID> {""route"": ""POST /orders"", ""status"": 500, ""latency_ms"": <FLOAT>, ""cold_start"": false, ""error_type"": ""AccessDeniedException"", ""memory_mb"": 256, ""downstream_ms"": <FLOAT>, ""error"": ""An error occurred (AccessDeniedException) when calling the PutItem operation: User: arn:aws:sts::<ACCT>:assumed-role/orders-api-role/orders-api is not authorized to perform: dynamodb:PutItem on resource: arn:aws:dynamodb:eu-west-1:<ACCT>:table/orders because no identity-based policy allows the dynamodb:PutItem action""}"
+12,46,REPORT RequestId: <RID> Duration: <FLOAT> ms Billed Duration: <INT> ms Memory Size: 256 MB Max Memory Used: <*> MB Init Duration: <FLOAT> ms Status: timeout
+13,550,RequestId: <RID> Error: Runtime exited with error: signal: killed
+14,550,Runtime.ExitError
+15,467,REPORT RequestId: <RID> Duration: <FLOAT> ms Billed Duration: <*> ms Memory Size: 128 MB Max Memory Used: 128 MB Status: error Error Type: Runtime.ExitError
+16,83,REPORT RequestId: <RID> Duration: <FLOAT> ms Billed Duration: <*> ms Memory Size: 128 MB Max Memory Used: 128 MB Init Duration: <FLOAT> ms Status: error Error Type: Runtime.ExitError

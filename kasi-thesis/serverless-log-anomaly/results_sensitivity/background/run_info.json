@@ -1,0 +1,217 @@
+{
+  "config": "sens_background",
+  "parser_fingerprint": {
+    "parser": "drain3",
+    "parser_version_pinned": "0.9.11",
+    "parser_version_installed": "0.9.11",
+    "config_file": "configs/drain.yaml",
+    "config_sha256": "0f10131eae578c3bae3272725019f23ebcea7f4bd289930058b95197ac53ed44"
+  },
+  "runs": [
+    {
+      "seed": 2025,
+      "lines": {
+        "A": 119184,
+        "B": 243776,
+        "C": 46888
+      },
+      "windows": {
+        "A": 1440,
+        "B": 2927,
+        "C": 360
+      },
+      "templates": 16,
+      "d1": {
+        "primary": "d1_ocsvm",
+        "validation_far": {
+          "d1_ocsvm": 0.017361111111111112,
+          "d1_iforest": 0.010416666666666666
+        },
+        "train_windows": 1152,
+        "validation_windows": 288,
+        "vocab": 6,
+        "thresholds": {
+          "d1_ocsvm": 1.0707652036710402,
+          "d1_iforest": 0.6927285543777182
+        }
+      },
+      "d2": {
+        "source": {
+          "lines": 2000,
+          "alert_lines": 143,
+          "windows": 199,
+          "anomalous_windows": 53,
+          "templates": 123
+        },
+        "pseudo_label_history": [
+          {
+            "round": 0,
+            "target_windows": 1440,
+            "pseudo_labelled": 104,
+            "pseudo_anomalous": 1
+          },
+          {
+            "round": 1,
+            "target_windows": 1440,
+            "pseudo_labelled": 133,
+            "pseudo_anomalous": 1
+          },
+          {
+            "round": 2,
+            "target_windows": 1440,
+            "pseudo_labelled": 227,
+            "pseudo_anomalous": 1
+          }
+        ],
+        "source_fit_accuracy": 0.9748743718592965
+      },
+      "d3": {
+        "thresholds": {
+          "LambdaErrors": 0.0,
+          "Api5XX": 1.0,
+          "DurationP99": 100.0,
+          "Throttles": 0.0
+        }
+      },
+      "certification": true,
+      "seconds": 9.1
+    },
+    {
+      "seed": 2026,
+      "lines": {
+        "A": 119828,
+        "B": 238390,
+        "C": 49280
+      },
+      "windows": {
+        "A": 1440,
+        "B": 2895,
+        "C": 360
+      },
+      "templates": 16,
+      "d1": {
+        "primary": "d1_ocsvm",
+        "validation_far": {
+          "d1_ocsvm": 0.003472222222222222,
+          "d1_iforest": 0.006944444444444444
+        },
+        "train_windows": 1152,
+        "validation_windows": 288,
+        "vocab": 6,
+        "thresholds": {
+          "d1_ocsvm": 1.1774524215906157,
+          "d1_iforest": 0.6786417494245756
+        }
+      },
+      "d2": {
+        "source": {
+          "lines": 2000,
+          "alert_lines": 143,
+          "windows": 199,
+          "anomalous_windows": 53,
+          "templates": 123
+        },
+        "pseudo_label_history": [
+          {
+            "round": 0,
+            "target_windows": 1440,
+            "pseudo_labelled": 97,
+            "pseudo_anomalous": 0
+          },
+          {
+            "round": 1,
+            "target_windows": 1440,
+            "pseudo_labelled": 97,
+            "pseudo_anomalous": 0
+          },
+          {
+            "round": 2,
+            "target_windows": 1440,
+            "pseudo_labelled": 97,
+            "pseudo_anomalous": 0
+          }
+        ],
+        "source_fit_accuracy": 0.9748743718592965
+      },
+      "d3": {
+        "thresholds": {
+          "LambdaErrors": 0.0,
+          "Api5XX": 1.0,
+          "DurationP99": 100.0,
+          "Throttles": 0.0
+        }
+      },
+      "certification": true,
+      "seconds": 8.9
+    },
+    {
+      "seed": 2027,
+      "lines": {
+        "A": 120048,
+        "B": 240782,
+        "C": 47524
+      },
+      "windows": {
+        "A": 1440,
+        "B": 2901,
+        "C": 360
+      },
+      "templates": 16,
+      "d1": {
+        "primary": "d1_ocsvm",
+        "validation_far": {
+          "d1_ocsvm": 0.013888888888888888,
+          "d1_iforest": 0.010416666666666666
+        },
+        "train_windows": 1152,
+        "validation_windows": 288,
+        "vocab": 6,
+        "thresholds": {
+          "d1_ocsvm": 1.2731567859658552,
+          "d1_iforest": 0.6856294053743509
+        }
+      },
+      "d2": {
+        "source": {
+          "lines": 2000,
+          "alert_lines": 143,
+          "windows": 199,
+          "anomalous_windows": 53,
+          "templates": 123
+        },
+        "pseudo_label_history": [
+          {
+            "round": 0,
+            "target_windows": 1440,
+            "pseudo_labelled": 95,
+            "pseudo_anomalous": 0
+          },
+          {
+            "round": 1,
+            "target_windows": 1440,
+            "pseudo_labelled": 95,
+            "pseudo_anomalous": 0
+          },
+          {
+            "round": 2,
+            "target_windows": 1440,
+            "pseudo_labelled": 95,
+            "pseudo_anomalous": 0
+          }
+        ],
+        "source_fit_accuracy": 0.9748743718592965
+      },
+      "d3": {
+        "thresholds": {
+          "LambdaErrors": 0.0,
+          "Api5XX": 1.0,
+          "DurationP99": 100.0,
+          "Throttles": 0.0
+        }
+      },
+      "certification": true,
+      "seconds": 9.1
+    }
+  ],
+  "note": "logs produced by the local Lambda runtime emulator (not live AWS / LocalStack)"
+}

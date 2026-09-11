@@ -1,0 +1,7 @@
+{
+  "parser": "drain3",
+  "parser_version_pinned": "0.9.11",
+  "parser_version_installed": "0.9.11",
+  "config_file": "configs/drain.yaml",
+  "config_sha256": "0f10131eae578c3bae3272725019f23ebcea7f4bd289930058b95197ac53ed44"
+}

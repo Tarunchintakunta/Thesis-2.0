@@ -1,0 +1,311 @@
+{
+  "alpha": 0.05,
+  "family": [
+    "H1",
+    "H2_d1_primary",
+    "H2_d2_transfer",
+    "H2_d3_thresholds",
+    "H3"
+  ],
+  "tests": {
+    "H1": {
+      "null": "F1(source-free) = F1(transfer)",
+      "unit": "block (seed x 12 injections)",
+      "n": 60,
+      "mean_a": 0.9595500444188191,
+      "mean_b": 0.6698963740516584,
+      "mean_diff": 0.2896536703671608,
+      "diff_ci95": [
+        0.23860713908153838,
+        0.34205123451727587
+      ],
+      "test": "Wilcoxon signed-rank",
+      "statistic": 13.0,
+      "p": 3.133302686621948e-11,
+      "effect": "rank_biserial",
+      "effect_size": 0.985792349726776,
+      "normality_p": 0.00010648372092181964,
+      "p_holm": 1.0148477331001515e-10,
+      "reject_null": true
+    },
+    "H2_d1_primary": {
+      "null": "F1 does not differ across fault categories for D1 source-free (primary)",
+      "unit": "block",
+      "categories": [
+        "permission_denied",
+        "config_error",
+        "dependency_timeout",
+        "resource_exhaustion"
+      ],
+      "n_blocks": 60,
+      "k": 4,
+      "column_means": [
+        0.8931914790336788,
+        0.9289529064163589,
+        0.9281705130248361,
+        0.934770191935424
+      ],
+      "test": "Friedman",
+      "statistic": 20.038834951456362,
+      "p": 0.0001666256752459038,
+      "effect": "kendalls_w",
+      "effect_size": 0.11132686084142424,
+      "p_holm": 0.0001666256752459038,
+      "reject_null": true
+    },
+    "H2_d2_transfer": {
+      "null": "F1 does not differ across fault categories for D2 transfer (ELFA-Log style)",
+      "unit": "block",
+      "categories": [
+        "permission_denied",
+        "config_error",
+        "dependency_timeout",
+        "resource_exhaustion"
+      ],
+      "n_blocks": 60,
+      "k": 4,
+      "column_means": [
+        0.3174940806062088,
+        0.37583998001176583,
+        0.8223163224914092,
+        0.7376523641061166
+      ],
+      "test": "Friedman",
+      "statistic": 52.33812949640288,
+      "p": 2.5371193327503787e-11,
+      "effect": "kendalls_w",
+      "effect_size": 0.2907673860911271,
+      "p_holm": 1.0148477331001515e-10,
+      "reject_null": true
+    },
+    "H2_d3_thresholds": {
+      "null": "F1 does not differ across fault categories for D3 threshold alarms",
+      "unit": "block",
+      "categories": [
+        "permission_denied",
+        "config_error",
+        "dependency_timeout",
+        "resource_exhaustion"
+      ],
+      "n_blocks": 60,
+      "k": 4,
+      "column_means": [
+        0.8580080487670654,
+        0.9508883125942623,
+        0.9412730715953668,
+        0.8448698648505372
+      ],
+      "test": "Friedman",
+      "statistic": 73.30481283422455,
+      "p": 8.363272089847482e-16,
+      "effect": "kendalls_w",
+      "effect_size": 0.4072489601901364,
+      "p_holm": 4.1816360449237406e-15,
+      "reject_null": true
+    },
+    "H3": {
+      "null": "elasticity false-alarm rate does not differ between approaches",
+      "unit": "30 min block of phase C",
+      "detectors": [
+        "d1_primary",
+        "d2_transfer",
+        "d3_thresholds"
+      ],
+      "n_blocks": 36,
+      "k": 3,
+      "column_means": [
+        0.07407407407407411,
+        0.027777777777777776,
+        0.007407407407407408
+      ],
+      "test": "Friedman",
+      "statistic": 43.72477064220177,
+      "p": 3.201007515482583e-10,
+      "effect": "kendalls_w",
+      "effect_size": 0.6072884811416912,
+      "pairwise_post_hoc": {
+        "d1_primary_vs_d2_transfer": {
+          "n": 36,
+          "mean_a": 0.0740740740740741,
+          "mean_b": 0.027777777777777776,
+          "mean_diff": 0.0462962962962963,
+          "diff_ci95": [
+            0.0287037037037037,
+            0.06296296296296296
+          ],
+          "test": "Wilcoxon signed-rank",
+          "statistic": 51.5,
+          "p": 0.0001799500850990257,
+          "effect": "rank_biserial",
+          "effect_size": 0.7784946236559139,
+          "normality_p": 0.04091229457298468
+        },
+        "d1_primary_vs_d3_thresholds": {
+          "n": 36,
+          "mean_a": 0.0740740740740741,
+          "mean_b": 0.007407407407407408,
+          "mean_diff": 0.0666666666666667,
+          "diff_ci95": [
+            0.05370370370370371,
+            0.07962962962962965
+          ],
+          "test": "Wilcoxon signed-rank",
+          "statistic": 0.0,
+          "p": 6.673345455451149e-07,
+          "effect": "rank_biserial",
+          "effect_size": 1.0,
+          "normality_p": 0.029314988962381935
+        },
+        "d2_transfer_vs_d3_thresholds": {
+          "n": 36,
+          "mean_a": 0.027777777777777776,
+          "mean_b": 0.007407407407407408,
+          "mean_diff": 0.020370370370370372,
+          "diff_ci95": [
+            0.00925925925925926,
+            0.03240740740740741
+          ],
+          "test": "Wilcoxon signed-rank",
+          "statistic": 3.0,
+          "p": 0.0020195711959970263,
+          "effect": "rank_biserial",
+          "effect_size": 0.9340659340659341,
+          "normality_p": 8.565193591547564e-07
+        }
+      },
+      "p_holm": 6.402015030965166e-10,
+      "reject_null": true
+    }
+  },
+  "decision_rule": {
+    "f1_source_free": 0.9598330725091289,
+    "f1_transfer": 0.6633009708737865,
+    "f1_thresholds": 0.9119731443491235,
+    "gap_transfer_minus_source_free": -0.2965321016353424,
+    "within_10_points_of_transfer": true,
+    "beats_threshold_alarms": true,
+    "viable_substitute": true
+  },
+  "secondary_mcnemar": {
+    "permission_denied:d1_primary_vs_d2_transfer": {
+      "b01": 0,
+      "b10": 116,
+      "test": "McNemar (chi2, continuity)",
+      "statistic": 114.00862068965517,
+      "p": 1.2974319916756597e-26,
+      "exact": false
+    },
+    "permission_denied:d1_primary_vs_d3_thresholds": {
+      "b01": 0,
+      "b10": 2,
+      "test": "McNemar (exact)",
+      "statistic": 0.0,
+      "p": 0.5,
+      "exact": true
+    },
+    "permission_denied:d2_transfer_vs_d3_thresholds": {
+      "b01": 114,
+      "b10": 0,
+      "test": "McNemar (chi2, continuity)",
+      "statistic": 112.00877192982456,
+      "p": 3.5573277921431177e-26,
+      "exact": false
+    },
+    "config_error:d1_primary_vs_d2_transfer": {
+      "b01": 0,
+      "b10": 98,
+      "test": "McNemar (chi2, continuity)",
+      "statistic": 96.01020408163265,
+      "p": 1.1429287839034982e-22,
+      "exact": false
+    },
+    "config_error:d1_primary_vs_d3_thresholds": {
+      "b01": 0,
+      "b10": 0,
+      "test": "McNemar",
+      "statistic": 0.0,
+      "p": 1.0,
+      "exact": true
+    },
+    "config_error:d2_transfer_vs_d3_thresholds": {
+      "b01": 98,
+      "b10": 0,
+      "test": "McNemar (chi2, continuity)",
+      "statistic": 96.01020408163265,
+      "p": 1.1429287839034982e-22,
+      "exact": false
+    },
+    "dependency_timeout:d1_primary_vs_d2_transfer": {
+      "b01": 0,
+      "b10": 1,
+      "test": "McNemar (exact)",
+      "statistic": 0.0,
+      "p": 1.0,
+      "exact": true
+    },
+    "dependency_timeout:d1_primary_vs_d3_thresholds": {
+      "b01": 0,
+      "b10": 1,
+      "test": "McNemar (exact)",
+      "statistic": 0.0,
+      "p": 1.0,
+      "exact": true
+    },
+    "dependency_timeout:d2_transfer_vs_d3_thresholds": {
+      "b01": 0,
+      "b10": 0,
+      "test": "McNemar",
+      "statistic": 0.0,
+      "p": 1.0,
+      "exact": true
+    },
+    "resource_exhaustion:d1_primary_vs_d2_transfer": {
+      "b01": 0,
+      "b10": 4,
+      "test": "McNemar (exact)",
+      "statistic": 0.0,
+      "p": 0.125,
+      "exact": true
+    },
+    "resource_exhaustion:d1_primary_vs_d3_thresholds": {
+      "b01": 0,
+      "b10": 4,
+      "test": "McNemar (exact)",
+      "statistic": 0.0,
+      "p": 0.125,
+      "exact": true
+    },
+    "resource_exhaustion:d2_transfer_vs_d3_thresholds": {
+      "b01": 0,
+      "b10": 0,
+      "test": "McNemar",
+      "statistic": 0.0,
+      "p": 1.0,
+      "exact": true
+    }
+  },
+  "power_check": {
+    "blocks": 60,
+    "sd_block_f1_difference": 0.2030177296297821,
+    "pairs_needed_for_10_points": 33
+  },
+  "block_f1_means": {
+    "d1_primary": 0.9595500444188191,
+    "d2_transfer": 0.6698963740516584,
+    "d3_thresholds": 0.9068582846054212
+  },
+  "block_f1_ci95": {
+    "d1_primary": [
+      0.9523787427663473,
+      0.9662835998322712
+    ],
+    "d2_transfer": [
+      0.6169969170010117,
+      0.7221170710743358
+    ],
+    "d3_thresholds": [
+      0.887683739681976,
+      0.9244613604730579
+    ]
+  }
+}

@@ -1,0 +1,17 @@
+cluster_id,size,template
+1,102323,START RequestId: <RID> Version: $LATEST
+2,95271,"[INFO] <TS> <RID> {""route"": <*> <*> ""status"": <*> ""latency_ms"": <FLOAT>, ""cold_start"": <*> ""error_type"": null, ""memory_mb"": <*> ""downstream_ms"": <FLOAT>}"
+3,102323,END RequestId: <RID>
+4,985,REPORT RequestId: <RID> Duration: <FLOAT> ms Billed Duration: <*> ms Memory Size: <*> MB Max Memory Used: <*> MB Init Duration: <FLOAT> ms
+5,100357,REPORT RequestId: <RID> Duration: <FLOAT> ms Billed Duration: <*> ms Memory Size: <*> MB Max Memory Used: <*> MB
+6,167,"[ERROR] <TS> <RID> {""route"": <*> <*> ""status"": 500, ""latency_ms"": <FLOAT>, ""cold_start"": <*> ""error_type"": ""ProvisionedThroughputExceededException"", ""memory_mb"": <*> ""downstream_ms"": <FLOAT>, ""error"": ""An error occurred (ProvisionedThroughputExceededException) when calling the <*> operation: The level of configured provisioned throughput for the table was exceeded. Consider increasing your provisioning level with the UpdateTable API.""}"
+7,1410,"[ERROR] <TS> <RID> {""route"": <*> <*> ""status"": 504, ""latency_ms"": <FLOAT>, ""cold_start"": <*> ""error_type"": ""DownstreamTimeout"", ""memory_mb"": 256, ""downstream_ms"": <FLOAT>, ""error"": ""Read timeout on endpoint URL: \""https://dynamodb.eu-west-1.amazonaws.com/\""""}"
+8,425,<TS> <RID> Task timed out after <FLOAT> seconds
+9,370,REPORT RequestId: <RID> Duration: <FLOAT> ms Billed Duration: <INT> ms Memory Size: 256 MB Max Memory Used: <*> MB Status: timeout
+10,1615,"[ERROR] <TS> <RID> {""route"": ""POST /orders"", ""status"": 500, ""latency_ms"": <FLOAT>, ""cold_start"": <*> ""error_type"": ""AccessDeniedException"", ""memory_mb"": 256, ""downstream_ms"": <FLOAT>, ""error"": ""An error occurred (AccessDeniedException) when calling the PutItem operation: User: arn:aws:sts::<ACCT>:assumed-role/orders-api-role/orders-api is not authorized to perform: dynamodb:PutItem on resource: arn:aws:dynamodb:eu-west-1:<ACCT>:table/orders because no identity-based policy allows the dynamodb:PutItem action""}"
+11,556,RequestId: <RID> Error: Runtime exited with error: signal: killed
+12,556,Runtime.ExitError
+13,476,REPORT RequestId: <RID> Duration: <FLOAT> ms Billed Duration: <*> ms Memory Size: 128 MB Max Memory Used: 128 MB Status: error Error Type: Runtime.ExitError
+14,80,REPORT RequestId: <RID> Duration: <FLOAT> ms Billed Duration: <*> ms Memory Size: 128 MB Max Memory Used: 128 MB Init Duration: <FLOAT> ms Status: error Error Type: Runtime.ExitError
+15,2879,"[ERROR] <TS> <RID> {""route"": <*> <*> ""status"": 500, ""latency_ms"": <FLOAT>, ""cold_start"": <*> ""error_type"": ""ResourceNotFoundException"", ""memory_mb"": 256, ""downstream_ms"": <FLOAT>, ""error"": ""An error occurred (ResourceNotFoundException) when calling the <*> operation: Requested resource not found""}"
+16,55,REPORT RequestId: <RID> Duration: <FLOAT> ms Billed Duration: <INT> ms Memory Size: 256 MB Max Memory Used: <*> MB Init Duration: <FLOAT> ms Status: timeout
