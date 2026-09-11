@@ -19,7 +19,7 @@ dynamodb:
 iac:
   tool: terraform
   terraform: "1.15.7"
-  aws_provider: "6.64.0"     # iac/.terraform.lock.hcl
+  aws_provider: "6.64.0"     # infra/.terraform.lock.hcl
 
 analysis:
   python: "3.12"
