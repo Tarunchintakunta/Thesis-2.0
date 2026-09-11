@@ -1,0 +1,13 @@
+# AWS Lambda list prices used by the cost model. Copy the current numbers from
+# https://aws.amazon.com/lambda/pricing/ for your region before a live campaign
+# and update `as_of`. Free tier is ignored on purpose (it hides per-config cost).
+as_of: "2025 list prices, to be re-checked by the student before live runs"
+region: eu-west-1
+per_gb_second:
+  arm64: 0.0000133334
+  x86_64: 0.0000166667
+per_request: 0.0000002        # $0.20 per million requests
+# AWS announced that the INIT phase is billed for all on-demand functions from
+# 1 August 2025 - verify on the pricing page. True = add Init Duration to the
+# billed time when a record does not already include it (mock / local data).
+bill_init_phase: true
