@@ -1,0 +1,97 @@
+{
+  "label": "local process-start proxy on GitHub Actions ubuntu-latest runner - NOT an AWS Lambda Init Duration",
+  "tests": {
+    "H1_proxy": {
+      "test": "kruskal_wallis",
+      "statistic": 101.633593,
+      "p": 0.0,
+      "effect": 0.854064,
+      "effect_name": "epsilon_squared",
+      "normal": false,
+      "groups": [
+        "python",
+        "nodejs",
+        "java"
+      ],
+      "n": [
+        40,
+        40,
+        40
+      ],
+      "medians": {
+        "python": 20.873,
+        "nodejs": 30.3795,
+        "java": 37.157
+      },
+      "p_holm": 0.0,
+      "reject": true,
+      "family": "proxy"
+    },
+    "H2_proxy_python": {
+      "test": "mann_whitney_u",
+      "statistic": 1600.0,
+      "p": 0.0,
+      "effect": 1.0,
+      "effect_name": "rank_biserial",
+      "normal": false,
+      "n": [
+        40,
+        40
+      ],
+      "median_a": 2383.6615,
+      "median_b": 20.873,
+      "median_diff": 2362.7885,
+      "median_diff_ci95": [
+        2359.992062,
+        2367.1545
+      ],
+      "p_holm": 0.0,
+      "reject": true,
+      "family": "proxy"
+    },
+    "H2_proxy_nodejs": {
+      "test": "mann_whitney_u",
+      "statistic": 1600.0,
+      "p": 0.0,
+      "effect": 1.0,
+      "effect_name": "rank_biserial",
+      "normal": false,
+      "n": [
+        40,
+        40
+      ],
+      "median_a": 323.591,
+      "median_b": 30.3795,
+      "median_diff": 293.2115,
+      "median_diff_ci95": [
+        290.431,
+        296.157175
+      ],
+      "p_holm": 0.0,
+      "reject": true,
+      "family": "proxy"
+    },
+    "H2_proxy_java": {
+      "test": "mann_whitney_u",
+      "statistic": 1600.0,
+      "p": 0.0,
+      "effect": 1.0,
+      "effect_name": "rank_biserial",
+      "normal": false,
+      "n": [
+        40,
+        40
+      ],
+      "median_a": 223.089,
+      "median_b": 37.157,
+      "median_diff": 185.932,
+      "median_diff_ci95": [
+        180.9335,
+        192.341
+      ],
+      "p_holm": 0.0,
+      "reject": true,
+      "family": "proxy"
+    }
+  }
+}
