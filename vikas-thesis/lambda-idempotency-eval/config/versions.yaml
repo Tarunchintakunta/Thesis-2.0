@@ -1,0 +1,26 @@
+# Pinned versions (master prompt 2.8: single region, on-demand capacity, pinned
+# runtime / SDK / IaC). The configuration manual reports these.
+region: eu-west-1
+
+lambda:
+  runtime: python3.12
+  architecture: arm64
+  memory_mb: 256
+  timeout_s: 2               # an injected timeout sleeps past this after the write committed
+  boto3: "1.35.36"           # bundled in the zip (src/lambda_fn/requirements.txt)
+  botocore: "1.35.36"
+  sdk_retries: 0             # total_max_attempts = 1 - the only retries are the driver's scheduled ones
+
+dynamodb:
+  capacity_mode: on_demand
+  table_class: STANDARD
+  streams: NEW_AND_OLD_IMAGES   # independent record of every state change = mutation ground truth
+
+iac:
+  tool: terraform
+  terraform: "1.15.7"
+  aws_provider: "6.64.0"     # iac/.terraform.lock.hcl
+
+analysis:
+  python: "3.12"
+# Vikas Reddy Amanagantti
