@@ -33,6 +33,13 @@ cdk.out/
 **/results_smoke/
 **/dist/
 
+# lambda packages / java + node build output (package_all.sh recreates them)
+node_modules/
+**/target/
+chaitanya-thesis/lambda-coldstart-isolation/build/
+# chaitanya: processed CSVs are small and are the dataset deliverable, keep them
+!chaitanya-thesis/lambda-coldstart-isolation/data/processed/
+
 # editors
 .idea/
 .vscode/
