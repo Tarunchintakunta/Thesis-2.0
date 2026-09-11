@@ -78,6 +78,14 @@ class FakeTable:
             elif roll < dt["p_hang"] + dt["p_timeout"]:
                 self._wait(self.db["read_timeout_s"])
                 raise ReadTimeoutError(endpoint_url=f"https://dynamodb.{self.region}.amazonaws.com/")
+        # background noise that is NOT one of the injected faults: an occasional
+        # throttled request, like a real table sometimes returns (0 = off)
+        p_throttle = float(self.db.get("p_throttle", 0.0))
+        if p_throttle and self.rng.random() < p_throttle:
+            self._wait(self._latency_s())
+            raise ClientError({"Error": {"Code": "ProvisionedThroughputExceededException", "Message": (
+                "The level of configured provisioned throughput for the table was exceeded. "
+                "Consider increasing your provisioning level with the UpdateTable API.")}}, op)
         self._wait(self._latency_s())
         return action()
 
