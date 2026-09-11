@@ -1,0 +1,14 @@
+# Tiny version of experiment.yaml for CI and quick checks (~seconds).
+# Numbers from this config are NOT results - it only checks the pipeline runs.
+extends: experiment.yaml
+name: smoke
+seeds: [7]
+phases:
+  A: {hours: 3}
+  B:
+    injections_per_category: 6
+    block_size: 4
+    gap_s: [240, 360]
+    duration_s: [120, 180]
+    tail_s: 300
+  C: {hours: 1}
