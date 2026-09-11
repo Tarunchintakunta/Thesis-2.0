@@ -26,7 +26,12 @@ pkg_python() {
       "$PY" -m pip install --quiet --no-compile --target "$d" \
         --platform "$PY_PLATFORM" --implementation cp --python-version 3.12 --only-binary=:all: \
         -r "functions/python/$v/requirements.txt"
-      # pip metadata is not needed at runtime but it is part of a "default" upload, keep it
+      # console-script wrappers in bin/ carry the build machine's interpreter path in
+      # their shebang, and RECORD lists their hashes - both make the zip differ from
+      # machine to machine. Lambda never runs either, so they are dropped. The rest
+      # of the pip metadata stays (it is part of a normal "default" upload).
+      rm -rf "$d/bin"
+      find "$d" -path "*.dist-info/RECORD" -delete
     fi
     echo "python-$v done"
   done
