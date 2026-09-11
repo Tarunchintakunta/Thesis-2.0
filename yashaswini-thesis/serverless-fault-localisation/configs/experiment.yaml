@@ -47,7 +47,7 @@ localisation:
 tracing:                         # stated with every overhead figure (Mertz and Nunes 2023; Huang et al. 2024)
   full:    {mode: Active, reservoir_per_s: 1000, fixed_rate: 1.0, log_level: INFO}
   policy:  {mode: Active, reservoir_per_s: 1,    fixed_rate: 0.05, log_level: ERROR}
-  off:     {mode: PassThrough, log_level: ERROR}
+  "off":   {mode: PassThrough, log_level: ERROR}    # quoted: YAML 1.1 would read a bare off as false
 overhead:
   minutes_per_condition: 30
 
