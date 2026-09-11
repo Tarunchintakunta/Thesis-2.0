@@ -17,8 +17,8 @@
         30
       ],
       "medians": {
-        "python": 15.969,
-        "nodejs": 45.177
+        "python": 16.4675,
+        "nodejs": 46.649
       },
       "p_holm": 0.0,
       "reject": true,
@@ -35,12 +35,12 @@
         30,
         30
       ],
-      "median_a": 830.6575,
-      "median_b": 15.969,
-      "median_diff": 814.6885,
+      "median_a": 856.198,
+      "median_b": 16.4675,
+      "median_diff": 839.7305,
       "median_diff_ci95": [
-        811.106437,
-        818.232225
+        836.027125,
+        842.7741
       ],
       "p_holm": 0.0,
       "reject": true,
@@ -57,12 +57,12 @@
         30,
         30
       ],
-      "median_a": 127.7645,
-      "median_b": 45.177,
-      "median_diff": 82.5875,
+      "median_a": 131.672,
+      "median_b": 46.649,
+      "median_diff": 85.023,
       "median_diff_ci95": [
-        81.726263,
-        84.30315
+        83.747,
+        86.319
       ],
       "p_holm": 0.0,
       "reject": true,

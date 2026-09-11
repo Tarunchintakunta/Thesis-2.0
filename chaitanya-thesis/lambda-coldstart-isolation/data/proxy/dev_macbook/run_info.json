@@ -1,7 +1,7 @@
 {
   "what": "local process-start benchmark (init PROXY) - not AWS Lambda, not an Init Duration",
-  "started_utc": "2026-09-11T13:14:47+00:00",
-  "finished_utc": "2026-09-11T13:15:26+00:00",
+  "started_utc": "2026-09-11T13:20:30+00:00",
+  "finished_utc": "2026-09-11T13:21:12+00:00",
   "reps": 30,
   "seed": 42,
   "warmup_rounds": 2,
@@ -48,10 +48,10 @@
       "runtime": "python",
       "variant": "default",
       "artifact": "python-default.zip",
-      "zip_bytes": 21184152,
-      "unzipped_bytes": 50152205,
-      "files": 3768,
-      "sha256": "74abd175706526be066925749cf7285a0e9c5070798b805df65f365d86f4e395"
+      "zip_bytes": 21032138,
+      "unzipped_bytes": 49765599,
+      "files": 3751,
+      "sha256": "12babe74f1c3c8230cc7fe37c1dcc2fe3989396ba9e56344ba293fd7bc89353b"
     },
     {
       "runtime": "python",

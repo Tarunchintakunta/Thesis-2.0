@@ -4,16 +4,16 @@
 
 | runtime | package | n | init proxy p50 (ms) | p95 | p99 | handler p50 (ms) | zip (MB) | unzipped (MB) |
 |---|---|---|---|---|---|---|---|---|
-| nodejs | default | 30 | 127.8 | 135.9 | 136.6 | 8.3 | 16.467 | 111.460 |
-| nodejs | optimised | 30 | 45.2 | 48.8 | 53.5 | 9.6 | 0.001 | 0.001 |
-| python | default | 30 | 830.7 | 843.6 | 852.2 | 3.9 | 21.184 | 50.152 |
-| python | optimised | 30 | 16.0 | 16.7 | 18.6 | 4.1 | 0.001 | 0.001 |
+| nodejs | default | 30 | 131.7 | 145.1 | 152.0 | 8.4 | 16.467 | 111.460 |
+| nodejs | optimised | 30 | 46.6 | 50.3 | 51.2 | 9.8 | 0.001 | 0.001 |
+| python | default | 30 | 856.2 | 945.8 | 963.0 | 4.0 | 21.032 | 49.766 |
+| python | optimised | 30 | 16.5 | 18.6 | 21.4 | 4.1 | 0.001 | 0.001 |
 
 | test | method | p | p (Holm) | effect | median diff (ms) |
 |---|---|---|---|---|---|
 | H1_proxy | kruskal_wallis | 2.87e-11 | 8.62e-11 | epsilon_squared = 0.75 | - |
-| H2_proxy_python | mann_whitney_u | 3.02e-11 | 8.62e-11 | rank_biserial = 1.00 | 814.7 |
-| H2_proxy_nodejs | mann_whitney_u | 3.02e-11 | 8.62e-11 | rank_biserial = 1.00 | 82.6 |
+| H2_proxy_python | mann_whitney_u | 3.02e-11 | 8.62e-11 | rank_biserial = 1.00 | 839.7 |
+| H2_proxy_nodejs | mann_whitney_u | 3.02e-11 | 8.62e-11 | rank_biserial = 1.00 | 85.0 |
 
 The proxy has no micro-VM, no code download and no Lambda runtime API. It shows the relative cost
 of loading each runtime and package on one machine, not Lambda cold-start times.
