@@ -1,0 +1,60 @@
+# *** SYNTHETIC - NOT MEASURED ***
+# Parameters for DATA_MODE=mock (src/coldstart/mock.py). They are placeholder
+# assumptions so that the whole pipeline (invoke -> REPORT lines -> collect ->
+# parse -> stats -> decision matrix) can run without an AWS account. They were
+# picked to look roughly like cold starts people talk about, NOT fitted to any
+# measurement, so nothing produced from them says anything about AWS Lambda.
+# The only structural facts built in are ones AWS documents: CPU share grows
+# with memory up to one vCPU at 1769 MB, one request per execution environment
+# at a time, and a configuration change gives new environments.
+label: "SYNTHETIC mock data - not measured"
+
+init:
+  platform_fixed_ms: 60          # part of init that memory does not change (placeholder)
+  runtime_ms:                    # runtime start at >= 1769 MB (placeholder)
+    python: 90
+    nodejs: 110
+    java: 420
+  package_extra_ms:              # extra init for the default (unpruned) package (placeholder)
+    python: 400
+    nodejs: 350
+    java: 250
+  sigma: 0.15                    # lognormal spread
+  memory_exponent: 0.35          # CPU part scales with (1769 / memory) ** exponent below 1769 MB
+
+duration:
+  work_ms_at_1vcpu:              # the 20,000 x SHA-256 loop (placeholder)
+    python: 14
+    nodejs: 28
+    java: 12
+  first_invoke_factor:           # the invoke right after init is slower (JIT, lazy loading)
+    python: 1.05
+    nodejs: 1.3
+    java: 3.0
+  overhead_ms: 1.0
+  sigma: 0.08
+  memory_exponent: 1.0           # CPU-bound: time ~ 1769 / memory below 1769 MB
+
+warmer_ping_ms: 0.4              # a {"warmer": true} ping returns straight away
+
+network:                         # client-side extra on top of init + duration
+  median_ms: 28
+  sigma: 0.3
+
+lifecycle:
+  idle_lifetime_min:             # how long an idle environment survives (placeholder)
+    median: 12
+    sigma: 0.45
+  max_lifetime_min: 120
+  update_env_cold_probability: 1.0
+
+errors:
+  probability: 0.0005            # a few function errors so the error filtering is exercised
+
+max_memory_used_mb:
+  python-default: 118
+  python-optimised: 38
+  nodejs-default: 140
+  nodejs-optimised: 72
+  java-default: 165
+  java-optimised: 110
