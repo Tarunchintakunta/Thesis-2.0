@@ -41,6 +41,15 @@ chaitanya-thesis/lambda-coldstart-isolation/build/
 !chaitanya-thesis/lambda-coldstart-isolation/data/processed/
 chaitanya-thesis/lambda-coldstart-isolation/data/pilot/*/raw/
 
+# terraform state / plans / lambda zips (rassool)
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+rassool-thesis/dynamodb-pk-capacity-eval/iac/build/
+rassool-thesis/dynamodb-pk-capacity-eval/results/*
+!rassool-thesis/dynamodb-pk-capacity-eval/results/SCHEMA.md
+
 # editors
 .idea/
 .vscode/
