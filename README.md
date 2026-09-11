@@ -10,7 +10,7 @@ rules for that project, and the actual artefact code in its own sub folder.
 | `kasi-thesis/` | Source-free log anomaly detection for AWS serverless apps | `serverless-log-anomaly/` | artefact done (emulated logs), live run + report pending |
 | `chaitanya-thesis/` | Isolating cold-start latency reduction in AWS Lambda (runtime, package size, warming) | `lambda-coldstart-isolation/` | artefact done (mock pipeline + local init-proxy benchmark), live AWS runs + report pending |
 | `rassool-thesis/` | Partition-key design x capacity mode in Amazon DynamoDB under Lambda workloads | `dynamodb-pk-capacity-eval/` | artefact done (Terraform + workloads + analysis, tested on moto), live AWS campaign + report pending |
-| `vikas-thesis/` | see master prompt | - | todo |
+| `vikas-thesis/` | Application-level idempotency (plain / conditional / idempotency-key writes) under injected retries on Lambda + DynamoDB | `lambda-idempotency-eval/` | artefact done (Terraform + driver + analysis, tested on moto), live AWS campaign + report pending |
 | `yashaswini-thesis/` | see master prompt | - | todo |
 
 Other stuff at the top level:
