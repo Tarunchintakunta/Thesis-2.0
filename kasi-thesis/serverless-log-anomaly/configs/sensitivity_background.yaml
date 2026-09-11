@@ -1,0 +1,11 @@
+# Sensitivity run (not the main result): the same study, but the table
+# throttles 0.2 % of requests in normal operation too. In the main run the
+# emulated system never returns a 5xx unless a fault is injected, which makes
+# the threshold alarms (D3) look perfectly precise. Real tables have a little
+# background noise; this run shows how much that changes each detector.
+#   python -m logad.pipeline --config configs/sensitivity_background.yaml --out results_sensitivity/background
+#   python -m logad.eval.report --results results_sensitivity/background
+extends: experiment.yaml
+name: sens_background
+db:
+  p_throttle: 0.002
