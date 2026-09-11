@@ -78,7 +78,7 @@ the Java jars with Corretto 21) and checks this on every push.
 
 | package | zip | unzipped | files |
 |---|---|---|---|
-| python default (boto3, requests, sympy - imported, never used) | 21.2 MB | 50.2 MB | 3,768 |
+| python default (boto3, requests, sympy - imported, never used) | 21.0 MB | 49.8 MB | 3,751 |
 | python optimised (stdlib only) | 604 B | 854 B | 1 |
 | nodejs default (aws-sdk v2, lodash, moment, axios) | 16.5 MB | 111.5 MB | 4,680 |
 | nodejs optimised (no dependencies) | 815 B | 971 B | 2 |
@@ -99,12 +99,12 @@ Development laptop (Apple Silicon, macOS, 30 blocks, no JDK so no Java):
 
 | runtime | package | init proxy p50 (ms) | p95 | p99 | handler p50 (ms) |
 |---|---|---|---|---|---|
-| python | default | 830.7 | 843.6 | 852.2 | 3.9 |
-| python | optimised | 16.0 | 16.7 | 18.6 | 4.1 |
-| nodejs | default | 127.8 | 135.9 | 136.6 | 8.3 |
-| nodejs | optimised | 45.2 | 48.8 | 53.5 | 9.6 |
+| python | default | 856.2 | 945.8 | 963.0 | 4.0 |
+| python | optimised | 16.5 | 18.6 | 21.4 | 4.1 |
+| nodejs | default | 131.7 | 145.1 | 152.0 | 8.4 |
+| nodejs | optimised | 46.6 | 50.3 | 51.2 | 9.8 |
 
-Pruning: median difference 814.7 ms (Python) and 82.6 ms (Node.js), Mann-Whitney
+Pruning: median difference 839.7 ms (Python) and 85.0 ms (Node.js), Mann-Whitney
 p = 3e-11 for both after Holm, rank-biserial 1.00 (every default sample was
 slower than every optimised one). Full tables: `reports/paper/tables/proxy_dev/proxy_summary.md`.
 
