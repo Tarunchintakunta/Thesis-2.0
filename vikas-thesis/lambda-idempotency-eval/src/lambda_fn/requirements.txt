@@ -1,0 +1,5 @@
+# Bundled into the Lambda zip so the SDK version is pinned (master prompt 2.8),
+# instead of whatever boto3 the managed runtime happens to ship.
+boto3==1.35.36
+botocore==1.35.36
+# Vikas Reddy Amanagantti
