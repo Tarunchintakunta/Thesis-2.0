@@ -166,9 +166,9 @@ def fig_dup(cells: pd.DataFrame, path: Path, tag: str) -> None:
         ax.errorbar(x, s["dup_rate"] * 100, yerr=[_pos((s["dup_rate"] - s["dup_ci_lo"]) * 100),
                                                   _pos((s["dup_ci_hi"] - s["dup_rate"]) * 100)],
                     fmt="none", ecolor="black", capsize=3, lw=1)
-        for xi, v in zip(x, s["dup_rate"], strict=True):  # a 0 % bar is invisible without its label
+        for xi, v, top in zip(x, s["dup_rate"], s["dup_ci_hi"], strict=True):  # a 0 % bar is invisible otherwise
             if not np.isnan(v):
-                ax.text(xi, v * 100 + 3, f"{v * 100:.1f}%", ha="center", fontsize=7)
+                ax.text(xi, max(v, top) * 100 + 2, f"{v * 100:.1f}%", ha="center", fontsize=7)
     ax.set_xticks(range(len(ms)), [f"{m} deliveries" for m in ms])
     ax.set_ylabel("duplicate-mutation rate (%)")
     ax.set_ylim(0, 112)
