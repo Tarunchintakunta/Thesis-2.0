@@ -1,0 +1,247 @@
+{
+ "publicationDate": "2026-09-11T12:44:22Z",
+ "products": {
+  "Y8RETJA3NHS97536": {
+   "sku": "Y8RETJA3NHS97536",
+   "productFamily": "Amazon DynamoDB PayPerRequest Throughput",
+   "attributes": {
+    "servicecode": "AmazonDynamoDB",
+    "location": "EU (Ireland)",
+    "locationType": "AWS Region",
+    "group": "DDB-ReplicatedWriteUnits",
+    "groupDescription": "DynamoDB PayPerRequest Replicated Write Request Units",
+    "usagetype": "EU-ReplWriteRequestUnits",
+    "operation": "PayPerRequestThroughput",
+    "regionCode": "eu-west-1",
+    "servicename": "Amazon DynamoDB"
+   }
+  },
+  "NZ66EMFUXA9Q8VMN": {
+   "sku": "NZ66EMFUXA9Q8VMN",
+   "productFamily": "Amazon DynamoDB PayPerRequest Throughput",
+   "attributes": {
+    "servicecode": "AmazonDynamoDB",
+    "location": "EU (Ireland)",
+    "locationType": "AWS Region",
+    "group": "DDB-ReadUnitsIA",
+    "groupDescription": "DynamoDB PayPerRequest Read Request Units IA",
+    "usagetype": "EU-IA-ReadRequestUnits",
+    "operation": "PayPerRequestThroughput",
+    "regionCode": "eu-west-1",
+    "servicename": "Amazon DynamoDB"
+   }
+  },
+  "3ERQSZWPAMX2JWHN": {
+   "sku": "3ERQSZWPAMX2JWHN",
+   "productFamily": "Amazon DynamoDB PayPerRequest Throughput",
+   "attributes": {
+    "servicecode": "AmazonDynamoDB",
+    "location": "EU (Ireland)",
+    "locationType": "AWS Region",
+    "group": "DDB-ReadUnits",
+    "groupDescription": "DynamoDB PayPerRequest Read Request Units",
+    "usagetype": "EU-ReadRequestUnits",
+    "operation": "PayPerRequestThroughput",
+    "regionCode": "eu-west-1",
+    "servicename": "Amazon DynamoDB"
+   }
+  },
+  "J7FH9ZNSN6J2RR9Q": {
+   "sku": "J7FH9ZNSN6J2RR9Q",
+   "productFamily": "Provisioned IOPS",
+   "attributes": {
+    "servicecode": "AmazonDynamoDB",
+    "location": "EU (Ireland)",
+    "locationType": "AWS Region",
+    "group": "DDB-ReadUnits",
+    "groupDescription": "DynamoDB Provisioned Read Units",
+    "usagetype": "EU-ReadCapacityUnit-Hrs",
+    "operation": "CommittedThroughput",
+    "regionCode": "eu-west-1",
+    "servicename": "Amazon DynamoDB"
+   }
+  },
+  "F4EZE5SAMS3D49NJ": {
+   "sku": "F4EZE5SAMS3D49NJ",
+   "productFamily": "Amazon DynamoDB PayPerRequest Throughput",
+   "attributes": {
+    "servicecode": "AmazonDynamoDB",
+    "location": "EU (Ireland)",
+    "locationType": "AWS Region",
+    "group": "DDB-WriteUnits",
+    "groupDescription": "DynamoDB PayPerRequest Write Request Units",
+    "usagetype": "EU-WriteRequestUnits",
+    "operation": "PayPerRequestThroughput",
+    "regionCode": "eu-west-1",
+    "servicename": "Amazon DynamoDB"
+   }
+  },
+  "36CGV8QUHJZG65HD": {
+   "sku": "36CGV8QUHJZG65HD",
+   "productFamily": "Provisioned IOPS",
+   "attributes": {
+    "servicecode": "AmazonDynamoDB",
+    "location": "EU (Ireland)",
+    "locationType": "AWS Region",
+    "group": "DDB-WriteUnits",
+    "groupDescription": "DynamoDB Provisioned Write Units",
+    "usagetype": "EU-WriteCapacityUnit-Hrs",
+    "operation": "CommittedThroughput",
+    "regionCode": "eu-west-1",
+    "servicename": "Amazon DynamoDB"
+   }
+  }
+ },
+ "terms": {
+  "OnDemand": {
+   "Y8RETJA3NHS97536": {
+    "Y8RETJA3NHS97536.JRTCKXETXF": {
+     "offerTermCode": "JRTCKXETXF",
+     "sku": "Y8RETJA3NHS97536",
+     "effectiveDate": "2026-08-01T00:00:00Z",
+     "priceDimensions": {
+      "Y8RETJA3NHS97536.JRTCKXETXF.6YS6EN2CT7": {
+       "rateCode": "Y8RETJA3NHS97536.JRTCKXETXF.6YS6EN2CT7",
+       "description": "$0.705 per million replicated write request units (EU (Ireland))",
+       "beginRange": "0",
+       "endRange": "Inf",
+       "unit": "ReplicatedWriteRequestUnits",
+       "pricePerUnit": {
+        "USD": "0.0000007050"
+       },
+       "appliesTo": []
+      }
+     },
+     "termAttributes": {}
+    }
+   },
+   "NZ66EMFUXA9Q8VMN": {
+    "NZ66EMFUXA9Q8VMN.JRTCKXETXF": {
+     "offerTermCode": "JRTCKXETXF",
+     "sku": "NZ66EMFUXA9Q8VMN",
+     "effectiveDate": "2026-08-01T00:00:00Z",
+     "priceDimensions": {
+      "NZ66EMFUXA9Q8VMN.JRTCKXETXF.6YS6EN2CT7": {
+       "rateCode": "NZ66EMFUXA9Q8VMN.JRTCKXETXF.6YS6EN2CT7",
+       "description": "$0.177 per million IA read request units in EU (Ireland)",
+       "beginRange": "0",
+       "endRange": "Inf",
+       "unit": "ReadRequestUnits",
+       "pricePerUnit": {
+        "USD": "0.0000001770"
+       },
+       "appliesTo": []
+      }
+     },
+     "termAttributes": {}
+    }
+   },
+   "3ERQSZWPAMX2JWHN": {
+    "3ERQSZWPAMX2JWHN.JRTCKXETXF": {
+     "offerTermCode": "JRTCKXETXF",
+     "sku": "3ERQSZWPAMX2JWHN",
+     "effectiveDate": "2026-08-01T00:00:00Z",
+     "priceDimensions": {
+      "3ERQSZWPAMX2JWHN.JRTCKXETXF.6YS6EN2CT7": {
+       "rateCode": "3ERQSZWPAMX2JWHN.JRTCKXETXF.6YS6EN2CT7",
+       "description": "$0.1415 per million read request units (EU (Ireland))",
+       "beginRange": "0",
+       "endRange": "Inf",
+       "unit": "ReadRequestUnits",
+       "pricePerUnit": {
+        "USD": "0.0000001415"
+       },
+       "appliesTo": []
+      }
+     },
+     "termAttributes": {}
+    }
+   },
+   "J7FH9ZNSN6J2RR9Q": {
+    "J7FH9ZNSN6J2RR9Q.JRTCKXETXF": {
+     "offerTermCode": "JRTCKXETXF",
+     "sku": "J7FH9ZNSN6J2RR9Q",
+     "effectiveDate": "2026-08-01T00:00:00Z",
+     "priceDimensions": {
+      "J7FH9ZNSN6J2RR9Q.JRTCKXETXF.HBHVWY47CM": {
+       "rateCode": "J7FH9ZNSN6J2RR9Q.JRTCKXETXF.HBHVWY47CM",
+       "description": "$0.00 per hour for 25 units of read capacity for a month (free tier)",
+       "beginRange": "0",
+       "endRange": "18600",
+       "unit": "ReadCapacityUnit-Hrs",
+       "pricePerUnit": {
+        "USD": "0.0000000000"
+       },
+       "appliesTo": []
+      },
+      "J7FH9ZNSN6J2RR9Q.JRTCKXETXF.E63J5HTPNN": {
+       "rateCode": "J7FH9ZNSN6J2RR9Q.JRTCKXETXF.E63J5HTPNN",
+       "description": "$0.000147 per hour for units of read capacity beyond the free tier",
+       "beginRange": "18600",
+       "endRange": "Inf",
+       "unit": "ReadCapacityUnit-Hrs",
+       "pricePerUnit": {
+        "USD": "0.0001470000"
+       },
+       "appliesTo": []
+      }
+     },
+     "termAttributes": {}
+    }
+   },
+   "F4EZE5SAMS3D49NJ": {
+    "F4EZE5SAMS3D49NJ.JRTCKXETXF": {
+     "offerTermCode": "JRTCKXETXF",
+     "sku": "F4EZE5SAMS3D49NJ",
+     "effectiveDate": "2026-08-01T00:00:00Z",
+     "priceDimensions": {
+      "F4EZE5SAMS3D49NJ.JRTCKXETXF.6YS6EN2CT7": {
+       "rateCode": "F4EZE5SAMS3D49NJ.JRTCKXETXF.6YS6EN2CT7",
+       "description": "$0.705 per million write request units (EU (Ireland))",
+       "beginRange": "0",
+       "endRange": "Inf",
+       "unit": "WriteRequestUnits",
+       "pricePerUnit": {
+        "USD": "0.0000007050"
+       },
+       "appliesTo": []
+      }
+     },
+     "termAttributes": {}
+    }
+   },
+   "36CGV8QUHJZG65HD": {
+    "36CGV8QUHJZG65HD.JRTCKXETXF": {
+     "offerTermCode": "JRTCKXETXF",
+     "sku": "36CGV8QUHJZG65HD",
+     "effectiveDate": "2026-08-01T00:00:00Z",
+     "priceDimensions": {
+      "36CGV8QUHJZG65HD.JRTCKXETXF.HBHVWY47CM": {
+       "rateCode": "36CGV8QUHJZG65HD.JRTCKXETXF.HBHVWY47CM",
+       "description": "$0.00 per hour for 25 units of write capacity for a month (free tier)",
+       "beginRange": "0",
+       "endRange": "18600",
+       "unit": "WriteCapacityUnit-Hrs",
+       "pricePerUnit": {
+        "USD": "0.0000000000"
+       },
+       "appliesTo": []
+      },
+      "36CGV8QUHJZG65HD.JRTCKXETXF.E63J5HTPNN": {
+       "rateCode": "36CGV8QUHJZG65HD.JRTCKXETXF.E63J5HTPNN",
+       "description": "$0.000735 per hour for units of write capacity beyond the free tier",
+       "beginRange": "18600",
+       "endRange": "Inf",
+       "unit": "WriteCapacityUnit-Hrs",
+       "pricePerUnit": {
+        "USD": "0.0007350000"
+       },
+       "appliesTo": []
+      }
+     },
+     "termAttributes": {}
+    }
+   }
+  }
+ }
+}
