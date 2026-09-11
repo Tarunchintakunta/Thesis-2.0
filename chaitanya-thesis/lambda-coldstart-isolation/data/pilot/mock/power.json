@@ -1,0 +1,129 @@
+{
+  "data_mode": [
+    "mock"
+  ],
+  "alpha_for_sizing": 0.01,
+  "power": 0.8,
+  "min_effect_ms": 50,
+  "cells": [
+    {
+      "function": "java-default",
+      "intended": 12,
+      "cold": 12,
+      "init_median_ms": 836.3199999999999,
+      "init_sd_ms": 163.6086835951175
+    },
+    {
+      "function": "java-optimised",
+      "intended": 12,
+      "cold": 12,
+      "init_median_ms": 544.24,
+      "init_sd_ms": 83.16039594990788
+    },
+    {
+      "function": "nodejs-default",
+      "intended": 12,
+      "cold": 12,
+      "init_median_ms": 535.125,
+      "init_sd_ms": 110.29132979193209
+    },
+    {
+      "function": "nodejs-optimised",
+      "intended": 12,
+      "cold": 12,
+      "init_median_ms": 188.66000000000003,
+      "init_sd_ms": 41.44255374136662
+    },
+    {
+      "function": "python-default",
+      "intended": 12,
+      "cold": 12,
+      "init_median_ms": 647.8199999999999,
+      "init_sd_ms": 87.3721715066524
+    },
+    {
+      "function": "python-optimised",
+      "intended": 12,
+      "cold": 12,
+      "init_median_ms": 157.615,
+      "init_sd_ms": 36.49993408047181
+    }
+  ],
+  "comparisons": {
+    "H1: python-optimised vs nodejs-optimised": 17,
+    "H1: python-optimised vs java-optimised": 45,
+    "H1: nodejs-optimised vs java-optimised": 47,
+    "H2_python: python-default vs python-optimised": 49,
+    "H2_nodejs: nodejs-default vs nodejs-optimised": 76,
+    "H2_java: java-default vs java-optimised": 183
+  },
+  "planned_reps": {
+    "runtime_compare": 50,
+    "package_size": 50,
+    "memory": 40,
+    "combined": 40
+  },
+  "recommended": {
+    "runtime_compare": 47,
+    "package_size": 183,
+    "memory": 40,
+    "combined": 40
+  },
+  "update_env_cold": [
+    72,
+    72
+  ],
+  "idle_probe": [
+    {
+      "idle_gap_min": 5.0,
+      "n": 8,
+      "cold": 1,
+      "cold_fraction": 0.125,
+      "ci95": [
+        0.022417491199971912,
+        0.47088818505608376
+      ]
+    },
+    {
+      "idle_gap_min": 10.0,
+      "n": 8,
+      "cold": 4,
+      "cold_fraction": 0.5,
+      "ci95": [
+        0.21521606069626764,
+        0.7847839393037324
+      ]
+    },
+    {
+      "idle_gap_min": 20.0,
+      "n": 8,
+      "cold": 7,
+      "cold_fraction": 0.875,
+      "ci95": [
+        0.5291118149439162,
+        0.9775825088000281
+      ]
+    },
+    {
+      "idle_gap_min": 30.0,
+      "n": 8,
+      "cold": 8,
+      "cold_fraction": 1.0,
+      "ci95": [
+        0.6755924316585924,
+        1.0
+      ]
+    },
+    {
+      "idle_gap_min": 45.0,
+      "n": 8,
+      "cold": 8,
+      "cold_fraction": 1.0,
+      "ci95": [
+        0.6755924316585924,
+        1.0
+      ]
+    }
+  ],
+  "recommended_idle_gap_min": 30.0
+}
