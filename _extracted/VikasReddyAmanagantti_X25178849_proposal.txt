@@ -1,0 +1,144 @@
+An Empirical Evaluation of Application-Level Idempotency Strategies for Retry Correctness on AWS Lambda and Amazon DynamoDB
+Vikas Reddy Amanagantti
+X25178849
+MSc in Cloud Computing
+National College of Ireland
+
+Abstract
+Serverless platforms retry failed invocations, so a function that writes to a database can apply the same change twice. The research literature solves this by replacing the runtime, with custom logging layers and dedicated caches that a small team does not operate. What a developer on a managed platform actually has is three application-level choices: a plain write, a conditional write, or a write guarded by an idempotency key. Nobody has measured what those choices prevent or what they cost. This proposal specifies a controlled retry experiment in which one AWS Lambda function writes to one DynamoDB table by each path in turn, while duplicate deliveries are injected on a schedule rather than awaited. Duplicate state mutation is counted against a known number of retries, and latency and consumed capacity are reported beside it. Replication is set by a pilot, and every comparison carries a confidence interval.
+Keywords: serverless computing, idempotency, retry semantics, AWS Lambda, Amazon DynamoDB
+ 
+	•	Introduction
+Serverless functions are invoked by a platform that does not promise to invoke them once. AWS Lambda retries an invocation that times out or fails, and an asynchronous invocation may be delivered more than once even when nothing failed. The execution model is at-least-once, and that is a documented property of the service rather than an anomaly.
+For a function that only reads, this costs nothing. For a function that writes, it is a correctness problem. A retried invocation that debits an account, increments a counter or appends an order applies the change twice, and the second application is indistinguishable from the first once it has landed.
+The defence is to make the write idempotent, so that applying it twice leaves the same state as applying it once. On Amazon DynamoDB a developer has three ways to do that, and they are the only three the managed service exposes. A plain write applies unconditionally. A conditional write applies only if a guard holds, such as an attribute not yet existing or a version number matching. An idempotency-key write records the request identifier and refuses a second write bearing the same one.
+Which of the three a team uses is usually settled by habit rather than by measurement. That matters because the choice is not free: a conditional write consumes capacity even when its condition fails, and an idempotency-key write adds a read and a second item to every request.
+That gap frames the question this study answers: by how much do a conditional write and an idempotency-key write reduce duplicate state mutation, relative to a plain write, when an AWS Lambda function is retried under injected timeouts?
+The research literature has an answer, but not one a developer can apply. Qi et al. (2025) achieve exactly-once execution for stateful serverless functions, using DynamoDB as the external store and version-based conditional writes to make the writes idempotent. The result is strong and the overhead is low.
+It is delivered, however, by replacing the platform. Halfmoon runs on a custom serverless runtime with a shared logging layer beneath it, and assumes every external operation can be made idempotent. A team deploying on managed Lambda cannot install a logging layer under the service, so the guarantee is out of reach by construction rather than by configuration.
+This breaks into four objectives. The first quantifies duplicate state mutation for each of the three write paths under a known number of injected retries. The second quantifies the latency and consumed capacity each control adds, which is the price of whatever it prevents. The third measures how each control behaves when it fires, through the conditional-check-failure and successful-retry rates. The fourth places each path on the resulting correctness-cost surface.
+The proposed solution is a controlled retry experiment rather than an observational study. One function writes to one table by each path in turn, and duplicate deliveries are injected on a schedule the experimenter sets, so the number of retries is known rather than inferred. Every request carries an identifier written before the call, so a second mutation is counted against known ground truth.
+The contribution is a price for a guarantee a developer can actually reach: what each of the three controls prevents on a platform nobody can modify, and what it costs in latency and in billed capacity. Practitioners gain evidence for a decision currently made by habit.
+Section 2 reviews what the runtime-level literature achieves and why its mechanism is unavailable on a managed service, then what the managed platform leaves to the developer. Section 3 specifies the experiment, the metrics and statistical treatment, the ethical position and the schedule.
+
+	•	Literature Review
+Correctness Bought by Replacing the Runtime
+The baseline for this study is Qi et al. (2025), who achieve exactly-once execution for stateful serverless functions through asymmetric logging, pairing a light log for one class of operation with a heavier one for the other. DynamoDB is the external store and version-based conditional writes make the writes idempotent, at materially lower overhead than symmetric-logging predecessors. Their limitation is structural and stated: the mechanism is a custom runtime with a shared logging layer, and it assumes every external operation can be made idempotent.
+Two neighbouring systems confirm that the mechanism, not the ambition, is the obstacle. Jia and Witchel (2024) obtain consistency and fault tolerance by giving functions a shared log to run on, which makes the log itself a component to scale and keep available. Zhang et al. (2024) add a dedicated causal cache, accepting the loss of abort-freedom to do it. Mast et al. (2026) go further still, delivering serialisable guarantees across chains of invocations by making the store the centre of the platform. Each buys correctness with a component a small team would have to operate.
+That the goal is attainable at all is not in doubt, and the clearest demonstration comes from outside serverless. Wang et al. (2021) describe how exactly-once processing is delivered in a distributed streaming system by coordinating producer, broker and consumer together. The guarantee follows from owning every component in the path, which is precisely the condition a developer on a managed function service does not meet.
+Correctness at the runtime level is therefore well established and well engineered. What a developer without a runtime to replace can achieve is considered next.
+What the Managed Platform Leaves to the Developer
+The managed platform pushes the problem upward and says so. Shafiei, Khonsari and Mousavi (2022) survey serverless computing and record that platforms require functions to be idempotent in order to accommodate their execution semantics, which places concurrency control on the application itself. The burden is delegated by design, not by oversight.
+What the application is given to discharge it is narrow. Amazon Web Services (2025) document three write forms on DynamoDB: an unconditional write, a write guarded by a condition expression, and the application pattern of recording a request identifier so a repeat can be recognised. These are the controls in the developer's hands, and the study is bounded by them rather than by a simplification of the problem.
+Laigner et al. (2025) survey the state of transactional guarantees for cloud applications and find the same division: strong mechanisms exist in research systems, while practitioners assemble correctness by hand from whatever primitives their managed services expose. They identify the gap between the two as an open problem rather than a solved one.
+What goes wrong in deployed serverless applications is measured, though not for this. Xie et al. (2025) mine 546 real serverless faults and find permission errors the most frequent symptom at 10.81% and incorrect code logic the leading root cause at 17.63%. Their catalogue is drawn from human reports rather than controlled retries, so it cannot say what a given write path would have prevented.
+One methodological constraint applies to any measurement made here. Wen et al. (2025) find serverless response latency varying by up to 338.76% across runs, and report that only 38.38% of serverless papers at major venues use multiple runs to quantify that variance. Any latency or capacity figure obtained from a single campaign is therefore unsafe, which is why replication in this design is fixed by a pilot rather than asserted.
+Table 1 sets the reviewed studies against this proposal. The columns that matter are the level at which the control sits, whether the platform is one a developer can modify, and whether duplicate mutation is counted against known ground truth.
+Table 1  Reviewed studies contrasted with the proposed experiment
+Study
+Level of control
+Platform
+Retries
+Duplicate mutation counted
+Cost reported
+What it leaves open
+Qi et al. (2025)
+Runtime
+Custom runtime, shared log
+Injected
+Yes
+Logging overhead
+Application-level controls on a stock platform
+Jia and Witchel (2024)
+Runtime
+Shared-log runtime
+Injected
+Yes
+Log overhead
+What a developer without a runtime can do
+Zhang et al. (2024)
+Runtime and cache
+Custom causal cache
+Injected
+Consistency, not duplicates
+Latency
+Duplicate writes under retry
+Mast et al. (2026)
+Platform and store
+Replaced store
+Injected
+Yes, across chains
+Throughput
+Unmodified managed services
+Xie et al. (2025)
+Application
+Unmodified, real
+Observed in reports
+No
+None
+What a given write path prevents
+Amazon Web Services (2025)
+Application
+Unmodified
+n/a
+No
+Documented pricing only
+What each control prevents in practice
+This proposal
+Application
+Unmodified AWS Lambda and DynamoDB
+Injected, count known
+Yes, against request log
+Latency and consumed capacity
+Answers the above
+
+Why This Research Is Necessary
+Three things are settled. That exactly-once execution is achievable for stateful serverless functions is settled, at low overhead, by Qi et al. (2025). That the mechanism is a replaced runtime is settled across the same literature, by Jia and Witchel (2024), Zhang et al. (2024) and Mast et al. (2026). And that managed platforms delegate idempotency to the application is settled by the platforms' own semantics and recorded in survey (Shafiei, Khonsari and Mousavi, 2022).
+What is not settled is what the delegated controls actually deliver. No published study measures duplicate state mutation across a plain write, a conditional write and an idempotency-key write on an unmodified managed platform, under a known number of retries. The runtime literature does not measure them because it replaces the runtime instead; the fault literature does not measure them because it observes reported failures rather than injected ones.
+The practical consequence is that a team choosing a correctness control for a function that mutates shared state has no measured basis for the choice, and cannot obtain one from the service documentation, which states what each control does but not what it prevents or what it costs under retry. This proposal supplies that measurement.
+Research Niche
+No existing study measures duplicate state mutation, across all three application-level write paths, on an unmodified managed platform, against an injected and therefore known retry count. Not one reviewed study satisfies more than two of those four at once: Qi et al. (2025) count duplicate effects but on a runtime they built; Mast et al. (2026) span invocation chains but replace the store; Xie et al. (2025) work on unmodified platforms but observe reported faults rather than injected retries.
+Qi et al. (2025) are the baseline. Their design delivers the guarantee by replacing the runtime, and the applicability limit that creates is the problem taken up here. This study inverts the arrangement, measuring what a platform the developer cannot modify can be made to guarantee from above, and retains absence of duplicate mutation after retry as the shared correctness criterion so the two results can be read against each other.
+Three expectations are recorded as thresholds so a measurement can contradict them: that the plain write produces a duplicate mutation on a majority of injected retries; that both guarded paths reduce that rate by more than ninety per cent; and that the idempotency-key path costs more consumed capacity than the conditional path, since it adds an item as well as a check. The third is the one most likely to fail, because a conditional write is billed even when its condition rejects the write.
+Practitioners gain a measured basis for a decision currently made by habit. Section 3 specifies the experiment. Deferred to future work are multi-item transactions, cross-region replication conflicts, datastores other than the one measured, and provisioned rather than on-demand capacity.
+
+	•	Research Method & Specification 
+A controlled retry experiment answers this question. One Lambda function writes to one DynamoDB table by each of the three paths in turn, while duplicate deliveries are injected on a schedule. Figure 1 shows the arrangement.
+
+Figure 1  Experimental setup: one function, three write paths, injected retries
+	•	Research Method
+The independent variable is the write path, at three levels: a plain write; a conditional write guarded by an attribute-existence or version check; and an idempotency-key write that records the request identifier and refuses a repeat. These are the three controls the managed service exposes (Amazon Web Services, 2025), so the study is bounded by the platform rather than artificially restricted. Retry multiplicity is a conditioning factor at three levels: one, two and five deliveries of the same request identifier.
+The dependent variable is the duplicate-mutation rate, the proportion of injected retries that produce a second change to the item. Secondary measures are the conditional-check-failure rate, the successful-retry rate, end-to-end latency at the mean and the ninety-fifth percentile, and the read and write capacity units consumed per request. Absence of duplicate mutation after retry is the same correctness criterion Qi et al. (2025) guarantee, which is what allows the application-level result to be read against their runtime-level one.
+Ground truth comes from injection rather than observation. Every request is issued with a recorded identifier and a recorded delivery count, so the number of retries is known in advance and a second mutation is countable rather than inferred. Retries are produced by re-delivering the identifier and by forcing the function to time out after its write has committed, which is the case that actually generates duplicates in practice: the work succeeded and the platform did not learn of it.
+Held constant are the region, the account, the table and its key schema, the item size, the function memory and timeout, the runtime version and the on-demand capacity mode. Two confounds require handling. A conditional write consumes capacity even when its condition rejects the write, so capacity is recorded from the response metadata rather than estimated from successful writes. Separately, serverless latency is highly variable, and Wen et al. (2025) measure swings up to 338.76% between runs, so no figure is taken from a single campaign.
+Internally, the injected timeout is a clean failure, whereas a real one may partially complete; this is stated rather than hidden, and the design measures the case where the write committed. External validity is bounded by one datastore and one function service in one region. In construct terms, consumed capacity is read from the service's own reported units, so it measures what is billed rather than what a model predicts.
+	•	Research Resources
+The experiment requires one AWS Lambda function, one DynamoDB table in on-demand mode, and a driver that issues requests with controlled repetition and forces timeouts. The function runtime, the AWS SDK and the infrastructure tool are pinned to single versions and reported, since retry and conditional-write behaviour can change between releases. All are provisioned from infrastructure code so every configuration is created and destroyed identically and spend stays bounded.
+The test data is synthetic: order-style records with a generated identifier and a fixed payload size, created for this study. No personal data, no production traffic and no third-party data is involved, and no participants take part. The workload stays inside free-tier-safe limits while producing enough requests for a duplicate rate of a few per cent to be estimated with useful precision.
+Measurement is taken from the service rather than from the client where possible: consumed capacity from the response metadata, invocation and error counts from CloudWatch, and end-to-end latency from the driver. The driver, the infrastructure definitions and the collected measurements are released.
+	•	Evaluation
+The question is settled by comparing the duplicate-mutation rate across the three write paths at each retry multiplicity, which answers objectives one and three. Objective two comes from the latency and consumed-capacity measurements taken on the same requests, and objective four from plotting each path on the surface spanned by duplicate rate, latency and capacity.
+Each comparison is stated as a null and an alternative before any data exists. For duplicate mutation, H0 holds that the rate does not differ between write paths at a given retry multiplicity, and H1 that it does. For capacity, H0 holds that consumed capacity per request does not differ between paths, and H1 that it does. For latency, H0 holds that mean end-to-end latency does not differ, and H1 that it does. The duplicate-mutation pair is directional, because a guard can only reduce duplicates and the question is the magnitude; the other two are not.
+Duplicate mutation is a proportion of a known population, so paths are compared pairwise with a two-proportion z-test and the interaction with retry multiplicity is examined with a chi-squared test across the contingency table. Latency and capacity are continuous and right-skewed, so normality is assessed first and the Mann-Whitney U test with rank-biserial correlation is used where it fails. Every reported difference carries a 95% confidence interval.
+Tests are conducted at an alpha of 0.05 with Holm-Bonferroni adjustment, since every hypothesis draws on one campaign. Replication is fixed before collection: a pilot of fifty requests per path establishes the run-to-run variance, and that variance sets the count for the full campaign, provisionally one thousand requests per path per multiplicity. The smallest difference treated as practically meaningful is one percentage point of duplicate mutation and five per cent of capacity.
+	•	Ethical Considerations of the Research
+No participants take part and no personal data is handled at any stage. Every record is synthetic and every request identifier is generated for the experiment, which places consent and data-protection duties outside the study's scope.
+Driving repeated writes and deliberate timeouts against a commercial service must remain within the provider's acceptable-use terms. All traffic originates in the researcher's own account, addresses only resources created for the study, and stays inside free-tier-safe bounds. Timeouts are forced inside the function rather than by overloading the platform, so nothing resembling a denial-of-service pattern is generated.
+Measurement is billed: every write, every failed conditional check and every invocation consumes capacity. Run counts follow the pilot rather than being pushed as high as the budget allows, which caps spending and with it the energy spent to obtain the result.
+Reporting integrity is at stake because the study evaluates a named commercial service. The analysis plan is settled before any data exists. Failed conditional checks are reported rather than discarded, since their cost is part of the finding. Every result carries its single-account, single-region scope, and undocumented platform behaviour goes to the provider before publication.
+	•	Project Plan
+Figure 2 sets out the twelve-week schedule. Weeks one to four build and validate the rig: the table and function, the three write paths, and the retry driver, ending in a pilot that confirms an injected retry can be traced to a counted mutation.
+
+Figure 2  Twelve-week project plan
+Measurement then proceeds one write path at a time from week four, each against all three retry multiplicities. Weeks nine to eleven cover statistical testing and the correctness-cost surface, the write-up begins in week eleven, and week twelve is contingency. Two risks are carried and both are exposed by the pilot: placing the injected timeout after the write commits, and latency variance exceeding the pilot's estimate.
+	•	References
+Amazon Web Services (2025) Amazon DynamoDB developer guide: working with items and attributes. Available at: https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/WorkingWithItems.html (Accessed: 4 August 2026). [Vendor documentation - cited for the supported write forms only]
+Jia, Z. and Witchel, E. (2024) 'Boki: towards data consistency and fault tolerance with shared logs in stateful serverless computing', ACM Transactions on Computer Systems, 42(3-4), pp. 1-35. doi: 10.1145/3653072. [Journal - JCR Impact Factor 2.2 (2024), Q2]
+Laigner, R., Christodoulou, G., Psarakis, K., Katsifodimos, A. and Zhou, Y. (2025) 'Transactional cloud applications: status quo, challenges, and opportunities', in Companion of the 2025 International Conference on Management of Data. New York: ACM, pp. 829-836. doi: 10.1145/3722212.3725635. [Conference - CORE Ranking A* (ICORE2026, SIGMOD)]
+Mast, K., Qu, S., Jain, A., Arpaci-Dusseau, A. and Arpaci-Dusseau, R. (2026) 'Data-centric serverless computing with LambdaStore', Software, 5(1), 5. doi: 10.3390/software5010005. [Journal - peer reviewed; published 2026, too recent for a JCR Impact Factor or a Google Scholar citation count]
+Qi, S., Feng, H., Liu, X. and Jin, X. (2025) 'Efficient fault tolerance for stateful serverless computing with asymmetric logging', ACM Transactions on Computer Systems, 43(1-2), pp. 1-43. doi: 10.1145/3725985. [Journal - JCR Impact Factor 2.2 (2024), Q2]
+Shafiei, H., Khonsari, A. and Mousavi, P. (2022) 'Serverless computing: a survey of opportunities, challenges, and applications', ACM Computing Surveys, 54(11s), pp. 1-32. doi: 10.1145/3510611. [Journal - JCR Impact Factor 23.8 (2024), Q1]
+Wang, G., Chen, L., Dikshit, A., Gustafson, J., Chen, B., Sax, M., Roesler, J. and Blee-Goldman, S. (2021) 'Consistency and completeness: rethinking distributed stream processing in Apache Kafka', in Proceedings of the 2021 International Conference on Management of Data. New York: ACM, pp. 2602-2613. doi: 10.1145/3448016.3457556. [Conference - CORE Ranking A* (ICORE2026, SIGMOD)]
+Wen, J., Chen, Z., Sarro, F. and Wang, S. (2025) 'Unveiling overlooked performance variance in serverless computing', Empirical Software Engineering, 30(2), 48. doi: 10.1007/s10664-025-10615-3. [Journal - JCR Impact Factor 3.4 (2024), Q2]
+Xie, C., Zhang, Y., Mao, X., Yang, K. and Zhang, T. (2025) 'Understanding the faults in serverless computing based applications: an empirical study', in Proceedings of the 2025 IEEE International Conference on Software Maintenance and Evolution. Piscataway: IEEE, pp. 161-173. doi: 10.1109/ICSME64153.2025.00024. [Conference - CORE Ranking A (ICORE2026)]
+Zhang, H., Mu, S., Angel, S. and Liu, V. (2024) 'CausalMesh: a causal cache for stateful serverless computing', Proceedings of the VLDB Endowment, 17(13), pp. 4599-4613. doi: 10.14778/3704965.3704969. [Conference - CORE Ranking A* (ICORE2026, VLDB)]
