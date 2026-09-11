@@ -27,6 +27,10 @@ cdk.out/
 **/data/interim/
 **/data/processed/
 **/data/external/loghub/*.log
+# trained model pickles (re-created by the pipeline)
+**/results/models/
+**/results_smoke/
+**/dist/
 
 # editors
 .idea/
