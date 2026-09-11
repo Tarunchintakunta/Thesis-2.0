@@ -1,0 +1,217 @@
+{
+  "config": "main",
+  "parser_fingerprint": {
+    "parser": "drain3",
+    "parser_version_pinned": "0.9.11",
+    "parser_version_installed": "0.9.11",
+    "config_file": "configs/drain.yaml",
+    "config_sha256": "0f10131eae578c3bae3272725019f23ebcea7f4bd289930058b95197ac53ed44"
+  },
+  "runs": [
+    {
+      "seed": 2025,
+      "lines": {
+        "A": 119184,
+        "B": 243783,
+        "C": 46888
+      },
+      "windows": {
+        "A": 1440,
+        "B": 2927,
+        "C": 360
+      },
+      "templates": 15,
+      "d1": {
+        "primary": "d1_ocsvm",
+        "validation_far": {
+          "d1_ocsvm": 0.010416666666666666,
+          "d1_iforest": 0.010416666666666666
+        },
+        "train_windows": 1152,
+        "validation_windows": 288,
+        "vocab": 5,
+        "thresholds": {
+          "d1_ocsvm": 0.9121723360140223,
+          "d1_iforest": 0.7041619283362396
+        }
+      },
+      "d2": {
+        "source": {
+          "lines": 2000,
+          "alert_lines": 143,
+          "windows": 199,
+          "anomalous_windows": 53,
+          "templates": 123
+        },
+        "pseudo_label_history": [
+          {
+            "round": 0,
+            "target_windows": 1440,
+            "pseudo_labelled": 49,
+            "pseudo_anomalous": 1
+          },
+          {
+            "round": 1,
+            "target_windows": 1440,
+            "pseudo_labelled": 49,
+            "pseudo_anomalous": 1
+          },
+          {
+            "round": 2,
+            "target_windows": 1440,
+            "pseudo_labelled": 49,
+            "pseudo_anomalous": 1
+          }
+        ],
+        "source_fit_accuracy": 0.9748743718592965
+      },
+      "d3": {
+        "thresholds": {
+          "LambdaErrors": 0.0,
+          "Api5XX": 0.0,
+          "DurationP99": 100.0,
+          "Throttles": 0.0
+        }
+      },
+      "certification": true,
+      "seconds": 9.1
+    },
+    {
+      "seed": 2026,
+      "lines": {
+        "A": 119828,
+        "B": 238353,
+        "C": 49280
+      },
+      "windows": {
+        "A": 1440,
+        "B": 2895,
+        "C": 360
+      },
+      "templates": 15,
+      "d1": {
+        "primary": "d1_ocsvm",
+        "validation_far": {
+          "d1_ocsvm": 0.003472222222222222,
+          "d1_iforest": 0.010416666666666666
+        },
+        "train_windows": 1152,
+        "validation_windows": 288,
+        "vocab": 5,
+        "thresholds": {
+          "d1_ocsvm": 0.6723740533591706,
+          "d1_iforest": 0.7111828862928092
+        }
+      },
+      "d2": {
+        "source": {
+          "lines": 2000,
+          "alert_lines": 143,
+          "windows": 199,
+          "anomalous_windows": 53,
+          "templates": 123
+        },
+        "pseudo_label_history": [
+          {
+            "round": 0,
+            "target_windows": 1440,
+            "pseudo_labelled": 43,
+            "pseudo_anomalous": 1
+          },
+          {
+            "round": 1,
+            "target_windows": 1440,
+            "pseudo_labelled": 43,
+            "pseudo_anomalous": 1
+          },
+          {
+            "round": 2,
+            "target_windows": 1440,
+            "pseudo_labelled": 43,
+            "pseudo_anomalous": 1
+          }
+        ],
+        "source_fit_accuracy": 0.9748743718592965
+      },
+      "d3": {
+        "thresholds": {
+          "LambdaErrors": 0.0,
+          "Api5XX": 0.0,
+          "DurationP99": 100.0,
+          "Throttles": 0.0
+        }
+      },
+      "certification": true,
+      "seconds": 9.0
+    },
+    {
+      "seed": 2027,
+      "lines": {
+        "A": 120048,
+        "B": 240773,
+        "C": 47524
+      },
+      "windows": {
+        "A": 1440,
+        "B": 2901,
+        "C": 360
+      },
+      "templates": 15,
+      "d1": {
+        "primary": "d1_ocsvm",
+        "validation_far": {
+          "d1_ocsvm": 0.006944444444444444,
+          "d1_iforest": 0.006944444444444444
+        },
+        "train_windows": 1152,
+        "validation_windows": 288,
+        "vocab": 5,
+        "thresholds": {
+          "d1_ocsvm": 1.101276234868543,
+          "d1_iforest": 0.6973424227837728
+        }
+      },
+      "d2": {
+        "source": {
+          "lines": 2000,
+          "alert_lines": 143,
+          "windows": 199,
+          "anomalous_windows": 53,
+          "templates": 123
+        },
+        "pseudo_label_history": [
+          {
+            "round": 0,
+            "target_windows": 1440,
+            "pseudo_labelled": 227,
+            "pseudo_anomalous": 21
+          },
+          {
+            "round": 1,
+            "target_windows": 1440,
+            "pseudo_labelled": 794,
+            "pseudo_anomalous": 85
+          },
+          {
+            "round": 2,
+            "target_windows": 1440,
+            "pseudo_labelled": 1005,
+            "pseudo_anomalous": 188
+          }
+        ],
+        "source_fit_accuracy": 0.9698492462311558
+      },
+      "d3": {
+        "thresholds": {
+          "LambdaErrors": 0.0,
+          "Api5XX": 0.0,
+          "DurationP99": 100.0,
+          "Throttles": 0.0
+        }
+      },
+      "certification": true,
+      "seconds": 9.0
+    }
+  ],
+  "note": "logs produced by the local Lambda runtime emulator (not live AWS / LocalStack)"
+}
