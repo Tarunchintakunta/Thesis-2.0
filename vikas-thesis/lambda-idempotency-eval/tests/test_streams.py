@@ -9,7 +9,7 @@ from tests.test_paths import deliver
 
 def stream(ddb):
     arn = ddb.describe_table(TableName=TABLE)["Table"]["LatestStreamArn"]
-    return read_stream(boto3.client("dynamodbstreams", region_name=REGION), arn)
+    return read_stream(boto3.client("dynamodbstreams", region_name=REGION), arn, pause=0)
 
 
 def business(events, rid):

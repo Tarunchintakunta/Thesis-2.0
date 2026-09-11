@@ -11,12 +11,20 @@ from __future__ import annotations
 
 import argparse
 import json
+import time
 from pathlib import Path
 
 import yaml
 
 
-def read_stream(streams, stream_arn: str) -> list[dict]:
+def read_stream(streams, stream_arn: str, max_empty: int = 10, pause: float = 0.2) -> list[dict]:
+    """Every record in the stream.
+
+    A closed shard is read to its end. An open shard has no end, and GetRecords
+    can return an empty page before the last record, so an open shard is only
+    left after `max_empty` empty pages in a row (with a pause, to stay under
+    the per-shard read limit).
+    """
     events = []
     shards = []
     kw = {"StreamArn": stream_arn}
@@ -27,13 +35,20 @@ def read_stream(streams, stream_arn: str) -> list[dict]:
             break
         kw["ExclusiveStartShardId"] = desc["LastEvaluatedShardId"]
     for sh in shards:
+        closed = "EndingSequenceNumber" in sh.get("SequenceNumberRange", {})
         it = streams.get_shard_iterator(StreamArn=stream_arn, ShardId=sh["ShardId"],
                                         ShardIteratorType="TRIM_HORIZON")["ShardIterator"]
         empty = 0
-        while it and empty < 2:  # an open shard never ends - stop after two empty reads
+        while it:
             resp = streams.get_records(ShardIterator=it, Limit=1000)
             recs = resp.get("Records", [])
-            empty = empty + 1 if not recs else 0
+            if recs:
+                empty = 0
+            else:
+                empty += 1
+                if not closed and empty >= max_empty:
+                    break
+                time.sleep(pause)
             for r in recs:
                 new, old = r["dynamodb"].get("NewImage") or {}, r["dynamodb"].get("OldImage") or {}
                 pk = r["dynamodb"]["Keys"]["pk"]["S"]
@@ -59,8 +74,8 @@ def _n(img: dict, k: str) -> int | None:
     return int(img[k]["N"]) if k in img else None
 
 
-def dump_stream(streams, stream_arn: str, path: str | Path) -> int:
-    events = read_stream(streams, stream_arn)
+def dump_stream(streams, stream_arn: str, path: str | Path, pause: float = 0.2) -> int:
+    events = read_stream(streams, stream_arn, pause=pause)
     with open(path, "w", encoding="utf-8") as fh:
         for e in events:
             fh.write(json.dumps(e) + "\n")
