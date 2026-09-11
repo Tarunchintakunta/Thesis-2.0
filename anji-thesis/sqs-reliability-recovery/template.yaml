@@ -135,8 +135,13 @@ Resources:
       Handler: queue_consumer.handler.lambda_handler
       Timeout: !Ref ConsumerTimeout
       Policies:
-        - DynamoDBCrudPolicy:
-            TableName: !Ref OrdersTable
+        # only what the handler uses: conditional put + the exists() lookup
+        - Statement:
+            - Effect: Allow
+              Action:
+                - dynamodb:PutItem
+                - dynamodb:GetItem
+              Resource: !GetAtt OrdersTable.Arn
         - DynamoDBWritePolicy:
             TableName: !Ref EventsTable
         - SSMParameterReadPolicy:
@@ -167,8 +172,13 @@ Resources:
       Handler: sync_api.app.lambda_handler
       Timeout: 10
       Policies:
-        - DynamoDBCrudPolicy:
-            TableName: !Ref OrdersTable
+        # only what the handler uses: conditional put + the exists() lookup
+        - Statement:
+            - Effect: Allow
+              Action:
+                - dynamodb:PutItem
+                - dynamodb:GetItem
+              Resource: !GetAtt OrdersTable.Arn
         - DynamoDBWritePolicy:
             TableName: !Ref EventsTable
         - SSMParameterReadPolicy:
