@@ -1,0 +1,10 @@
+path,metric,pilot_n,mean,sd,target,required_n,conservative_n
+P1,duplicate rate,50,1.0,0.0,+-1.0 pp,189,2546
+P1,capacity,50,2.0,0.0,+-5 % of mean,1,1
+P1,latency,50,0.44208,0.042131882348217985,+-5 % of mean,14,22
+P2,duplicate rate,50,0.0,0.0,+-1.0 pp,189,2546
+P2,capacity,50,2.0,0.0,+-5 % of mean,1,1
+P2,latency,50,0.47081999999999996,0.10818760915885979,+-5 % of mean,82,126
+P3,duplicate rate,50,0.0,0.0,+-1.0 pp,189,2546
+P3,capacity,50,3.5,0.0,+-5 % of mean,1,1
+P3,latency,50,0.61066,0.026961506952373007,+-5 % of mean,3,5

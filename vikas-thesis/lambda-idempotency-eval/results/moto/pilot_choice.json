@@ -1,0 +1,9 @@
+{
+  "N": 1000,
+  "required": 189,
+  "binding": "P1 duplicate rate",
+  "provisional": 1000,
+  "budget_max_n": 2431,
+  "reason": "the pilot supports the provisional N (largest requirement 189 <= 1000)",
+  "source": "moto"
+}

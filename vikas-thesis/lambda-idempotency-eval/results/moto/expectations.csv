@@ -1,0 +1,10 @@
+expectation,multiplicity,subject,estimate,ci_lo,ci_hi,p,rule,decision
+E1,2,P1 duplicate rate,1.0,0.8864866068260312,1.0,9.313225746154785e-10,Wilson and cluster-bootstrap lower bounds > 0.5,supported
+E1,5,P1 duplicate rate,1.0,0.9689808335812966,1.0,7.52316384526264e-37,Wilson and cluster-bootstrap lower bounds > 0.5,supported
+E2,2,P2 reduction vs P1,1.0,0.7436318950932372,0.9989517223247029,,lower bound of the relative reduction > 0.90,"inconclusive (point estimate meets it, CI does not)"
+E2,2,P3 reduction vs P1,1.0,0.7436318950932372,0.9989517223247029,,lower bound of the relative reduction > 0.90,"inconclusive (point estimate meets it, CI does not)"
+E2,5,P2 reduction vs P1,1.0,0.9340394390171266,0.999738975318649,,lower bound of the relative reduction > 0.90,supported
+E2,5,P3 reduction vs P1,1.0,0.9340394390171266,0.999738975318649,,lower bound of the relative reduction > 0.90,supported
+E3,1,P3 - P2 capacity per request,1.5,1.5,1.5,1.5167683754033784e-13,CI of P3 - P2 above 0 and Holm p < alpha,supported
+E3,2,P3 - P2 capacity per request,1.5,1.5,1.5,1.5167683754033784e-13,CI of P3 - P2 above 0 and Holm p < alpha,supported
+E3,5,P3 - P2 capacity per request,1.5,1.5,1.5,1.5167683754033784e-13,CI of P3 - P2 above 0 and Holm p < alpha,supported

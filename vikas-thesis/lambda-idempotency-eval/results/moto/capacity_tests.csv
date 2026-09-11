@@ -1,0 +1,10 @@
+metric,multiplicity,comparison,mean_x,mean_y,diff,ci_lo,ci_hi,shapiro_p_x,shapiro_p_y,test,stat,p,effect,effect_name,p_holm,reject_h0
+capacity_total,1,P1 vs P2,1.0,1.0,0.0,0.0,0.0,,,none (all values equal),,1.0,0.0,rank_biserial,1.0,False
+capacity_total,1,P1 vs P3,1.0,2.5,-1.5,-1.5,-1.5,,,mann_whitney_u,0.0,1.6852981948926427e-14,-1.0,rank_biserial,1.5167683754033784e-13,True
+capacity_total,1,P2 vs P3,1.0,2.5,-1.5,-1.5,-1.5,,,mann_whitney_u,0.0,1.6852981948926427e-14,-1.0,rank_biserial,1.5167683754033784e-13,True
+capacity_total,2,P1 vs P2,2.0,2.0,0.0,0.0,0.0,,,none (all values equal),,1.0,0.0,rank_biserial,1.0,False
+capacity_total,2,P1 vs P3,2.0,3.5,-1.5,-1.5,-1.5,,,mann_whitney_u,0.0,1.6852981948926427e-14,-1.0,rank_biserial,1.5167683754033784e-13,True
+capacity_total,2,P2 vs P3,2.0,3.5,-1.5,-1.5,-1.5,,,mann_whitney_u,0.0,1.6852981948926427e-14,-1.0,rank_biserial,1.5167683754033784e-13,True
+capacity_total,5,P1 vs P2,5.0,5.0,0.0,0.0,0.0,,,none (all values equal),,1.0,0.0,rank_biserial,1.0,False
+capacity_total,5,P1 vs P3,5.0,6.5,-1.5,-1.5,-1.5,,,mann_whitney_u,0.0,1.6852981948926427e-14,-1.0,rank_biserial,1.5167683754033784e-13,True
+capacity_total,5,P2 vs P3,5.0,6.5,-1.5,-1.5,-1.5,,,mann_whitney_u,0.0,1.6852981948926427e-14,-1.0,rank_biserial,1.5167683754033784e-13,True

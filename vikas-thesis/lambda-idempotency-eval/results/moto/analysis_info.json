@@ -1,0 +1,8 @@
+{
+  "source": "moto",
+  "campaign": "data/runs/moto/campaign",
+  "sensitivity": "data/runs/moto/sensitivity",
+  "alpha": 0.05,
+  "B": 2000,
+  "seed": 0
+}
