@@ -11,7 +11,7 @@ changes, write the date and the reason underneath instead of deleting it.
 |---|---|---|
 | A1 | One region, `eu-west-1`, one account (the student's own). | Controls. Results are single-region, single-provider and are not generalised to other clouds. |
 | A2 | Architecture fixed to **arm64** for every function. | Master prompt 3.5. Bluemke and Zdanowski (2025) found arm64 cheaper, and fixing one arch removes a factor. |
-| A3 | Runtimes: `python3.12`, `nodejs20.x`, `java21` (Corretto 21) managed runtimes, zip packages. | Master prompt 3.4. Container images and SnapStart are future work. |
+| A3 | Runtimes: `python3.12`, `nodejs20.x`, `java21` (Corretto 21) managed runtimes, zip packages. | Master prompt 3.4. Container images and SnapStart are future work. **Note:** cfn-lint reports that AWS deprecated `nodejs20.x` on 2026-04-30 (new functions can still be created until 2027-02-01). It is kept because the proposal fixes Node.js 20; the student should confirm with the supervisor, and if the campaign runs after February 2027 (or the supervisor prefers a supported runtime) switch to `nodejs22.x` and record it as an amendment. |
 | A4 | Provisioned concurrency and SnapStart are **not** treatments. The warmer is an EventBridge `rate(5 minutes)` rule. | Master prompt 3.1 and the warming gate. |
 | A5 | Function timeout 30 s, log retention 7 days, X-Ray off by default (can be switched on with a template parameter). | Keeps cost and noise down; REPORT lines already carry the numbers needed. |
 
