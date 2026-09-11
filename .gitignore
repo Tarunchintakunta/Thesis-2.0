@@ -29,6 +29,7 @@ cdk.out/
 **/data/external/loghub/*.log
 # trained model pickles (re-created by the pipeline)
 **/results/models/
+*.joblib
 **/results_smoke/
 **/dist/
 
