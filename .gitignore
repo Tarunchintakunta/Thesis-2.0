@@ -39,6 +39,7 @@ node_modules/
 chaitanya-thesis/lambda-coldstart-isolation/build/
 # chaitanya: processed CSVs are small and are the dataset deliverable, keep them
 !chaitanya-thesis/lambda-coldstart-isolation/data/processed/
+chaitanya-thesis/lambda-coldstart-isolation/data/pilot/*/raw/
 
 # editors
 .idea/
