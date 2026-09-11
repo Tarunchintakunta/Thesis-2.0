@@ -1,0 +1,13 @@
+# Rough on-demand list prices in USD, used ONLY for the cost proxy and the
+# pre-run cost guard. They are deliberately a bit pessimistic and ignore the
+# free tier. Check https://aws.amazon.com/pricing/ for your region before a
+# live campaign and update these numbers if they moved.
+prices:
+  lambda_per_gb_s: 0.0000166667        # x86, per GB-second
+  lambda_per_million_requests: 0.20
+  sqs_per_million_requests: 0.40       # standard queue, 64 KB chunks
+  dynamodb_per_million_writes: 1.25    # on-demand write request units (conservative)
+  api_per_million_requests: 1.00       # HTTP API
+notes: >
+  Free tier (1M Lambda requests, 400k GB-s, 1M SQS requests per month) is not
+  subtracted, so real bills for pilot sized runs should be lower than this.
