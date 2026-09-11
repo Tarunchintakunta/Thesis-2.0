@@ -1,0 +1,13 @@
+{
+  "_comment": "Synthetic payment request (src/driver/schedule.py). No real accounts or people; values are drawn from a seeded RNG.",
+  "account": "ACC-00001 .. ACC-05000",
+  "amount_cents": "100 .. 500000",
+  "currency": "EUR",
+  "note": "'x' padding so the stored business item stays just under 1 KB (1 write unit)",
+  "example": {
+    "account": "ACC-01234",
+    "amount_cents": 48210,
+    "currency": "EUR",
+    "note": "xxxxxxxx..."
+  }
+}
