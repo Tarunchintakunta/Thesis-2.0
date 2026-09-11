@@ -7,7 +7,7 @@ rules for that project, and the actual artefact code in its own sub folder.
 | Folder | Project | Artefact folder | Status |
 |--------|---------|-----------------|--------|
 | `anji-thesis/` | Reliability and recovery of Amazon SQS under injected failures | `sqs-reliability-recovery/` | artefact done (simulated results), live AWS runs + report pending |
-| `kasi-thesis/` | see master prompt | - | todo |
+| `kasi-thesis/` | Source-free log anomaly detection for AWS serverless apps | `serverless-log-anomaly/` | artefact done (emulated logs), live run + report pending |
 | `chaitanya-thesis/` | see master prompt | - | todo |
 | `rassool-thesis/` | see master prompt | - | todo |
 | `vikas-thesis/` | see master prompt | - | todo |
