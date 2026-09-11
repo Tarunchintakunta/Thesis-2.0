@@ -1,0 +1,8 @@
+{
+  "name": "coldstart-nodejs-optimised",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Optimised Node.js package for the cold-start study - no dependencies",
+  "main": "index.mjs"
+}
