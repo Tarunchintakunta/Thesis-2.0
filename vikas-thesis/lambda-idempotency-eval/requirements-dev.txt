@@ -1,0 +1,6 @@
+-r requirements.txt
+pytest>=8.0
+ruff>=0.5
+moto[dynamodb,dynamodbstreams,logs]>=5.0
+python-hcl2>=4.3
+# Vikas Reddy Amanagantti

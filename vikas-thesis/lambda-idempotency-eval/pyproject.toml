@@ -1,0 +1,20 @@
+[project]
+name = "lambda-idempotency-eval"
+version = "0.1.0"
+description = "Application-level idempotency strategies (plain put, conditional put, idempotency key) under injected retries on AWS Lambda + DynamoDB (MSc Cloud Computing, NCI)"
+requires-python = ">=3.11"
+authors = [{ name = "Vikas Reddy Amanagantti" }]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src", "."]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 110
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B"]
+ignore = ["E501"]
+# Vikas Reddy Amanagantti
