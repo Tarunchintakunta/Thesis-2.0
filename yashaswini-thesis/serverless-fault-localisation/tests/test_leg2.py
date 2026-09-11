@@ -49,6 +49,26 @@ def test_leg2_tables_tests_and_expectation(tmp_path):
     assert (tmp_path / "fig" / "localisation.png").stat().st_size > 5000
 
 
+def test_a_fixed_ranking_is_flagged_and_never_the_strongest_baseline(tmp_path):
+    raw = tmp_path / "raw"
+    for i in range(20):
+        root = SERVICES[i % 5]
+        others = [s for s in SERVICES if s != root]
+        case = f"re2ob_{root}_delay_{i}"
+        rules = [root, *others] if i % 3 else [others[0], root, *others[1:]]
+        write(raw, "rules", case, rules, root, "delay", detected=True, delay_s=20.0, control_fp_episodes=0,
+              rank_seconds=0.5)
+        write(raw, "weak", case, [*others[:3], root, others[3]] if i % 2 else [*others, root], root, "delay",
+              seconds=1.0)
+        write(raw, "fixed", case, SERVICES, root, "delay", seconds=200.0)  # the same list whatever the case
+    shares = leg2.fixed_order(leg2.load(raw))
+    assert shares["fixed"] == 1.0 and shares["weak"] < 0.5 and shares["rules"] < 0.5
+    res = leg2.analyse(raw, tmp_path / "out", tmp_path / "fig", B=200)
+    assert res["localisation"].set_index("method").loc["fixed", "ac@3"] == 0.6  # only the luck of the column order
+    assert res["flagged"] == ["fixed"] and res["top3"]["strongest_baseline"] == "weak"
+    assert "fixed" in (tmp_path / "out" / "summary.md").read_text().split("## Sanity check")[1]
+
+
 def test_a_failed_baseline_case_counts_as_a_miss(tmp_path):
     raw = fake_raw(tmp_path, n=5)
     f = raw / "baro" / "re2ob_checkoutservice_delay_0.json"
