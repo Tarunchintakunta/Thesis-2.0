@@ -59,5 +59,7 @@ def window_line_index(n_lines: int, size: int, step: int) -> tuple[np.ndarray, n
     return np.asarray(rows, dtype=int), np.asarray(cols, dtype=int)
 
 
-def window_labels(labels: np.ndarray, size: int, step: int) -> np.ndarray:
+def window_labels(labels, size: int, step: int) -> np.ndarray:
+    """A window is anomalous if any of its lines is an alert line."""
+    labels = np.asarray(labels, dtype=bool)
     return np.asarray([labels[lo:hi].any() for lo, hi in line_windows(len(labels), size, step)], dtype=bool)
