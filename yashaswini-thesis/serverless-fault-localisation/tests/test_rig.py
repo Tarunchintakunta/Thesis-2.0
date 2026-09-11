@@ -37,7 +37,8 @@ def test_thresholds_are_frozen_and_outputs_labelled(result):
     res, written, out = result
     assert len(res["thresholds"]["sha256"]) == 64
     text = (out / "res" / "summary.md").read_text()
-    assert "NOT AWS data" in text and "not a same-rig comparison" in text
+    assert "NOT AWS data" in text and "not same-rig" in text
+    assert "No positioning is computed here" in text and "pp gap" not in text  # sim numbers never sit next to Xing
     assert text.rstrip().splitlines()[-1] == rig.SIGN
     assert (out / "fig" / "rig_detection_localisation.png").stat().st_size > 5000
     assert set(written["control"]["load"]) == {"steady", "peak"}
