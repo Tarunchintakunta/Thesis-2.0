@@ -60,6 +60,8 @@ yashaswini-thesis/serverless-fault-localisation/.venv-rcaeval/
 yashaswini-thesis/serverless-fault-localisation/data/rcaeval/
 yashaswini-thesis/serverless-fault-localisation/.aws-sam/
 yashaswini-thesis/serverless-fault-localisation/data/runs/sim/
+# ...but the per-case RCAEval outputs are small JSON and are the leg 2 evidence, so keep them
+!yashaswini-thesis/serverless-fault-localisation/results/rcaeval/raw/
 
 # editors
 .idea/
