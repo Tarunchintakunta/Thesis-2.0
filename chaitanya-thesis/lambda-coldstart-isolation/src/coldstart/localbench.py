@@ -42,7 +42,9 @@ def command(runtime: str, variant: str, payload_path: Path = PAYLOAD, build: Pat
     pkg = build / f"{runtime}-{variant}"
     if runtime == "python":
         py = os.environ.get("BENCH_PYTHON", sys.executable)
-        return [py, "-s", "-S", str(BENCH / "python_bench.py"), str(pkg), str(payload_path)]
+        # -B: never write .pyc files. /var/task is read-only on Lambda, so a zip without
+        # bytecode is compiled from source on every cold start - the bench must do the same
+        return [py, "-B", "-s", "-S", str(BENCH / "python_bench.py"), str(pkg), str(payload_path)]
     if runtime == "nodejs":
         return [os.environ.get("BENCH_NODE", "node"), str(BENCH / "node_bench.mjs"), str(pkg), str(payload_path)]
     if runtime == "java":
@@ -59,7 +61,8 @@ def run_once(runtime: str, variant: str, payload_path: Path = PAYLOAD, build: Pa
     row = {"runtime": runtime, "variant": variant}
     t_spawn_us = time.time_ns() // 1000
     t0 = time.perf_counter()
-    proc = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout)
+    env = {**os.environ, "PYTHONDONTWRITEBYTECODE": "1"}
+    proc = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout, env=env)
     row["process_wall_ms"] = round((time.perf_counter() - t0) * 1000, 3)
     if proc.returncode != 0:
         row.update(ok=False, error=(proc.stderr or proc.stdout)[-400:].strip())
