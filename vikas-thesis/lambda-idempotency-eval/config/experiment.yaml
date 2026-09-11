@@ -1,0 +1,37 @@
+# Experiment design (master prompt section 5). Changes after the pilot are
+# amendments in docs/ANALYSIS_PLAN.md, with a date.
+table_name: idem-eval
+function_name: idem-eval-fn
+
+paths: [P1, P2, P3]          # plain put, conditional put, idempotency key
+multiplicities: [1, 2, 5]    # deliveries of the same request_id; deliveries 1..N-1 time out after commit
+
+injection:
+  primary: after_commit      # timeout forced after the path's writes have committed
+  sensitivity: p3_between    # P3 only: timeout between the business write and marking the key COMPLETED
+
+pilot:
+  requests_per_path: 50
+  multiplicity: 2            # one injected retry per pilot request
+
+campaign:
+  provisional_requests_per_cell: 1000   # replaced by the pilot rule in analysis/pilot_size.py
+  sensitivity_requests_per_cell: 200    # P3 x {2, 5} with the p3_between injection
+  seed: 25178849
+
+payload_kb: 1                # business item padded to just under 1 KB -> 1 WCU per write
+p3_key_ttl_s: 3600
+
+practical:                   # pilot sizing targets (95% CI half-widths)
+  duplicate_rate_pp: 1.0     # percentage points
+  capacity_pct: 5            # % of the mean
+  latency_pct: 5
+
+alpha: 0.05
+
+warmup_rounds: 2             # waves of no-op calls (one per worker) before a phase; not analysed
+
+budget:
+  max_invocations: 60000     # hard stop in the driver (warm-up calls count too)
+  daily_usd: 5
+# Vikas Reddy Amanagantti
