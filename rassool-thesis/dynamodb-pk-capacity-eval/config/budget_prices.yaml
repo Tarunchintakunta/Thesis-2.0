@@ -1,0 +1,9 @@
+# Prices used ONLY by scripts/budget_estimate.py (the whole-campaign bill).
+# They are not part of cost per 10k ops, which leaves storage and the driver out.
+# Source: AWS Price List API offer files for eu-west-1:
+#   AmazonDynamoDB  publicationDate 2026-09-11T12:44:22Z  (EU-TimedStorage-ByteHrs, beyond the free 25 GB-months)
+#   AWSLambda       publicationDate 2026-09-11T12:46:01Z  (EU-Lambda-GB-Second-ARM tier 1, EU-Request-ARM)
+region: eu-west-1
+dynamodb_storage_gb_month: 0.283
+lambda_arm_gb_second: 0.0000133334
+lambda_request: 0.0000002
