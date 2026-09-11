@@ -5,6 +5,7 @@ import pytest
 import yaml
 
 from driver import run, schedule
+from tests.conftest import TABLE
 
 CFG = yaml.safe_load(open("config/experiment.yaml"))
 QUIET = {"log": lambda *_: None}
@@ -47,6 +48,14 @@ def test_budget_is_checked_before_anything_is_written(ddb, tmp_path):
     with pytest.raises(RuntimeError):
         run.run_phase(reqs, run.LocalBackend(), tmp_path / "a", max_invocations=3, **QUIET)
     assert not (tmp_path / "a").exists()
+
+
+def test_reused_request_ids_are_detected(ddb, tmp_path):
+    reqs = schedule.build(CFG, "pilot", n_per_cell=2)
+    assert not run.ids_already_used(ddb, TABLE, reqs)
+    run.run_phase(reqs, run.LocalBackend(), tmp_path, max_invocations=100, **QUIET)
+    assert run.ids_already_used(ddb, TABLE, reqs)  # same seed again -> refused by main()
+    assert not run.ids_already_used(ddb, TABLE, schedule.build(CFG, "pilot", n_per_cell=2, seed=7))
 
 
 def test_a_run_folder_is_never_reused(ddb, tmp_path):
