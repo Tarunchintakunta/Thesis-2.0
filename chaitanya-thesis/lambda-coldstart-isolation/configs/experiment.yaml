@@ -1,0 +1,78 @@
+# Experiment plan for the cold-start study (Phase A baseline-style + Phase B isolation).
+# Same file drives live and mock runs; DATA_MODE=live|mock picks the backend.
+# Reps below are the pre-pilot plan; scripts/pilot_power.py checks them against
+# the pilot and the frozen numbers go into docs/ANALYSIS_PLAN.md.
+stack_name: coldstart-study
+region: eu-west-1
+arch: arm64                       # fixed on purpose (Bluemke and Zdanowski found arm64 cheaper)
+payload: payloads/fixed_payload.json
+seed: 20260101
+
+# how an intended-cold invocation is produced
+force_cold: update_env            # update_env (new env var value -> new environments) or idle
+idle_gap_min: 30                  # only used with force_cold: idle
+
+# daily spend cap checked before every invocation (scripts/budget_guard.py)
+budget:
+  daily_usd: 2.00
+  spend_log: data/spend_log.csv
+
+phases:
+  baseline:                       # Phase A - Bluemke-style warm duration + cost, python default
+    kind: warm
+    runtimes: [python]
+    variants: [default]
+    memories: [128, 512, 1024, 3008]
+    reps: 40                      # interleaved blocks
+    warmup_per_block: 2           # thrown away
+    measured_per_block: 1
+
+  runtime_compare:                # H1 - Init Duration by runtime
+    kind: cold
+    runtimes: [python, nodejs, java]
+    variants: [optimised]
+    memories: [1024]
+    reps: 50
+    follow_up_warm: 1             # one warm call after each cold call (Init vs Duration)
+
+  package_size:                   # H2 - default vs optimised inside each runtime
+    kind: cold
+    runtimes: [python, nodejs, java]
+    variants: [default, optimised]
+    memories: [1024]
+    reps: 50
+    follow_up_warm: 1
+
+  memory:                         # H4 (exploratory) - memory inside each runtime, cold only
+    kind: cold
+    runtimes: [python, nodejs, java]
+    variants: [optimised]
+    memories: [128, 512, 1024, 1769, 3008]
+    reps: 40
+    follow_up_warm: 0
+
+  warming:                        # H3 - EventBridge warmer on vs off, same arrivals for both
+    kind: warming
+    target: warm-target           # has the EventBridge rule
+    control: warm-control         # same code and memory, no rule
+    warmer_rate_min: 5            # rate(5 minutes) - low frequency, NOT provisioned concurrency
+    mean_gap_s: 360               # sparse traffic, Poisson arrivals
+    duration_h: 4
+    block_min: 20                 # per-block cold fraction for the MWU/t-test
+
+  burst:                          # burst from a quiet state
+    kind: burst
+    runtimes: [python, nodejs, java]
+    variants: [optimised]
+    memories: [1024]
+    concurrency: 20
+    reps: 10
+
+  combined:                       # "best free controls" vs console defaults, cold
+    kind: cold
+    cells:                        # pre-registered, not picked after looking at the data
+      - {variant: default, memory: 128}      # console default memory, unpruned package
+      - {variant: optimised, memory: 1024}   # pruned package, 1 GB
+    runtimes: [python, nodejs, java]
+    reps: 40
+    follow_up_warm: 0
