@@ -1,0 +1,22 @@
+[project]
+name = "coldstart"
+version = "0.1.0"
+description = "Isolating cold-start latency reduction in AWS Lambda across runtime, package-size and warming controls (MSc Cloud Computing, NCI)"
+requires-python = ">=3.11"
+authors = [{ name = "Kondragunta Lakshmi Chaitanya" }]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src", "."]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 110
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B"]
+ignore = ["E501"]

@@ -1,0 +1,7 @@
+# runtime deps for the scripts (invokers, parser, cost model, analysis)
+boto3>=1.34
+numpy>=1.26
+pandas>=2.1
+scipy>=1.11
+matplotlib>=3.8
+pyyaml>=6.0
