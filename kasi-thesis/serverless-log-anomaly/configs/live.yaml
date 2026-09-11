@@ -1,0 +1,19 @@
+# Live (LocalStack / own AWS account) version of the experiment. Real time,
+# so the phases are much shorter than the emulated ones - results from this
+# config are a small-scale check of the emulator, not a replacement for it.
+extends: experiment.yaml
+name: live
+seeds: [2025]
+phases:
+  A: {hours: 2, bursts: {every_s: 1800, len_s: 60, factor: 10}}
+  B:
+    injections_per_category: 6
+    block_size: 4
+    gap_s: [240, 360]
+    duration_s: [120, 180]
+    tail_s: 300
+    bursts: {every_s: 1800, len_s: 60, factor: 10}
+  C: {hours: 1, bursts: {every_s: 900, len_s: 120, factor: 20}}
+live:
+  settle_s: 20          # wait after a config change before counting the fault as active
+  log_group: /aws/lambda/kasireddy-orders
