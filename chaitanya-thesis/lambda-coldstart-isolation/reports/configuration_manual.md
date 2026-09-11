@@ -70,6 +70,18 @@ bash scripts/package_all.sh python nodejs   # on a machine without a JDK
 python scripts/check_digests.py --require python,nodejs,java   # runtime gate
 ```
 
+Packages as built for the committed proxy run (GitHub Actions run 34603856172;
+the Python and Node.js hashes are the same when built on macOS):
+
+| package | zip bytes | unzipped bytes | files | sha256 (first 16) |
+|---|---|---|---|---|
+| python-default | 21,032,138 | 49,765,599 | 3,751 | 12babe74f1c3c823 |
+| python-optimised | 604 | 854 | 1 | cf9d26f0a48e810e |
+| nodejs-default | 16,467,158 | 111,459,888 | 4,680 | 84dee8e996afb0c6 |
+| nodejs-optimised | 815 | 971 | 2 | fa101dccc74e3d8a |
+| java-default | 6,330,300 | 14,262,569 | 3,978 | 547805313b042a40 |
+| java-optimised | 4,906 | 7,021 | 5 | 065954b22c1c55eb |
+
 `build/package_manifest.json` records zip size, unzipped size, file count and
 sha256 of every package; `scripts/deploy.sh` copies it to
 `data/package_manifest_deployed.json` so the data always sits next to the exact
