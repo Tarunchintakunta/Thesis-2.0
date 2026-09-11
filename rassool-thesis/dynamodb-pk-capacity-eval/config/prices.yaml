@@ -1,0 +1,23 @@
+# Published DynamoDB unit prices used by analysis/cost_model.py.
+# Source: AWS Price List API, offer file
+#   https://pricing.us-east-1.amazonaws.com/offers/v1.0/aws/AmazonDynamoDB/current/eu-west-1/index.json
+# publicationDate 2026-09-11T12:44:22Z, table class Standard, region EU (Ireland).
+# Refresh with: python analysis/fetch_prices.py --region eu-west-1
+# Cost per 10k ops leaves out storage, backups and data transfer on purpose
+# (master prompt 2.3) - only the request path the configuration controls.
+region: eu-west-1
+source: AWS Price List API (AmazonDynamoDB offer file)
+publication_date: "2026-09-11T12:44:22Z"
+currency: USD
+
+on_demand:
+  read_request_unit: 0.0000001415      # $0.1415 per million RRU
+  write_request_unit: 0.0000007050     # $0.705 per million WRU
+
+provisioned:
+  rcu_hour: 0.000147                   # per RCU-hour beyond the free tier
+  wcu_hour: 0.000735                   # per WCU-hour beyond the free tier
+
+# the free tier (25 RCU + 25 WCU per month, account-wide) is ignored so the
+# per-configuration cost is not hidden by a discount that only exists once
+free_tier_ignored: true
