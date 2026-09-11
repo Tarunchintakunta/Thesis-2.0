@@ -1,0 +1,19 @@
+# Pilot (weeks 1-2): sizes the main campaign and checks the idle gap.
+# python scripts/invoke_idle.py --config configs/pilot.yaml --out data/pilot/<mode>/
+# python scripts/pilot_power.py --in data/pilot/<mode>/ --out docs/ANALYSIS_PLAN.md
+extends: configs/experiment.yaml
+phases:
+  pilot_cold:                     # spread of Init Duration per runtime x package
+    kind: cold
+    runtimes: [python, nodejs, java]
+    variants: [default, optimised]
+    memories: [1024]
+    reps: 12
+    follow_up_warm: 1
+  idle_probe:                     # does waiting N minutes really give a cold start?
+    kind: idle_probe
+    runtimes: [python]
+    variants: [optimised]
+    memories: [1024]
+    gaps_min: [5, 10, 20, 30, 45]
+    reps: 8
