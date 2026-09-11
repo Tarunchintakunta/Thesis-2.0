@@ -23,6 +23,8 @@ changes, write the date and the reason underneath instead of deleting it.
 | W2 | `n = 20000` is never changed between variants. | Only packaging and configuration change. |
 | W3 | Default packages carry heavy libraries that are imported at module level but never used: Python `boto3 1.35.36`, `requests 2.32.3`, `sympy 1.14.0`; Node `aws-sdk 2.1692.0`, `lodash`, `moment`, `axios`; Java `jackson-databind`, `guava`, `commons-lang3` shaded into one jar and touched in static fields. | This is the "import everything at the top" pattern the package-size question is about. Exact sizes and sha256 go to `build/package_manifest.json`. |
 | W4 | Warmer pings send `{"warmer": true}` and the handler returns straight away. | A ping should keep the environment alive without doing the work. |
+| W5 | Packages are reproducible: zips have sorted entries and a fixed timestamp, no `__pycache__`, and pip's `bin/` console-script wrappers and `*.dist-info/RECORD` files are removed. | The wrappers carry the build machine's interpreter path, so the zip hash changed from machine to machine. Lambda never runs them. |
+| W6 | Python packages are shipped without `.pyc` files and the local benchmark runs Python with `-B`. | `/var/task` is read-only on Lambda, so bytecode that is not in the zip is compiled on every cold start; the proxy has to do the same. Shipping `.pyc` could be a further "free" control - future work. |
 
 ## Measurement
 
