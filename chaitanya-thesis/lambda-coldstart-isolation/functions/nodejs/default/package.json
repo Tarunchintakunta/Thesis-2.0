@@ -1,0 +1,14 @@
+{
+  "name": "coldstart-nodejs-default",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Default (unpruned) Node.js package for the cold-start study - dependencies are bundled but unused on purpose",
+  "main": "index.mjs",
+  "dependencies": {
+    "aws-sdk": "2.1692.0",
+    "axios": "1.7.7",
+    "lodash": "4.17.21",
+    "moment": "2.30.1"
+  }
+}
