@@ -1,0 +1,66 @@
+{
+  "what": "local process-start benchmark (init PROXY) - not AWS Lambda, not an Init Duration",
+  "started_utc": "2026-09-11T13:14:47+00:00",
+  "finished_utc": "2026-09-11T13:15:26+00:00",
+  "reps": 30,
+  "seed": 42,
+  "warmup_rounds": 2,
+  "variants": [
+    "python-default",
+    "python-optimised",
+    "nodejs-default",
+    "nodejs-optimised"
+  ],
+  "failed_runs": 0,
+  "machine": {
+    "platform": "macOS-26.6.2-arm64-arm-64bit",
+    "machine": "arm64",
+    "processor": "arm",
+    "cpu_count": 15,
+    "python": "3.12.13",
+    "node": "v25.9.0",
+    "java": "The operation couldn\u2019t be completed. Unable to locate a Java Runtime.",
+    "github_actions": false,
+    "runner": " ",
+    "github_run_id": null,
+    "github_sha": null
+  },
+  "packages": [
+    {
+      "runtime": "nodejs",
+      "variant": "default",
+      "artifact": "nodejs-default.zip",
+      "zip_bytes": 16467158,
+      "unzipped_bytes": 111459888,
+      "files": 4680,
+      "sha256": "84dee8e996afb0c64bf709db892ded416d1c32fffc107214d29a0985d5b2e7d2"
+    },
+    {
+      "runtime": "nodejs",
+      "variant": "optimised",
+      "artifact": "nodejs-optimised.zip",
+      "zip_bytes": 815,
+      "unzipped_bytes": 971,
+      "files": 2,
+      "sha256": "fa101dccc74e3d8a5b8d67e540ff6e6295d9aad1ac3537a8e11f70ccb6b4ce04"
+    },
+    {
+      "runtime": "python",
+      "variant": "default",
+      "artifact": "python-default.zip",
+      "zip_bytes": 21184152,
+      "unzipped_bytes": 50152205,
+      "files": 3768,
+      "sha256": "74abd175706526be066925749cf7285a0e9c5070798b805df65f365d86f4e395"
+    },
+    {
+      "runtime": "python",
+      "variant": "optimised",
+      "artifact": "python-optimised.zip",
+      "zip_bytes": 604,
+      "unzipped_bytes": 854,
+      "files": 1,
+      "sha256": "cf9d26f0a48e810e17c6f86fc166109b39e5d1f0ce6057686ab2e45e0a1e17bc"
+    }
+  ]
+}
