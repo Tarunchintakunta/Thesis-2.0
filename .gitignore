@@ -50,6 +50,11 @@ rassool-thesis/dynamodb-pk-capacity-eval/iac/build/
 rassool-thesis/dynamodb-pk-capacity-eval/results/*
 !rassool-thesis/dynamodb-pk-capacity-eval/results/SCHEMA.md
 
+# vikas: lambda zip + local/moto run folders (make functional recreates them)
+vikas-thesis/lambda-idempotency-eval/build/
+vikas-thesis/lambda-idempotency-eval/data/runs/moto/
+vikas-thesis/lambda-idempotency-eval/data/runs/local/
+
 # editors
 .idea/
 .vscode/
