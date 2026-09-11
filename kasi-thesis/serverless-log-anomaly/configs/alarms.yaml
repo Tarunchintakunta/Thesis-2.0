@@ -1,0 +1,11 @@
+# D3 - the CloudWatch threshold alarms an operator would set up anyway.
+# Each alarm looks at one 60 s metric datapoint (1 out of 1 datapoints).
+# Threshold = max(calibration quantile of the metric in the clean phase A
+# training windows, floor). The window alarms if ANY alarm is in ALARM.
+calibration_quantile: 0.99
+alarms:
+  - {name: LambdaErrors, metric: lambda_errors, floor: 0}      # function errors (timeouts, crashes)
+  - {name: Api5XX, metric: api_5xx, floor: 0}                  # API Gateway 5XXError
+  - {name: DurationP99, metric: duration_p99_ms, floor: 100}   # Lambda Duration p99
+  - {name: Throttles, metric: throttles, floor: 0}             # Lambda Throttles
+comparison: GreaterThanThreshold
