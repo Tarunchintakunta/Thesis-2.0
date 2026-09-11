@@ -5,6 +5,7 @@ import pytest
 from coldstart.cost_model import (
     billed_ms,
     cost_per_1k,
+    effective_billed_ms,
     invocation_cost,
     load_prices,
     warming_cost_per_1k,
@@ -51,6 +52,17 @@ def test_warming_cost_scales_with_ping_rate():
     b = warming_cost_per_1k(12, 2, 512, "arm64", PRICES, invocations_per_hour=60)
     assert b == pytest.approx(2 * a)
     assert warming_cost_per_1k(6, 2, 512, "arm64", PRICES, invocations_per_hour=0) == math.inf
+
+
+def test_effective_billed_adds_init_only_when_missing():
+    # old REPORT format: billed covers only the handler -> add the init time
+    assert effective_billed_ms(13, 12.3, 245.6, True) == 13 + 246
+    # INIT already inside Billed Duration (new billing) -> keep as is
+    assert effective_billed_ms(258, 12.3, 245.6, True) == 258
+    # warm call or init billing switched off
+    assert effective_billed_ms(13, 12.3, None, True) == 13
+    assert effective_billed_ms(13, 12.3, float("nan"), True) == 13
+    assert effective_billed_ms(13, 12.3, 245.6, False) == 13
 
 
 def test_pricing_yaml_loads(tmp_path):

@@ -40,6 +40,16 @@ def billed_ms(duration_ms: float, init_ms: float | None = None, bill_init: bool 
     return int(math.ceil(total))
 
 
+def effective_billed_ms(billed: float, duration: float, init: float | None, bill_init: bool = True) -> float:
+    """Billed time used for cost. If AWS already put the init time into Billed
+    Duration (INIT billing), keep it; otherwise add it when bill_init is on."""
+    if init is None or (isinstance(init, float) and math.isnan(init)) or not bill_init:
+        return float(billed)
+    if billed >= math.floor(duration + init):
+        return float(billed)
+    return float(billed + math.ceil(init))
+
+
 def invocation_cost(billed: float, memory_mb: int, arch: str, prices: dict) -> float:
     gb_s = billed / 1000.0 * memory_mb / 1024.0
     return gb_s * prices["per_gb_second"][arch] + prices["per_request"]
