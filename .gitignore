@@ -22,6 +22,12 @@ cdk.out/
 **/results/raw/
 **/results/**/raw/
 
+# generated / downloaded data (scripts recreate it)
+**/data/raw/
+**/data/interim/
+**/data/processed/
+**/data/external/loghub/*.log
+
 # editors
 .idea/
 .vscode/
