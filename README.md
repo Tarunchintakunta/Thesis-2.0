@@ -11,7 +11,7 @@ rules for that project, and the actual artefact code in its own sub folder.
 | `chaitanya-thesis/` | Isolating cold-start latency reduction in AWS Lambda (runtime, package size, warming) | `lambda-coldstart-isolation/` | artefact done (mock pipeline + local init-proxy benchmark), live AWS runs + report pending |
 | `rassool-thesis/` | Partition-key design x capacity mode in Amazon DynamoDB under Lambda workloads | `dynamodb-pk-capacity-eval/` | artefact done (Terraform + workloads + analysis, tested on moto), live AWS campaign + report pending |
 | `vikas-thesis/` | Application-level idempotency (plain / conditional / idempotency-key writes) under injected retries on Lambda + DynamoDB | `lambda-idempotency-eval/` | artefact done (Terraform + driver + analysis, tested on moto), live AWS campaign + report pending |
-| `yashaswini-thesis/` | see master prompt | - | todo |
+| `yashaswini-thesis/` | Rule-based detection (CloudWatch) and localisation (X-Ray) vs learned RCA baselines in AWS serverless microservices | `serverless-fault-localisation/` | artefact done (SAM rig + injector + detector + ranker, tested on moto and simulated telemetry; RCAEval comparison run offline on public data), live AWS campaign + report pending |
 
 Other stuff at the top level:
 
