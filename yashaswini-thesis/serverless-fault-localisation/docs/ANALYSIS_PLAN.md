@@ -98,5 +98,6 @@ detector baseline to the harness and document it. Neither is done silently here.
 | 2026-09-11 | sd floor also applied to the p99 threshold; RCAEval floors in seconds | found while running one RCAEval case during development (re2ob_checkoutservice_delay_1), before the 90-case run: latencies there are in seconds, and nearly flat series fired on a single quantisation step |
 | 2026-09-11 | baselines: BARO, CIRCA, TraceRCA on all 90 cases; CausalRCA on repetition 1 (30 cases) | narrowed early (master prompt 6); CausalRCA took ~290 s per case on the development machine |
 | 2026-09-11 | CIRCA and the other methods get the entry service's latency as SLI | RCAEval main.py passes the root cause's own latency, which leaks the answer |
+| 2026-09-11 | sanity check: a method whose ranking is the same list on more than half of its cases is flagged and cannot be the "strongest baseline" | CausalRCA's first cases came back in input column order (alphabetical), which puts checkoutservice third by luck; the check is generic and does not change any method's numbers |
 
 Yashaswini Penumarthi (24262404)
