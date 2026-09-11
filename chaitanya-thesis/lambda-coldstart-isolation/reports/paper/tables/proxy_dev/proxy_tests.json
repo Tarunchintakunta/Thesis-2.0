@@ -1,0 +1,72 @@
+{
+  "label": "local process-start proxy on macOS-26.6.2-arm64-arm-64bit - NOT an AWS Lambda Init Duration",
+  "tests": {
+    "H1_proxy": {
+      "test": "kruskal_wallis",
+      "statistic": 44.262295,
+      "p": 0.0,
+      "effect": 0.750208,
+      "effect_name": "epsilon_squared",
+      "normal": false,
+      "groups": [
+        "python",
+        "nodejs"
+      ],
+      "n": [
+        30,
+        30
+      ],
+      "medians": {
+        "python": 15.969,
+        "nodejs": 45.177
+      },
+      "p_holm": 0.0,
+      "reject": true,
+      "family": "proxy"
+    },
+    "H2_proxy_python": {
+      "test": "mann_whitney_u",
+      "statistic": 900.0,
+      "p": 0.0,
+      "effect": 1.0,
+      "effect_name": "rank_biserial",
+      "normal": false,
+      "n": [
+        30,
+        30
+      ],
+      "median_a": 830.6575,
+      "median_b": 15.969,
+      "median_diff": 814.6885,
+      "median_diff_ci95": [
+        811.106437,
+        818.232225
+      ],
+      "p_holm": 0.0,
+      "reject": true,
+      "family": "proxy"
+    },
+    "H2_proxy_nodejs": {
+      "test": "mann_whitney_u",
+      "statistic": 900.0,
+      "p": 0.0,
+      "effect": 1.0,
+      "effect_name": "rank_biserial",
+      "normal": false,
+      "n": [
+        30,
+        30
+      ],
+      "median_a": 127.7645,
+      "median_b": 45.177,
+      "median_diff": 82.5875,
+      "median_diff_ci95": [
+        81.726263,
+        84.30315
+      ],
+      "p_holm": 0.0,
+      "reject": true,
+      "family": "proxy"
+    }
+  }
+}
