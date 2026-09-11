@@ -1,0 +1,14 @@
+# List prices used ONLY by scripts/budget_estimate.py. The analysis never
+# prices anything - capacity in the results is the service-reported units.
+# Source: AWS Price List API offer files for eu-west-1, EU (Ireland):
+#   AmazonDynamoDB  publicationDate 2026-09-11T12:44:22Z  on-demand write / read request units, Standard class
+#   AWSLambda       publicationDate 2026-09-11T12:46:01Z  EU-Lambda-GB-Second-ARM (tier 1), EU-Request-ARM
+# (the same offer files as rassool-thesis/dynamodb-pk-capacity-eval/config/)
+region: eu-west-1
+currency: USD
+dynamodb_write_request_unit: 0.0000007050   # $0.705 per million WRU
+dynamodb_read_request_unit: 0.0000001415    # $0.1415 per million RRU
+lambda_arm_gb_second: 0.0000133334
+lambda_request: 0.0000002
+free_tier_ignored: true
+# Vikas Reddy Amanagantti
