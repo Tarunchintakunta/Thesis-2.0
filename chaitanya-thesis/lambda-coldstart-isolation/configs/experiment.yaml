@@ -49,7 +49,7 @@ phases:
     variants: [optimised]
     memories: [128, 512, 1024, 1769, 3008]
     reps: 40
-    follow_up_warm: 0
+    follow_up_warm: 1             # warm duration per memory is needed for the cost column
 
   warming:                        # H3 - EventBridge warmer on vs off, same arrivals for both
     kind: warming
@@ -75,4 +75,4 @@ phases:
       - {variant: optimised, memory: 1024}   # pruned package, 1 GB
     runtimes: [python, nodejs, java]
     reps: 40
-    follow_up_warm: 0
+    follow_up_warm: 1
