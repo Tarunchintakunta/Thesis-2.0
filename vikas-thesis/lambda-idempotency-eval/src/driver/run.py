@@ -20,6 +20,7 @@ import os
 import sys
 import threading
 import time
+import uuid
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
@@ -71,20 +72,38 @@ class LambdaBackend:
         return {"status": "ok", "record": body, "rtt_ms": rtt, "function_error": ""}
 
 
+class LocalContext:
+    """The two things the handler reads from a Lambda context.
+
+    remaining_ms = -1 makes a P3 claim expire at once. On Lambda the redelivery
+    only starts after the timed-out invocation has ended, i.e. after its claim
+    expired; locally the redelivery comes a few ms later, so without this the
+    local run would refuse it (REJECTED_IN_PROGRESS) where Lambda would not.
+    """
+
+    def __init__(self, remaining_ms: int = -1):
+        self.aws_request_id = f"local-{uuid.uuid4()}"
+        self.remaining_ms = remaining_ms
+
+    def get_remaining_time_in_millis(self) -> int:
+        return self.remaining_ms
+
+
 class LocalBackend:
     """The handler in this process (moto or DynamoDB Local); InjectedTimeout stands in for the timeout."""
 
-    def __init__(self, source: str = "local"):
+    def __init__(self, source: str = "local", remaining_ms: int = -1):
         os.environ["INJECT_MODE"] = "raise"
         from lambda_fn import handler
 
         self.h = handler
         self.source = source
+        self.remaining_ms = remaining_ms
 
     def invoke(self, event: dict) -> dict:
         t0 = time.perf_counter()
         try:
-            rec = self.h.lambda_handler(event)
+            rec = self.h.lambda_handler(event, LocalContext(self.remaining_ms))
             return {"status": "ok", "record": rec, "rtt_ms": (time.perf_counter() - t0) * 1000, "function_error": ""}
         except self.h.InjectedTimeout as exc:
             return {"status": "timeout", "record": json.loads(str(exc)), "rtt_ms": (time.perf_counter() - t0) * 1000,
@@ -103,7 +122,7 @@ def warm_up(backend, workers: int, rounds: int) -> dict:
 
 
 def run_phase(reqs: list[dict], backend, out: Path, max_invocations: int, workers: int = 1, warmup_rounds: int = 0,
-              log=print) -> dict:
+              log=print, meta: dict | None = None) -> dict:
     out = Path(out)
     if (out / "deliveries.jsonl").exists():
         raise FileExistsError(f"{out} already has deliveries - use a new --out")
@@ -141,7 +160,7 @@ def run_phase(reqs: list[dict], backend, out: Path, max_invocations: int, worker
     info = {"phase": reqs[0]["phase"] if reqs else None, "backend": backend.source, "requests": len(reqs),
             "invocations": done[0], "workers": workers, "warmup": warm, "t_start": t_start, "t_end": time.time(),
             "t_start_utc": dt.datetime.fromtimestamp(t_start, dt.timezone.utc).isoformat(timespec="seconds"),
-            "versions": yaml.safe_load(open(ROOT / "config/versions.yaml"))}
+            "versions": yaml.safe_load(open(ROOT / "config/versions.yaml")), **(meta or {})}
     (out / "run_info.json").write_text(json.dumps(info, indent=2) + "\n")
     log(f"{info['requests']} requests, {info['invocations']} invocations (+{warm['calls']} warm-up) -> {out}")
     return info
@@ -155,6 +174,19 @@ def create_local_table(client, name: str) -> str:
     return client.describe_table(TableName=name)["Table"]["LatestStreamArn"]
 
 
+def ids_already_used(ddb, table: str, reqs: list[dict], k: int = 5) -> bool:
+    """True if the first requests' business items exist already.
+
+    Re-running a phase with the same seed against the same table would reuse
+    the request ids: P2/P3 would then suppress even the first delivery, and the
+    stream would mix both runs. So a repeated phase needs a new --seed.
+    """
+    for r in reqs[:k]:
+        if ddb.get_item(TableName=table, Key={"pk": {"S": f"REQ#{r['request_id']}"}}).get("Item"):
+            return True
+    return False
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--phase", choices=["pilot", "campaign", "sensitivity"], required=True)
@@ -163,18 +195,26 @@ def main(argv=None) -> int:
     ap.add_argument("--backend", choices=["lambda", "local"], default="lambda")
     ap.add_argument("--moto", action="store_true", help="local backend against in-memory DynamoDB (moto)")
     ap.add_argument("--workers", type=int, default=1)
+    ap.add_argument("--seed", type=int, help="request-id seed (default: config); a repeated phase needs a new one")
     ap.add_argument("--config", default=str(ROOT / "config/experiment.yaml"))
     args = ap.parse_args(argv)
     cfg = yaml.safe_load(open(args.config))
-    reqs = build(cfg, args.phase, args.n)
+    seed = args.seed if args.seed is not None else cfg["campaign"]["seed"]
+    reqs = build(cfg, args.phase, args.n, seed)
     out, cap, rounds = Path(args.out), cfg["budget"]["max_invocations"], cfg.get("warmup_rounds", 0)
+    meta = {"seed": seed}
     if args.backend == "lambda":
+        import boto3
+
         region = yaml.safe_load(open(ROOT / "config/versions.yaml"))["region"]
-        run_phase(reqs, LambdaBackend(cfg["function_name"], region), out, cap, args.workers, rounds)
+        if ids_already_used(boto3.client("dynamodb", region_name=region), cfg["table_name"], reqs):
+            print("these request ids are already in the table (phase run before?) - pass a new --seed", file=sys.stderr)
+            return 2
+        run_phase(reqs, LambdaBackend(cfg["function_name"], region), out, cap, args.workers, rounds, meta=meta)
         print("next: python -m driver.streams --out", out, "(stream records expire after 24 h)")
         return 0
     if not args.moto:
-        run_phase(reqs, LocalBackend(), out, cap, args.workers, rounds)
+        run_phase(reqs, LocalBackend(), out, cap, args.workers, rounds, meta=meta)
         return 0
     import boto3
     from moto import mock_aws
@@ -186,8 +226,8 @@ def main(argv=None) -> int:
         os.environ[k] = v
     with mock_aws():
         arn = create_local_table(boto3.client("dynamodb", region_name="eu-west-1"), cfg["table_name"])
-        run_phase(reqs, LocalBackend("moto"), out, cap, args.workers, rounds)
-        n = dump_stream(boto3.client("dynamodbstreams", region_name="eu-west-1"), arn, out / "stream.jsonl")
+        run_phase(reqs, LocalBackend("moto"), out, cap, args.workers, rounds, meta=meta)
+        n = dump_stream(boto3.client("dynamodbstreams", region_name="eu-west-1"), arn, out / "stream.jsonl", pause=0)
     print(f"{n} stream records -> {out / 'stream.jsonl'}")
     return 0
 
