@@ -82,8 +82,12 @@ the Java jars with Corretto 21) and checks this on every push.
 | python optimised (stdlib only) | 604 B | 854 B | 1 |
 | nodejs default (aws-sdk v2, lodash, moment, axios) | 16.5 MB | 111.5 MB | 4,680 |
 | nodejs optimised (no dependencies) | 815 B | 971 B | 2 |
+| java default (jackson-databind, guava, commons-lang3 shaded, touched in static fields) | 6.3 MB | 14.3 MB | 3,978 |
+| java optimised (no dependencies) | 4.9 KB | 7.0 KB | 5 |
 
-Java sizes are in `data/proxy/github/run_info.json` (built on the CI runner).
+The Java jars are built on the CI runner (Corretto 21 + Maven). The sha256 of
+every package is in `data/proxy/github/run_info.json`; the Python and Node.js
+zips get exactly the same hashes on the macOS laptop, so the packaging is reproducible.
 
 ## Results so far
 
@@ -95,7 +99,31 @@ This measures runtime start + package loading on one machine. It has no
 micro-VM, no code download and no Lambda runtime API, so the numbers are **not**
 Init Durations; they only say something about *relative* load cost.
 
-Development laptop (Apple Silicon, macOS, 30 blocks, no JDK so no Java):
+**GitHub Actions `ubuntu-latest` runner** (x86_64, 4 vCPU, Python 3.12.14,
+Node.js 20.20.2, Corretto 21.0.12; 40 blocks, workflow run 34603856172, no failed
+runs). This is the main proxy dataset because all three runtimes share one machine.
+
+| runtime | package | init proxy p50 (ms) | p95 | p99 | first handler run p50 (ms) |
+|---|---|---|---|---|---|
+| python | default | 2383.7 | 2413.0 | 2419.7 | 8.4 |
+| python | optimised | 20.9 | 25.5 | 26.2 | 8.5 |
+| nodejs | default | 323.6 | 335.3 | 336.6 | 50.3 |
+| nodejs | optimised | 30.4 | 36.0 | 37.4 | 38.2 |
+| java | default | 223.1 | 248.1 | 251.4 | 67.8 |
+| java | optimised | 37.2 | 41.2 | 42.3 | 84.8 |
+
+* H1-proxy (optimised packages): Kruskal-Wallis p = 3.4e-22 after Holm,
+  epsilon^2 = 0.85. The runtimes differ, but only by about 16 ms at the median.
+* H2-proxy: pruning cuts the median by 2362.8 ms (Python), 293.2 ms (Node.js)
+  and 185.9 ms (Java); p = 4.3e-14 for each after Holm, rank-biserial 1.00.
+* Java's JVM starts about as fast as the others with a small jar, but its first
+  handler run is the slowest (68-85 ms against about 8 ms for Python) because
+  nothing is JIT-compiled yet. If that happens on Lambda too it lands in the cold
+  call's Duration, not its Init Duration - one reason the study records both.
+
+Tables and figures: `reports/paper/tables/proxy/`, `figures/proxy/`.
+
+Development laptop (Apple Silicon, macOS, 30 blocks, no JDK so no Java) - supplementary:
 
 | runtime | package | init proxy p50 (ms) | p95 | p99 | handler p50 (ms) |
 |---|---|---|---|---|---|
