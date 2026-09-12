@@ -40,7 +40,7 @@ def test_key_designs():
     k2 = keys.key_for("K2", 42)
     assert set(k2) == {"customerId", "orderTs"} and k2["orderTs"].endswith("Z")
     assert keys.key_for("K3", 42, 7) == {"shardKey": "o0000042#7"}
-    assert len(keys.all_shard_keys(42, 10)) == 10
+    assert len(keys.all_shard_keys("K3", 42, 10)) == 10
     with pytest.raises(ValueError):
         keys.key_for("K9", 1)
 

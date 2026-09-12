@@ -2,3 +2,4 @@ key_design,read_need_rcu_s,write_need_wcu_s,read_min,read_max,write_min,write_ma
 K1,95.0,140.0,140,700,200,1000
 K2,95.0,140.0,140,700,200,1000
 K3,950.0,140.0,1360,6800,200,1000
+K4,522.5,140.0,750,3750,200,1000

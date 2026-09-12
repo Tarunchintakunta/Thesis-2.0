@@ -74,12 +74,15 @@ def _units(resp: dict) -> float:
 
 
 def one_op(client, table: str, design: str, order: int, is_read: bool, shard_draw: int,
-           kb: int, shards: int) -> tuple:
+           kb: int, shards: int, rank: int) -> tuple:
     """Returns (ok, throttled, code, units)."""
     try:
-        if is_read and design == "K3":
+        is_hot = True if design == "K3" else (rank < 1000)
+        active_shards = shards if is_hot else 1
+
+        if is_read and design in ("K3", "K4"):
             resp = client.batch_get_item(
-                RequestItems={table: {"Keys": [_typed(k) for k in keys.all_shard_keys(order, shards)]}},
+                RequestItems={table: {"Keys": [_typed(k) for k in keys.all_shard_keys(design, order, shards, is_hot)]}},
                 ReturnConsumedCapacity="TOTAL")
             left = len(resp.get("UnprocessedKeys", {}).get(table, {}).get("Keys", []))
             # unprocessed keys are how a batch call reports throttling
@@ -88,14 +91,13 @@ def one_op(client, table: str, design: str, order: int, is_read: bool, shard_dra
             resp = client.get_item(TableName=table, Key=_typed(keys.key_for(design, order)),
                                    ReturnConsumedCapacity="TOTAL")
             return (True, False, "", _units(resp))
-        shard = shard_draw % shards if design == "K3" else 0
+        shard = shard_draw % active_shards if design in ("K3", "K4") else 0
         item = keys.make_item(design, order, kb, version=time.time_ns() // 1000, shard=shard, status="UPDATED")
         resp = client.put_item(TableName=table, Item=_typed(item), ReturnConsumedCapacity="TOTAL")
         return (True, False, "", _units(resp))
     except ClientError as exc:
         code = exc.response.get("Error", {}).get("Code", "ClientError")
         return (False, code in THROTTLE_CODES, code, 0.0)
-
 
 def run_plan(client, plan: dict, table: str, design: str, kb: int, shards: int, threads: int) -> list[list]:
     n = len(plan["t"])
@@ -106,7 +108,7 @@ def run_plan(client, plan: dict, table: str, design: str, kb: int, shards: int, 
         target = t0 + plan["t"][k]
         start = time.perf_counter()
         ok, throttled, code, units = one_op(client, table, design, int(plan["order"][k]), bool(plan["read"][k]),
-                                            int(plan["shard_draw"][k]), kb, shards)
+                                            int(plan["shard_draw"][k]), kb, shards, int(plan["rank"][k]))
         end = time.perf_counter()
         rows[k] = [k, round(plan["t"][k], 6), round(start - t0, 6), round((end - start) * 1000, 3),
                    round((end - target) * 1000, 3), "R" if plan["read"][k] else "W", int(plan["order"][k]),

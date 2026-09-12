@@ -36,14 +36,14 @@ def test_placeholders_when_there_is_no_data(tmp_path):
     res = A.analyse(tmp_path / "none", tmp_path / "out", CFG)
     assert res["status"].startswith("no data")
     text = (tmp_path / "out/cell_summary.md").read_text()
-    assert text.count(A.PLACEHOLDER) == 24 * len(A.SUMMARY_COLS) + 1  # every cell + the note on top
+    assert text.count(A.PLACEHOLDER) == 32 * len(A.SUMMARY_COLS) + 1  # every cell + the note on top
 
 
 def test_full_analysis_on_a_small_table(tmp_path):
     (tmp_path / "res").mkdir()
     fake_batches().to_csv(tmp_path / "res/batches.csv", index=False)
     res = A.analyse(tmp_path / "res", tmp_path / "out", CFG)
-    assert len(res["tests"]) == 12 and res["cold_contaminated_excluded"] == 6
+    assert len(res["tests"]) == 12 and res["cold_contaminated_excluded"] == 8
     assert all(t["p_holm"] >= t["p_primary"] - 1e-12 for t in res["tests"].values())
     assert res["tests"]["H_key_W3"]["reject"]  # K3 was made 2 ms slower
     assert "NOT DynamoDB" in res["label"]
@@ -52,7 +52,7 @@ def test_full_analysis_on_a_small_table(tmp_path):
     h = json.loads((tmp_path / "out/hypotheses.json").read_text())
     assert h["data_source"] == "moto-smoke"
     cs = pd.read_csv(tmp_path / "out/cell_summary.csv")
-    assert len(cs) == 24 and (cs["cost_per_10k"] > 0).all()
+    assert len(cs) == 32 and (cs["cost_per_10k"] > 0).all()
 
 
 def test_mixed_sources_are_refused(tmp_path):
