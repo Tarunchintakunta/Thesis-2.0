@@ -34,6 +34,7 @@ from logad.detectors.oneclass_iforest import IforestDetector
 from logad.detectors.oneclass_ocsvm import OcsvmDetector
 from logad.detectors.thresholds import ThresholdAlarms, metric_windows
 from logad.detectors.transfer_elfa import ElfaStyleTransfer
+from logad.detectors.novel_d4 import ContextAwareDetector
 from logad.eval.metrics import false_alarm_rate, window_blocks
 from logad.features.windows import CountView, SemanticView, count_features, make_windows, window_labels
 from logad.inject.schedule import read_ground_truth
@@ -189,6 +190,9 @@ def run_seed(cfg: dict, seed: int, det_cfg: dict, alarm_cfg: dict, drain_cfg: di
     # -- D3 thresholds ---------------------------------------------------------------
     alarms = ThresholdAlarms(alarm_cfg["alarms"], alarm_cfg["calibration_quantile"]).fit(a["metrics"])
 
+    # -- D4 novel context-aware ------------------------------------------------------
+    d4_novel = ContextAwareDetector(threshold_quantile=q, **d1["ocsvm"]).fit(xa, a["win"].numeric)
+
     # -- score B and C ------------------------------------------------------------------
     for ph in ("B", "C"):
         p = phases[ph]
@@ -219,6 +223,8 @@ def run_seed(cfg: dict, seed: int, det_cfg: dict, alarm_cfg: dict, drain_cfg: di
         df["pred_d2_transfer"] = transfer.predict(x2)
         df["score_d3_thresholds"] = alarms.score(p["metrics"])
         df["pred_d3_thresholds"] = alarms.predict(p["metrics"])
+        df["score_d4_novel"] = d4_novel.score(x1, p["win"].numeric)
+        df["pred_d4_novel"] = d4_novel.predict(x1, p["win"].numeric)
         df.to_csv(out / "metrics" / f"windows_{ph}_seed_{seed}.csv", index=False)
 
     info = {

@@ -24,3 +24,7 @@ _Logs from the local Lambda runtime emulator (simulated serverless workload), no
 | d3_thresholds | config_error | 0.980 | 0.961 | 1.000 | 0.000 |
 | d3_thresholds | dependency_timeout | 0.953 | 0.910 | 1.000 | 0.000 |
 | d3_thresholds | resource_exhaustion | 0.858 | 0.751 | 0.994 | 0.000 |
+| d4_novel | permission_denied | 0.895 | 0.900 | 1.000 | 0.000 |
+| d4_novel | config_error | 0.927 | 0.964 | 1.000 | 0.000 |
+| d4_novel | dependency_timeout | 0.926 | 0.959 | 1.000 | 0.000 |
+| d4_novel | resource_exhaustion | 0.921 | 0.950 | 1.000 | 0.000 |

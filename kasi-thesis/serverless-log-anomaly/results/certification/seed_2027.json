@@ -9,6 +9,7 @@
     "Runtime exited with error": 0
   },
   "http_5xx_in_A": 0,
+  "background_throttle_lines_in_A": 0,
   "lines_in_A": 120048,
   "seed": 2027,
   "identifier_lines_after_scrub": 0

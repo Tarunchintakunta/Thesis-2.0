@@ -9,3 +9,4 @@ _Logs from the local Lambda runtime emulator (simulated serverless workload), no
 | D1b Isolation Forest | 0.711 | 0.048 | 0.090 | 0.070 | 0.112 | 0.010 | 0.102 | 0.715 | 0.007 | 0.129 | 60.000 |
 | D2 transfer (ELFA-Log style) | 0.826 | 0.847 | 0.836 | 0.785 | 0.887 | 0.089 | 0.247 | 0.000 | 0.285 | 0.983 | 0.000 |
 | D3 threshold alarms | 1.000 | 0.880 | 0.936 | 0.923 | 0.947 | 0.000 | 0.000 | 0.000 | 0.000 | 0.999 | 0.000 |
+| D4 Context-Aware OC-SVM (novel) | 0.971 | 0.943 | 0.957 | 0.946 | 0.966 | 0.014 | 0.056 | 0.139 | 0.043 | 1.000 | 0.000 |
