@@ -38,6 +38,7 @@ class Deps:
     idempotent: bool = True
     # the simulator charges virtual time for "parse" and "write" through this
     tick: Callable[[str], None] = field(default=_no_tick)
+    change_visibility: Callable[[str, float], None] | None = None
 
 
 def _guess_order_id(body: str, message_id: str) -> str:

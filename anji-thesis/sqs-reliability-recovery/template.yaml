@@ -7,6 +7,10 @@ Description: >
   Faults are injected in-process, switched through one SSM parameter.
 
 Parameters:
+  AdaptiveVT:
+    Type: String
+    Default: "0"
+    AllowedValues: ["0", "1"]
   Stage:
     Type: String
     Default: dev
@@ -134,6 +138,10 @@ Resources:
       Description: SQS event source consumer (treatment arm)
       Handler: queue_consumer.handler.lambda_handler
       Timeout: !Ref ConsumerTimeout
+      Environment:
+        Variables:
+          ADAPTIVE_VT: !Ref AdaptiveVT
+          QUEUE_URL: !Ref OrdersQueue
       Policies:
         # only what the handler uses: conditional put + the exists() lookup
         - Statement:
@@ -142,6 +150,11 @@ Resources:
                 - dynamodb:PutItem
                 - dynamodb:GetItem
               Resource: !GetAtt OrdersTable.Arn
+        - Statement:
+            - Effect: Allow
+              Action:
+                - sqs:ChangeMessageVisibility
+              Resource: !GetAtt OrdersQueue.Arn
         - DynamoDBWritePolicy:
             TableName: !Ref EventsTable
         - SSMParameterReadPolicy:

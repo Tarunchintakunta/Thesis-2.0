@@ -51,10 +51,10 @@
     "point": "auto",
     "rate": 0.25
   },
-  "finished_at": "2026-09-11T10:00:24+00:00",
+  "finished_at": "2026-09-12T04:32:17+00:00",
   "git": {
     "dirty": false,
-    "sha": "812ab3037665a157fe0638eae41a1467055c9936"
+    "sha": "63071455d9b276e7fefaaf3c49b4e2573ee5b666"
   },
   "measurement_kind": "local simulation (not an AWS measurement)",
   "metrics": {
@@ -146,5 +146,5 @@
     "sync_timeout_s": 10,
     "visibility_timeout": 120
   },
-  "started_at": "2026-09-11T10:00:24+00:00"
+  "started_at": "2026-09-12T04:32:17+00:00"
 }

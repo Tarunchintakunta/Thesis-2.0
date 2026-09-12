@@ -73,6 +73,7 @@ class RunSpec:
     poison_rate: float = 0.0
     # SQS / event source mapping
     visibility_timeout: int = 30
+    adaptive_vt: bool = False
     max_receive_count: int = 5
     batch_size: int = 10
     batching_window_s: float = 1.0
