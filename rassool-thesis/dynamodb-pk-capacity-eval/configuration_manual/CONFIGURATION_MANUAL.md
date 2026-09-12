@@ -11,8 +11,8 @@ re-run the ICT artefact. Commands run from `rassool-thesis/dynamodb-pk-capacity-
 
 | Output | Type | Where |
 |---|---|---|
-| Six-table DynamoDB estate (3 key designs x 2 capacity modes), driver Lambda, IAM, dashboard, alarms, budget | Terraform | `iac/` |
-| Workload suite: Zipfian key sampler, key designs K1-K3, profiles W1-W4, 1M-item seed loader | Python | `workloads/` |
+| Eight-table DynamoDB estate (4 key designs x 2 capacity modes), driver Lambda, IAM, dashboard, alarms, budget | Terraform | `iac/` |
+| Workload suite: Zipfian key sampler, key designs K1-K4, profiles W1-W4, 1M-item seed loader | Python | `workloads/` |
 | Run matrix (randomised blocks, settle -> warm-up -> measure, abort rules) and CloudWatch collection | Python | `scripts/run_matrix.py`, `scripts/collect_metrics.py` |
 | Cost model, statistics (two-way ANOVA / ART / Tukey / Holm / joint test), trade-off surface | Python | `analysis/` |
 | Result schema, runbook, this manual | docs | `results/SCHEMA.md`, `RUNBOOK.md` |

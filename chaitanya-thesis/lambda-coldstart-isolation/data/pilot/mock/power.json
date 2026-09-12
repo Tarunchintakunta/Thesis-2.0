@@ -10,52 +10,59 @@
       "function": "java-default",
       "intended": 12,
       "cold": 12,
-      "init_median_ms": 836.3199999999999,
-      "init_sd_ms": 163.6086835951175
+      "init_median_ms": 769.245,
+      "init_sd_ms": 126.67815387704768
     },
     {
       "function": "java-optimised",
       "intended": 12,
       "cold": 12,
-      "init_median_ms": 544.24,
-      "init_sd_ms": 83.16039594990788
+      "init_median_ms": 506.575,
+      "init_sd_ms": 77.83238051619765
     },
     {
       "function": "nodejs-default",
       "intended": 12,
       "cold": 12,
-      "init_median_ms": 535.125,
-      "init_sd_ms": 110.29132979193209
+      "init_median_ms": 575.9449999999999,
+      "init_sd_ms": 131.01840008413345
     },
     {
       "function": "nodejs-optimised",
       "intended": 12,
       "cold": 12,
-      "init_median_ms": 188.66000000000003,
-      "init_sd_ms": 41.44255374136662
+      "init_median_ms": 190.375,
+      "init_sd_ms": 24.507790907209795
+    },
+    {
+      "function": "python-bytecode",
+      "intended": 12,
+      "cold": 12,
+      "init_median_ms": 242.985,
+      "init_sd_ms": 49.19356267168838
     },
     {
       "function": "python-default",
       "intended": 12,
       "cold": 12,
-      "init_median_ms": 647.8199999999999,
-      "init_sd_ms": 87.3721715066524
+      "init_median_ms": 660.935,
+      "init_sd_ms": 136.64650608967344
     },
     {
       "function": "python-optimised",
       "intended": 12,
       "cold": 12,
-      "init_median_ms": 157.615,
-      "init_sd_ms": 36.49993408047181
+      "init_median_ms": 165.06,
+      "init_sd_ms": 26.353564691891243
     }
   ],
   "comparisons": {
-    "H1: python-optimised vs nodejs-optimised": 17,
-    "H1: python-optimised vs java-optimised": 45,
-    "H1: nodejs-optimised vs java-optimised": 47,
-    "H2_python: python-default vs python-optimised": 49,
-    "H2_nodejs: nodejs-default vs nodejs-optimised": 76,
-    "H2_java: java-default vs java-optimised": 183
+    "H1: python-optimised vs nodejs-optimised": 8,
+    "H1: python-optimised vs java-optimised": 37,
+    "H1: nodejs-optimised vs java-optimised": 37,
+    "H2_python: python-default vs python-optimised": 105,
+    "H2_nodejs: nodejs-default vs nodejs-optimised": 97,
+    "H2_java: java-default vs java-optimised": 120
   },
   "planned_reps": {
     "runtime_compare": 50,
@@ -64,14 +71,14 @@
     "combined": 40
   },
   "recommended": {
-    "runtime_compare": 47,
-    "package_size": 183,
+    "runtime_compare": 37,
+    "package_size": 120,
     "memory": 40,
     "combined": 40
   },
   "update_env_cold": [
-    72,
-    72
+    84,
+    84
   ],
   "idle_probe": [
     {
@@ -87,21 +94,21 @@
     {
       "idle_gap_min": 10.0,
       "n": 8,
-      "cold": 4,
-      "cold_fraction": 0.5,
+      "cold": 5,
+      "cold_fraction": 0.625,
       "ci95": [
-        0.21521606069626764,
-        0.7847839393037324
+        0.30574239265377096,
+        0.8631557152608771
       ]
     },
     {
       "idle_gap_min": 20.0,
       "n": 8,
-      "cold": 7,
-      "cold_fraction": 0.875,
+      "cold": 8,
+      "cold_fraction": 1.0,
       "ci95": [
-        0.5291118149439162,
-        0.9775825088000281
+        0.6755924316585924,
+        1.0
       ]
     },
     {
@@ -125,5 +132,5 @@
       ]
     }
   ],
-  "recommended_idle_gap_min": 30.0
+  "recommended_idle_gap_min": 20.0
 }

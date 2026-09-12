@@ -6,7 +6,7 @@ phases:
   pilot_cold:                     # spread of Init Duration per runtime x package
     kind: cold
     runtimes: [python, nodejs, java]
-    variants: [default, optimised]
+    variants: [default, bytecode, optimised]
     memories: [1024]
     reps: 12
     follow_up_warm: 1

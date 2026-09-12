@@ -29,8 +29,23 @@ _SER = TypeSerializer()
 
 
 def items_for(design: str, start: int, stop: int, kb: int, shards: int):
+    # For K4, we need to know the rank to determine if it's hot (rank < 1000)
+    inv_perm = None
+    if design == "K4":
+        from workloads.generator.zipf import Zipf
+        with open(ROOT / "config/experiment.yaml", encoding="utf-8") as fh:
+            cfg = yaml.safe_load(fh)
+        z = Zipf(cfg["dataset"]["orders"], cfg["zipf"]["s"], cfg["zipf"]["perm_seed"])
+        import numpy as np
+        inv_perm = np.empty_like(z.perm)
+        inv_perm[z.perm] = np.arange(len(z.perm))
+
     for i in range(start, stop):
-        yield keys.make_item(design, i, kb, version=0, shard=i % shards, status="NEW")
+        is_hot = True
+        if design == "K4":
+            is_hot = inv_perm[i] < 1000
+        active_shards = shards if (design == "K3" or (design == "K4" and is_hot)) else 1
+        yield keys.make_item(design, i, kb, version=0, shard=i % active_shards, status="NEW")
 
 
 def chunks(it, n: int = BATCH):

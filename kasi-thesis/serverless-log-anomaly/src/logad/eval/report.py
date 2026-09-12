@@ -33,8 +33,9 @@ DETECTORS = {
     "d1_iforest": "D1b Isolation Forest",
     "d2_transfer": "D2 transfer (ELFA-Log style)",
     "d3_thresholds": "D3 threshold alarms",
+    "d4_novel": "D4 Context-Aware OC-SVM (novel)"
 }
-MAIN = ["d1_primary", "d2_transfer", "d3_thresholds"]
+MAIN = ["d1_primary", "d2_transfer", "d3_thresholds", "d4_novel"]
 PRACTICAL_F1 = 0.10  # pre-registered: 10 F1 points
 
 

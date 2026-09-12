@@ -85,7 +85,12 @@ class MockLambda:
 
     def init_ms(self, runtime: str, variant: str, memory_mb: int) -> float:
         p = self.m["init"]
-        cpu = p["runtime_ms"][runtime] + (p["package_extra_ms"][runtime] if variant == "default" else 0.0)
+        extra = 0.0
+        if variant == "default":
+            extra = p["package_extra_ms"][runtime]
+        elif variant == "bytecode":
+            extra = p["package_extra_ms"][runtime] * 0.15 # 15% of the default overhead
+        cpu = p["runtime_ms"][runtime] + extra
         cpu *= self._cpu_factor(memory_mb, p["memory_exponent"])
         return self._lognorm(p["platform_fixed_ms"] + cpu, p["sigma"])
 

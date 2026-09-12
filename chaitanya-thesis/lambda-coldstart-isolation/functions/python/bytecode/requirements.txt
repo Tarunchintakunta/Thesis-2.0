@@ -1,0 +1,5 @@
+# Heavy dependencies the handler imports but never uses (the "default" treatment).
+# Pure-python wheels only, so the same zip works on arm64 and x86_64.
+boto3==1.35.36
+requests==2.32.3
+sympy==1.14.0

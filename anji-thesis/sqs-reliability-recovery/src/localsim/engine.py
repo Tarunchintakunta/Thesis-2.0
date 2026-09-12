@@ -86,6 +86,7 @@ def fault_config_for(spec) -> FaultConfig:
         window_start=window[0],
         window_end=window[1],
         point=spec.fault_point,
+        adaptive_vt=getattr(spec, 'adaptive_vt', False),
     )
 
 
@@ -94,6 +95,8 @@ def simulate(spec) -> RunResult:
         return _simulate_sync(spec)
     return _simulate_queue(spec)
 
+
+import os
 
 def _simulate_queue(spec) -> RunResult:
     sim = spec.sim
@@ -177,6 +180,7 @@ def _simulate_queue(spec) -> RunResult:
             remaining_s=sleeper.remaining,
             idempotent=spec.idempotency,
             tick=lambda stage: sleeper.sleep(timing.stage(stage)),
+            change_visibility=lambda handle, to_s: queue.change_visibility(handle, to_s, sleeper.now()),
         )
         failed: set[str] = set()
         reason = "ok"

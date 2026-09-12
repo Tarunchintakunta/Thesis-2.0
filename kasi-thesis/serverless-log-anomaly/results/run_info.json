@@ -74,7 +74,7 @@
         }
       },
       "certification": true,
-      "seconds": 9.1
+      "seconds": 5.7
     },
     {
       "seed": 2026,
@@ -142,7 +142,7 @@
         }
       },
       "certification": true,
-      "seconds": 9.0
+      "seconds": 5.7
     },
     {
       "seed": 2027,
@@ -210,7 +210,7 @@
         }
       },
       "certification": true,
-      "seconds": 9.0
+      "seconds": 5.8
     }
   ],
   "note": "logs produced by the local Lambda runtime emulator (not live AWS / LocalStack)"

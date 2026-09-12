@@ -5,6 +5,7 @@
     "H2_d1_primary",
     "H2_d2_transfer",
     "H2_d3_thresholds",
+    "H2_d4_novel",
     "H3"
   ],
   "tests": {
@@ -50,7 +51,7 @@
       "p": 1.1008350827154098e-27,
       "effect": "kendalls_w",
       "effect_size": 0.7142650462962966,
-      "p_holm": 5.504175413577049e-27,
+      "p_holm": 6.605010496292458e-27,
       "reject_null": true
     },
     "H2_d2_transfer": {
@@ -75,7 +76,7 @@
       "p": 1.764439308291239e-08,
       "effect": "kendalls_w",
       "effect_size": 0.21647940074906408,
-      "p_holm": 3.528878616582478e-08,
+      "p_holm": 5.293317924873717e-08,
       "reject_null": true
     },
     "H2_d3_thresholds": {
@@ -100,7 +101,32 @@
       "p": 3.1660100632645697e-18,
       "effect": "kendalls_w",
       "effect_size": 0.46998710509348796,
-      "p_holm": 1.2664040253058279e-17,
+      "p_holm": 1.5830050316322848e-17,
+      "reject_null": true
+    },
+    "H2_d4_novel": {
+      "null": "F1 does not differ across fault categories for D4 Context-Aware OC-SVM (novel)",
+      "unit": "block",
+      "categories": [
+        "permission_denied",
+        "config_error",
+        "dependency_timeout",
+        "resource_exhaustion"
+      ],
+      "n_blocks": 60,
+      "k": 4,
+      "column_means": [
+        0.8992559799412662,
+        0.9320728068015826,
+        0.9305177737515304,
+        0.9260289701423569
+      ],
+      "test": "Friedman",
+      "statistic": 15.364779874213875,
+      "p": 0.0015300221333190175,
+      "effect": "kendalls_w",
+      "effect_size": 0.08535988819007709,
+      "p_holm": 0.003060044266638035,
       "reject_null": true
     },
     "H3": {
@@ -109,20 +135,22 @@
       "detectors": [
         "d1_primary",
         "d2_transfer",
-        "d3_thresholds"
+        "d3_thresholds",
+        "d4_novel"
       ],
       "n_blocks": 36,
-      "k": 3,
+      "k": 4,
       "column_means": [
         0.09074074074074077,
         0.24722222222222218,
-        0.0
+        0.0,
+        0.05555555555555558
       ],
       "test": "Friedman",
-      "statistic": 42.01587301587298,
-      "p": 7.522619552145111e-10,
+      "statistic": 61.36532507739932,
+      "p": 3.0026336635462303e-13,
       "effect": "kendalls_w",
-      "effect_size": 0.5835537918871246,
+      "effect_size": 0.5681974544203641,
       "pairwise_post_hoc": {
         "d1_primary_vs_d2_transfer": {
           "n": 36,
@@ -156,6 +184,22 @@
           "effect_size": 1.0,
           "normality_p": 0.003463370628135422
         },
+        "d1_primary_vs_d4_novel": {
+          "n": 36,
+          "mean_a": 0.09074074074074075,
+          "mean_b": 0.055555555555555566,
+          "mean_diff": 0.03518518518518519,
+          "diff_ci95": [
+            0.028703703703703707,
+            0.04259259259259259
+          ],
+          "test": "Wilcoxon signed-rank",
+          "statistic": 0.0,
+          "p": 8.955611784226644e-07,
+          "effect": "rank_biserial",
+          "effect_size": 1.0,
+          "normality_p": 1.8597576741639756e-06
+        },
         "d2_transfer_vs_d3_thresholds": {
           "n": 36,
           "mean_a": 0.24722222222222218,
@@ -171,9 +215,41 @@
           "effect": "rank_biserial",
           "effect_size": 1.0,
           "normality_p": 3.496235021592577e-07
+        },
+        "d2_transfer_vs_d4_novel": {
+          "n": 36,
+          "mean_a": 0.24722222222222218,
+          "mean_b": 0.055555555555555566,
+          "mean_diff": 0.19166666666666668,
+          "diff_ci95": [
+            0.08425925925925927,
+            0.31018518518518523
+          ],
+          "test": "Wilcoxon signed-rank",
+          "statistic": 175.0,
+          "p": 0.1511198240549851,
+          "effect": "rank_biserial",
+          "effect_size": 0.29435483870967744,
+          "normality_p": 1.3191794888274342e-06
+        },
+        "d3_thresholds_vs_d4_novel": {
+          "n": 36,
+          "mean_a": 0.0,
+          "mean_b": 0.055555555555555566,
+          "mean_diff": -0.055555555555555566,
+          "diff_ci95": [
+            -0.07037037037037037,
+            -0.0425925925925926
+          ],
+          "test": "Wilcoxon signed-rank",
+          "statistic": 0.0,
+          "p": 1.241588985938387e-06,
+          "effect": "rank_biserial",
+          "effect_size": -1.0,
+          "normality_p": 0.0009480676960965495
         }
       },
-      "p_holm": 2.2567858656435334e-09,
+      "p_holm": 1.2010534654184921e-12,
       "reject_null": true
     }
   },
@@ -292,7 +368,8 @@
   "block_f1_means": {
     "d1_primary": 0.9064891098554466,
     "d2_transfer": 0.8622612365100844,
-    "d3_thresholds": 0.9332950412233211
+    "d3_thresholds": 0.9332950412233211,
+    "d4_novel": 0.9564904344356956
   },
   "block_f1_ci95": {
     "d1_primary": [
@@ -306,6 +383,10 @@
     "d3_thresholds": [
       0.9200024545302247,
       0.9458206886795234
+    ],
+    "d4_novel": [
+      0.9462537868418892,
+      0.9659381750036949
     ]
   }
 }

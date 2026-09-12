@@ -8,7 +8,7 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[2]
 RUNTIMES = ("python", "nodejs", "java")
-VARIANTS = ("default", "optimised")
+VARIANTS = ("default", "optimised", "bytecode")
 PHASE_KINDS = {"warm", "cold", "warming", "burst", "idle_probe"}
 
 
@@ -68,6 +68,10 @@ def validate(cfg: dict) -> None:
 
 def phase_cells(ph: dict) -> list[tuple[str, str, int]]:
     """(runtime, variant, memory) cells of a phase, in a fixed order."""
+    valid = {"python-default", "python-optimised", "python-bytecode",
+             "nodejs-default", "nodejs-optimised", "java-default", "java-optimised"}
     if "cells" in ph:
-        return [(r, c["variant"], int(c["memory"])) for r in ph["runtimes"] for c in ph["cells"]]
-    return [(r, v, int(m)) for r in ph["runtimes"] for v in ph["variants"] for m in ph["memories"]]
+        cells = [(r, c["variant"], int(c["memory"])) for r in ph["runtimes"] for c in ph["cells"]]
+    else:
+        cells = [(r, v, int(m)) for r in ph["runtimes"] for v in ph["variants"] for m in ph["memories"]]
+    return [(r, v, m) for r, v, m in cells if f"{r}-{v}" in valid]

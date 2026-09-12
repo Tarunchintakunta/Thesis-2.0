@@ -20,7 +20,7 @@ Separate from the report; not part of the page limit.
 | `src/logad/parse/` | fixed Drain parser + fingerprint |
 | `src/logad/features/` | 60 s windows, count view (D1), semantic view (D2) |
 | `src/logad/source/` | Loghub BGL reader (D2 source) |
-| `src/logad/detectors/` | D1 OC-SVM / Isolation Forest, D2 ELFA-Log style transfer, D3 threshold alarms |
+| `src/logad/detectors/` | D1 OC-SVM, D2 ELFA-Log transfer, D3 threshold alarms, D4 Context-Aware OC-SVM (novel) |
 | `src/logad/eval/` | metrics, statistics, figures, report |
 | `configs/` | experiment, parser, detectors, alarms, smoke and live configs |
 | `results/` | window predictions, summaries, statistics, figures, fingerprint, certification |

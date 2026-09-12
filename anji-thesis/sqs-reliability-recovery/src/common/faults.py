@@ -82,6 +82,8 @@ class FaultConfig:
     window_end: float | None = None
     # unhandled_error only: before_write, after_write or auto (pick randomly)
     point: str = "auto"
+    # new feature: adaptive visibility timeout
+    adaptive_vt: bool = False
 
     def __post_init__(self) -> None:
         if self.mode not in FAULT_MODES:
@@ -119,6 +121,7 @@ class FaultConfig:
             window_start=float(start) if start else None,
             window_end=float(end) if end else None,
             point=env.get("FAULT_POINT", "auto"),
+            adaptive_vt=env.get("ADAPTIVE_VT", "0") == "1",
         )
 
 

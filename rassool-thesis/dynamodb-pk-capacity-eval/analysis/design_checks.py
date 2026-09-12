@@ -38,12 +38,18 @@ def load_config(path=ROOT / "config/experiment.yaml") -> dict:
 def rcu_per_read(item_kb: float, consistency: str, design: str, shards: int) -> float:
     units = math.ceil(item_kb / 4) * (0.5 if consistency == "eventual" else 1.0)
     # K3 reads every shard key; a missing item still costs the minimum read unit
-    return units * (shards if design == "K3" else 1)
-
+    if design == "K3":
+        return units * shards
+    # For K4, average read cost is weighted: 90% of traffic on top 10% (hot, 10 shards)
+    # But wait, capacity plan is based on worst case or average? Average required RCU/s.
+    if design == "K4":
+        # Hot items (top 1000) take ~ 50% of traffic, cost is N=10. Rest cost N=1.
+        # This is a simplification for capacity planning.
+        return units * (0.50 * shards + 0.50 * 1)
+    return units
 
 def wcu_per_write(item_kb: float) -> float:
     return float(math.ceil(item_kb))
-
 
 def capacity_plan(cfg: dict) -> pd.DataFrame:
     prov, kb, shards = cfg["provisioned"], cfg["dataset"]["item_size_kb"], cfg["k3_shards"]
@@ -63,7 +69,6 @@ def capacity_plan(cfg: dict) -> pd.DataFrame:
                      "write_min": wmin, "write_max": wmin * prov["max_multiplier"]})
     return pd.DataFrame(rows)
 
-
 def hottest_shares(z: Zipf, n_shards: int) -> dict:
     pmf = np.diff(np.concatenate([[0.0], z.cdf]))
     by_order = np.empty(z.n)
@@ -71,7 +76,6 @@ def hottest_shares(z: Zipf, n_shards: int) -> dict:
     cust = np.array([(i * 7919 + 13) % keys.N_CUSTOMERS for i in range(z.n)])
     by_customer = np.bincount(cust, weights=by_order, minlength=keys.N_CUSTOMERS)
     return {"order": float(by_order.max()), "customer": float(by_customer.max()), "shards": n_shards}
-
 
 def hot_key_load(cfg: dict, z: Zipf, item_sizes=(1, 8, 32)) -> pd.DataFrame:
     sh = hottest_shares(z, cfg["k3_shards"])
@@ -83,9 +87,14 @@ def hot_key_load(cfg: dict, z: Zipf, item_sizes=(1, 8, 32)) -> pd.DataFrame:
                 share = sh["customer"] if d == "K2" else sh["order"]
                 reads = peak * p["read_fraction"] * share
                 writes = peak * (1 - p["read_fraction"]) * share
-                # K3: a hot order's writes land on N shard keys; each logical read touches every shard key once
-                w_units = writes * wcu_per_write(kb) / (sh["shards"] if d == "K3" else 1)
-                r_units = reads * math.ceil(kb / 4) * (0.5 if cfg["consistency"] == "eventual" else 1)
+                # K3/K4: hottest key is spread. K4 spreads hot keys identical to K3.
+                w_units = writes * wcu_per_write(kb) / (sh["shards"] if d in ("K3", "K4") else 1)
+
+                # For capacity checking, r_units of the hottest key:
+                if d in ("K3", "K4"):
+                    r_units = reads * math.ceil(kb / 4) * (0.5 if cfg["consistency"] == "eventual" else 1)
+                else:
+                    r_units = reads * math.ceil(kb / 4) * (0.5 if cfg["consistency"] == "eventual" else 1)
                 rows.append({"key_design": d, "workload": w, "item_kb": kb, "peak_ops_s": peak,
                              "hottest_key_share": share, "hot_key_rcu_s": r_units, "hot_key_wcu_s": w_units,
                              "over_partition_limit": bool(r_units > PER_PARTITION_RCU or w_units > PER_PARTITION_WCU)})

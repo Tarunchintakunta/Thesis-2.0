@@ -74,7 +74,7 @@ class ThrottlingClient:
 
 
 def test_throttles_are_counted():
-    ok, throttled, code, units = h.one_op(ThrottlingClient(), "t", "K1", 5, False, 0, 1, 10)
+    ok, throttled, code, units = h.one_op(ThrottlingClient(), "t", "K1", 5, False, 0, 1, 10, 0)
     assert (ok, throttled, code, units) == (False, True, "ProvisionedThroughputExceededException", 0.0)
     plan = {"t": [0.0, 0.001, 0.002], "order": [1, 2, 3], "rank": [0, 1, 2], "read": [True, False, True],
             "shard_draw": [0, 0, 0]}
@@ -92,5 +92,5 @@ class PartialBatchClient:
 
 
 def test_k3_unprocessed_keys_count_as_throttled():
-    ok, throttled, code, units = h.one_op(PartialBatchClient(), "t", "K3", 5, True, 0, 1, 10)
+    ok, throttled, code, units = h.one_op(PartialBatchClient(), "t", "K3", 5, True, 0, 1, 10, 0)
     assert (ok, throttled, code, units) == (False, True, "UnprocessedKeys", 3.5)

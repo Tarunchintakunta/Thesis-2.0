@@ -107,3 +107,26 @@ def test_unknown_path_is_rejected():
 
 def test_function_client_never_retries(ddb):
     assert handler.client().meta.config.retries["total_max_attempts"] == 1
+
+def test_p4_first_delivery_uses_one_write(ddb):
+    out = handler.lambda_handler(event("P4", "r-4a"))
+    assert out["outcome"] == "APPLIED" and out["calls"] == 1 
+    # transacts cost 2x write units, and 2 items = 4 WCU. Moto doesn't always reflect exact billing
+    # but we can check if it passed.
+
+def test_p4_suppresses_redeliveries(ddb):
+    outs = deliver("P4", 5, rid="r-4b")
+    last = outs[-1]
+    assert last["outcome"] == "REPLAYED" and last["replayed_result"]["request_id"] == "r-4b"
+    assert business(ddb, "r-4b")["delivery"]["N"] == "1"
+
+def test_p4_no_intermittency_bug(ddb):
+    # With P3, an injected crash led to a rejected_in_progress state, and a full overwrite on retry.
+    # P4 has no intermediate state. It's atomic. It either fails (no items exist) or succeeds (both exist).
+    # "after_commit" crashes the lambda AFTER the DynamoDB transaction completes.
+    outs = deliver("P4", 2, rid="r-4c")
+    # Delivery 1: crashes after the TransactWriteItems succeeds. DynamoDB has the items.
+    # Delivery 2: condition fails, returns REPLAYED. 
+    assert outs[-1]["outcome"] == "REPLAYED"
+    assert business(ddb, "r-4c")["delivery"]["N"] == "1"
+

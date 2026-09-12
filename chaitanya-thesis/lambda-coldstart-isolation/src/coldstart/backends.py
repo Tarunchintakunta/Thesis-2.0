@@ -25,6 +25,7 @@ from .mock import MockLambda, VirtualClock
 FUNCTIONS = {
     "python-default": ("python", "default"),
     "python-optimised": ("python", "optimised"),
+    "python-bytecode": ("python", "bytecode"),
     "nodejs-default": ("nodejs", "default"),
     "nodejs-optimised": ("nodejs", "optimised"),
     "java-default": ("java", "default"),

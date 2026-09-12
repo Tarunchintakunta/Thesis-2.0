@@ -163,6 +163,15 @@ class SimQueue:
         del self._entries[key]
         return True
 
+    def change_visibility(self, receipt_handle: str, new_timeout: float, now: float) -> bool:
+        key = self._handles.get(receipt_handle)
+        entry = self._entries.get(key) if key else None
+        if entry is None or entry.receipt_handle != receipt_handle:
+            return False
+        entry.visible_at = now + float(new_timeout)
+        heapq.heappush(self._heap, (entry.visible_at, next(self._seq), entry.key))
+        return True
+
     # -- attributes ------------------------------------------------------
     def depth(self, now: float) -> dict[str, int]:
         """Roughly ApproximateNumberOfMessages / NotVisible / Delayed."""

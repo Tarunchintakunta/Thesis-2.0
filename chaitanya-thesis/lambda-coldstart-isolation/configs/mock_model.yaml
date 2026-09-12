@@ -54,6 +54,7 @@ errors:
 max_memory_used_mb:
   python-default: 118
   python-optimised: 38
+  python-bytecode: 42
   nodejs-default: 140
   nodejs-optimised: 72
   java-default: 165

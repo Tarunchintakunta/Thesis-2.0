@@ -16,10 +16,10 @@ CFG = yaml.safe_load(open("config/experiment.yaml"))
 
 def test_schedule_blocks_hold_every_cell_once():
     s = schedule(CFG, blocks=3)
-    assert len(s) == 3 * 24
+    assert len(s) == 3 * 32
     for b in range(3):
         block = [(c["configuration"], c["workload"]) for c in s if c["block"] == b]
-        assert len(set(block)) == 24
+        assert len(set(block)) == 32
     orders = [tuple(c["batch_id"].split("-", 1)[1] for c in s if c["block"] == b) for b in range(3)]
     assert len(set(orders)) == 3  # a new random order in every block
 
@@ -32,7 +32,7 @@ def test_schedule_is_reproducible_and_seeds_are_stable():
 def test_table_names_match_terraform():
     assert table_name("ddbpk", "K2", "on_demand") == "ddbpk-k2-ondemand"
     assert table_name("ddbpk", "K3", "provisioned") == "ddbpk-k3-provisioned"
-    assert len(CONFIGS) == 6
+    assert len(CONFIGS) == 8
 
 
 def test_lambda_events_split_the_rate():

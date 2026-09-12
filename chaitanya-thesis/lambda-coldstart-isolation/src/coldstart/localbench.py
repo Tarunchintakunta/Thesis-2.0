@@ -29,12 +29,15 @@ ROOT = Path(__file__).resolve().parents[2]
 BUILD = ROOT / "build"
 BENCH = ROOT / "scripts" / "bench"
 PAYLOAD = ROOT / "payloads" / "fixed_payload.json"
-VARIANTS = [(r, v) for r in ("python", "nodejs", "java") for v in ("default", "optimised")]
+VARIANTS = [(r, v) for r in ("python", "nodejs", "java") for v in ("default", "optimised")] + [("python", "bytecode")]
 
 
 def is_built(runtime: str, variant: str, build: Path = BUILD) -> bool:
     pkg = build / f"{runtime}-{variant}"
-    marker = {"python": "handler.py", "nodejs": "index.mjs", "java": "function.jar"}[runtime]
+    if variant == "bytecode":
+        marker = "handler.pyc"
+    else:
+        marker = {"python": "handler.py", "nodejs": "index.mjs", "java": "function.jar"}[runtime]
     return (pkg / marker).exists()
 
 

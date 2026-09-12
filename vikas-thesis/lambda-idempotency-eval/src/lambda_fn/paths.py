@@ -124,7 +124,62 @@ def p3(client, table, request_id, payload, exec_id, delivery, now_ms, in_progres
     return _result("APPLIED", wcu=wcu, calls=3, business_writes=1)
 
 
-PATHS = {"P1": p1, "P2": p2, "P3": p3}
+def p4(client, table, request_id, payload, exec_id, delivery, now_ms, ttl_s=3600, between=None, **_):
+    now_s = now_ms // 1000
+    result = {"request_id": request_id, "applied_by": exec_id}
+    key_item = {
+        "pk": f"IDEMP#{request_id}",
+        "status": "COMPLETED",
+        "result": json.dumps(result),
+        "expiry": int(now_s + ttl_s),
+        "owner": exec_id
+    }
+    b_item = business_item(request_id, payload, exec_id, delivery)
+    
+    try:
+        resp = client.transact_write_items(
+            TransactItems=[
+                {
+                    "Put": {
+                        "TableName": table,
+                        "Item": typed(key_item),
+                        "ConditionExpression": "attribute_not_exists(pk)",
+                        "ReturnValuesOnConditionCheckFailure": "ALL_OLD"
+                    }
+                },
+                {
+                    "Put": {
+                        "TableName": table,
+                        "Item": typed(b_item)
+                    }
+                }
+            ],
+            ReturnConsumedCapacity="TOTAL"
+        )
+        wcu = sum(_cc(cap) for cap in resp.get("ConsumedCapacity", []))
+        if between is not None:
+            between(_result("CRASH_BETWEEN", wcu=wcu, calls=1, business_writes=1))
+        return _result("APPLIED", wcu=wcu, calls=1, business_writes=1)
+    except ClientError as exc:
+        code = exc.response.get("Error", {}).get("Code")
+        if code == "TransactionCanceledException":
+            reasons = exc.response.get("CancellationReasons", [])
+            if reasons and reasons[0].get("Code") == "ConditionalCheckFailed":
+                # It exists! It's a replay.
+                old = plain(reasons[0].get("Item", {}))
+                
+                # AWS currently does not return ConsumedCapacity on TransactionCanceledException uniformly,
+                # but it bills for the condition check on transactions.
+                # A rejected transact write item is billed 1 WCU per item. So 2 WCUs rule.
+                reported = sum(_cc(cap) for cap in exc.response.get("ConsumedCapacity", []))
+                rule = 2.0 if not reported else 0.0
+                
+                if old.get("status") == "COMPLETED":
+                    return _result("REPLAYED", wcu=reported, wcu_ccf_rule=rule, ccf=1, calls=1,
+                                   replayed_result=json.loads(old.get("result", "{}")))
+        raise
+
+PATHS = {"P1": p1, "P2": p2, "P3": p3, "P4": p4}
 
 
 def run(path: str, client, table: str, request_id: str, payload: dict, exec_id: str, delivery: int, **kw) -> dict:
