@@ -17,7 +17,7 @@ RUNTIMES=${*:-python nodejs java}
 mkdir -p "$OUT"
 
 pkg_python() {
-  for v in default optimised; do
+  for v in default optimised bytecode; do
     d="$OUT/python-$v"
     rm -rf "$d" "$OUT/python-$v.zip"
     mkdir -p "$d"
@@ -32,6 +32,11 @@ pkg_python() {
       # of the pip metadata stays (it is part of a normal "default" upload).
       rm -rf "$d/bin"
       find "$d" -path "*.dist-info/RECORD" -delete
+    fi
+    if [ "$v" = "bytecode" ]; then
+      "$PY" -m compileall -b "$d" >/dev/null
+      find "$d" -name "*.py" -delete
+      find "$d" -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
     fi
     echo "python-$v done"
   done

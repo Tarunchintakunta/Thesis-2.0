@@ -1,13 +1,14 @@
 control,scope,init_delta_ms,cold_freq_delta,ms_saved_per_invocation,delta_cost_per_1k_usd,test,p_holm,band,when_to_use
-Switch runtime,java -> python,368.9100000000001,0.0,151.34769230769234,-0.0020149563420743524,H1,1.0496783995183358e-17,adopt,new functions where the team is free to pick the language
-Prune package,python,460.72499999999997,0.0,189.0153846153846,-0.0026167674849264075,H2_python,3.029308931010695e-16,adopt,whenever the dependency is really unused at run time
-Prune package,nodejs,415.125,0.0,170.3076923076923,-0.0021896528285512817,H2_nodejs,2.25549379058934e-16,adopt,whenever the dependency is really unused at run time
-Prune package,java,300.2400000000001,0.0,123.17538461538466,-0.0014565059549792683,H2_java,2.1492474979125297e-10,adopt,whenever the dependency is really unused at run time
-Raise memory (exploratory),python 128->1024 MB,121.565,0.0,49.87282051282051,0.0007324705426762822,H4_python,1.3027682387622685e-57,adopt,when cold p95 matters more than the price per GB-s
-Raise memory (exploratory),nodejs 128->1024 MB,137.055,0.0,56.22769230769231,0.0008326986079166668,H4_nodejs,1.4007162541777586e-28,adopt,when cold p95 matters more than the price per GB-s
-Raise memory (exploratory),java 128->1024 MB,489.4949999999999,0.0,200.8184615384615,0.002387611296971154,H4_java,3.525007830166231e-30,situational,when cold p95 matters more than the price per GB-s
-Low-frequency warming,EventBridge rate(5 min),181.10499999999996,-0.15384615384615385,56.669999999999995,-0.00037241252950295854,H3,0.040630376987049556,adopt,"sparse, latency-sensitive traffic; one ping keeps one environment, so bursts still go cold"
-Combined free controls,python: default@128 -> optimised@1024,1152.155,0.0,472.67897435897436,6.908154198717951e-05,combined_python,4.305255919181003e-14,adopt,default starting point for a new function
-Combined free controls,nodejs: default@128 -> optimised@1024,994.7549999999999,0.0,408.10461538461533,0.0002562747856410257,combined_nodejs,4.305255919181003e-14,adopt,default starting point for a new function
-Combined free controls,java: default@128 -> optimised@1024,1217.5349999999999,0.0,499.50153846153836,0.0018176159256410264,combined_java,4.305255919181003e-14,situational,default starting point for a new function
+Switch runtime,java -> python,368.9100000000001,0.0,151.34769230769234,-0.0020149563420743524,H1,8.397427196146687e-18,adopt,new functions where the team is free to pick the language
+Prune package,python default->bytecode,371.05000000000007,0.0,152.22564102564104,-0.002026906634807573,H2_python,,not tested,see thesis notes
+Prune package,python bytecode->optimised,68.96000000000004,0.0,28.291282051282064,-0.0003503251425117736,H2_python,,not tested,see thesis notes
+Prune package,nodejs default->optimised,408.0,0.0,167.3846153846154,-0.002197798569611198,H2_nodejs,6.213041157112564e-17,adopt,see thesis notes
+Prune package,java default->optimised,313.44999999999993,0.0,128.59487179487175,-0.0016660026736587444,H2_java,1.1689758454434848e-14,adopt,see thesis notes
+Raise memory (exploratory),python 128->1024 MB,125.52499999999995,0.0,51.49743589743588,0.0007468765976121794,H4_python,1.0912916598778737e-26,adopt,when cold p95 matters more than the price per GB-s
+Raise memory (exploratory),nodejs 128->1024 MB,153.42000000000002,0.0,62.941538461538464,0.0008353941342147436,H4_nodejs,1.8979323703399807e-70,adopt,when cold p95 matters more than the price per GB-s
+Raise memory (exploratory),java 128->1024 MB,507.71500000000015,0.0,208.29333333333338,0.002447283603878205,H4_java,5.3994040377902875e-31,situational,when cold p95 matters more than the price per GB-s
+Low-frequency warming,EventBridge rate(5 min),62.77000000000004,-0.15384615384615385,62.376153846153855,-0.0004242471082011836,H3,0.040630376987049556,adopt,"sparse, latency-sensitive traffic; one ping keeps one environment, so bursts still go cold"
+Combined free controls,python: default@128 -> optimised@1024,1065.3700000000001,0.0,437.07487179487185,0.00014408084860576917,combined_python,2.24623807593438e-37,adopt,default starting point for a new function
+Combined free controls,nodejs: default@128 -> optimised@1024,992.0099999999999,0.0,406.9784615384615,0.000286968315176282,combined_nodejs,2.870170612787335e-14,adopt,default starting point for a new function
+Combined free controls,java: default@128 -> optimised@1024,1146.1,0.0,470.19487179487174,0.002098194251602565,combined_java,2.870170612787335e-14,situational,default starting point for a new function
 (Future) Provisioned concurrency,not measured,,,,,-,,not tested,"paid feature, out of the primary scope (future work)"

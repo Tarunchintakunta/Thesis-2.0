@@ -4,17 +4,18 @@
 
 | Control | Scope | Typical Init delta (ms) | Cold-frequency delta | Delta cost / 1k (USD) | p (Holm) | Band | When to use |
 |---|---|---|---|---|---|---|---|
-| Switch runtime | java -> python | 369 | +0.00 | -0.00201 | 1.05e-17 | adopt | new functions where the team is free to pick the language |
-| Prune package | python | 461 | +0.00 | -0.00262 | 3.03e-16 | adopt | whenever the dependency is really unused at run time |
-| Prune package | nodejs | 415 | +0.00 | -0.00219 | 2.26e-16 | adopt | whenever the dependency is really unused at run time |
-| Prune package | java | 300 | +0.00 | -0.00146 | 2.15e-10 | adopt | whenever the dependency is really unused at run time |
-| Raise memory (exploratory) | python 128->1024 MB | 122 | +0.00 | +0.00073 | 1.3e-57 | adopt | when cold p95 matters more than the price per GB-s |
-| Raise memory (exploratory) | nodejs 128->1024 MB | 137 | +0.00 | +0.00083 | 1.4e-28 | adopt | when cold p95 matters more than the price per GB-s |
-| Raise memory (exploratory) | java 128->1024 MB | 489 | +0.00 | +0.00239 | 3.53e-30 | situational | when cold p95 matters more than the price per GB-s |
-| Low-frequency warming | EventBridge rate(5 min) | 181 | -0.15 | -0.00037 | 0.0406 | adopt | sparse, latency-sensitive traffic; one ping keeps one environment, so bursts still go cold |
-| Combined free controls | python: default@128 -> optimised@1024 | 1152 | +0.00 | +0.00007 | 4.31e-14 | adopt | default starting point for a new function |
-| Combined free controls | nodejs: default@128 -> optimised@1024 | 995 | +0.00 | +0.00026 | 4.31e-14 | adopt | default starting point for a new function |
-| Combined free controls | java: default@128 -> optimised@1024 | 1218 | +0.00 | +0.00182 | 4.31e-14 | situational | default starting point for a new function |
+| Switch runtime | java -> python | 369 | +0.00 | -0.00201 | 8.4e-18 | adopt | new functions where the team is free to pick the language |
+| Prune package | python default->bytecode | 371 | +0.00 | -0.00203 | - | not tested | see thesis notes |
+| Prune package | python bytecode->optimised | 69 | +0.00 | -0.00035 | - | not tested | see thesis notes |
+| Prune package | nodejs default->optimised | 408 | +0.00 | -0.00220 | 6.21e-17 | adopt | see thesis notes |
+| Prune package | java default->optimised | 313 | +0.00 | -0.00167 | 1.17e-14 | adopt | see thesis notes |
+| Raise memory (exploratory) | python 128->1024 MB | 126 | +0.00 | +0.00075 | 1.09e-26 | adopt | when cold p95 matters more than the price per GB-s |
+| Raise memory (exploratory) | nodejs 128->1024 MB | 153 | +0.00 | +0.00084 | 1.9e-70 | adopt | when cold p95 matters more than the price per GB-s |
+| Raise memory (exploratory) | java 128->1024 MB | 508 | +0.00 | +0.00245 | 5.4e-31 | situational | when cold p95 matters more than the price per GB-s |
+| Low-frequency warming | EventBridge rate(5 min) | 63 | -0.15 | -0.00042 | 0.0406 | adopt | sparse, latency-sensitive traffic; one ping keeps one environment, so bursts still go cold |
+| Combined free controls | python: default@128 -> optimised@1024 | 1065 | +0.00 | +0.00014 | 2.25e-37 | adopt | default starting point for a new function |
+| Combined free controls | nodejs: default@128 -> optimised@1024 | 992 | +0.00 | +0.00029 | 2.87e-14 | adopt | default starting point for a new function |
+| Combined free controls | java: default@128 -> optimised@1024 | 1146 | +0.00 | +0.00210 | 2.87e-14 | situational | default starting point for a new function |
 | (Future) Provisioned concurrency | not measured | - | - | - | - | not tested | paid feature, out of the primary scope (future work) |
 
 Cost per 1k assumes a cold fraction f = 0.41 (warm-control arm of the warming phase).

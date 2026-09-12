@@ -135,10 +135,13 @@ class Analysis:
         if len(groups) >= 2:
             t["H1"] = stats.compare_many(groups)
         for r in RUNTIMES:
-            a = self.colds("package_size", runtime=r, variant="default")["init_ms"]
-            b = self.colds("package_size", runtime=r, variant="optimised")["init_ms"]
-            if len(a) >= 3 and len(b) >= 3:
-                t[f"H2_{r}"] = stats.compare_two(a, b)
+            variants_to_check = ["default", "bytecode", "optimised"] if r == "python" else ["default", "optimised"]
+            for i in range(len(variants_to_check) - 1):
+                a = self.colds("package_size", runtime=r, variant=variants_to_check[i])["init_ms"]
+                b = self.colds("package_size", runtime=r, variant=variants_to_check[i+1])["init_ms"]
+                if len(a) >= 3 and len(b) >= 3:
+                    suffix = f"_{variants_to_check[i]}_to_{variants_to_check[i+1]}" if r == "python" else ""
+                    t[f"H2_{r}{suffix}"] = stats.compare_two(a, b)
         w = self.sel("warming")
         if len(w) and {"on", "off"} <= set(w["warming"]):
             per = w.groupby(["block", "warming"])["cold"].mean().unstack("warming").dropna()
@@ -218,18 +221,20 @@ class Analysis:
                          "band": band(sig, saving, thr, dcost, free),
                          "when_to_use": "new functions where the team is free to pick the language"})
         for r in RUNTIMES:
-            d, o = self.colds("package_size", runtime=r, variant="default"), self.colds("package_size", runtime=r, variant="optimised")
-            if len(d) and len(o):
-                saving = _med(d["init_ms"]) - _med(o["init_ms"])
-                dc = _mean(o["cost_usd"]) - _mean(d["cost_usd"])
-                dw = _mean(self.warms("package_size", runtime=r, variant="optimised")["cost_usd"]) - _mean(
-                    self.warms("package_size", runtime=r, variant="default")["cost_usd"])
-                sig, p = test_of(f"H2_{r}")
-                dcost = self._mix(dc, dw, f)
-                rows.append({"control": "Prune package", "scope": r, "init_delta_ms": saving, "cold_freq_delta": 0.0,
-                             "ms_saved_per_invocation": saving * f, "delta_cost_per_1k_usd": dcost,
-                             "test": f"H2_{r}", "p_holm": p, "band": band(sig, saving, thr, dcost, free),
-                             "when_to_use": "whenever the dependency is really unused at run time"})
+            variants_to_check = ["default", "bytecode", "optimised"] if r == "python" else ["default", "optimised"]
+            for i in range(len(variants_to_check) - 1):
+                d, o = self.colds("package_size", runtime=r, variant=variants_to_check[i]), self.colds("package_size", runtime=r, variant=variants_to_check[i+1])
+                if len(d) and len(o):
+                    saving = _med(d["init_ms"]) - _med(o["init_ms"])
+                    dc = _mean(o["cost_usd"]) - _mean(d["cost_usd"])
+                    dw = _mean(self.warms("package_size", runtime=r, variant=variants_to_check[i+1])["cost_usd"]) - _mean(
+                        self.warms("package_size", runtime=r, variant=variants_to_check[i])["cost_usd"])
+                    sig, p = test_of(f"H2_{r}")  # For bytecode this might not be tested, that's fine
+                    dcost = self._mix(dc, dw, f)
+                    rows.append({"control": "Prune package", "scope": f"{r} {variants_to_check[i]}->{variants_to_check[i+1]}", "init_delta_ms": saving, "cold_freq_delta": 0.0,
+                                 "ms_saved_per_invocation": saving * f, "delta_cost_per_1k_usd": dcost,
+                                 "test": f"H2_{r}", "p_holm": p, "band": band(sig, saving, thr, dcost, free),
+                                 "when_to_use": "see thesis notes"})
         lo, hi = self.plan["memory_contrast"]
         for r in RUNTIMES:
             a, b = self.colds("memory", runtime=r, memory_mb=lo), self.colds("memory", runtime=r, memory_mb=hi)
@@ -333,9 +338,10 @@ class Analysis:
             fig, ax = plt.subplots(figsize=(7, 3.8))
             pos, data, labels = [], [], []
             for i, r in enumerate(RUNTIMES):
-                for j, v in enumerate(["default", "optimised"]):
+                variants_to_check = ["default", "bytecode", "optimised"] if r == "python" else ["default", "optimised"]
+                for j, v in enumerate(variants_to_check):
                     data.append(x.loc[(x["runtime"] == r) & (x["variant"] == v), "init_ms"])
-                    pos.append(i * 3 + j)
+                    pos.append(i * 4 + j)
                     labels.append(f"{r}\n{v}")
             ax.boxplot(data, positions=pos, tick_labels=labels, showfliers=False)
             ax.set(ylabel="Init Duration (ms)", title="Package size: default vs optimised (1024 MB, cold only)")

@@ -38,7 +38,7 @@ phases:
   package_size:                   # H2 - default vs optimised inside each runtime
     kind: cold
     runtimes: [python, nodejs, java]
-    variants: [default, optimised]
+    variants: [default, bytecode, optimised]
     memories: [1024]
     reps: 50
     follow_up_warm: 1

@@ -29,45 +29,61 @@
       "p_holm": 0.0,
       "reject": true
     },
-    "H2_python": {
+    "H2_python_default_to_bytecode": {
       "test": "mann_whitney_u",
-      "statistic": 2455.0,
+      "statistic": 2371.0,
       "p": 0.0,
-      "effect": 0.964,
+      "effect": 0.8968,
       "effect_name": "rank_biserial",
       "normal": false,
       "n": [
         50,
         50
       ],
-      "median_a": 641.05,
-      "median_b": 180.325,
-      "median_diff": 460.725,
+      "median_a": 616.275,
+      "median_b": 245.225,
+      "median_diff": 371.05,
       "median_diff_ci95": [
-        436.25,
-        495.881375
+        354.485,
+        416.37
+      ]
+    },
+    "H2_python_bytecode_to_optimised": {
+      "test": "mann_whitney_u",
+      "statistic": 2261.0,
+      "p": 0.0,
+      "effect": 0.8088,
+      "effect_name": "rank_biserial",
+      "normal": false,
+      "n": [
+        50,
+        50
       ],
-      "family": "confirmatory",
-      "p_holm": 0.0,
-      "reject": true
+      "median_a": 245.225,
+      "median_b": 176.265,
+      "median_diff": 68.96,
+      "median_diff_ci95": [
+        50.68425,
+        85.270125
+      ]
     },
     "H2_nodejs": {
       "test": "mann_whitney_u",
-      "statistic": 2465.0,
+      "statistic": 2482.0,
       "p": 0.0,
-      "effect": 0.972,
+      "effect": 0.9856,
       "effect_name": "rank_biserial",
       "normal": false,
       "n": [
         50,
         50
       ],
-      "median_a": 605.83,
-      "median_b": 190.705,
-      "median_diff": 415.125,
+      "median_a": 597.035,
+      "median_b": 189.035,
+      "median_diff": 408.0,
       "median_diff_ci95": [
-        379.188625,
-        441.815125
+        390.3275,
+        442.5705
       ],
       "family": "confirmatory",
       "p_holm": 0.0,
@@ -75,21 +91,21 @@
     },
     "H2_java": {
       "test": "mann_whitney_u",
-      "statistic": 2187.0,
+      "statistic": 2383.0,
       "p": 0.0,
-      "effect": 0.7496,
+      "effect": 0.9064,
       "effect_name": "rank_biserial",
       "normal": false,
       "n": [
         50,
         50
       ],
-      "median_a": 839.15,
-      "median_b": 538.91,
-      "median_diff": 300.24,
+      "median_a": 875.9,
+      "median_b": 562.45,
+      "median_diff": 313.45,
       "median_diff_ci95": [
-        244.76,
-        363.727
+        254.0545,
+        363.68025
       ],
       "family": "confirmatory",
       "p_holm": 0.0,
@@ -129,10 +145,42 @@
       "family": "descriptive"
     },
     "H4_python": {
-      "test": "anova",
-      "statistic": 149.37421,
+      "test": "kruskal_wallis",
+      "statistic": 127.907045,
       "p": 0.0,
-      "effect": 0.754895,
+      "effect": 0.642749,
+      "effect_name": "epsilon_squared",
+      "normal": false,
+      "groups": [
+        128,
+        512,
+        1024,
+        1769,
+        3008
+      ],
+      "n": [
+        40,
+        40,
+        40,
+        40,
+        40
+      ],
+      "medians": {
+        "128": 286.805,
+        "512": 191.84,
+        "1024": 161.28,
+        "1769": 154.145,
+        "3008": 145.76
+      },
+      "family": "exploratory:H4",
+      "p_holm": 0.0,
+      "reject": true
+    },
+    "H4_nodejs": {
+      "test": "anova",
+      "statistic": 218.872474,
+      "p": 0.0,
+      "effect": 0.81784,
       "effect_name": "eta_squared",
       "normal": true,
       "groups": [
@@ -146,47 +194,15 @@
         40,
         40,
         40,
-        39,
-        40
-      ],
-      "medians": {
-        "128": 288.75,
-        "512": 206.015,
-        "1024": 167.185,
-        "1769": 150.74,
-        "3008": 156.995
-      },
-      "family": "exploratory:H4",
-      "p_holm": 0.0,
-      "reject": true
-    },
-    "H4_nodejs": {
-      "test": "kruskal_wallis",
-      "statistic": 136.749849,
-      "p": 0.0,
-      "effect": 0.687185,
-      "effect_name": "epsilon_squared",
-      "normal": false,
-      "groups": [
-        128,
-        512,
-        1024,
-        1769,
-        3008
-      ],
-      "n": [
-        40,
-        40,
-        40,
         40,
         40
       ],
       "medians": {
-        "128": 330.22,
-        "512": 237.65,
-        "1024": 193.165,
-        "1769": 162.175,
-        "3008": 173.235
+        "128": 341.11,
+        "512": 233.05,
+        "1024": 187.69,
+        "1769": 170.56,
+        "3008": 161.67
       },
       "family": "exploratory:H4",
       "p_holm": 0.0,
@@ -194,9 +210,9 @@
     },
     "H4_java": {
       "test": "kruskal_wallis",
-      "statistic": 145.624687,
+      "statistic": 149.427918,
       "p": 0.0,
-      "effect": 0.731782,
+      "effect": 0.750894,
       "effect_name": "epsilon_squared",
       "normal": false,
       "groups": [
@@ -214,33 +230,33 @@
         40
       ],
       "medians": {
-        "128": 1048.06,
-        "512": 710.76,
-        "1024": 558.565,
-        "1769": 478.995,
-        "3008": 499.26
+        "128": 1088.775,
+        "512": 719.95,
+        "1024": 581.06,
+        "1769": 513.72,
+        "3008": 470.42
       },
       "family": "exploratory:H4",
       "p_holm": 0.0,
       "reject": true
     },
     "combined_python": {
-      "test": "mann_whitney_u",
-      "statistic": 1600.0,
+      "test": "welch_t",
+      "statistic": 47.468749,
       "p": 0.0,
-      "effect": 1.0,
-      "effect_name": "rank_biserial",
-      "normal": false,
+      "effect": 10.614335,
+      "effect_name": "cohens_d",
+      "normal": true,
       "n": [
         40,
         40
       ],
-      "median_a": 1321.3,
-      "median_b": 169.145,
-      "median_diff": 1152.155,
+      "median_a": 1241.69,
+      "median_b": 176.32,
+      "median_diff": 1065.37,
       "median_diff_ci95": [
-        1084.88825,
-        1231.834625
+        1017.612375,
+        1140.7545
       ],
       "family": "exploratory:combined",
       "p_holm": 0.0,
@@ -257,12 +273,12 @@
         40,
         40
       ],
-      "median_a": 1191.85,
-      "median_b": 197.095,
-      "median_diff": 994.755,
+      "median_a": 1186.16,
+      "median_b": 194.15,
+      "median_diff": 992.01,
       "median_diff_ci95": [
-        966.358875,
-        1072.436125
+        891.348,
+        1040.565
       ],
       "family": "exploratory:combined",
       "p_holm": 0.0,
@@ -279,12 +295,12 @@
         40,
         40
       ],
-      "median_a": 1765.62,
-      "median_b": 548.085,
-      "median_diff": 1217.535,
+      "median_a": 1742.22,
+      "median_b": 596.12,
+      "median_diff": 1146.1,
       "median_diff_ci95": [
-        1063.632,
-        1312.6795
+        1037.1445,
+        1206.511875
       ],
       "family": "exploratory:combined",
       "p_holm": 0.0,
@@ -358,7 +374,9 @@
     }
   },
   "cold_fraction_used_for_cost": 0.410256,
-  "notes": [],
+  "notes": [
+    "confirmatory: no data for H2_python (family size shrinks to 4)"
+  ],
   "figures": [
     "baseline_style_duration_cost.png",
     "init_by_runtime.png",
