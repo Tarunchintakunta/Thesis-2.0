@@ -1,0 +1,73 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+Description: >
+  PAKS (Predictive Adaptive Kubernetes Scaling) - Infrastructure Mock Template
+  Demonstrates how ML-based scaling might integrate via AWS Serverless and EKS.
+
+Resources:
+  # Mock EKS Cluster Definition
+  MyEKSCluster:
+    Type: "AWS::EKS::Cluster"
+    Properties:
+      Name: "PAKS-EKS-Cluster"
+      RoleArn: !GetAtt EKSClusterRole.Arn
+      ResourcesVpcConfig:
+        SecurityGroupIds:
+          - !Ref EKSSecurityGroup
+        SubnetIds:
+          - "subnet-abcde012"
+          - "subnet-bcdef234"
+
+  EKSClusterRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: eks.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
+
+  EKSSecurityGroup:
+    Type: "AWS::EC2::SecurityGroup"
+    Properties:
+      GroupDescription: "Cluster security group for PAKS EKS"
+      VpcId: "vpc-12345678"
+
+  # The Machine Learning Prediction Lambda that overrides standard HPA scaling
+  PAKSPredictionFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: "paks-prediction-engine"
+      CodeUri: src/
+      Handler: ml_predict.handler
+      Runtime: python3.9
+      Timeout: 30
+      MemorySize: 1024
+      Environment:
+        Variables:
+          MODEL_S3_BUCKET: "paks-models-bucket"
+
+  # CloudWatch Alarm for Traditional HPA Fallback (Reactive)
+  HighCPUAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmDescription: "Scale up if CPU > 70% for 2 minutes (Fallback reactive HPA)"
+      MetricName: "CPUUtilization"
+      Namespace: "AWS/EKS"
+      Statistic: "Average"
+      Period: 60
+      EvaluationPeriods: 2
+      Threshold: 70
+      ComparisonOperator: "GreaterThanThreshold"
+
+Outputs:
+  ClusterOutput:
+    Description: "EKS Cluster Name for PAKS Simulation"
+    Value: !Ref MyEKSCluster
+  PredictionFunctionArn:
+    Description: "ARN of the PAKS ML Inference Function"
+    Value: !GetAtt PAKSPredictionFunction.Arn
