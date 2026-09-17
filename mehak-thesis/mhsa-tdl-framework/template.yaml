@@ -1,0 +1,50 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: MHSA-TDL Cluster Health Prediction Pipeline - Kinesis and Lambda
+
+Resources:
+  TelemetryDataStream:
+    Type: AWS::Kinesis::Stream
+    Properties:
+      Name: ClusterTelemetryStream
+      ShardCount: 1
+
+  InferenceFunctionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaKinesisExecutionRole
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+
+  HealthPredictionFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: MHSAPredictionFunction
+      CodeUri: src/lambda_handler/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Timeout: 30
+      MemorySize: 1024
+      Role: !GetAtt InferenceFunctionRole.Arn
+      Events:
+        StreamEvent:
+          Type: Kinesis
+          Properties:
+            Stream: !GetAtt TelemetryDataStream.Arn
+            StartingPosition: LATEST
+            BatchSize: 100
+
+Outputs:
+  TelemetryStreamName:
+    Description: "Kinesis Stream for raw telemetry ingestion"
+    Value: !Ref TelemetryDataStream
+  InferenceFunction:
+    Description: "Lambda Function for MHSA Inference"
+    Value: !Ref HealthPredictionFunction
