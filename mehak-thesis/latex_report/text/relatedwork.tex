@@ -1,32 +1,15 @@
 \section{Related Work}
+\label{sec:rw}
 
-This section surveys contemporary research and industry-standard practices regarding message reliability in distributed systems, specifically within the context of AWS services. As cloud-native architectures have evolved, message queue reliability has transitioned from simple synchronous handling to sophisticated asynchronous failure recovery.
+Cluster and data-center monitoring has traditionally relied on static threshold rules applied to individual telemetry metrics (CPU, memory, disk, network). Such reactive monitoring only flags a problem once a metric has already crossed its limit, leaving no lead time for remediation.
 
-\subsection{Evolution of Message Reliability Patterns}
-Reliability in distributed systems is bound by the impossibility of achieving "Exactly-Once" semantics without overhead. Literature from 2020 to 2026 (\cite{sqs-reliability-2025}) consistently highlights that message queues like Amazon SQS provide "At-Least-Once" delivery semantics. This fundamental constraint necessitates that all downstream processing must be idempotent.
+\subsection{Baseline: Multi-Head Attention for Telemetry-Based Violation Prediction}
+The baseline for this project is Thapliyal \cite{Thapliyal26}, ``A Multi-Head Attention Approach for SLA Compliance Monitoring in Data Centers'' (arXiv:2605.05354, accepted at the 46th IEEE ICDCS, May 2026). The paper trains a per-customer transformer in which each attention head is dedicated 1-to-1 to a single telemetry rule (power draw, temperature, humidity), predicting a None/Level-1/Level-2 violation label 30 minutes ahead from historical sensor windows. This directly targets the same problem this project addresses -- proactive, rather than reactive, violation prediction -- but for colocation SLA metrics rather than cluster health metrics.
 
-\subsection{Dead Letter Queue (DLQ) and Redrive Policies}
-The emergence of mature DLQ Redrive support has been the most significant evolution in SQS reliability. Traditional patterns relied on custom consumer logic to redirect failed messages to auxiliary queues. Recent standards advocate for the native AWS source queue redrive policies, enabling seamless "poison pill" management where messages exceeding the \texttt{maxReceiveCount} are moved to a secondary DLQ for deferred investigation and subsequent redrive without the need for additional bespoke recovery infrastructure.
+Critically, the paper's own reported results expose a specific weakness of the strict one-head-per-metric design: the power-draw head shows ``a skewed, bimodal error profile ... with systematic underprediction during high-load transients, a direct consequence of instantaneous load volatility.'' The authors attribute this to the architecture's decoupled heads never exchanging information with each other, even though their own data shows power and temperature are correlated.
 
-\subsection{Exponential Backoff, Jitter, and Visibility Timeout}
-The interplay between visibility timeout and retry intervals forms the backbone of recovery for transient failures, such as temporary database contention or service throttling. Modern architectural literature emphasizes managing the visibility timeout to equal or exceed the exponential backoff delay. This prevents the "thundering herd" problem where multiple workers contend for messages that are not yet ready to be processed, thereby exacerbating downstream failures.
+\subsection{The Gap This Project Targets}
+Because each head in Thapliyal's design is trained and read out independently, a head has no way to use another metric's precursor signal to anticipate its own metric's future violation. This project reproduces the strict per-head architecture as a baseline (Section~\ref{sec:Design}), confirms the same underprediction pattern on synthetic cluster telemetry, and then evaluates a cross-head fusion layer that lets the per-metric head representations attend to one another before classification.
 
-\subsection{Idempotency and Stateful Reconciliation}
-State tracking is foundational to ensuring that re-delivery of messages does not compromise system state. Recent research investigates the deployment of DynamoDB as a high-throughput state store, where message identifiers or business-transaction hashes are cached with an appropriate Time-to-Live (TTL). This pattern ensures that re-processed messages from a re-queued event do not duplicate state mutations.
-
-\subsection{Summary of Modern Recovery Flows}
-Current research highlights a shift from reactive to proactive monitoring of SQS, centering on observability and metrics like the ratio of Approximate Number of Messages Visible versus Not Visible. This ratio acts as an early warning for consumer blockage, allowing for automated horizontal scaling to mitigate backlog growth.
-
-\cite{sqs-reliability-2025} Kyrychenko, I., et al. (2025). \emph{Optimization of SQS batching strategies for high-throughput serverless pipelines.} IEEE Cloud Computing.
-
-\subsection{Theoretical Foundations}
-(Deep analysis of fundamental theories underlying the topic: e.g., for fault localisation, this involves deep-dive into graph dependency theory, causality, and Bayesian inference in microservices.)
-
-\subsection{Comparative Analysis of State-of-the-Art}
-(Exhaustive comparison of papers cited in the project proposal 2020-2026. Critical assessment of experimental rigs, scalability limitations, and computational overhead of current solutions.)
-
-\subsection{Methodological Gaps}
-(Identification of the specific gaps the current project addresses, whether it is performance, cost, observability, or reliability.)
-
-\subsection{Synthesis and Directions}
-(Integration of findings into a coherent body of knowledge that defines the current domain's frontier.)
+\subsection{Threshold-Based Monitoring as a Second Baseline}
+Traditional reactive threshold monitoring (flagging a violation only once a metric has already crossed its band in the observed window) is retained as a second, non-attention baseline, consistent with how Thapliyal frames the case for proactive monitoring against the industry-standard reactive approach.

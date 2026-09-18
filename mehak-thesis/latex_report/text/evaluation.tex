@@ -6,47 +6,51 @@
 \label{sec:Evaluation}
 %% ==================
 
-The purpose of this section is to provide a comprehensive analysis of the results and main findings of the study as well as the implications of these finding both from academic and practitioner perspective are presented. Only the most relevant results that support your research question and objectives shall be presented. Provide an in-depth and rigorous analysis of the results. Statistical tools should be used to critically evaluate and assess the experimental research outputs and levels of significance.
+Table~\ref{tab:results} reports mean $\pm$ standard deviation across 5 seeds (42-46) on held-out test data. Model weight initialisation and data-loader shuffling are seeded per run (not just the synthetic data generator), so these numbers are reproducible by re-running \texttt{scripts/train\_and\_evaluate.py}.
 
-Use visual aids such as graphs, charts, plots and so on to show the results.
-
-
+\begin{table}[htp]
+\centering
+\caption{Results across 5 seeds (mean $\pm$ std)}
+\label{tab:results}
+\begin{tabular}{lcccc}
+\hline
+Model & Accuracy & Macro-F1 & Transient Recall & Underprediction Bias \\
+\hline
+Threshold Baseline & 0.847 $\pm$ 0.002 & 0.313 $\pm$ 0.002 & 0.025 $\pm$ 0.002 & 1.715 $\pm$ 0.011 \\
+MHSA-PerHead (baseline) & 0.873 $\pm$ 0.011 & 0.565 $\pm$ 0.008 & 0.864 $\pm$ 0.022 & 0.290 $\pm$ 0.076 \\
+MHSA-Fused (improved) & 0.863 $\pm$ 0.014 & 0.560 $\pm$ 0.010 & 0.884 $\pm$ 0.021 & 0.273 $\pm$ 0.050 \\
+\hline
+\end{tabular}
+\end{table}
 
 %% ===============================
-\subsection{Experiment / Case Study 1}
+\subsection{Experiment 1: Reactive vs. Proactive}
 \label{sec:evalOne}
 %% ===============================
 
-\dots
-
+Both attention models overwhelmingly outperform the reactive threshold baseline at anticipating violations before they occur (Transient Recall 0.86-0.88 vs. 0.025). This is structural, not a modelling artefact: the threshold baseline only ever sees the history window, so unless a violation has already started before the window ends, it cannot know one is coming. This confirms Thapliyal's central claim -- proactive, attention-based prediction meaningfully beats reactive threshold monitoring -- transfers from the SLA/colocation setting to cluster telemetry.
 
 %% ===============================
-\subsection{Experiment / Case Study 2}
+\subsection{Experiment 2: Reproducing the Baseline Paper's Gap}
 \label{sec:evalTwo}
 %% ===============================
 
-\dots
-
+The reproduced baseline (MHSA-PerHead) shows a Transient Underprediction Bias of 0.29 severity levels -- i.e. when a real L1/L2 violation occurs inside a transient window, the model's prediction is on average 0.29 levels too low. This reproduces, on cluster telemetry, the same failure mode Thapliyal reports for the power-draw head on colocation telemetry: strictly independent per-metric heads underpredict severity during volatile, correlated bursts.
 
 %% ===============================
-\subsection{Experiment / Case Study 3}
+\subsection{Experiment 3: Cross-Head Fusion}
 \label{sec:evalThree}
 %% ===============================
 
-\dots
-
-
-%% ===============================
-\subsection{Experiment / Case Study N}
-\label{sec:evalN}
-%% ===============================
-
-\dots
+Adding the cross-head fusion layer (MHSA-Fused) moves both of the paper's targeted metrics in the right direction: Transient Recall rises from 0.864 to 0.884, and Underprediction Bias falls from 0.290 to 0.273 ($\sim$6\% relative reduction). This comes at a small cost to the metrics the paper does not specifically flag as a gap -- overall Accuracy drops from 0.873 to 0.863 and Macro-F1 from 0.565 to 0.560. None of these four differences exceed one standard deviation across the 5 seeds, so the honest reading is: a real, directionally consistent, but statistically modest improvement on the targeted gap, not a decisive win.
 
 %% ===============================
 \subsection{Discussion}
 \label{sec:discussion}
 %% ===============================
 
-A detailed discussion of the findings from the N experiments / case studies. Note that this discussion will have a lot more detail than the discussion in the following section (Conclusion). You should criticize the experiment(s), and be honest about whether your design was good enough. Suggest any modifications and improvements that could be made to the design to improve the results. You should always put your findings into the context of the previous research that you found during your literature review
+An earlier run of this same experiment (before model-weight initialisation and data-loader shuffling were seeded) showed a much larger apparent improvement ($\sim$20\% bias reduction). That result did not replicate once training randomness was properly controlled -- it was luck in the random seed, not a real effect, which is itself a useful (if uncomfortable) finding: unseeded neural network comparisons in a report this size can easily produce a result that looks like a clean win but isn't. The properly-seeded, 5-seed result reported above is the one that should be trusted.
 
+The remaining effect is real but modest, and is consistent with the underlying mechanism being subtle: the shared backbone already partially mixes cross-metric information before the heads split, so the fusion layer is refining an existing signal rather than introducing information that was completely unavailable before. A cleaner, larger effect would likely need either a longer training budget, an explicit auxiliary loss that penalises underprediction directly (rather than a generic cross-entropy loss), or a larger, more diverse burst-pattern vocabulary in the synthetic generator. These are noted as future work in Section~\ref{sec:Conclusion} rather than pursued further here, given the intentionally small scope of this benchmark.
+
+The threshold baseline's near-zero transient recall should not be read as ``threshold monitoring is bad'' in general -- it is doing exactly what reactive monitoring is designed to do (report current state), and is being evaluated here specifically on a forecasting task it was never meant to solve.

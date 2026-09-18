@@ -6,6 +6,19 @@
 \label{sec:Methodology}
 %% ==============================
 
-You will of course want to discuss your research as well as evaluation methodology -- otherwise how will your examiners know that you have followed an appropriate scientific process and rationalised your choice of evaluation. Note that it may also be useful to base decisions in this section off your discussion of related work in section~\ref{sec:rw}. You should also include cite any previous work used in defining your methodology.
+\subsection{Synthetic Telemetry Generator}
+Real multi-tenant cluster telemetry was not available, so a synthetic generator (\texttt{src/data/telemetry\_simulator.py}) produces 4-metric (CPU, memory, disk, network) sequences of 15 steps: a 10-step \emph{history} window (the only input the models see) and a 5-step \emph{future} window (used only to compute labels, never shown to the models). This makes the task a genuine forecasting problem rather than same-window classification -- a design flaw caught and fixed during this project (an earlier version computed labels from the same window the models could see, which trivially favoured the reactive baseline).
 
-You need to give a completely accurate description of the research procedure you followed, equipment used, the technique(s), applied, set-up of scenarios/case studies run. You must provide an explanation of how the raw data gathered/compiled and analyzed. Describe the statistical techniques used upon the data. Detail all the steps from data collection to final results.
+Each metric has independent None/L1/L2 thresholds. 40\% of samples contain an injected ``transient'' burst: a fast, non-linear ramp in a randomly chosen primary metric landing mostly or fully in the future window, plus a correlated ramp in 1-2 ``rider'' metrics that leads the primary metric by 3-6 steps and is visible in the history window. This construction means some future violations can only be anticipated by reading a \emph{different} metric's precursor signal -- exactly the scenario a strict per-head architecture struggles with.
+
+\subsection{Training}
+Both attention models are trained with Adam (lr=0.001) for 30 epochs on 20,000 samples per seed (80/20 train/test split, stratified on the transient flag), using a summed per-metric cross-entropy loss with inverse-frequency class weights (to counteract the dominance of the ``none'' class). Three random seeds (42, 43, 44) are used to regenerate the dataset and retrain both models, so results are reported as mean and standard deviation rather than a single run.
+
+\subsection{Metrics}
+\begin{itemize}
+  \item \textbf{Accuracy / Macro-F1}: per-metric, averaged across the 4 metrics, over the full test set.
+  \item \textbf{Transient Violation Recall}: of the test samples that are both transient \emph{and} have a true future violation (L1/L2) on a given metric, the fraction where the model predicts any violation at all.
+  \item \textbf{Transient Underprediction Bias}: mean(true label $-$ predicted label) over the same subset. This is the metric that operationalises the baseline paper's own stated gap (``systematic underprediction ... during high-load transients''); a value of 0 means no systematic bias, positive values mean the model under-calls severity.
+\end{itemize}
+
+All code, results, and the trained model weights used for deployment are in \texttt{mhsa-tdl-framework/}.

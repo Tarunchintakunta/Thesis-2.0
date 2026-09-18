@@ -6,6 +6,13 @@
 \label{sec:Conclusion}
 %% ==================
 
-Restate your research question, your objectives and the work done. State how successful you have been in answering the research question and achieving the objectives. Restate the key findings. Discuss the implications of your research, talk about the efficacy of your research, and discuss its limitations. 
+This project asked whether letting per-metric attention heads exchange information via a cross-head fusion layer reduces the systematic underprediction during high-load transients reported by Thapliyal (2026) for a strict one-head-per-metric SLA monitoring architecture. Reproducing that architecture on synthetic cluster telemetry confirmed the same failure mode (underprediction bias of 0.29 severity levels on transient windows), and the proposed fusion layer moved both targeted metrics in the right direction (recall 0.864$\to$0.884, bias 0.290$\to$0.273) across 5 properly-seeded training runs, at a small cost to overall accuracy (0.873$\to$0.863). Both attention-based models substantially outperformed reactive threshold monitoring at anticipating violations ahead of time (86-88\% vs. 2.5\% recall), confirming the baseline paper's central premise transfers to cluster health telemetry.
 
-Describe any proposals for future work or potential for commercialisation. Present MEANINGFUL future work. Sweeping more parameters in your simulation / model / platform is probably not meaningful. More discuss what could a follow up research project do, to better / differently approach / extend etc. your work.
+The improvement from fusion is real but modest, and none of the differences exceed one standard deviation across seeds -- an honest limitation rather than a negative result. A first, unseeded version of this experiment showed a much larger apparent effect that turned out to be an artefact of uncontrolled random initialisation rather than the fusion layer itself; this was caught by re-running with torch's RNG properly seeded, which is itself a reminder that small neural-network comparisons need seed control to be trustworthy.
+
+\textbf{Future work:}
+\begin{itemize}
+  \item Evaluate on real cluster telemetry (e.g. the Google Cluster Trace dataset) rather than synthetic data, to check whether the fusion improvement holds under real, non-stationary failure patterns.
+  \item Replace the generic cross-entropy loss with an asymmetric loss that penalises underprediction more than overprediction, directly targeting the failure mode this project measures.
+  \item Extend the burst-pattern vocabulary in the synthetic generator to a wider range of cross-metric lead/lag relationships, to test whether the fusion benefit scales with how much genuinely cross-metric information the task requires.
+\end{itemize}

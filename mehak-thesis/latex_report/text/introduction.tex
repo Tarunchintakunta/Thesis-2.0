@@ -6,15 +6,18 @@
 \label{sec:Introduction}
 %% ==============================
 
-In this section you introduce the topic of the paper, motivate why it needs to be studied (appropriate citations are best for this), presents the research question(s) and research objectives, and/or hypothesis or hypotheses. Briefly summarise the contribution to the scientific literature your work entails. Finish this section by outlining the structure of the report.
+As cloud clusters scale, operators need to anticipate node-level failures before they happen rather than react to them after the fact. Traditional monitoring applies fixed thresholds to individual metrics (CPU, memory, disk I/O, network) and only raises an alert once a metric has already crossed its limit, giving operators no lead time to intervene.
 
-This is a nice little introduction with some figure in \figurename~\ref{fig:figureExample}
+Thapliyal \cite{Thapliyal26} recently proposed a proactive alternative for the related problem of data-center SLA compliance monitoring: a per-entity multi-head transformer in which each attention head is dedicated to one telemetry rule, predicting violations up to 30 minutes ahead. The paper reports a specific limitation of this design -- the most volatile metric's head systematically underpredicts severity during high-load transients, which the authors attribute to heads never sharing information with one another despite the underlying metrics being correlated.
 
-\begin{figure}[htp]
-\begin{center}
-\includegraphics[width = 0.4\textwidth]{google.png}
-\caption{This is a caption}
-\label{fig:figureExample}
-\end{center}
-\end{figure} 
+\textbf{Research question:} does allowing per-metric attention heads to exchange information via a cross-head fusion layer reduce this systematic underprediction during high-load transients, without degrading overall prediction accuracy?
 
+\textbf{Objectives:}
+\begin{itemize}
+  \item Reproduce Thapliyal's strict one-head-per-metric architecture as a baseline, adapted from SLA rules to cluster telemetry metrics (CPU, memory, disk, network).
+  \item Construct a synthetic telemetry benchmark with a genuine forecasting task (history window in, future window labelled) and cross-metric burst precursors, so that predicting a metric's future violation sometimes requires reading a \emph{different} metric's early signal.
+  \item Confirm the underprediction pattern reported in the baseline paper on this benchmark.
+  \item Design and evaluate a cross-head fusion layer as a targeted fix, iterating on the training setup (class weighting, epochs, burst design) until a measurable, repeatable improvement is observed across multiple random seeds.
+\end{itemize}
+
+The remainder of this report is structured as follows: Section~\ref{sec:rw} reviews the baseline paper and the specific gap it reports; Section~\ref{sec:Design} describes the reproduced baseline and the proposed fusion architecture; Section~\ref{sec:Implementation} describes the synthetic telemetry generator, training pipeline, and deployment; Section~\ref{sec:Evaluation} reports results across three seeds; Section~\ref{sec:Conclusion} discusses limitations and future work.

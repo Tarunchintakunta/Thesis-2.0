@@ -6,4 +6,14 @@
 \label{sec:Design}
 %% ==============================
 
-The techniques and/or architecture and/or framework that underlie the implementation and the associated requirements are identified and presented in this section. If a new algorithm or model is proposed, a word based description of the algorithm/model functionality should be included.
+\subsection{Shared Backbone}
+Both models share a temporal encoder: a linear projection of the 4 raw metrics (CPU, memory, disk, network) into a 32-dimensional embedding, a learned positional encoding, one standard multi-head self-attention block over the 10-step history window, and a feed-forward block with residual connections and layer normalisation. This corresponds to the ``Transformer encoder backbone'' stage of Thapliyal's architecture, which jointly encodes all metrics before any per-metric specialisation.
+
+\subsection{MHSA-PerHead (baseline reproduction)}
+A manual multi-head attention layer splits the backbone's output channel dimension into 4 heads (one per metric). Each head computes its own attention (query = last timestep, key/value = full window) to produce a per-head context vector, which is passed to an independent 2-layer classifier predicting a 3-class violation label (None/L1/L2) for that metric only. No information is shared across heads after the split -- this is the strict 1-to-1 head-to-metric mapping used in the baseline paper.
+
+\subsection{MHSA-Fused (proposed improvement)}
+Identical to MHSA-PerHead, with one addition: after the per-head context vectors are computed, a single-layer self-attention block (\texttt{CrossHeadFusion}) treats the 4 head vectors as a short 4-token sequence and lets them attend to each other, with a residual connection and layer norm. The fused vectors are then passed to the same per-metric classifiers. This is the minimal architectural change needed to let e.g. the CPU head's classifier be informed by what the Network head is currently observing.
+
+\subsection{Threshold Baseline}
+A traditional reactive monitor: for each metric, it takes the peak value over the last 3 steps of the \emph{history} window only (it cannot see the future window) and buckets it into None/L1/L2 using the same thresholds used to generate ground-truth labels. It represents the industry-standard practice the baseline paper positions itself against.
