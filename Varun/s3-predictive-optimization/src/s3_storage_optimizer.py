@@ -1,5 +1,5 @@
 
-# Resolves the gap in Chen et al. (2025) which misses burst access spikes on S3.
+# Resolves the gap in Shen et al. (2025) and Yang et al. (2025) which misses burst access spikes on S3.
 class S3IntelligentTieringPredictor:
     def __init__(self):
         self.access_logs = {}

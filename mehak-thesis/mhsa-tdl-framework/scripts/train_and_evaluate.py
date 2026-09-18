@@ -40,17 +40,22 @@ def score_model(y_true, y_pred, is_transient):
         f1s.append(f1_score(y_true[:, i], y_pred[:, i], average="macro", zero_division=0))
 
     transient_recalls = []
+    underprediction_bias = []
     for i in range(y_true.shape[1]):
         t_true = y_true[is_transient, i]
         t_pred = y_pred[is_transient, i]
         violation_mask = t_true > 0
         if violation_mask.sum() > 0:
             transient_recalls.append((t_pred[violation_mask] > 0).mean())
+            # Positive = model predicts a lower severity than what actually
+            # happens (systematic underprediction, the paper's own framing).
+            underprediction_bias.append((t_true[violation_mask] - t_pred[violation_mask]).mean())
 
     return {
         "Accuracy": round(float(np.mean(accs)), 4),
         "Macro-F1": round(float(np.mean(f1s)), 4),
         "Transient Violation Recall": round(float(np.mean(transient_recalls)), 4) if transient_recalls else float("nan"),
+        "Transient Underprediction Bias": round(float(np.mean(underprediction_bias)), 4) if underprediction_bias else float("nan"),
     }
 
 
@@ -147,13 +152,11 @@ def main():
     print("\nPer-seed results:")
     print(results_df.to_string(index=False))
 
-    summary = (
-        results_df.groupby("Model")[["Accuracy", "Macro-F1", "Transient Violation Recall", "Latency (ms)"]]
-        .agg(["mean", "std"])
-        .round(4)
-    )
+    metric_cols = ["Accuracy", "Macro-F1", "Transient Violation Recall", "Transient Underprediction Bias", "Latency (ms)"]
+    summary = results_df.groupby("Model")[metric_cols].agg(["mean", "std"]).round(4)
     print("\nSummary across seeds (mean +/- std):")
-    print(summary)
+    with pd.option_context("display.max_columns", None, "display.width", 200):
+        print(summary)
 
     results_dir = os.path.join(parent_dir, "results")
     os.makedirs(results_dir, exist_ok=True)
