@@ -6,6 +6,15 @@
 \label{sec:Implementation}
 %% ==============================
 
-You will of course want to discuss the implementation of the proposed solution. Only the final stage of the implementation should be described.
+The system is implemented in Python 3 with scikit-learn. Key modules:
 
-It should describe the outputs produced, e.g. transformed data, code written, models developed, questionnaires administered. The description should also include what tools and languages you used to produce the outputs. This section must not contain code listing or user manual description.
+\begin{itemize}
+  \item \texttt{src/data/iac\_dataset.py} -- paired easy/hard, with/without-comment synthetic IaC snippet generator described in Section~\ref{sec:Methodology}.
+  \item \texttt{src/models/detectors.py} -- \texttt{MLDetector} (baseline), \texttt{RULE\_PATTERNS} / \texttt{rule\_based\_flag} (comment-independent rule layer), \texttt{HybridDetector} (improvement).
+  \item \texttt{scripts/train\_and\_evaluate.py} -- trains and evaluates all variants across 5 seeds, writes \texttt{results/results\_per\_seed.csv} and \texttt{results/results\_summary.csv}, and exports the trained ML detector to \texttt{src/lambda\_handler/model/} for deployment.
+  \item \texttt{src/lambda\_handler/app.py} -- an AWS Lambda handler applying the hybrid detector to IaC snippets submitted on a Kinesis stream, returning whether a snippet looks misconfigured, whether a rule fired, and the ML classifier's confidence.
+  \item \texttt{template.yaml} -- AWS SAM template provisioning the Kinesis stream and Lambda function.
+  \item \texttt{.github/workflows/deploy.yml} (repo root) -- CI pipeline that runs the training/evaluation script and, on push to \texttt{main}, deploys the SAM stack to the configured AWS region using repository secrets.
+\end{itemize}
+
+Running \texttt{python scripts/train\_and\_evaluate.py} reproduces every number in Section~\ref{sec:Evaluation} from scratch. The Lambda handler was verified locally against representative safe and misconfigured snippets before deployment. An earlier, contaminated \texttt{Makefile} referencing an unrelated SQS project's build targets was removed as part of this work.

@@ -6,47 +6,64 @@
 \label{sec:Evaluation}
 %% ==================
 
-The purpose of this section is to provide a comprehensive analysis of the results and main findings of the study as well as the implications of these finding both from academic and practitioner perspective are presented. Only the most relevant results that support your research question and objectives shall be presented. Provide an in-depth and rigorous analysis of the results. Statistical tools should be used to critically evaluate and assess the experimental research outputs and levels of significance.
+Table~\ref{tab:results} reports mean $\pm$ standard deviation across 5 seeds (42-46).
 
-Use visual aids such as graphs, charts, plots and so on to show the results.
-
-
+\begin{table}[htp]
+\centering
+\caption{Results across 5 seeds (mean $\pm$ std)}
+\label{tab:results}
+\begin{tabular}{lccc}
+\hline
+Model & Precision & Recall & F1 \\
+\hline
+ML Detector (rich context) & 1.000 $\pm$ 0.000 & 1.000 $\pm$ 0.000 & 1.000 $\pm$ 0.000 \\
+ML Detector (code-only, baseline gap) & 0.768 $\pm$ 0.045 & 0.708 $\pm$ 0.064 & 0.733 $\pm$ 0.019 \\
+Rule-Based Only (reference) & 1.000 $\pm$ 0.000 & 0.483 $\pm$ 0.028 & 0.651 $\pm$ 0.025 \\
+Hybrid Detector (improved, code-only) & 1.000 $\pm$ 0.000 & 0.483 $\pm$ 0.028 & 0.651 $\pm$ 0.025 \\
+\hline
+\end{tabular}
+\end{table}
 
 %% ===============================
-\subsection{Experiment / Case Study 1}
+\subsection{Experiment 1: Reproducing the Precision Collapse}
 \label{sec:evalOne}
 %% ===============================
 
-\dots
-
+With comments present, the ML detector is perfect (1.00/1.00/1.00) -- comment language directly names the risk (``WARNING: ...''), which is expected given how the benchmark is constructed. Without comments, precision falls to 0.768 and recall to 0.708, reproducing the qualitative direction of War et al.'s finding: removing natural-language context degrades a text classifier's reliability, not just its confidence.
 
 %% ===============================
-\subsection{Experiment / Case Study 2}
+\subsection{Experiment 2: The Hybrid Fix -- and Its Real Cost}
 \label{sec:evalTwo}
 %% ===============================
 
-\dots
-
+The hybrid detector restores precision to a perfect 1.000 in the code-only setting, matching the rich-context ideal. But its recall (0.483) is identical to the rule-based-only reference and \emph{lower} than the plain code-only ML classifier's 0.708. The reason is structural, not a tuning failure: the ML classifier contributes nothing beyond the rule layer at this threshold, because on ``hard'' pattern samples (which by construction carry no code-level signal) its predicted probability never exceeds 0.8 -- there is nothing in the code for it to be confident about.
 
 %% ===============================
-\subsection{Experiment / Case Study 3}
+\subsection{Experiment 3: The Trade-off Is Tunable, Not Fixed}
 \label{sec:evalThree}
 %% ===============================
 
-\dots
+Sweeping the hybrid detector's confidence threshold traces a clear Pareto frontier:
 
+\begin{center}
+\begin{tabular}{lccc}
+\hline
+Threshold & Precision & Recall & F1 \\
+\hline
+0.5 (= plain ML) & 0.768 & 0.708 & 0.733 \\
+0.6 & 0.928 & 0.528 & 0.672 \\
+0.7 & 0.998 & 0.485 & 0.652 \\
+0.8 & 1.000 & 0.483 & 0.651 \\
+0.9 & 1.000 & 0.483 & 0.651 \\
+\hline
+\end{tabular}
+\end{center}
 
-%% ===============================
-\subsection{Experiment / Case Study N}
-\label{sec:evalN}
-%% ===============================
-
-\dots
+Precision rises monotonically with the threshold and plateaus at 1.000 by 0.8; recall falls from the plain classifier's 0.708 down to the rule-only floor of 0.483 and does not go lower, since the rule layer's contribution is threshold-independent. An operator who cannot tolerate false positives should choose a high threshold; one who needs to catch more of the genuinely ambiguous cases, at the cost of some false positives, should choose a lower one. There is no threshold that achieves both -- the hard pattern's missing information cannot be substituted by a smarter combination rule.
 
 %% ===============================
 \subsection{Discussion}
 \label{sec:discussion}
 %% ===============================
 
-A detailed discussion of the findings from the N experiments / case studies. Note that this discussion will have a lot more detail than the discussion in the following section (Conclusion). You should criticize the experiment(s), and be honest about whether your design was good enough. Suggest any modifications and improvements that could be made to the design to improve the results. You should always put your findings into the context of the previous research that you found during your literature review
-
+This project reproduces War et al.'s finding, builds a working fix for the specific case that fix can address (enumerable, rule-representable misconfigurations), and is explicit about what it cannot fix: misconfigurations whose safety genuinely depends on information that exists only in a comment cannot be recovered by any classifier or rule combination once that comment is gone. This mirrors the paper's own conclusion that semantic context is not merely helpful but load-bearing -- the honest implication is that comment/documentation quality in IaC repositories is itself a security control, not just a readability nicety.

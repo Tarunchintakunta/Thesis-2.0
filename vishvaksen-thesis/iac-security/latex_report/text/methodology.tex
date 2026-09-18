@@ -6,6 +6,13 @@
 \label{sec:Methodology}
 %% ==============================
 
-You will of course want to discuss your research as well as evaluation methodology -- otherwise how will your examiners know that you have followed an appropriate scientific process and rationalised your choice of evaluation. Note that it may also be useful to base decisions in this section off your discussion of related work in section~\ref{sec:rw}. You should also include cite any previous work used in defining your methodology.
+\subsection{Synthetic Benchmark Generation}
+For each of 5 seeds (42-46), 1,200 IaC snippets are generated (\texttt{src/data/iac\_dataset.py}), each independently choosing an easy or hard pattern (50/50) and a safe/misconfigured label (50/50), with 2-4 unrelated filler configuration lines added as noise. Two paired renderings are produced from the identical underlying random choices -- with comments and without -- so that any difference in a model's performance between the two is attributable only to the presence or absence of the comment, not to a different underlying sample.
 
-You need to give a completely accurate description of the research procedure you followed, equipment used, the technique(s), applied, set-up of scenarios/case studies run. You must provide an explanation of how the raw data gathered/compiled and analyzed. Describe the statistical techniques used upon the data. Detail all the steps from data collection to final results.
+\subsection{Training and Evaluation}
+A 70/30 stratified train/test split is used per seed. The ML detector is trained separately on the rich-context and code-only training sets, then evaluated on the matching test set. The rule-based and hybrid detectors require no training beyond the ML component the hybrid detector wraps (trained on the code-only training set, since that is the setting the improvement targets).
+
+\subsection{Metrics}
+Precision, Recall, and F1 -- the same three metrics War et al. use -- computed on the held-out test set for each of: ML Detector (rich context), ML Detector (code-only), Rule-Based Only, and Hybrid Detector (code-only). A confidence-threshold sweep (0.5 to 0.9) for the hybrid detector's ML fallback is also reported, to characterise the precision/recall trade-off rather than a single fixed operating point.
+
+All code and results are in \texttt{iac-security/}.

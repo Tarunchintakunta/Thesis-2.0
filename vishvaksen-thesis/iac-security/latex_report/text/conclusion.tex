@@ -6,6 +6,13 @@
 \label{sec:Conclusion}
 %% ==================
 
-Restate your research question, your objectives and the work done. State how successful you have been in answering the research question and achieving the objectives. Restate the key findings. Discuss the implications of your research, talk about the efficacy of your research, and discuss its limitations. 
+This project asked whether a hybrid rule+ML detector could recover the precision War et al. (2025) lose when natural-language context is stripped from IaC scripts, and at what cost. On a synthetic benchmark deliberately split into code-alone-solvable and comment-dependent misconfigurations, the hybrid detector fully restores precision (1.000, matching the rich-context ideal) in the code-only setting, but recall falls from the plain classifier's 0.708 to 0.483 -- exactly the rule layer's ceiling, since the comment-dependent cases carry no code-level signal for any classifier or rule to find. A confidence-threshold sweep shows this is a genuine, tunable trade-off rather than a single verdict: more precision can always be bought with less recall on the ambiguous cases, but not both at once.
 
-Describe any proposals for future work or potential for commercialisation. Present MEANINGFUL future work. Sweeping more parameters in your simulation / model / platform is probably not meaningful. More discuss what could a follow up research project do, to better / differently approach / extend etc. your work.
+The honest conclusion is that War et al.'s own framing is right: semantic/natural-language context is not a nice-to-have for these models, it is load-bearing. A hybrid detector can make a system's behaviour \emph{safer} in the absence of that context (never worse than pure rules, and never as unreliable as an unfiltered low-context classifier), but it cannot substitute for the missing information.
+
+\textbf{Future work:}
+\begin{itemize}
+  \item Reproduce this on the paper's actual Ansible/Puppet datasets with fine-tuned CodeBERT/LongFormer, to check whether the precision/recall trade-off curve has the same shape on real, non-synthetic misconfigurations.
+  \item Extend the rule layer with a wider, community-maintained rule set (e.g. Checkov's own policies) rather than four hand-written regexes, to test how much of the "hard" category in real repositories is actually enumerable once a mature rule engine is used instead of a minimal one.
+  \item Explore whether a model could be trained to \emph{flag its own low-confidence, comment-dependent uncertainty} for human review, rather than only choosing between "flag" and "don't flag" -- turning the unresolvable cases into a routed queue instead of a silent miss.
+\end{itemize}
