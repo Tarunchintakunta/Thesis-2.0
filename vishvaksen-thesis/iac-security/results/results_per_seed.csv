@@ -1,0 +1,21 @@
+Precision,Recall,F1,Model,Seed
+1.0,1.0,1.0,ML Detector (rich context),42
+0.7561,0.6927,0.723,"ML Detector (code-only, baseline gap)",42
+1.0,0.486,0.6541,Rule-Based Only (reference),42
+1.0,0.486,0.6541,"Hybrid Detector (improved, code-only)",42
+1.0,1.0,1.0,ML Detector (rich context),43
+0.8438,0.6067,0.7059,"ML Detector (code-only, baseline gap)",43
+1.0,0.4888,0.6566,Rule-Based Only (reference),43
+1.0,0.4888,0.6566,"Hybrid Detector (improved, code-only)",43
+1.0,1.0,1.0,ML Detector (rich context),44
+0.7558,0.7386,0.7471,"ML Detector (code-only, baseline gap)",44
+1.0,0.517,0.6816,Rule-Based Only (reference),44
+1.0,0.517,0.6816,"Hybrid Detector (improved, code-only)",44
+1.0,1.0,1.0,ML Detector (rich context),45
+0.7571,0.7243,0.7403,"ML Detector (code-only, baseline gap)",45
+1.0,0.4811,0.6496,Rule-Based Only (reference),45
+1.0,0.4811,0.6496,"Hybrid Detector (improved, code-only)",45
+1.0,1.0,1.0,ML Detector (rich context),46
+0.7259,0.7772,0.7507,"ML Detector (code-only, baseline gap)",46
+1.0,0.4402,0.6113,Rule-Based Only (reference),46
+1.0,0.4402,0.6113,"Hybrid Detector (improved, code-only)",46

@@ -1,0 +1,50 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Hybrid IaC Misconfiguration Detection Pipeline - Kinesis and Lambda
+
+Resources:
+  IaCSubmissionStream:
+    Type: AWS::Kinesis::Stream
+    Properties:
+      Name: IaCSubmissionStream
+      ShardCount: 1
+
+  DetectionFunctionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaKinesisExecutionRole
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+
+  HybridDetectionFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: HybridIaCDetectionFunction
+      CodeUri: src/lambda_handler/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Timeout: 30
+      MemorySize: 512
+      Role: !GetAtt DetectionFunctionRole.Arn
+      Events:
+        StreamEvent:
+          Type: Kinesis
+          Properties:
+            Stream: !GetAtt IaCSubmissionStream.Arn
+            StartingPosition: LATEST
+            BatchSize: 100
+
+Outputs:
+  SubmissionStreamName:
+    Description: "Kinesis Stream for incoming IaC snippet submissions"
+    Value: !Ref IaCSubmissionStream
+  DetectionFunction:
+    Description: "Lambda Function for hybrid IaC misconfiguration detection"
+    Value: !Ref HybridDetectionFunction
