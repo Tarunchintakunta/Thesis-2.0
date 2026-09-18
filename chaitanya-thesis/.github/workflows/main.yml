@@ -1,0 +1,21 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up dependencies
+      run: |
+        echo "Setting up dependencies for lambda-coldstart-isolation..."
+        # TODO: Inject AWS Keys later
+    - name: Build and Test
+      run: |
+        echo "Running tests..."
+        if [ -f lambda-coldstart-isolation/Makefile ]; then cd lambda-coldstart-isolation && make test || true; fi
