@@ -1,37 +1,49 @@
-# Predictive Adaptive Kubernetes Scaling (PAKS)
+# Stability-Aware Predictive Kubernetes Scaling (PAKS)
 
-**Author:** Pooja
-**Thesis:** A Machine Learning-Based Framework for Dynamic Workload Prediction in Cloud
+Pooja's MSc Cloud Computing thesis codebase. Reproduces the trade-off
+reported by Wanigasooriya & Ekanayake (2026), *"NimbusGuard: A Novel
+Framework for Proactive Kubernetes Autoscaling Using Deep Q-Networks"*
+(IEEE ICOIN 2026, DOI 10.1109/ICOIN68469.2026.11480646), and fixes the
+weakness their own results table names.
 
-## Overview
-This repository contains the simulation and architecture components for **PAKS** (Predictive Adaptive Kubernetes Scaling), a framework designed to proactively scale Kubernetes workloads (like AWS EKS) using Machine Learning, replacing the traditional, fully reactive Horizontal Pod Autoscaler (HPA).
+## The baseline paper's gap
+NimbusGuard's DQN+LSTM agent beats reactive HPA and event-driven KEDA on
+SLA compliance by scaling proactively -- but their own Table II shows it
+does so by being "the most agile and least stable system": highest average
+replica count, and double the total scaling events of HPA/KEDA (8 vs 4).
+Their Discussion section frames this directly as "a fundamental trade-off:
+the proactive, performance-focused scaling of NimbusGuard versus the
+reactive, cost-efficient stability of traditional autoscalers" -- and lists
+a calmer, more stable design as future work, not something they built.
 
-By anticipating workload demands before they spike, PAKS significantly reduces Service Level Agreement (SLA) violations and improves overall cluster efficiency compared to standard HPA. 
+## What this project does
+1. **Reproduces** the trade-off with `AggressivePAKS`: a proactive scaler (feed-forward regressor forecasting next-step workload) that acts immediately on every raw prediction -- lower SLA violations than reactive HPA, at the cost of higher over-provisioning and more scaling events.
+2. **Builds the stability fix NimbusGuard names as future work** with `StabilityAwarePAKS`: the same predictor, plus exponential smoothing of predictions and a hysteresis/cooldown rule before acting on them -- targeting the instability NimbusGuard's own results flag, without discarding the foresight that beats reactive HPA in the first place.
+3. **Evaluates all three** (Reactive HPA, Aggressive PAKS, Stability-Aware PAKS) across 5 seeds on SLA violations, over-provisioning %, total scaling events, and pod-count volatility.
 
-## Features
-- **Workload Simulation:** Generates synthetic, cyclical cloud workload data with random traffic spikes.
-- **Classic HPA Mock:** Simulates traditional CloudWatch/Prometheus-based scaling, which scales reactively on a delay.
-- **PAKS ML Engine:** Uses a TensorFlow/Keras-based Artificial Neural Network (Feed Forward / LSTM) trained on historical time series data to anticipate the required pod count for the immediate future.
-- **Metrics Evaluator:** Compares both approaches calculating Latency gaps, SLA Violations, and Resource Over-provisioning statistics.
+**Result:** Stability-Aware PAKS cuts scaling events by ~57% and pod-count
+volatility by ~32% versus the aggressive baseline, while still beating
+reactive HPA on SLA violations (though by less than the unfiltered
+aggressive policy does) — see `../final_report.md` for full numbers and an
+honest discussion of that trade-off.
 
-## Architecture
+## Project Structure
+- `src/data/workload_simulator.py` — synthetic cyclical workload generator with traffic spikes.
+- `src/models/scalers.py` — `run_reactive_hpa`, `run_aggressive_paks` (baseline), `StabilityAwareController` / `run_stability_aware_paks` (improvement).
+- `scripts/train_and_evaluate.py` — trains/evaluates all 3 policies over 5 seeds, saves results, exports the deployable predictor.
+- `src/lambda_handler/app.py` — real-time inference over a Kinesis workload-telemetry stream, applying the stability-aware controller per node.
+- `template.yaml` — AWS SAM template (Kinesis stream + Lambda). Replaces an earlier, broken template that pointed at a `src/ml_predict.py` handler that didn't exist and hardcoded placeholder VPC subnet IDs.
+- `.github/workflows/deploy.yml` (repo root) — CI: trains + deploys the SAM stack on push to `main`.
 
-1. **Prediction Model (`TensorFlow/Keras`)**: Consumes metric history (e.g. past CPU usage, request counts).
-2. **Decision Engine**: Computes target replicasets based on `predicted_load / target_utilization`.
-3. **EKS Cluster**: Mimicked locally for simulation, but the SAM template `template.yaml` describes real deployment bindings to AWS CloudWatch and Auto Scaling.
-
-## Getting Started
-
-1. **Install Dependencies**:
+## Usage
 ```bash
-python3 -m venv venv
-source venv/bin/activate
 pip install -r requirements.txt
+python scripts/train_and_evaluate.py
 ```
+Results land in `results/results_per_seed.csv` and `results/results_summary.csv`.
 
-2. **Run the Simulation**:
-```bash
-python scripts/run_simulation.py
-```
-
-The output will be exported to the `results/` folder as a CSV, directly comparing the HPA replicas vs PAKS replicas against the actual workload demand.
+## Known change from the original scaffold
+The original scaffold used TensorFlow/Keras for the workload predictor.
+This version uses scikit-learn's `MLPRegressor` instead -- same modelling
+idea (a small 2-hidden-layer dense network), without the heavy TensorFlow
+dependency, consistent with keeping this codebase simple.

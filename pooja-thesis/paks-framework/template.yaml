@@ -1,73 +1,50 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Transform: 'AWS::Serverless-2016-10-31'
-Description: >
-  PAKS (Predictive Adaptive Kubernetes Scaling) - Infrastructure Mock Template
-  Demonstrates how ML-based scaling might integrate via AWS Serverless and EKS.
+Transform: AWS::Serverless-2016-10-31
+Description: Stability-Aware Predictive Autoscaling Pipeline - Kinesis and Lambda
 
 Resources:
-  # Mock EKS Cluster Definition
-  MyEKSCluster:
-    Type: "AWS::EKS::Cluster"
+  WorkloadTelemetryStream:
+    Type: AWS::Kinesis::Stream
     Properties:
-      Name: "PAKS-EKS-Cluster"
-      RoleArn: !GetAtt EKSClusterRole.Arn
-      ResourcesVpcConfig:
-        SecurityGroupIds:
-          - !Ref EKSSecurityGroup
-        SubnetIds:
-          - "subnet-abcde012"
-          - "subnet-bcdef234"
+      Name: WorkloadTelemetryStream
+      ShardCount: 1
 
-  EKSClusterRole:
-    Type: "AWS::IAM::Role"
+  ScalingFunctionRole:
+    Type: AWS::IAM::Role
     Properties:
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
         Statement:
           - Effect: Allow
             Principal:
-              Service: eks.amazonaws.com
+              Service: lambda.amazonaws.com
             Action: sts:AssumeRole
       ManagedPolicyArns:
-        - "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaKinesisExecutionRole
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
 
-  EKSSecurityGroup:
-    Type: "AWS::EC2::SecurityGroup"
-    Properties:
-      GroupDescription: "Cluster security group for PAKS EKS"
-      VpcId: "vpc-12345678"
-
-  # The Machine Learning Prediction Lambda that overrides standard HPA scaling
-  PAKSPredictionFunction:
+  PAKSScalingFunction:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: "paks-prediction-engine"
-      CodeUri: src/
-      Handler: ml_predict.handler
+      FunctionName: PAKSStabilityAwareScalingFunction
+      CodeUri: src/lambda_handler/
+      Handler: app.lambda_handler
       Runtime: python3.9
       Timeout: 30
-      MemorySize: 1024
-      Environment:
-        Variables:
-          MODEL_S3_BUCKET: "paks-models-bucket"
-
-  # CloudWatch Alarm for Traditional HPA Fallback (Reactive)
-  HighCPUAlarm:
-    Type: AWS::CloudWatch::Alarm
-    Properties:
-      AlarmDescription: "Scale up if CPU > 70% for 2 minutes (Fallback reactive HPA)"
-      MetricName: "CPUUtilization"
-      Namespace: "AWS/EKS"
-      Statistic: "Average"
-      Period: 60
-      EvaluationPeriods: 2
-      Threshold: 70
-      ComparisonOperator: "GreaterThanThreshold"
+      MemorySize: 512
+      Role: !GetAtt ScalingFunctionRole.Arn
+      Events:
+        StreamEvent:
+          Type: Kinesis
+          Properties:
+            Stream: !GetAtt WorkloadTelemetryStream.Arn
+            StartingPosition: LATEST
+            BatchSize: 100
 
 Outputs:
-  ClusterOutput:
-    Description: "EKS Cluster Name for PAKS Simulation"
-    Value: !Ref MyEKSCluster
-  PredictionFunctionArn:
-    Description: "ARN of the PAKS ML Inference Function"
-    Value: !GetAtt PAKSPredictionFunction.Arn
+  TelemetryStreamName:
+    Description: "Kinesis Stream for raw workload telemetry ingestion"
+    Value: !Ref WorkloadTelemetryStream
+  ScalingFunction:
+    Description: "Lambda Function for stability-aware predictive scaling decisions"
+    Value: !Ref PAKSScalingFunction
