@@ -6,6 +6,16 @@
 \label{sec:Methodology}
 %% ==============================
 
-You will of course want to discuss your research as well as evaluation methodology -- otherwise how will your examiners know that you have followed an appropriate scientific process and rationalised your choice of evaluation. Note that it may also be useful to base decisions in this section off your discussion of related work in section~\ref{sec:rw}. You should also include cite any previous work used in defining your methodology.
+\subsection{Synthetic Multi-Site QoS Telemetry}
+Real multi-site OneM2M telemetry was not available, so a synthetic generator (\texttt{src/data/qos\_simulator.py}) produces QoS records (RTT, CPU, RAM, success rate, latency, throughput) for 6 simulated IoT edge sites. Each site's traffic is a mixture of the baseline paper's own three scenarios -- uniform, burst, and real-time -- but with a different, skewed mixture per site (80\% dominated by one scenario, 10\% each of the other two), which is what makes this a genuine non-IID federated learning setting: no single site sees a representative sample of the overall traffic distribution. 1,500 records per site are generated per random seed.
 
-You need to give a completely accurate description of the research procedure you followed, equipment used, the technique(s), applied, set-up of scenarios/case studies run. You must provide an explanation of how the raw data gathered/compiled and analyzed. Describe the statistical techniques used upon the data. Detail all the steps from data collection to final results.
+\subsection{Training}
+For each of 5 seeds (42-46), each site's data is split 80/20 (stratified by label) into a local train/test set. The centralized model pools all sites' training splits and SMOTE-balances the pooled result before fitting. The federated model fits one Random Forest per site on that site's training split only, SMOTE-balanced locally. Both use identical Random Forest hyperparameters (200 trees, max depth 10) so any performance difference reflects the data-sharing strategy, not model capacity. All three variants (centralized, federated, single-site-only) are evaluated on the same pooled, held-out test set (20\% of every site's data, never used in training by any model).
+
+\subsection{Metrics}
+\begin{itemize}
+  \item \textbf{Accuracy / Macro-F1}: over the full 3-class pooled test set.
+  \item \textbf{Critical Recall (class 2)}: recall specifically on the ``Full Offload'' class -- the minority class the baseline paper needed SMOTE to handle (9.64\% of their real data), and the one most consequential to miss in production (a missed Critical event means an overloaded system stays local).
+\end{itemize}
+
+All code and results are in \texttt{iot-reliability/}.

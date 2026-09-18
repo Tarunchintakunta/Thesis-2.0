@@ -6,4 +6,14 @@
 \label{sec:Design}
 %% ==============================
 
-The techniques and/or architecture and/or framework that underlie the implementation and the associated requirements are identified and presented in this section. If a new algorithm or model is proposed, a word based description of the algorithm/model functionality should be included.
+\subsection{Decision Labels and Thresholds}
+Each QoS record is labelled using the baseline paper's own thresholds: \emph{Keep Local} (Preferable) when RTT $<$ 2s with healthy resource usage and success rate; \emph{Partial Offload} (Acceptable) when RTT is between 2s and 4s; \emph{Full Offload} (Critical) when RTT exceeds 4s, success rate drops below 90\%, or CPU/RAM usage exceeds 80\%.
+
+\subsection{Centralized RF (baseline reproduction)}
+All sites' raw QoS telemetry (RTT, CPU, RAM, success rate, latency, throughput) is pooled into one training set, class-balanced with SMOTE (matching the paper's methodology for its reported 48\%/42\%/10\% class split), and a single Random Forest (200 trees, max depth 10) is trained on the pooled, balanced data -- reproducing the model the paper actually selected for production deployment.
+
+\subsection{Federated Ensemble RF (proposed improvement)}
+Each of the 6 simulated IoT sites trains its own Random Forest using the same hyperparameters, on its own local telemetry only, SMOTE-balanced locally. At inference time, the site models' predicted class probabilities are averaged and the highest-probability class is returned. No site's raw telemetry is ever transmitted to or pooled with another site's data, or with a central server -- only the independently-trained models are combined.
+
+\subsection{Single-Site Local Only (lower bound)}
+To establish whether federating is actually worth the engineering effort, each site's own local model is also evaluated in isolation (no combination with any other site) against the same held-out global test set. This represents what an individual IoT gateway is stuck with if it can neither share data nor collaborate on a model with any other site.

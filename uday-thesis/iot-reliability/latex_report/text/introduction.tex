@@ -6,15 +6,18 @@
 \label{sec:Introduction}
 %% ==============================
 
-In this section you introduce the topic of the paper, motivate why it needs to be studied (appropriate citations are best for this), presents the research question(s) and research objectives, and/or hypothesis or hypotheses. Briefly summarise the contribution to the scientific literature your work entails. Finish this section by outlining the structure of the report.
+IoT middleware platforms built on standards like OneM2M need to decide, in real time, whether to process a device's traffic locally, offload part of it to the cloud, or fully migrate processing to the cloud, based on current network and resource conditions. Static, manually-configured rules cannot keep up with dynamic, bursty IoT traffic, motivating machine-learning-driven QoS management.
 
-This is a nice little introduction with some figure in \figurename~\ref{fig:figureExample}
+Et-Tousy, Zyane \& Sharif \cite{EtTousy26} address exactly this with a centralized Random Forest classifier trained on pooled QoS telemetry (round-trip time, CPU, RAM, success rate) from all connected devices, achieving 98\% accuracy at recommending Keep-Local / Partial-Offload / Full-Offload decisions. Their own Discussion section names a limitation they do not resolve: centralizing telemetry from every device ``might not scale well or guarantee data privacy in distributed IoT environments,'' proposing federated learning only as future work.
 
-\begin{figure}[htp]
-\begin{center}
-\includegraphics[width = 0.4\textwidth]{google.png}
-\caption{This is a caption}
-\label{fig:figureExample}
-\end{center}
-\end{figure} 
+\textbf{Research question:} can a federated learning alternative -- training one model per IoT site on local data only, and combining them without ever pooling raw telemetry -- recover most of the accuracy of the centralized baseline, while removing the need to centralize data at all?
 
+\textbf{Objectives:}
+\begin{itemize}
+  \item Reproduce the baseline paper's centralized Random Forest classifier and its exact decision thresholds and class-imbalance handling (SMOTE), on synthetic telemetry from simulated, non-IID IoT sites.
+  \item Build the federated alternative the paper names as future work but does not build: per-site local Random Forests combined at inference time.
+  \item Quantify what a site loses by going it alone (no federation, no centralization) as a lower-bound comparison, to establish whether federation is actually worth building relative to that baseline.
+  \item Evaluate all three variants on the same held-out, pooled test set across multiple random seeds.
+\end{itemize}
+
+The remainder of this report is structured as follows: Section~\ref{sec:rw} reviews the baseline paper and the specific gap it names; Section~\ref{sec:Design} describes the reproduced baseline and the federated design; Section~\ref{sec:Implementation} describes the synthetic multi-site telemetry generator, training pipeline, and deployment; Section~\ref{sec:Evaluation} reports results across 5 seeds; Section~\ref{sec:Conclusion} discusses limitations and future work.

@@ -6,6 +6,15 @@
 \label{sec:Implementation}
 %% ==============================
 
-You will of course want to discuss the implementation of the proposed solution. Only the final stage of the implementation should be described.
+The system is implemented in Python 3 with scikit-learn and imbalanced-learn. Key modules:
 
-It should describe the outputs produced, e.g. transformed data, code written, models developed, questionnaires administered. The description should also include what tools and languages you used to produce the outputs. This section must not contain code listing or user manual description.
+\begin{itemize}
+  \item \texttt{src/data/qos\_simulator.py} -- synthetic multi-site QoS telemetry generator described in Section~\ref{sec:Methodology}.
+  \item \texttt{src/models/qos\_models.py} -- \texttt{CentralizedRF} (baseline) and \texttt{FederatedEnsembleRF} (improvement), both wrapping scikit-learn's \texttt{RandomForestClassifier} with SMOTE balancing via imbalanced-learn.
+  \item \texttt{scripts/train\_and\_evaluate.py} -- trains and evaluates all 3 variants across 5 seeds, writes \texttt{results/results\_per\_seed.csv} and \texttt{results/results\_summary.csv}, and exports one trained model per site (via joblib) to \texttt{src/lambda\_handler/model/} for deployment.
+  \item \texttt{src/lambda\_handler/app.py} -- an AWS Lambda handler that loads all 6 exported per-site models and applies the federated ensemble decision to each incoming QoS telemetry record arriving on a Kinesis stream, returning a Keep-Local/Partial-Offload/Full-Offload decision with class probabilities.
+  \item \texttt{template.yaml} -- AWS SAM template provisioning the Kinesis stream and Lambda function.
+  \item \texttt{.github/workflows/deploy.yml} (repo root) -- CI pipeline that runs the training/evaluation script and, on push to \texttt{main}, deploys the SAM stack to the configured AWS region using repository secrets.
+\end{itemize}
+
+Running \texttt{python scripts/train\_and\_evaluate.py} reproduces every number in Section~\ref{sec:Evaluation} from scratch. The Lambda handler was verified locally against representative telemetry for all three decision classes before deployment.
