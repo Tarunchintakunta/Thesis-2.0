@@ -18,7 +18,7 @@ from src.data.telemetry_simulator import TelemetrySimulator, TelemetryDataset, M
 from src.models.mhsa_model import MHSAPerHead, MHSAFused
 from src.models.baseline import ThresholdBaseline
 
-SEEDS = [42, 43, 44]
+SEEDS = [42, 43, 44, 45, 46]
 SEQ_LENGTH = 10
 EPOCHS = 30
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -71,7 +71,11 @@ def class_weights_per_metric(y_train):
     return weights
 
 
-def train_model(model_cls, X_train, y_train, X_test):
+def train_model(model_cls, X_train, y_train, X_test, seed):
+    # Seed torch's own RNG (weight init + DataLoader shuffling) so results
+    # are actually reproducible per seed -- numpy's RNG alone (used for data
+    # generation) does not control any of this.
+    torch.manual_seed(seed)
     model = model_cls(seq_length=SEQ_LENGTH).to(DEVICE)
     weights = [w.to(DEVICE) for w in class_weights_per_metric(y_train)]
     criteria = [nn.CrossEntropyLoss(weight=w) for w in weights]
@@ -133,14 +137,14 @@ def main():
 
         # Baseline reproduction: strict 1-head-per-metric (Thapliyal 2026)
         print("Training MHSA-PerHead (baseline reproduction)...")
-        _, perhead_preds, perhead_latency = train_model(MHSAPerHead, X_train, y_train, X_test)
+        _, perhead_preds, perhead_latency = train_model(MHSAPerHead, X_train, y_train, X_test, seed)
         perhead_scores = score_model(y_test, perhead_preds, transient_test)
         perhead_scores.update({"Model": "MHSA-PerHead (baseline)", "Seed": seed, "Latency (ms)": round(perhead_latency, 4)})
         all_runs.append(perhead_scores)
 
         # Improvement: cross-head fusion
         print("Training MHSA-Fused (improved)...")
-        fused_model, fused_preds, fused_latency = train_model(MHSAFused, X_train, y_train, X_test)
+        fused_model, fused_preds, fused_latency = train_model(MHSAFused, X_train, y_train, X_test, seed)
         fused_scores = score_model(y_test, fused_preds, transient_test)
         fused_scores.update({"Model": "MHSA-Fused (improved)", "Seed": seed, "Latency (ms)": round(fused_latency, 4)})
         all_runs.append(fused_scores)
@@ -165,13 +169,15 @@ def main():
     print(f"\nResults saved to {results_dir}/")
 
     if fused_model_for_export is not None:
-        models_dir = os.path.join(parent_dir, "models")
-        os.makedirs(models_dir, exist_ok=True)
-        torch.save(fused_model_for_export.state_dict(), os.path.join(models_dir, "mhsa_fused.pt"))
+        # Saved inside the lambda_handler dir so the SAM CodeUri packages the
+        # weights alongside the handler code -- no separate model bucket/layer needed.
+        model_dir = os.path.join(parent_dir, "src", "lambda_handler", "model")
+        os.makedirs(model_dir, exist_ok=True)
+        torch.save(fused_model_for_export.state_dict(), os.path.join(model_dir, "mhsa_fused.pt"))
         import json
-        with open(os.path.join(models_dir, "metadata.json"), "w") as f:
+        with open(os.path.join(model_dir, "metadata.json"), "w") as f:
             json.dump(fused_model_meta, f, indent=2)
-        print(f"Deployable model saved to {models_dir}/mhsa_fused.pt")
+        print(f"Deployable model saved to {model_dir}/mhsa_fused.pt")
 
 
 if __name__ == "__main__":

@@ -1,32 +1,48 @@
-# MHSA-TDL: Multi-Head Self-Attention-based Telemetry-Driven Deep Learning Framework for Cluster Health Prediction and Failure Detection
+# MHSA-TDL: Cross-Head Fusion for Multi-Head Attention Cluster Telemetry Monitoring
 
-This directory contains the simulation codebase for Mehak's MSc Cloud Computing thesis.
+Mehak's MSc Cloud Computing thesis codebase. Reproduces the baseline architecture from
+Thapliyal (2026), *"A Multi-Head Attention Approach for SLA Compliance Monitoring in
+Data Centers"* (arXiv:2605.05354, IEEE ICDCS 2026), adapted from data-center SLA rules
+to cluster telemetry (CPU, memory, disk, network), and evaluates a fix for a gap that
+paper reports in its own results.
 
-## Overview
-As cloud clusters grow in scale, traditional threshold-based monitoring systems fail to capture complex, non-linear relationships among telemetry metrics (CPU, Memory, Disk I/O, Network traffic), leading to false positives and delayed failure detection. This project proposes **MHSA-TDL**, a Deep Learning framework utilizing Multi-Head Self-Attention to dynamically weigh the importance of different telemetry metrics over time to predict cluster health and detect impending failures.
+## The baseline paper's gap
+Thapliyal's model gives each attention head strict, exclusive ownership of one metric
+(power/temperature/humidity). Their results show the most volatile head (power)
+systematically **underpredicts** severity during high-load transients — the authors
+attribute this to heads never sharing information, even though the underlying metrics
+are correlated.
 
-The project models data similar to the Google Cluster Trace dataset by generating synthetic multivariate time-series telemetry. 
+## What this project does
+1. **Reproduces** the strict one-head-per-metric architecture (`MHSAPerHead`) as a baseline, applied to cluster telemetry.
+2. **Confirms the gap** on synthetic telemetry with injected cross-metric burst precursors, where predicting one metric's future violation sometimes requires reading a *different* metric's early signal.
+3. **Fixes it** with a cross-head fusion layer (`MHSAFused`) that lets the per-metric head vectors attend to each other before classification.
+4. Evaluates both, across 5 seeded training runs, against a reactive threshold-monitoring baseline.
 
-## Approach
-1. **Telemetry Capture:** CloudWatch (simulated here) aggregates node-level metrics (CPU, Mem, Disk, Net). In production, this data streams through Kinesis to a central inference service.
-2. **Multi-Head Self-Attention (MHSA):** Extracts temporal and feature-wise correlations from the telemetry stream.
-3. **Threshold Baseline:** A traditional monitoring system triggering alerts when metrics exceed fixed limits.
+**Result:** fusion gives a real but modest improvement on the targeted gap (transient
+recall 86.4%→88.4%, underprediction bias 0.29→0.27) at a small accuracy cost — see
+`../final_report.md` for full numbers and an honest discussion of an earlier, unseeded
+run that overstated the effect.
 
 ## Project Structure
-- `src/data/telemetry_simulator.py`: Generates synthetic cluster telemetry.
-- `src/models/mhsa_model.py`: PyTorch implementation of the MHSA-TDL network.
-- `src/models/baseline.py`: Traditional threshold monitoring implementation.
-- `scripts/train_and_evaluate.py`: Training loop, evaluation against baseline, and metric calculation.
-- `results/`: Output directory for generated CSV performance metrics.
-- `template.yaml`: AWS SAM template defining Kinesis stream and Lambda inference pipeline.
+- `src/data/telemetry_simulator.py` — synthetic telemetry generator (history window in, future window labelled).
+- `src/models/mhsa_model.py` — shared backbone, `MHSAPerHead` (baseline), `MHSAFused` (improved), `CrossHeadFusion` layer.
+- `src/models/baseline.py` — reactive threshold monitor.
+- `scripts/train_and_evaluate.py` — trains/evaluates all 3 approaches over 5 seeds, saves results + exports the deployable model.
+- `src/lambda_handler/app.py` — real (not mocked) inference over a Kinesis telemetry stream, using the exported model.
+- `template.yaml` — AWS SAM template (Kinesis stream + Lambda).
+- `.github/workflows/deploy.yml` — CI: runs training/eval on every push, deploys the SAM stack to `main`.
 
 ## Usage
-1. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
-2. Run the simulation:
-   ```bash
-   python scripts/train_and_evaluate.py
-   ```
-3. Check `results/results.csv` for comparison metrics.
+```bash
+pip install -r requirements.txt
+python scripts/train_and_evaluate.py
+```
+Results land in `results/results_per_seed.csv` and `results/results_summary.csv`. The
+trained model used for deployment is saved to `src/lambda_handler/model/`.
+
+## Known simplification
+`torch` is a heavy dependency for a Lambda zip package. This repo keeps the code simple
+and correct locally; for a real deployment you would package the Lambda as a container
+image or put `torch` in a Lambda layer. The GitHub Actions workflow assumes you've set
+`AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, and `AWS_REGION` as repository secrets.

@@ -1,10 +1,16 @@
-Accuracy,Macro-F1,Transient Violation Recall,Model,Seed,Latency (ms)
-0.8474,0.312,0.0284,Threshold Baseline,42,0.0001
-0.7883,0.5165,0.9164,MHSA-PerHead (baseline),42,0.0077
-0.8792,0.5657,0.8688,MHSA-Fused (improved),42,0.0075
-0.8469,0.3141,0.0266,Threshold Baseline,43,0.0001
-0.8626,0.5612,0.8914,MHSA-PerHead (baseline),43,0.0134
-0.8077,0.5292,0.9263,MHSA-Fused (improved),43,0.0072
-0.8439,0.3116,0.0227,Threshold Baseline,44,0.0001
-0.8533,0.5546,0.8998,MHSA-PerHead (baseline),44,0.0065
-0.8799,0.5775,0.8708,MHSA-Fused (improved),44,0.0064
+Accuracy,Macro-F1,Transient Violation Recall,Transient Underprediction Bias,Model,Seed,Latency (ms)
+0.8474,0.312,0.0284,1.7126,Threshold Baseline,42,0.0001
+0.8636,0.557,0.8841,0.2191,MHSA-PerHead (baseline),42,0.0093
+0.8551,0.5522,0.8974,0.3,MHSA-Fused (improved),42,0.0069
+0.8469,0.3141,0.0266,1.7212,Threshold Baseline,43,0.0001
+0.8888,0.5775,0.8835,0.1982,MHSA-PerHead (baseline),43,0.0063
+0.876,0.575,0.8917,0.2612,MHSA-Fused (improved),43,0.0067
+0.8439,0.3116,0.0227,1.7181,Threshold Baseline,44,0.0001
+0.878,0.5668,0.8691,0.3213,MHSA-PerHead (baseline),44,0.0065
+0.8775,0.5651,0.8795,0.3323,MHSA-Fused (improved),44,0.0067
+0.8495,0.3158,0.0244,1.6962,Threshold Baseline,45,0.0001
+0.8682,0.5604,0.8413,0.3583,MHSA-PerHead (baseline),45,0.0065
+0.8441,0.552,0.9,0.1971,MHSA-Fused (improved),45,0.0073
+0.8489,0.3123,0.0241,1.7244,Threshold Baseline,46,0.0001
+0.8653,0.5629,0.841,0.3524,MHSA-PerHead (baseline),46,0.0074
+0.8608,0.556,0.8496,0.2762,MHSA-Fused (improved),46,0.0072
