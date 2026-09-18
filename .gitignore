@@ -63,6 +63,19 @@ yashaswini-thesis/serverless-fault-localisation/data/runs/sim/
 # ...but the per-case RCAEval outputs are small JSON and are the leg 2 evidence, so keep them
 !yashaswini-thesis/serverless-fault-localisation/results/rcaeval/raw/
 
+# LaTeX build artifacts (keep the .tex sources and the compiled .pdf)
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.run.xml
+*.synctex.gz
+*.toc
+
 # editors
 .idea/
 .vscode/
