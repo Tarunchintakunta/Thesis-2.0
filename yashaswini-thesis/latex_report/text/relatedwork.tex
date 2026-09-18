@@ -1,0 +1,20 @@
+\section{Related Work}
+
+This section surveys contemporary research and industry-standard practices regarding message reliability in distributed systems, specifically within the context of AWS services. As cloud-native architectures have evolved, message queue reliability has transitioned from simple synchronous handling to sophisticated asynchronous failure recovery.
+
+\subsection{Evolution of Message Reliability Patterns}
+Reliability in distributed systems is bound by the impossibility of achieving "Exactly-Once" semantics without overhead. Literature from 2020 to 2026 (\cite{sqs-reliability-2025}) consistently highlights that message queues like Amazon SQS provide "At-Least-Once" delivery semantics. This fundamental constraint necessitates that all downstream processing must be idempotent.
+
+\subsection{Dead Letter Queue (DLQ) and Redrive Policies}
+The emergence of mature DLQ Redrive support has been the most significant evolution in SQS reliability. Traditional patterns relied on custom consumer logic to redirect failed messages to auxiliary queues. Recent standards advocate for the native AWS source queue redrive policies, enabling seamless "poison pill" management where messages exceeding the \texttt{maxReceiveCount} are moved to a secondary DLQ for deferred investigation and subsequent redrive without the need for additional bespoke recovery infrastructure.
+
+\subsection{Exponential Backoff, Jitter, and Visibility Timeout}
+The interplay between visibility timeout and retry intervals forms the backbone of recovery for transient failures, such as temporary database contention or service throttling. Modern architectural literature emphasizes managing the visibility timeout to equal or exceed the exponential backoff delay. This prevents the "thundering herd" problem where multiple workers contend for messages that are not yet ready to be processed, thereby exacerbating downstream failures.
+
+\subsection{Idempotency and Stateful Reconciliation}
+State tracking is foundational to ensuring that re-delivery of messages does not compromise system state. Recent research investigates the deployment of DynamoDB as a high-throughput state store, where message identifiers or business-transaction hashes are cached with an appropriate Time-to-Live (TTL). This pattern ensures that re-processed messages from a re-queued event do not duplicate state mutations.
+
+\subsection{Summary of Modern Recovery Flows}
+Current research highlights a shift from reactive to proactive monitoring of SQS, centering on observability and metrics like the ratio of Approximate Number of Messages Visible versus Not Visible. This ratio acts as an early warning for consumer blockage, allowing for automated horizontal scaling to mitigate backlog growth.
+
+\cite{sqs-reliability-2025} Kyrychenko, I., et al. (2025). \emph{Optimization of SQS batching strategies for high-throughput serverless pipelines.} IEEE Cloud Computing.
