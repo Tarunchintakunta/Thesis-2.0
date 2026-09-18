@@ -6,47 +6,47 @@
 \label{sec:Evaluation}
 %% ==================
 
-The purpose of this section is to provide a comprehensive analysis of the results and main findings of the study as well as the implications of these finding both from academic and practitioner perspective are presented. Only the most relevant results that support your research question and objectives shall be presented. Provide an in-depth and rigorous analysis of the results. Statistical tools should be used to critically evaluate and assess the experimental research outputs and levels of significance.
+Table~\ref{tab:results} reports mean $\pm$ standard deviation across 5 seeds (42-46).
 
-Use visual aids such as graphs, charts, plots and so on to show the results.
-
-
+\begin{table}[htp]
+\centering
+\caption{Results across 5 seeds (mean $\pm$ std)}
+\label{tab:results}
+\begin{tabular}{lcccc}
+\hline
+Model & SLA Violations & Over-prov. \% & Scaling Events & Pod Volatility \\
+\hline
+Reactive HPA & 20.0 $\pm$ 2.7 & 40.92 $\pm$ 0.19 & 407.4 $\pm$ 4.9 & 3.32 $\pm$ 0.25 \\
+Aggressive PAKS (baseline) & 11.0 $\pm$ 2.2 & 45.80 $\pm$ 2.23 & 384.4 $\pm$ 9.1 & 2.86 $\pm$ 0.36 \\
+Stability-Aware PAKS (improved) & 18.0 $\pm$ 2.7 & 46.52 $\pm$ 2.16 & 165.8 $\pm$ 5.3 & 1.95 $\pm$ 0.17 \\
+\hline
+\end{tabular}
+\end{table}
 
 %% ===============================
-\subsection{Experiment / Case Study 1}
+\subsection{Experiment 1: Reproducing NimbusGuard's Trade-off}
 \label{sec:evalOne}
 %% ===============================
 
-\dots
-
+Aggressive PAKS reproduces the paper's central claim: proactive scaling roughly halves SLA violations relative to reactive HPA (11.0 vs. 20.0), at the cost of higher over-provisioning (45.8\% vs. 40.9\%). Scaling-event counts are comparable between the two here (384.4 vs. 407.4) rather than showing NimbusGuard's reported 2x gap -- a difference in the specific numbers that is expected, since this is a much simpler feed-forward predictor on a synthetic workload rather than a DQN+LSTM agent on a real Kubernetes testbed, but the qualitative trade-off (better SLA, worse over-provisioning) reproduces cleanly.
 
 %% ===============================
-\subsection{Experiment / Case Study 2}
+\subsection{Experiment 2: Stability Recovered}
 \label{sec:evalTwo}
 %% ===============================
 
-\dots
-
+Stability-Aware PAKS is where the improvement shows up clearly: scaling events drop by 57\% (384.4 $\to$ 165.8) and pod-count volatility drops by 32\% (2.86 $\to$ 1.95) relative to Aggressive PAKS -- both well outside one standard deviation, and the specific instability NimbusGuard's own results table names as its weakness.
 
 %% ===============================
-\subsection{Experiment / Case Study 3}
+\subsection{Experiment 3: The Honest Cost}
 \label{sec:evalThree}
 %% ===============================
 
-\dots
-
-
-%% ===============================
-\subsection{Experiment / Case Study N}
-\label{sec:evalN}
-%% ===============================
-
-\dots
+The stability fix is not free. SLA violations for Stability-Aware PAKS (18.0) are higher than Aggressive PAKS (11.0) -- smoothing and cooldown necessarily mean reacting slightly later to genuine spikes, not just to noise. It still beats reactive HPA (20.0), but by a much smaller margin than the unfiltered aggressive policy does. Over-provisioning is essentially unchanged from Aggressive PAKS (46.5\% vs. 45.8\%) -- the stability fix targets scaling frequency and volatility specifically, not resource cost.
 
 %% ===============================
 \subsection{Discussion}
 \label{sec:discussion}
 %% ===============================
 
-A detailed discussion of the findings from the N experiments / case studies. Note that this discussion will have a lot more detail than the discussion in the following section (Conclusion). You should criticize the experiment(s), and be honest about whether your design was good enough. Suggest any modifications and improvements that could be made to the design to improve the results. You should always put your findings into the context of the previous research that you found during your literature review
-
+This is a genuine trade-off, not a strictly dominant improvement, and it is reported as such rather than only highlighting the metrics that favour the new design. The choice between Aggressive and Stability-Aware PAKS in a real deployment would depend on which is more expensive for a given operator: a handful of extra SLA violations, or a cluster that reconfigures itself 165 times instead of 384 over the same window. Section~\ref{sec:Conclusion} discusses how the smoothing/cooldown parameters could be tuned to move along this trade-off rather than treating the reported configuration as the only point on it.

@@ -6,6 +6,18 @@
 \label{sec:Methodology}
 %% ==============================
 
-You will of course want to discuss your research as well as evaluation methodology -- otherwise how will your examiners know that you have followed an appropriate scientific process and rationalised your choice of evaluation. Note that it may also be useful to base decisions in this section off your discussion of related work in section~\ref{sec:rw}. You should also include cite any previous work used in defining your methodology.
+\subsection{Synthetic Workload}
+A synthetic cyclical workload (\texttt{src/data/workload\_simulator.py}) of 500 timesteps combines a sinusoidal base load, periodic traffic spikes (every ~80 steps), and Gaussian noise -- generating the kind of bursty, partially-predictable demand pattern proactive scaling is meant to handle better than reactive thresholds.
 
-You need to give a completely accurate description of the research procedure you followed, equipment used, the technique(s), applied, set-up of scenarios/case studies run. You must provide an explanation of how the raw data gathered/compiled and analyzed. Describe the statistical techniques used upon the data. Detail all the steps from data collection to final results.
+\subsection{Training and Evaluation}
+For each of 5 seeds (42-46), a fresh workload is generated and a fresh predictor is trained on it. All three scaling policies (Reactive HPA, Aggressive PAKS, Stability-Aware PAKS) are then run over the same workload and evaluated identically, so any difference in outcome reflects the scaling policy, not the underlying data or model.
+
+\subsection{Metrics}
+\begin{itemize}
+  \item \textbf{SLA Violations}: count of timesteps where allocated pods fall below the absolute minimum required to serve the actual workload without throttling.
+  \item \textbf{Over-provisioning \%}: total allocated pod-steps in excess of the minimum required, as a percentage.
+  \item \textbf{Scaling Events}: count of timesteps where the pod count changes from the previous timestep -- directly comparable to NimbusGuard's own ``Total Scaling Events'' metric.
+  \item \textbf{Pod Count Volatility}: standard deviation of step-to-step pod-count changes -- a finer-grained stability measure than a raw event count.
+\end{itemize}
+
+All code and results are in \texttt{paks-framework/}.

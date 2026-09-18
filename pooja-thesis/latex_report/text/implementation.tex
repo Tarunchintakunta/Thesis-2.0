@@ -6,6 +6,15 @@
 \label{sec:Implementation}
 %% ==============================
 
-You will of course want to discuss the implementation of the proposed solution. Only the final stage of the implementation should be described.
+The system is implemented in Python 3 with scikit-learn. Key modules:
 
-It should describe the outputs produced, e.g. transformed data, code written, models developed, questionnaires administered. The description should also include what tools and languages you used to produce the outputs. This section must not contain code listing or user manual description.
+\begin{itemize}
+  \item \texttt{src/data/workload\_simulator.py} -- synthetic cyclical workload generator described in Section~\ref{sec:Methodology}.
+  \item \texttt{src/models/scalers.py} -- \texttt{run\_reactive\_hpa}, \texttt{run\_aggressive\_paks} (baseline), and \texttt{StabilityAwareController} / \texttt{run\_stability\_aware\_paks} (improvement), sharing one \texttt{train\_predictor} function.
+  \item \texttt{scripts/train\_and\_evaluate.py} -- trains and evaluates all 3 policies across 5 seeds, writes \texttt{results/results\_per\_seed.csv} and \texttt{results/results\_summary.csv}, and exports the trained predictor to \texttt{src/lambda\_handler/model/} for deployment.
+  \item \texttt{src/lambda\_handler/app.py} -- an AWS Lambda handler that applies the same stability-aware controller logic to live workload telemetry arriving on a Kinesis stream, one instance of the controller per node, persisted across warm invocations.
+  \item \texttt{template.yaml} -- AWS SAM template provisioning the Kinesis stream and Lambda function. This replaces an earlier scaffold template that pointed \texttt{Handler} at a \texttt{src/ml\_predict.py} file that did not exist anywhere in the repository, and referenced hardcoded placeholder VPC subnet IDs that would have failed on any real deploy attempt.
+  \item \texttt{.github/workflows/deploy.yml} (repo root) -- CI pipeline that runs the training/evaluation script and, on push to \texttt{main}, deploys the SAM stack to the configured AWS region using repository secrets.
+\end{itemize}
+
+The original scaffold used TensorFlow/Keras for the workload predictor; this version uses scikit-learn's \texttt{MLPRegressor} instead (same 2-hidden-layer feed-forward design), removing a heavy dependency the project did not otherwise need. Running \texttt{python scripts/train\_and\_evaluate.py} reproduces every number in Section~\ref{sec:Evaluation} from scratch. The Lambda handler was verified locally against a synthetic rising-workload sequence before deployment.

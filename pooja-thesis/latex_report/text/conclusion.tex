@@ -6,6 +6,13 @@
 \label{sec:Conclusion}
 %% ==================
 
-Restate your research question, your objectives and the work done. State how successful you have been in answering the research question and achieving the objectives. Restate the key findings. Discuss the implications of your research, talk about the efficacy of your research, and discuss its limitations. 
+This project asked whether a proactive Kubernetes autoscaler could keep most of its SLA-violation advantage over reactive HPA while substantially reducing the instability that Wanigasooriya \& Ekanayake's (2026) NimbusGuard exhibits and names but does not fix. Across 5 seeds, a stability-aware controller (exponential smoothing + hysteresis/cooldown, applied to the same forecasting model as an unfiltered baseline) cut scaling events by 57\% and pod-count volatility by 32\%, while still beating reactive HPA on SLA violations -- though giving back roughly half of the SLA-violation advantage the unfiltered proactive policy achieves.
 
-Describe any proposals for future work or potential for commercialisation. Present MEANINGFUL future work. Sweeping more parameters in your simulation / model / platform is probably not meaningful. More discuss what could a follow up research project do, to better / differently approach / extend etc. your work.
+The honest finding is a trade-off surface, not a single winning configuration: the smoothing factor and hysteresis/cooldown thresholds used here (0.4, 1 pod, 2 steps) are one point on a continuum between "aggressive and unstable" and "calm but slower to react," and were not exhaustively tuned.
+
+\textbf{Future work:}
+\begin{itemize}
+  \item Sweep the smoothing/hysteresis/cooldown parameters to map the full SLA-vs-stability trade-off curve, rather than reporting one configuration.
+  \item Evaluate on a real Kubernetes testbed with real workload traces, as NimbusGuard itself does, rather than a synthetic generator.
+  \item Explore whether the cooldown/hysteresis rule could itself be learned (e.g. as a second, small model deciding \emph{when} to trust the predictor) rather than fixed, closing the gap to NimbusGuard's own RL-based approach while keeping the simplicity of not requiring a full DQN pipeline.
+\end{itemize}

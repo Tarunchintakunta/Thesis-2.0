@@ -1,32 +1,13 @@
 \section{Related Work}
+\label{sec:rw}
 
-This section surveys contemporary research and industry-standard practices regarding message reliability in distributed systems, specifically within the context of AWS services. As cloud-native architectures have evolved, message queue reliability has transitioned from simple synchronous handling to sophisticated asynchronous failure recovery.
+Kubernetes' built-in Horizontal Pod Autoscaler (HPA) and event-driven autoscalers like KEDA are both reactive: they scale only after a metric threshold is already crossed, which under bursty workloads leads to either SLA-violating under-provisioning or costly over-provisioning.
 
-\subsection{Evolution of Message Reliability Patterns}
-Reliability in distributed systems is bound by the impossibility of achieving "Exactly-Once" semantics without overhead. Literature from 2020 to 2026 (\cite{sqs-reliability-2025}) consistently highlights that message queues like Amazon SQS provide "At-Least-Once" delivery semantics. This fundamental constraint necessitates that all downstream processing must be idempotent.
+\subsection{Baseline: Proactive Autoscaling with Deep Q-Networks}
+The baseline for this project is Wanigasooriya \& Ekanayake \cite{Wanigasooriya26}, ``NimbusGuard: A Novel Framework for Proactive Kubernetes Autoscaling Using Deep Q-Networks'' (IEEE ICOIN 2026). NimbusGuard combines a Deep Q-Network scaling agent with an LSTM workload forecaster, evaluated against reactive HPA and event-driven KEDA on a real KinD Kubernetes testbed under a phased load pattern (ramp-up, sustained load, peak load, cooldown). Their results show NimbusGuard reduces the metric they care most about -- responsiveness -- outperforming both reactive baselines.
 
-\subsection{Dead Letter Queue (DLQ) and Redrive Policies}
-The emergence of mature DLQ Redrive support has been the most significant evolution in SQS reliability. Traditional patterns relied on custom consumer logic to redirect failed messages to auxiliary queues. Recent standards advocate for the native AWS source queue redrive policies, enabling seamless "poison pill" management where messages exceeding the \texttt{maxReceiveCount} are moved to a secondary DLQ for deferred investigation and subsequent redrive without the need for additional bespoke recovery infrastructure.
+\subsection{The Gap This Project Targets}
+The same results table exposes the cost of that responsiveness. NimbusGuard runs with the highest average replica count (5.44 vs. 3.05 for HPA and 2.93 for KEDA) and double the total scaling events of either reactive baseline (8 vs. 4). The paper states this directly: ``NimbusGuard was the most agile and least stable system... these findings highlight a fundamental trade-off: the proactive, performance-focused scaling of NimbusGuard versus the reactive, cost-efficient stability of traditional autoscalers.'' Their own future-work section gestures at addressing this (expanding the action space, hybridising with Vertical Pod Autoscaling) but does not build or evaluate a fix.
 
-\subsection{Exponential Backoff, Jitter, and Visibility Timeout}
-The interplay between visibility timeout and retry intervals forms the backbone of recovery for transient failures, such as temporary database contention or service throttling. Modern architectural literature emphasizes managing the visibility timeout to equal or exceed the exponential backoff delay. This prevents the "thundering herd" problem where multiple workers contend for messages that are not yet ready to be processed, thereby exacerbating downstream failures.
-
-\subsection{Idempotency and Stateful Reconciliation}
-State tracking is foundational to ensuring that re-delivery of messages does not compromise system state. Recent research investigates the deployment of DynamoDB as a high-throughput state store, where message identifiers or business-transaction hashes are cached with an appropriate Time-to-Live (TTL). This pattern ensures that re-processed messages from a re-queued event do not duplicate state mutations.
-
-\subsection{Summary of Modern Recovery Flows}
-Current research highlights a shift from reactive to proactive monitoring of SQS, centering on observability and metrics like the ratio of Approximate Number of Messages Visible versus Not Visible. This ratio acts as an early warning for consumer blockage, allowing for automated horizontal scaling to mitigate backlog growth.
-
-\cite{sqs-reliability-2025} Kyrychenko, I., et al. (2025). \emph{Optimization of SQS batching strategies for high-throughput serverless pipelines.} IEEE Cloud Computing.
-
-\subsection{Theoretical Foundations}
-(Deep analysis of fundamental theories underlying the topic: e.g., for fault localisation, this involves deep-dive into graph dependency theory, causality, and Bayesian inference in microservices.)
-
-\subsection{Comparative Analysis of State-of-the-Art}
-(Exhaustive comparison of papers cited in the project proposal 2020-2026. Critical assessment of experimental rigs, scalability limitations, and computational overhead of current solutions.)
-
-\subsection{Methodological Gaps}
-(Identification of the specific gaps the current project addresses, whether it is performance, cost, observability, or reliability.)
-
-\subsection{Synthesis and Directions}
-(Integration of findings into a coherent body of knowledge that defines the current domain's frontier.)
+\subsection{Smoothing and Hysteresis in Autoscaling}
+Damping noisy scaling signals with smoothing and cooldown windows is a long-established idea in autoscaler design generally (Kubernetes HPA itself has a stabilization-window option), but it is not what NimbusGuard's own DQN+LSTM pipeline does -- their agent acts on every raw forecast. This project reproduces the aggressive, unfiltered proactive-scaling trade-off NimbusGuard reports, then applies exactly this kind of smoothing/hysteresis rule on top of the same underlying predictive signal, to test whether it recovers stability without giving back the SLA benefit of forecasting in the first place.
