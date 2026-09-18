@@ -1,27 +1,20 @@
 import numpy as np
 
+from src.data.telemetry_simulator import METRIC_NAMES, THRESHOLDS
+
+
 class ThresholdBaseline:
-    def __init__(self, cpu_threshold=0.85, mem_threshold=0.90, disk_threshold=0.90):
-        self.cpu_threshold = cpu_threshold
-        self.mem_threshold = mem_threshold
-        self.disk_threshold = disk_threshold
+    """Traditional reactive monitoring: flags a violation only once a metric
+    has already crossed its threshold in the observed window. Per-metric
+    None/L1/L2 output, so it's directly comparable to the attention models."""
 
     def predict(self, X):
-        """
-        X: numpy array of shape (num_samples, seq_length, num_features)
-        Returns: binary predictions (1 if threshold exceeded in any of the last few timesteps)
-        """
-        predictions = []
-        for sample in X:
-            # Check the last 3 timesteps for any threshold violation
-            recent_steps = sample[-3:]
-            cpu_violation = np.any(recent_steps[:, 0] > self.cpu_threshold)
-            mem_violation = np.any(recent_steps[:, 1] > self.mem_threshold)
-            disk_violation = np.any(recent_steps[:, 2] > self.disk_threshold)
+        """X: (num_samples, seq_length, num_metrics) -> (num_samples, num_metrics) int labels"""
+        recent = X[:, -3:, :]
+        peak = recent.max(axis=1)  # (num_samples, num_metrics)
 
-            if cpu_violation or mem_violation or disk_violation:
-                predictions.append(1)
-            else:
-                predictions.append(0)
-
-        return np.array(predictions)
+        labels = np.zeros((X.shape[0], X.shape[2]), dtype=np.int64)
+        for i, name in enumerate(METRIC_NAMES):
+            l1, l2 = THRESHOLDS[name]
+            labels[:, i] = np.where(peak[:, i] >= l2, 2, np.where(peak[:, i] >= l1, 1, 0))
+        return labels

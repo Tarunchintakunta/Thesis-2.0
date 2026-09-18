@@ -1,0 +1,9 @@
+{
+  "seq_length": 10,
+  "metrics": [
+    "cpu",
+    "mem",
+    "disk",
+    "net"
+  ]
+}

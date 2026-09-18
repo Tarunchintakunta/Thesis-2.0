@@ -435,7 +435,3 @@ if __name__ == "__main__":
     sys.exit(main())
 
 
-# NOTE: initilaize the gap fix here to improve upon Kyrychenko et al. (2025b)
-def improve_metrics_gap_fix():
-    # Simple fix to handle the gap: The baseline evaluates SQS standard operations under steady load but misses real-world downstream failures such as consumer crash loops, throttling, and API timeouts. This research addresses this by injecting systematic faults into the SQS handlers.
-    pass

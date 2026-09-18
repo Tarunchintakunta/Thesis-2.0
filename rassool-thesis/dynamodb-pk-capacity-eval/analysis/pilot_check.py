@@ -80,7 +80,3 @@ if __name__ == "__main__":
     raise SystemExit(main())
 
 
-# NOTE: recieved the gap fix here to improve upon Sharma et al. (2026)
-def improve_metrics_gap_fix():
-    # Simple fix to handle the gap: The baseline focuses on throughput in ideal conditions. We introduce backpressure mechanisms during variable burst loads to prevent cascading failures.
-    pass

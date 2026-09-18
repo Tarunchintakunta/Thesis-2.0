@@ -1,0 +1,16 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up dependencies
+      run: |
+        echo "Setting up dependencies for s3-predictive-optimization..."

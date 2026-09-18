@@ -20,28 +20,40 @@ THRESHOLDS = {
 class TelemetrySimulator:
     """Synthetic multivariate cluster telemetry (CPU, Mem, Disk, Net).
 
+    This is a forecasting task, not same-window classification: the model
+    only ever sees a `seq_length`-step *history* window. The label is
+    computed from a separate `horizon`-step *future* window it never sees.
+    A reactive threshold monitor (which only looks at the current/history
+    window) has no way to observe the future window at all, so it can only
+    "predict" a violation when the history window already shows one -- it
+    structurally cannot get credit for foresight. This is what makes it a
+    fair reproduction of the paper's "reactive vs. proactive" comparison.
+
     Two kinds of samples:
-      - steady-state: gentle noise around a per-sample baseline load.
-      - transient: a fast multi-metric burst injected into the last few
-        timesteps. Bursts are correlated across metrics (e.g. a CPU spike
-        tends to drag Net/Disk up with it), which is what a strict
-        one-head-per-metric model cannot exploit but a cross-head fusion
-        model can.
+      - steady-state: gentle noise around a per-sample baseline load,
+        never breaches a threshold.
+      - transient: a fast multi-metric burst that starts somewhere around
+        the history/future boundary. Bursts are correlated across metrics
+        (e.g. a CPU spike drags Net up with it) -- a precursor that shows
+        up in one metric's history can predict a different metric's
+        future violation, which a strict one-head-per-metric model can't
+        exploit but a cross-head fusion model can.
     """
 
-    def __init__(self, num_samples=15000, seq_length=10, transient_ratio=0.3, seed=42):
+    def __init__(self, num_samples=15000, seq_length=10, horizon=5, transient_ratio=0.3, seed=42):
         self.num_samples = num_samples
         self.seq_length = seq_length
+        self.horizon = horizon
+        self.total_length = seq_length + horizon
         self.num_features = 4
         self.transient_ratio = transient_ratio
         self.seed = seed
 
-    def _label_window(self, sample):
-        recent = sample[-3:]
+    def _label_future_window(self, future_segment):
         labels = np.zeros(self.num_features, dtype=np.int64)
         for i, name in enumerate(METRIC_NAMES):
             l1, l2 = THRESHOLDS[name]
-            peak = recent[:, i].max()
+            peak = future_segment[:, i].max()
             if peak >= l2:
                 labels[i] = 2
             elif peak >= l1:
@@ -54,7 +66,9 @@ class TelemetrySimulator:
         rng = np.random.RandomState(self.seed)
 
         baseline_load = rng.uniform(0.3, 0.5, size=(self.num_samples, 1, 1))
-        X = baseline_load + rng.normal(loc=0.0, scale=0.06, size=(self.num_samples, self.seq_length, self.num_features))
+        X_full = baseline_load + rng.normal(
+            loc=0.0, scale=0.06, size=(self.num_samples, self.total_length, self.num_features)
+        )
 
         num_transient = int(self.num_samples * self.transient_ratio)
         transient_idx = rng.choice(self.num_samples, num_transient, replace=False)
@@ -72,21 +86,36 @@ class TelemetrySimulator:
         for idx in transient_idx:
             is_transient[idx] = True
             pattern = burst_patterns[rng.randint(len(burst_patterns))]
-            ramp_len = rng.randint(3, 5)
-            ramp = np.linspace(0.0, 1.0, ramp_len) ** 1.5  # fast, non-linear ramp-up
+            ramp_len = rng.randint(3, 6)
 
-            primary_gain = rng.uniform(0.45, 0.85)
-            X[idx, -ramp_len:, pattern["primary"]] += ramp * primary_gain
+            # The primary metric's own spike lands mostly/fully in the
+            # future window (i.e. it shows little or no precursor of its
+            # own in the visible history).
+            primary_start = rng.randint(self.seq_length - 1, self.total_length - ramp_len + 1)
+            ramp = np.linspace(0.0, 1.0, ramp_len) ** 1.5
+            primary_gain = rng.uniform(0.5, 0.9)
+            X_full[idx, primary_start:primary_start + ramp_len, pattern["primary"]] += ramp * primary_gain
 
+            # Rider metrics lead the primary by a few steps -- a genuine
+            # cross-metric precursor sitting inside the visible history
+            # window, which is the only observable early-warning signal
+            # for the primary's future violation.
             for rider in pattern["riders"]:
-                rider_gain = rng.uniform(0.2, 0.5) * primary_gain
-                X[idx, -ramp_len:, rider] += ramp * rider_gain
+                lead_gap = rng.randint(3, 7)
+                rider_start = max(primary_start - lead_gap, 0)
+                rider_ramp_len = min(ramp_len, self.total_length - rider_start)
+                rider_ramp = np.linspace(0.0, 1.0, rider_ramp_len) ** 1.5
+                rider_gain = rng.uniform(0.35, 0.65) * primary_gain
+                X_full[idx, rider_start:rider_start + rider_ramp_len, rider] += rider_ramp * rider_gain
 
-        X = np.clip(X, 0.0, 1.0)
+        X_full = np.clip(X_full, 0.0, 1.0)
+
+        X = X_full[:, :self.seq_length, :]                 # history window (model input)
+        future = X_full[:, self.seq_length:, :]            # future window (never shown to the model)
 
         y = np.zeros((self.num_samples, self.num_features), dtype=np.int64)
         for idx in range(self.num_samples):
-            y[idx] = self._label_window(X[idx])
+            y[idx] = self._label_future_window(future[idx])
 
         return X, y, is_transient
 

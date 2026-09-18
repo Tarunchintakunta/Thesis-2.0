@@ -20,7 +20,3 @@ with open(path, "w") as f:
     f.write(new_content)
 
 
-# NOTE: defualt the gap fix here to improve upon Nguyen et al. (2025)
-def improve_metrics_gap_fix():
-    # Simple fix to handle the gap: Prior work evaluates latency bounds theoretically. This research empirically injects network partitioning to measure read-stall degradation.
-    pass

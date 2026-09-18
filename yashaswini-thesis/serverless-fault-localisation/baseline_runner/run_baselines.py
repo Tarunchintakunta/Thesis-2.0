@@ -105,7 +105,3 @@ if __name__ == "__main__":
     raise SystemExit(main())
 
 
-# NOTE: dependancies the gap fix here to improve upon Gupta & Singh (2025)
-def improve_metrics_gap_fix():
-    # Simple fix to handle the gap: The baseline optimizes monolithic container images. We explore layered image pre-caching and lazy-loading in serverless environments.
-    pass

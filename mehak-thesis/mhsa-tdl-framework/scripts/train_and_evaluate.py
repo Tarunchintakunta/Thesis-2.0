@@ -8,110 +8,168 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, roc_auc_score
+from sklearn.metrics import accuracy_score, f1_score
 
-# Add parent directory to path to import src
 current_dir = os.path.dirname(os.path.abspath(__file__))
 parent_dir = os.path.dirname(current_dir)
 sys.path.append(parent_dir)
 
-from src.data.telemetry_simulator import TelemetrySimulator, TelemetryDataset
-from src.models.mhsa_model import MHSAModel
+from src.data.telemetry_simulator import TelemetrySimulator, TelemetryDataset, METRIC_NAMES
+from src.models.mhsa_model import MHSAPerHead, MHSAFused
 from src.models.baseline import ThresholdBaseline
 
-def calculate_metrics(y_true, y_pred, y_prob, latency_ms):
+SEEDS = [42, 43, 44]
+SEQ_LENGTH = 10
+EPOCHS = 30
+DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+
+def per_metric_predictions(logits):
+    # logits: (N, num_metrics, 3) -> (N, num_metrics) predicted class
+    return logits.argmax(axis=-1)
+
+
+def score_model(y_true, y_pred, is_transient):
+    """Per-metric macro accuracy/F1 (averaged across metrics), plus recall
+    on the specific failure mode the baseline paper reports: whether a
+    real violation (L1/L2) inside a high-load transient window gets
+    detected at all."""
+    accs, f1s = [], []
+    for i in range(y_true.shape[1]):
+        accs.append(accuracy_score(y_true[:, i], y_pred[:, i]))
+        f1s.append(f1_score(y_true[:, i], y_pred[:, i], average="macro", zero_division=0))
+
+    transient_recalls = []
+    for i in range(y_true.shape[1]):
+        t_true = y_true[is_transient, i]
+        t_pred = y_pred[is_transient, i]
+        violation_mask = t_true > 0
+        if violation_mask.sum() > 0:
+            transient_recalls.append((t_pred[violation_mask] > 0).mean())
+
     return {
-        'Accuracy': round(accuracy_score(y_true, y_pred), 4),
-        'Precision': round(precision_score(y_true, y_pred, zero_division=0), 4),
-        'Recall': round(recall_score(y_true, y_pred, zero_division=0), 4),
-        'F1-Score': round(f1_score(y_true, y_pred, zero_division=0), 4),
-        'ROC-AUC': round(roc_auc_score(y_true, y_prob), 4),
-        'Latency (ms)': round(latency_ms, 2)
+        "Accuracy": round(float(np.mean(accs)), 4),
+        "Macro-F1": round(float(np.mean(f1s)), 4),
+        "Transient Violation Recall": round(float(np.mean(transient_recalls)), 4) if transient_recalls else float("nan"),
     }
 
-def main():
-    print("Initializing Simulation Environment...")
-    seq_length = 10
-    sim = TelemetrySimulator(num_samples=15000, seq_length=seq_length)
-    X, y = sim.generate_data()
 
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+def class_weights_per_metric(y_train):
+    # Inverse-frequency weights so rare L1/L2 classes aren't drowned out by
+    # the dominant "none" class.
+    weights = []
+    for i in range(y_train.shape[1]):
+        counts = np.bincount(y_train[:, i], minlength=3).astype(np.float32)
+        counts[counts == 0] = 1.0
+        w = counts.sum() / (3.0 * counts)
+        weights.append(torch.tensor(w, dtype=torch.float32))
+    return weights
 
-    train_dataset = TelemetryDataset(X_train, y_train)
-    test_dataset = TelemetryDataset(X_test, y_test)
 
-    train_loader = DataLoader(train_dataset, batch_size=64, shuffle=True)
-    test_loader = DataLoader(test_dataset, batch_size=64, shuffle=False)
-
-    # ----------------------------------------------------
-    # Model 1: MHSA-TDL
-    # ----------------------------------------------------
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model = MHSAModel(input_dim=4, seq_length=seq_length).to(device)
-    criterion = nn.BCELoss()
+def train_model(model_cls, X_train, y_train, X_test):
+    model = model_cls(seq_length=SEQ_LENGTH).to(DEVICE)
+    weights = [w.to(DEVICE) for w in class_weights_per_metric(y_train)]
+    criteria = [nn.CrossEntropyLoss(weight=w) for w in weights]
     optimizer = optim.Adam(model.parameters(), lr=0.001)
 
-    print("Training MHSA-TDL Model...")
-    epochs = 15
-    for epoch in range(epochs):
-        model.train()
-        total_loss = 0
-        for X_batch, y_batch in train_loader:
-            X_batch, y_batch = X_batch.to(device), y_batch.to(device)
+    train_ds = TelemetryDataset(X_train, y_train)
+    train_loader = DataLoader(train_ds, batch_size=64, shuffle=True)
+
+    model.train()
+    for epoch in range(EPOCHS):
+        total_loss = 0.0
+        for X_batch, y_batch, _ in train_loader:
+            X_batch, y_batch = X_batch.to(DEVICE), y_batch.to(DEVICE)
             optimizer.zero_grad()
-            outputs = model(X_batch)
-            loss = criterion(outputs, y_batch)
+            logits = model(X_batch)  # (batch, num_metrics, 3)
+            loss = sum(
+                criteria[i](logits[:, i, :], y_batch[:, i]) for i in range(logits.shape[1])
+            )
             loss.backward()
             optimizer.step()
             total_loss += loss.item()
 
-        if (epoch + 1) % 5 == 0:
-            print(f"Epoch {epoch+1}/{epochs}, Loss: {total_loss/len(train_loader):.4f}")
-
-    print("Evaluating MHSA-TDL Model...")
     model.eval()
-    mhsa_preds = []
-    mhsa_probs = []
-
-    start_time = time.time()
     with torch.no_grad():
-        for X_batch, _ in test_loader:
-            X_batch = X_batch.to(device)
-            outputs = model(X_batch)
-            mhsa_probs.extend(outputs.cpu().numpy())
-            mhsa_preds.extend((outputs.cpu().numpy() > 0.5).astype(int))
-    end_time = time.time()
+        X_test_t = torch.FloatTensor(X_test).to(DEVICE)
+        start = time.time()
+        logits = model(X_test_t)
+        latency_ms = (time.time() - start) * 1000 / len(X_test)
+        preds = per_metric_predictions(logits.cpu().numpy())
 
-    # In a real environment, you'd calculate latency over single inferences, not a batch,
-    # but for benchmark purposes this gives a rough average latency per sample.
-    mhsa_latency = (end_time - start_time) * 1000 / len(y_test)
-    mhsa_metrics = calculate_metrics(y_test, mhsa_preds, mhsa_probs, mhsa_latency)
+    return model, preds, latency_ms
 
-    # ----------------------------------------------------
-    # Model 2: Traditional Threshold Monitoring
-    # ----------------------------------------------------
-    print("Evaluating Traditional Threshold Baseline...")
-    baseline = ThresholdBaseline(cpu_threshold=0.85, mem_threshold=0.90, disk_threshold=0.90)
 
-    start_time = time.time()
-    baseline_preds = baseline.predict(X_test)
-    end_time = time.time()
+def main():
+    print(f"Device: {DEVICE}")
+    all_runs = []
+    fused_model_for_export = None
+    fused_model_meta = None
 
-    baseline_latency = (end_time - start_time) * 1000 / len(y_test)
-    baseline_metrics = calculate_metrics(y_test, baseline_preds, baseline_preds, baseline_latency)
+    for seed in SEEDS:
+        print(f"\n=== Seed {seed} ===")
+        sim = TelemetrySimulator(num_samples=20000, seq_length=SEQ_LENGTH, transient_ratio=0.4, seed=seed)
+        X, y, is_transient = sim.generate_data()
 
-    # ----------------------------------------------------
-    # Save Results
-    # ----------------------------------------------------
-    results_df = pd.DataFrame([mhsa_metrics, baseline_metrics], index=['MHSA-TDL', 'Threshold Baseline'])
-    print("\nEvaluation Results:")
-    print(results_df)
+        idx = np.arange(len(X))
+        idx_train, idx_test = train_test_split(idx, test_size=0.2, random_state=seed, stratify=is_transient)
+        X_train, y_train = X[idx_train], y[idx_train]
+        X_test, y_test = X[idx_test], y[idx_test]
+        transient_test = is_transient[idx_test]
 
-    results_dir = os.path.join(parent_dir, 'results')
+        # Traditional reactive threshold monitoring
+        baseline = ThresholdBaseline()
+        start = time.time()
+        baseline_preds = baseline.predict(X_test)
+        baseline_latency = (time.time() - start) * 1000 / len(X_test)
+        baseline_scores = score_model(y_test, baseline_preds, transient_test)
+        baseline_scores.update({"Model": "Threshold Baseline", "Seed": seed, "Latency (ms)": round(baseline_latency, 4)})
+        all_runs.append(baseline_scores)
+
+        # Baseline reproduction: strict 1-head-per-metric (Thapliyal 2026)
+        print("Training MHSA-PerHead (baseline reproduction)...")
+        _, perhead_preds, perhead_latency = train_model(MHSAPerHead, X_train, y_train, X_test)
+        perhead_scores = score_model(y_test, perhead_preds, transient_test)
+        perhead_scores.update({"Model": "MHSA-PerHead (baseline)", "Seed": seed, "Latency (ms)": round(perhead_latency, 4)})
+        all_runs.append(perhead_scores)
+
+        # Improvement: cross-head fusion
+        print("Training MHSA-Fused (improved)...")
+        fused_model, fused_preds, fused_latency = train_model(MHSAFused, X_train, y_train, X_test)
+        fused_scores = score_model(y_test, fused_preds, transient_test)
+        fused_scores.update({"Model": "MHSA-Fused (improved)", "Seed": seed, "Latency (ms)": round(fused_latency, 4)})
+        all_runs.append(fused_scores)
+
+        fused_model_for_export = fused_model
+        fused_model_meta = {"seq_length": SEQ_LENGTH, "metrics": METRIC_NAMES}
+
+    results_df = pd.DataFrame(all_runs)
+    print("\nPer-seed results:")
+    print(results_df.to_string(index=False))
+
+    summary = (
+        results_df.groupby("Model")[["Accuracy", "Macro-F1", "Transient Violation Recall", "Latency (ms)"]]
+        .agg(["mean", "std"])
+        .round(4)
+    )
+    print("\nSummary across seeds (mean +/- std):")
+    print(summary)
+
+    results_dir = os.path.join(parent_dir, "results")
     os.makedirs(results_dir, exist_ok=True)
-    results_path = os.path.join(results_dir, 'results.csv')
-    results_df.to_csv(results_path)
-    print(f"\nResults saved to {results_path}")
+    results_df.to_csv(os.path.join(results_dir, "results_per_seed.csv"), index=False)
+    summary.to_csv(os.path.join(results_dir, "results_summary.csv"))
+    print(f"\nResults saved to {results_dir}/")
+
+    if fused_model_for_export is not None:
+        models_dir = os.path.join(parent_dir, "models")
+        os.makedirs(models_dir, exist_ok=True)
+        torch.save(fused_model_for_export.state_dict(), os.path.join(models_dir, "mhsa_fused.pt"))
+        import json
+        with open(os.path.join(models_dir, "metadata.json"), "w") as f:
+            json.dump(fused_model_meta, f, indent=2)
+        print(f"Deployable model saved to {models_dir}/mhsa_fused.pt")
+
 
 if __name__ == "__main__":
     main()
