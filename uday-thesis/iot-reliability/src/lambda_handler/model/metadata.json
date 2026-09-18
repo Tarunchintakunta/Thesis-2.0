@@ -1,0 +1,18 @@
+{
+  "features": [
+    "rtt",
+    "cpu",
+    "ram",
+    "success_rate",
+    "latency",
+    "throughput"
+  ],
+  "sites": [
+    "site_uniform_a",
+    "site_uniform_b",
+    "site_burst_a",
+    "site_burst_b",
+    "site_realtime_a",
+    "site_realtime_b"
+  ]
+}

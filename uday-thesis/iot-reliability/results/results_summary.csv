@@ -1,0 +1,6 @@
+,Accuracy,Accuracy,Macro-F1,Macro-F1,Critical Recall (class 2),Critical Recall (class 2)
+,mean,std,mean,std,mean,std
+Model,,,,,,
+Centralized RF (baseline),0.9995,0.0005,0.9996,0.0005,0.9994,0.0013
+Federated Ensemble RF (improved),0.9959,0.0024,0.9949,0.0024,0.9997,0.0007
+Single-Site Local Only (no federation),0.9761,0.0046,0.9737,0.0051,0.9958,0.0031

@@ -1,0 +1,16 @@
+Accuracy,Macro-F1,Critical Recall (class 2),Model,Seed
+0.9989,0.9991,0.9971,Centralized RF (baseline),42
+0.9972,0.9965,0.9985,Federated Ensemble RF (improved),42
+0.9789,0.9754,0.9905,Single-Site Local Only (no federation),42
+0.9994,0.9991,1.0,Centralized RF (baseline),43
+0.9917,0.9909,1.0,Federated Ensemble RF (improved),43
+0.9733,0.9709,0.9983,Single-Site Local Only (no federation),43
+1.0,1.0,1.0,Centralized RF (baseline),44
+0.9972,0.9957,1.0,Federated Ensemble RF (improved),44
+0.9699,0.9665,0.996,Single-Site Local Only (no federation),44
+1.0,1.0,1.0,Centralized RF (baseline),45
+0.9972,0.997,1.0,Federated Ensemble RF (improved),45
+0.9768,0.9759,0.9968,Single-Site Local Only (no federation),45
+0.9994,0.9996,1.0,Centralized RF (baseline),46
+0.9961,0.9945,1.0,Federated Ensemble RF (improved),46
+0.9815,0.9798,0.9973,Single-Site Local Only (no federation),46
