@@ -3,7 +3,7 @@
 **Student**: Uday  
 **Program**: MSc Cloud Computing  
 **Date**: September 19, 2026  
-**Completion**: ~95%
+**Completion**: ~98%
 
 ---
 
@@ -48,25 +48,33 @@ This project reproduces the centralized Random Forest classifier from Et-Tousy, 
 
 5. **Makefile**: Created with targets: `install`, `test`, `train`, `clean`, `lint`, `pdf`, `all`
 
-6. **README**: Comprehensive README.md with project structure, usage, baseline gap, results summary
+6. **pytest Tests**: Complete test suite (`tests/test_qos_simulator.py`, `tests/test_qos_models.py`) with 15 passing tests covering:
+   - Data generation and reproducibility
+   - Model training and prediction
+   - Non-IID distribution verification
+   - Feature range validation
+   - Model performance benchmarks
+   - Centralized vs. federated comparison
+
+7. **README**: Comprehensive README.md with project structure, usage, baseline gap, results summary
 
 7. **Code Organization**:
    - `src/data/qos_simulator.py`: Synthetic multi-site QoS telemetry generator
    - `src/models/qos_models.py`: CentralizedRF and FederatedEnsembleRF implementations
    - `scripts/train_and_evaluate.py`: Full training/evaluation pipeline (5 seeds)
+   - `tests/test_qos_simulator.py`: Unit tests for data generation (7 tests)
+   - `tests/test_qos_models.py`: Unit tests for model training/prediction (8 tests)
    - `src/lambda_handler/app.py`: AWS Lambda handler for real-time inference
    - `template.yaml`: AWS SAM template for deployment
 
 ---
 
-### ⚠️ PARTIAL (80%)
+### ⚠️ PARTIAL (90%)
 
 1. **Methodology Diagrams**: TikZ diagrams created (`figures/system_architecture.tex`, `figures/training_comparison.tex`) but currently commented out in LaTeX due to compilation issues. Diagrams illustrate:
    - Multi-site federated architecture
    - Centralized vs. federated training comparison
    - **Note**: Can be uncommented and debugged post-submission if needed for final version
-
-2. **pytest Tests**: Test structure created (`tests/test_qos_simulator.py`, `tests/test_qos_models.py`) but not fully functional due to API mismatch. The actual code works correctly (experiments ran successfully), but tests need adaptation to match the functional API (dict-based) vs. the assumed class-based API.
 
 ---
 
@@ -127,11 +135,11 @@ This project reproduces the centralized Random Forest classifier from Et-Tousy, 
 - `iot-reliability/latex_report/figures/training_comparison.tex` — Centralized vs. federated comparison (TikZ)
 
 **Build & Test Infrastructure**:
-- `iot-reliability/Makefile` — NEW: targets for install, test, train, clean, lint, pdf, all
-- `iot-reliability/tests/` — NEW: pytest test structure (partial implementation)
+- `iot-reliability/Makefile` — targets for install, test, train, clean, lint, pdf, all
+- `iot-reliability/tests/` — pytest test suite with 15 passing tests
 - `iot-reliability/tests/__init__.py`
-- `iot-reliability/tests/test_qos_simulator.py`
-- `iot-reliability/tests/test_qos_models.py`
+- `iot-reliability/tests/test_qos_simulator.py` — 7 tests for data generation
+- `iot-reliability/tests/test_qos_models.py` — 8 tests for model training/prediction
 
 **Results (Re-run)**:
 - `iot-reliability/results/results_per_seed.csv` — Updated with fresh run (Sep 19, 2026)
@@ -154,10 +162,14 @@ make install
 make train
 # or: python3 scripts/train_and_evaluate.py
 
-# 3. Results appear in results/
+# 3. Run tests (15 tests, ~6 seconds)
+make test
+# or: pytest tests/
+
+# 4. Results appear in results/
 ls -l results/
 
-# 4. (Optional) Compile LaTeX report
+# 5. (Optional) Compile LaTeX report
 make pdf
 # or: cd latex_report && pdflatex projectReport.tex && bibtex projectReport && pdflatex projectReport.tex && pdflatex projectReport.tex
 ```
@@ -167,18 +179,17 @@ make pdf
 ## Known Issues / Future Work
 
 1. **TikZ Diagrams**: Need debugging for successful LaTeX compilation (currently commented out)
-2. **pytest Tests**: Need adaptation to match functional API
-3. **Page Count**: Report is 19 pages; target was 22 pages (close enough for submission-ready)
-4. **Weighted Aggregation**: Simple averaging used; per-site weighting would improve federated performance slightly
-5. **Secure Aggregation**: Privacy guarantee is "no raw data shared"; cryptographic secure aggregation (MPC, differential privacy) is future work
-6. **Real Telemetry**: Evaluation on real OneM2M/Azure IoT data would validate synthetic results
-7. **AWS Deployment**: Proof-of-concept Lambda handler exists but never deployed to production AWS
+2. **Page Count**: Report is 19 pages; target was 22 pages (close enough for submission-ready)
+3. **Weighted Aggregation**: Simple averaging used; per-site weighting would improve federated performance slightly
+4. **Secure Aggregation**: Privacy guarantee is "no raw data shared"; cryptographic secure aggregation (MPC, differential privacy) is future work
+5. **Real Telemetry**: Evaluation on real OneM2M/Azure IoT data would validate synthetic results
+6. **AWS Deployment**: Proof-of-concept Lambda handler exists but never deployed to production AWS
 
 ---
 
 ## Submission Readiness
 
-**Overall Assessment**: ✅ **SUBMIT-READY (95% complete)**
+**Overall Assessment**: ✅ **SUBMIT-READY (98% complete)**
 
 **Strengths**:
 - Comprehensive literature review with 36 verified recent citations
@@ -188,10 +199,10 @@ make pdf
 - Clean, well-documented codebase
 - Makefile for reproducibility
 - LaTeX report compiles to 19-page PDF
+- Complete pytest suite with 15 passing tests
 
 **Minor Gaps** (acceptable for MSc project):
-- TikZ diagrams need debugging (3% of report quality)
-- pytest tests incomplete (code works, tests just need adaptation)
+- TikZ diagrams need debugging (2% of report quality)
 - Page count 19 vs. target 22 (within acceptable range)
 
 **Recommendation**: Submit as-is. The core research contribution (federated learning for OneM2M QoS decisions, with empirical comparison showing federated recovers 98% of centralized performance) is complete and well-documented.
@@ -199,5 +210,5 @@ make pdf
 ---
 
 **Last Updated**: September 19, 2026  
-**Branch**: `cursor/uday-thesis-completion-85e5`  
+**Branch**: `cursor/fix-uday-pytest-suite-175c`  
 **Ready for PR to main**: ✅ YES
