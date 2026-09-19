@@ -1,86 +1,103 @@
 \chapter{Introduction}
-Cloud computing represents a shift. We investigate 'Serverless Function Cold Start Mitigation using Predictive Auto-scaling'.
+\label{ch:introduction}
 
-In reference to Lee (2026), the integration highlights a distinct improvement metric.
+\section{Background and Motivation}
 
+Serverless computing, particularly Function-as-a-Service (FaaS), represents a significant evolution in cloud computing paradigms. By abstracting infrastructure management entirely, serverless platforms enable developers to deploy event-driven, auto-scaled functions without provisioning or managing servers \citep{shafiei2022survey}. AWS Lambda, the dominant FaaS platform, charges only for actual compute time (billed per 100 ms) plus a per-request fee, eliminating costs during idle periods.
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+However, this economic model introduces a critical performance trade-off: \textit{cold-start latency}. When a function has not been invoked recently, the platform must initialize a new execution environment, a process involving micro-VM creation, runtime bootstrap (Python interpreter, Node.js V8 engine, or Java Virtual Machine), and application code loading including all dependencies \citep{golec2024coldstart}. This initialization overhead, termed \textit{Init Duration} in AWS CloudWatch terminology, can range from 100 milliseconds to several seconds, severely degrading user-perceived performance for synchronous APIs and cascading microservice architectures.
 
+\citet{eismann2022state} report that 48\% of serverless practitioners identify cold starts as a primary concern, with tail latencies (P95, P99) disproportionately affected. For latency-sensitive applications such as real-time payment processing, recommendation engines, or IoT event handlers, cold-start delays can violate service-level objectives (SLOs) and degrade user experience.
 
-Moreover, bridging the gap identified in Wang et al. (2025) necessitates this novel perspective: While keeping functions warm statically works, it wastes cost. This research implements predictive provisioning based on temporal access patterns.
+\section{Problem Statement}
 
-As noted in Allen (2025), scalability remains paramount. The system design strictly adheres to this, as evidenced by the empirical measurements.
+While platform-level innovations such as VM snapshotting \citep{ao2022faasnap} and checkpoint-restore mechanisms \citep{kohli2024pronghorn} demonstrate significant cold-start reduction, these techniques are either unavailable on AWS Lambda or restricted to specific runtimes (e.g., SnapStart for Java 11/17 only). Provisioned concurrency, AWS's official mitigation strategy, eliminates cold starts by maintaining pre-initialized containers continuously, but incurs baseline costs proportional to provisioned capacity, contradicting the pay-per-use serverless economic model \citep{shafiei2022survey}.
 
-Cloud computing represents a shift. We investigate 'Serverless Function Cold Start Mitigation using Predictive Auto-scaling'.
+Developers require cost-effective, runtime-agnostic optimization strategies using only standard AWS Lambda APIs. While prior work investigates individual controls—runtime selection \citep{wen2023characterizing}, memory allocation \citep{bluemke2025ijet}, or dependency management \citep{dantas2022deployment}—no systematic study compares these controls with explicit \textit{Init Duration} isolation across multiple production runtimes.
 
+\citet{bluemke2025ijet} establish a rigorous methodology for AWS Lambda performance-cost analysis, evaluating memory configurations and processor architectures (x86\_64 vs. ARM64 Graviton2). However, their measurements aggregate cold-start initialization and handler execution into a single Duration metric, preventing identification of where latency originates. Additionally, their study examines only Python 3.9 and does not investigate deployment package characteristics (dependency bloat vs. minimal configurations).
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+This research addresses these limitations by isolating Init Duration and systematically comparing developer-adjustable controls across three production runtimes.
 
+\section{Research Question}
 
-Cloud computing represents a shift. We investigate 'Serverless Function Cold Start Mitigation using Predictive Auto-scaling'.
+The central inquiry guiding this investigation is:
 
+\begin{quote}
+\textit{How much of AWS Lambda cold-start latency can be removed by developer-adjustable controls, and at what cost?}
+\end{quote}
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+Developer-adjustable controls in scope are:
 
+\begin{enumerate}
+    \item \textbf{Runtime language selection:} Python 3.12, Node.js 20, Java 21 (production-ready runtimes as of September 2026)
+    \item \textbf{Deployment package optimization:} Bloated (unused dependencies included) vs. minimal (stdlib/no-dependency only)
+    \item \textbf{Memory allocation:} 128 MB to 3008 MB (affects vCPU allocation above 1769 MB threshold)
+    \item \textbf{Low-frequency warming:} EventBridge scheduled invocations (every 5 minutes) as a zero-baseline-cost alternative to provisioned concurrency
+\end{enumerate}
 
-Cloud computing represents a shift. We investigate 'Serverless Function Cold Start Mitigation using Predictive Auto-scaling'.
+Explicitly excluded: provisioned concurrency (paid continuous warm-up), SnapStart (Java-only, requires Corretto 11/17), custom AMIs, or platform modifications.
 
-In reference to Clark & Ramirez (2026), the integration highlights a distinct improvement metric.
+\section{Research Objectives}
 
+This study pursues four specific objectives:
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+\begin{enumerate}
+    \item \textbf{Isolate and quantify Init Duration} across three production runtimes (Python 3.12, Node.js 20, Java 21) to determine baseline cold-start magnitude per language.
+    
+    \item \textbf{Measure package-size effects} by comparing bloated deployments (including popular but unused dependencies) against minimal configurations (standard library or zero dependencies).
+    
+    \item \textbf{Evaluate low-frequency warming impact} on cold-start frequency by deploying EventBridge scheduled invocations (5-minute intervals) and measuring the proportion of subsequent invocations that encounter cold starts.
+    
+    \item \textbf{Express findings as a decision matrix} showing milliseconds saved per additional dollar per 1,000 invocations, enabling practitioners to select optimizations matching their latency and budget constraints.
+\end{enumerate}
 
+\section{Research Hypotheses}
 
-Cloud computing represents a shift. We investigate 'Serverless Function Cold Start Mitigation using Predictive Auto-scaling'.
+Based on the literature review and preliminary proxy benchmarks (local process initialization measurements), we formulate four testable hypotheses:
 
+\begin{itemize}
+    \item \textbf{H1 (Runtime):} Init Duration differs significantly between Python, Node.js, and Java runtimes under minimal package configurations. Test: Kruskal-Wallis (if non-normal) or one-way ANOVA (if normal) with Holm-Bonferroni correction.
+    
+    \item \textbf{H2 (Package Size):} Deployment package pruning (removing unused dependencies) significantly reduces Init Duration within each runtime. Test: Mann-Whitney U (if non-normal) or Welch t-test (if normal) per runtime, with Holm-Bonferroni correction over three comparisons.
+    
+    \item \textbf{H3 (Warming):} Low-frequency EventBridge warming significantly reduces cold-start frequency compared to unwarm baseline. Test: Paired t-test or Wilcoxon signed-rank on 20-minute blocks, plus Fisher's exact test on cold-start proportions.
+    
+    \item \textbf{H4 (Memory, Exploratory):} Memory allocation impacts Init Duration due to vCPU coupling above 1769 MB. Test: Kruskal-Wallis or one-way ANOVA with post-hoc pairwise comparisons.
+\end{itemize}
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+All hypothesis tests are pre-registered in the analysis plan (\texttt{docs/ANALYSIS\_PLAN.md}) with explicit test selection criteria (Shapiro-Wilk normality at $\alpha = 0.05$), multiple comparison correction (Holm-Bonferroni), and mandatory effect size reporting (epsilon-squared, rank-biserial, Cohen's d, or eta-squared as appropriate).
 
+\section{Significance and Contributions}
 
-Cloud computing represents a shift. We investigate 'Serverless Function Cold Start Mitigation using Predictive Auto-scaling'.
+This research makes the following contributions:
 
+\begin{enumerate}
+    \item \textbf{Methodological:} Extends \citet{bluemke2025ijet}'s configuration analysis framework with explicit Init Duration isolation, enabling precise identification of initialization overhead vs. execution time.
+    
+    \item \textbf{Empirical:} First systematic comparison of developer-adjustable cold-start controls across three production runtimes with controlled package-size conditions.
+    
+    \item \textbf{Practical:} A decision matrix expressing optimizations as \textit{cost-benefit ratios} (ms saved per dollar per 1,000 invocations), directly actionable by practitioners.
+    
+    \item \textbf{Reproducible:} Fully-instrumented Infrastructure-as-Code (AWS SAM template), standardized workload (deterministic SHA-256 computation), comprehensive test suite (100+ pytest tests), and data provenance tracking (live/mock/proxy mode segregation).
+\end{enumerate}
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+\section{Document Structure}
 
+The remainder of this report is organized as follows:
 
-Moreover, bridging the gap identified in Wang et al. (2025) necessitates this novel perspective: While keeping functions warm statically works, it wastes cost. This research implements predictive provisioning based on temporal access patterns.
+\begin{itemize}
+    \item \textbf{Chapter 2 (Literature Survey):} Reviews state-of-the-art in serverless cold-start characterization, optimization strategies, and benchmarking methodologies, identifying the research gap this study addresses.
+    
+    \item \textbf{Chapter 3 (Research Methodology):} Details the experimental design, including controlled variables, measurement instrumentation, statistical analysis plan, and ethics considerations.
+    
+    \item \textbf{Chapter 4 (Design Specifications):} Describes the architecture of the Lambda functions, Infrastructure-as-Code implementation, workload design, and data collection pipeline.
+    
+    \item \textbf{Chapter 5 (Implementation):} Presents packaging strategies, deployment procedures, log parsing mechanisms, and cost modeling formulas.
+    
+    \item \textbf{Chapter 6 (Evaluation):} Reports experimental results, statistical analysis outcomes, and decision matrix construction (contingent on live AWS execution).
+    
+    \item \textbf{Chapter 7 (Conclusions):} Summarizes findings, discusses implications for practitioners, acknowledges limitations, and outlines future research directions.
+\end{itemize}
 
-Cloud computing represents a shift. We investigate 'Serverless Function Cold Start Mitigation using Predictive Auto-scaling'.
-
-In reference to Perez (2025), the integration highlights a distinct improvement metric.
-
-
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
-
-
-Cloud computing represents a shift. We investigate 'Serverless Function Cold Start Mitigation using Predictive Auto-scaling'.
-
-
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
-
-
-As noted in Walker (2025), scalability remains paramount. The system design strictly adheres to this, as evidenced by the empirical measurements.
+This chapter established the research context, problem statement, objectives, and hypotheses. The next chapter reviews relevant literature to position this work within the broader serverless computing research landscape.

@@ -1,53 +1,296 @@
-\chapter{Design}
-[IMAGE PLACEHOLDER: methodology_flow.png]
-The design isolates the core variables.
+\chapter{Design Specifications}
+\label{ch:design}
 
-In reference to Allen (2025), the integration highlights a distinct improvement metric.
+This chapter describes the architecture of the Lambda cold-start isolation experiment, including function design, Infrastructure-as-Code implementation, workload specification, and data collection pipeline.
 
+\section{System Architecture Overview}
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+The experimental system consists of six AWS Lambda functions (3 runtimes × 2 package sizes), a shared workload, an EventBridge warming scheduler, invocation scripts, and a log analysis pipeline. Figure~\ref{fig:architecture} illustrates the components and data flow.
 
+% Placeholder for architecture diagram
 
-Moreover, bridging the gap identified in Wang et al. (2025) necessitates this novel perspective: While keeping functions warm statically works, it wastes cost. This research implements predictive provisioning based on temporal access patterns.
+\subsection{Lambda Function Variants}
 
-As noted in Walker (2025), scalability remains paramount. The system design strictly adheres to this, as evidenced by the empirical measurements.
+Each function variant implements an identical computation (Section~\ref{sec:workload}) while varying only in runtime and packaging:
 
-The design isolates the core variables.
+\begin{enumerate}
+    \item \textbf{python-default:} Python 3.12 with bloated dependencies (boto3, requests, sympy imported but never used)
+    \item \textbf{python-optimised:} Python 3.12 with stdlib only (no external dependencies)
+    \item \textbf{nodejs-default:} Node.js 20 with bloated dependencies (aws-sdk v2, lodash, moment, axios required but never called)
+    \item \textbf{nodejs-optimised:} Node.js 20 with no dependencies (pure JavaScript)
+    \item \textbf{java-default:} Java 21 with bloated dependencies (jackson-databind, guava, commons-lang3 shaded and touched in static fields)
+    \item \textbf{java-optimised:} Java 21 with no dependencies (JDK stdlib only)
+\end{enumerate}
 
+All functions are deployed as ARM64 Graviton2 (cost-effective per \citet{bluemke2025ijet}) with configurable memory allocations (128, 512, 1024, 1769, 3008 MB for H4 memory sweep; baseline experiments use 512 MB).
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+\subsection{Package Size Characteristics}
 
+Table~\ref{tab:package_sizes} summarizes deployment package characteristics. The bloated variants include popular but unused libraries to simulate real-world scenarios where developers over-depend without pruning.
 
-The design isolates the core variables.
+\begin{table}[h]
+\centering
+\caption{Deployment Package Characteristics}
+\label{tab:package_sizes}
+\begin{tabular}{llrrr}
+\hline
+\textbf{Runtime} & \textbf{Variant} & \textbf{ZIP (MB)} & \textbf{Unzipped (MB)} & \textbf{Files} \\
+\hline
+Python & default & 21.0 & 49.8 & 3,751 \\
+Python & optimised & 0.0006 & 0.0008 & 1 \\
+Node.js & default & 16.5 & 111.5 & 4,680 \\
+Node.js & optimised & 0.0008 & 0.001 & 2 \\
+Java & default & 6.3 & 14.3 & 3,978 \\
+Java & optimised & 0.005 & 0.007 & 5 \\
+\hline
+\end{tabular}
+\end{table}
 
+The size differences are extreme by design to maximize effect detectability. Real-world optimizations typically fall between these extremes.
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+\section{Workload Design}
+\label{sec:workload}
 
+The workload is a deterministic CPU-bound computation designed for cross-runtime portability and measurable CPU intensity.
 
-The design isolates the core variables.
+\subsection{Computation Specification}
 
-In reference to Harris (2026), the integration highlights a distinct improvement metric.
+\begin{enumerate}
+    \item Parse a fixed JSON payload (\texttt{payloads/fixed\_payload.json}):
+    \begin{verbatim}
+    {"n": 20, "items": [1,2,3,...,20]}
+    \end{verbatim}
+    
+    \item Initialize digest to fixed seed: \texttt{"chaitanya-25171216-nci"}
+    
+    \item Execute 20,000 rounds of SHA-256:
+    \begin{verbatim}
+    for i in 1..20000:
+        digest = SHA256(digest)
+    \end{verbatim}
+    
+    \item Count and sum the \texttt{items} array (expected: count=20, sum=210)
+    
+    \item Return JSON response:
+    \begin{verbatim}
+    {
+      "ok": true,
+      "digest": "d8d5607b...a44878",  // 64-char hex
+      "n": 20,
+      "items": [1,2,...,20],
+      "items_total": 210
+    }
+    \end{verbatim}
+\end{enumerate}
 
+\subsection{Digest Uniformity as Runtime Gate}
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+All six variants must return identical digest \texttt{d8d5607b...a44878}. This serves as a runtime gate: if any package produces a different hash, the build fails. CI/CD pipeline (\texttt{.github/workflows/main.yml}) builds all packages (including Java with Corretto 21 + Maven) and verifies digest equality via \texttt{scripts/check\_digests.py}.
 
+Digest uniformity guarantees:
+\begin{itemize}
+    \item Identical computation across runtimes (eliminates workload as confound)
+    \item Reproducible packaging (sha256 checksums recorded in \texttt{data/proxy/github/run\_info.json})
+    \item Detection of packaging errors or platform-specific bugs
+\end{itemize}
 
-The design isolates the core variables.
+\section{Infrastructure-as-Code}
 
+The system is deployed via AWS Serverless Application Model (SAM) template (\texttt{infra/template.yaml}).
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+\subsection{SAM Template Structure}
+
+\begin{verbatim}
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+
+Resources:
+  PythonDefault:
+    Type: AWS::Serverless::Function
+    Properties:
+      Runtime: python3.12
+      CodeUri: ../functions/python/default/
+      Handler: handler.lambda_handler
+      Architectures: [arm64]
+      MemorySize: 512
+      Timeout: 60
+      ...
+  
+  # Similar definitions for other 5 functions
+  
+  WarmerRule:
+    Type: AWS::Events::Rule
+    Properties:
+      ScheduleExpression: rate(5 minutes)
+      State: DISABLED  # Enabled manually for H3
+      Targets:
+        - Arn: !GetAtt PythonDefault.Arn
+        - Arn: !GetAtt NodejsDefault.Arn
+        # ... all 6 functions
+\end{verbatim}
+
+\subsection{Deployment Procedure}
+
+Deployment (\texttt{scripts/deploy.sh}) executes:
+
+\begin{enumerate}
+    \item Package all six functions: \texttt{bash scripts/package\_all.sh python nodejs java}
+    \item Validate digest uniformity: \texttt{python scripts/check\_digests.py}
+    \item SAM build: \texttt{sam build}
+    \item SAM deploy: \texttt{sam deploy --guided} (first run) or \texttt{sam deploy} (subsequent)
+    \item Record function ARNs for invocation scripts
+\end{enumerate}
+
+\subsection{Warming Strategy}
+
+The EventBridge rule (\texttt{WarmerRule}) is deployed in \texttt{DISABLED} state. For H3 (warming hypothesis), the rule is enabled manually:
+
+\begin{verbatim}
+aws events enable-rule --name <StackName>-WarmerRule
+\end{verbatim}
+
+The rule invokes all six functions every 5 minutes with a special payload \texttt{\{"warmer": true\}} to distinguish warming pings from measurement invocations. Handler code detects this payload and returns immediately without executing the SHA-256 computation, minimizing warm-up cost.
+
+\section{Data Collection Pipeline}
+
+The pipeline transforms raw invocations into analyzable metrics through five stages.
+
+\subsection{Stage 1: Invocation}
+
+Three invocation scripts target different traffic patterns:
+
+\begin{itemize}
+    \item \textbf{invoke\_idle.py:} 10-minute gaps between calls (expect cold starts)
+    \item \textbf{invoke\_steady.py:} 1 call per minute per function (expect warm after first)
+    \item \textbf{invoke\_burst.py:} 100 concurrent invocations (AWS scales out, expect cold starts)
+\end{itemize}
+
+Each invocation:
+\begin{enumerate}
+    \item Calls Lambda via boto3 \texttt{invoke(InvocationType='RequestResponse')}
+    \item Records: request\_id (from response), client timestamp, function name, cold-intent flag
+    \item Stores metadata in \texttt{data/raw/\{mode\}/invocations.csv}
+\end{enumerate}
+
+\subsection{Stage 2: Log Collection}
+
+After invocations complete, \texttt{scripts/collect\_logs.py} waits 5 minutes (CloudWatch ingestion latency) then queries CloudWatch Logs Insights per function log group:
+
+\begin{verbatim}
+fields @timestamp, @message | 
+filter @message like /REPORT RequestId/ | 
+sort @timestamp asc
+\end{verbatim}
+
+Automatic pagination retrieves all REPORT lines. Output: \texttt{data/raw/\{mode\}/logs\_collected/events.jsonl}.
+
+\subsection{Stage 3: Metric Parsing}
+
+\texttt{scripts/parse\_report\_metrics.py} extracts structured metrics from REPORT lines using regex patterns. Each row contains:
+
+\begin{itemize}
+    \item request\_id (join key to invocation metadata)
+    \item timestamp (CloudWatch log timestamp)
+    \item duration\_ms (total execution time)
+    \item billed\_duration\_ms (rounded to 100 ms)
+    \item memory\_size\_mb (configured allocation)
+    \item max\_memory\_used\_mb (actual usage)
+    \item init\_duration\_ms (nullable; present only on cold starts)
+    \item is\_cold (boolean: true if init\_duration\_ms is not null)
+    \item data\_mode (live/mock/proxy)
+\end{itemize}
+
+Output: \texttt{data/processed/\{mode\}/metrics.csv}.
+
+\subsection{Stage 4: Cost Modeling}
+
+\texttt{scripts/cost\_model.py} computes per-invocation cost using AWS Lambda pricing formula:
+
+\begin{equation}
+C = 0.0000002 + \left(\frac{M}{1024}\right) \times \frac{D_{\text{billed}}}{1000} \times 0.0000166667
+\end{equation}
+
+Aggregates by phase (idle, steady, burst, warming) and writes \texttt{data/processed/\{mode\}/costs.csv}.
+
+\subsection{Stage 5: Statistical Analysis}
+
+\texttt{scripts/analyse.py} implements the pre-registered analysis plan:
+
+\begin{enumerate}
+    \item Load metrics and filter by hypothesis (H1: minimal packages only; H2: default vs. optimised per runtime; H3: with/without warmer; H4: memory sweep)
+    \item Test normality (Shapiro-Wilk per group)
+    \item Select and execute hypothesis tests (parametric or non-parametric)
+    \item Apply Holm-Bonferroni correction
+    \item Compute effect sizes
+    \item Generate decision matrix (median latency saved vs. cost increase per 1,000 invocations)
+    \item Output figures (\texttt{figures/\{mode\}/}) and tables (\texttt{reports/paper/tables/\{mode\}/})
+\end{enumerate}
+
+\section{Mock and Proxy Validation}
+
+\subsection{Mock Pipeline (Synthetic Validation)}
+
+The mock backend (\texttt{src/coldstart/mock.py}) generates synthetic data based on \texttt{configs/mock\_model.yaml} parameters:
+
+\begin{itemize}
+    \item Mean init durations per runtime (Python: 800 ms, Node.js: 300 ms, Java: 250 ms)
+    \item Package-size effect (Python default: +2000 ms, Node.js default: +280 ms, Java default: +180 ms)
+    \item Variance (CV = 0.15)
+    \item Warming effect (cold-start frequency: unwarm 90\%, warm 5\%)
+\end{itemize}
+
+Command \texttt{make mock-all} regenerates all pipeline outputs in $\sim$5 seconds, validating mechanics without AWS costs. All mock outputs are watermarked "SYNTHETIC".
+
+\subsection{Proxy Benchmarks (Local Init Measurement)}
+
+\texttt{scripts/local\_init\_bench.py} measures process-start + package-loading time in isolated local processes:
+
+\begin{itemize}
+    \item Python: \texttt{python -B -s -S <handler>}
+    \item Node.js: \texttt{node <handler>}
+    \item Java: \texttt{java -cp <jar>}
+\end{itemize}
+
+This is NOT Lambda Init Duration (no micro-VM, no download, no Lambda runtime API), but validates the hypothesis direction: bloated packages should load slower than minimal packages.
+
+The GitHub Actions CI runner (\texttt{ubuntu-latest}, x86\_64, 4 vCPU) provides a controlled environment where all three runtimes run on the same machine, enabling fair comparison. Results: \texttt{data/proxy/github/}, labeled "proxy" or "local init benchmark" everywhere.
+
+\section{Reproducibility Controls}
+
+\subsection{Data Mode Segregation}
+
+Every measurement carries a \texttt{data\_mode} tag:
+\begin{itemize}
+    \item \texttt{live}: Real AWS Lambda invocations (target for conclusions)
+    \item \texttt{mock}: Synthetic placeholders (pipeline validation only)
+    \item \texttt{proxy}: Local process benchmarks (hypothesis direction validation)
+\end{itemize}
+
+The analysis pipeline refuses to mix modes, preventing accidental conflation.
+
+\subsection{Budget Guard}
+
+\texttt{scripts/budget\_guard.py} estimates campaign cost before execution:
+
+\begin{equation}
+\text{Estimated Cost} = \sum_{i=1}^{N} \left(0.0000002 + \frac{M_i}{1024} \times \frac{E[D_i]}{1000} \times 0.0000166667\right)
+\end{equation}
+
+where $E[D_i]$ is the expected duration per invocation (from pilot). If projected spend exceeds the configured cap (\$5 by default), execution halts with a warning.
+
+\subsection{Intended-Cold Validation}
+
+Idle-phase invocations (10+ minute gaps) expect cold starts. If a REPORT line has no Init Duration (container was warm), the invocation is flagged in \texttt{data/processed/\{mode\}/discarded\_intended\_colds.csv} and excluded from cold-start analysis. This prevents container recycling anomalies from biasing results.
+
+\section{Summary}
+
+This chapter detailed the Lambda function variants, workload specification, Infrastructure-as-Code implementation, and data collection pipeline. The design emphasizes:
+
+\begin{itemize}
+    \item Controlled variation (identical workload, only runtime/package differs)
+    \item Reproducibility (digest uniformity, package checksums, data mode tagging)
+    \item Honesty (explicit labeling of proxy and mock data)
+    \item Cost awareness (budget guard, pilot-driven sample sizing)
+\end{itemize}
+
+The next chapter describes implementation details: packaging procedures, deployment steps, log parsing mechanics, and cost formula derivation.

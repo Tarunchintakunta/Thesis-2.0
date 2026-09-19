@@ -1,105 +1,119 @@
-\chapter{Related Work}
-Prior work such as Wang et al. (2025) laid foundations, but While keeping functions warm statically works, it wastes cost. This research implements predictive provisioning based on temporal access patterns.
+\chapter{Literature Survey}
+\label{ch:literature}
 
-In reference to Lee (2026), the integration highlights a distinct improvement metric.
+This chapter reviews the state-of-the-art in serverless computing with specific focus on cold-start latency characterization, measurement methodologies, and mitigation strategies. The review is organized thematically: foundational characterization studies, systematic surveys and taxonomies, optimization approaches (runtime-level, platform-level, and developer-adjustable), and benchmarking frameworks.
 
+\section{Serverless Computing Foundations and Characterization}
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+Serverless computing, particularly Function-as-a-Service (FaaS), represents a paradigm shift in cloud computing by abstracting infrastructure management and enabling event-driven, auto-scaled execution \citep{shafiei2022survey}. \citet{wen2023rise} provide a comprehensive systematic review identifying cold-start latency as one of the most critical performance bottlenecks in serverless deployments, affecting synchronous API responses and cascading microservice architectures.
 
+\citet{eismann2022state} conducted a landmark study collecting and characterizing serverless applications from production environments, establishing that 48\% of surveyed practitioners identified cold starts as a primary concern. Their work emphasized the need for standardized measurement practices, noting significant variance in how different studies define and measure initialization overhead.
 
-Moreover, bridging the gap identified in Wang et al. (2025) necessitates this novel perspective: While keeping functions warm statically works, it wastes cost. This research implements predictive provisioning based on temporal access patterns.
+\citet{wen2023characterizing} performed empirical characterization across commodity serverless platforms (AWS Lambda, Google Cloud Functions, Azure Functions), revealing substantial inter-platform and intra-platform performance variance. Their longitudinal measurements (2020–2023) documented that cold-start latencies for Python functions ranged from 150 ms to over 3 seconds depending on package size and memory allocation, with coefficient of variation reaching 40\% under identical configurations. This variance underscores the importance of controlled experimentation with explicit measurement of initialization components.
 
-As noted in Clark & Ramirez (2026), scalability remains paramount. The system design strictly adheres to this, as evidenced by the empirical measurements.
+\section{Systematic Surveys and Taxonomies}
 
-Prior work such as Wang et al. (2025) laid foundations, but While keeping functions warm statically works, it wastes cost. This research implements predictive provisioning based on temporal access patterns.
+\citet{golec2024coldstart} present the most recent and comprehensive systematic review of cold-start latency in serverless computing, analyzing 127 papers published between 2016 and 2024. Their taxonomy categorizes cold-start components into: (1) \textit{micro-VM initialization} (sandbox creation, typically 100–200 ms on AWS Firecracker), (2) \textit{runtime bootstrap} (language interpreter/JVM startup), (3) \textit{application initialization} (dependency loading, global state setup), and (4) \textit{handler preparation} (function code loading). The authors emphasize that most prior studies measure \textit{aggregate} latency (total Duration including execution), whereas isolating the initialization component (Init Duration in AWS CloudWatch terminology) enables more precise identification of mitigation targets.
 
+\citet{shafiei2022survey} survey serverless computing challenges across 158 studies, noting that while provisioned concurrency and keep-warm strategies are effective, they contradict the pay-per-use economic model. The authors call for developer-adjustable optimizations that reduce cold-start overhead without continuous resource allocation.
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+\citet{joosen2025coldstarts} conducted a large-scale empirical study of serverless cold starts in production Azure environments, analyzing 6.4 million function invocations. Their findings reveal that cold-start frequency is inversely related to invocation rate: functions called less than once per 10 minutes experience cold starts on 30–50\% of invocations, while frequently-invoked functions (more than once per minute) rarely encounter cold starts (less than 2\%). However, their study did not control for deployment package characteristics or runtime language, limiting conclusions about developer-adjustable mitigation strategies.
 
+\section{Baseline Study: Configuration-Level Performance Analysis}
 
-Prior work such as Wang et al. (2025) laid foundations, but While keeping functions warm statically works, it wastes cost. This research implements predictive provisioning based on temporal access patterns.
+\citet{bluemke2025ijet} form the baseline for this investigation. Their work systematically evaluates AWS Lambda configurations across memory allocations (128 MB to 3008 MB) and processor architectures (x86\_64 vs. ARM64 Graviton2), establishing performance-cost trade-off matrices for Python 3.9 functions. Key contributions include:
 
+\begin{enumerate}
+    \item Empirical demonstration that memory allocation impacts both execution duration and cost, with diminishing returns above 1792 MB (the threshold where vCPU allocation increases from 1 to approximately 1.8 vCPUs).
+    \item Identification of ARM64 Graviton2 as cost-effective for compute-intensive workloads (20\% cost reduction for equivalent performance).
+    \item A decision matrix framework expressing optimizations as \textit{ms-saved per additional dollar} per 1,000 invocations.
+\end{enumerate}
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+However, their study has critical limitations that this research addresses:
 
+\begin{itemize}
+    \item \textbf{No Init Duration isolation:} Measurements aggregate cold-start initialization and handler execution into a single Duration metric, preventing identification of where latency originates.
+    \item \textbf{Single runtime:} Only Python 3.9 evaluated; multi-language comparison absent.
+    \item \textbf{No package-size control:} Deployment package characteristics (dependency bloat vs. minimal dependencies) not investigated.
+    \item \textbf{No warming strategy:} Low-frequency EventBridge scheduling not explored as a free alternative to provisioned concurrency.
+\end{itemize}
 
-Prior work such as Wang et al. (2025) laid foundations, but While keeping functions warm statically works, it wastes cost. This research implements predictive provisioning based on temporal access patterns.
+This project extends \citet{bluemke2025ijet} by isolating Init Duration, comparing three runtimes (Python 3.12, Node.js 20, Java 21), measuring package-size effects, and evaluating low-frequency warming as a developer-adjustable control.
 
-In reference to Perez (2025), the integration highlights a distinct improvement metric.
+\citet{bluemke2025experiment} provide a companion book chapter with additional experimental methodology details, noting challenges in CloudWatch log sampling latency and recommending X-Ray tracing for sub-millisecond accuracy. This research adopts both CloudWatch REPORT line parsing (for Init Duration field availability) and client-side RTT instrumentation.
 
+\section{Runtime-Level and Language-Specific Optimization}
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+\citet{liu2023faaslight} propose FaaSLight, an application-level framework for reducing cold-start latency by deferring non-critical initialization tasks until after the first handler response. Their evaluation on AWS Lambda with Python and Node.js demonstrates 30–70\% reduction in perceived cold-start latency by splitting initialization into critical (must-load) and deferred (lazy-load) components. However, this approach requires application refactoring and does not address the baseline cost of loading large dependency sets.
 
+\citet{dantas2022deployment} investigate deployment strategies for AWS Lambda, comparing ZIP archives vs. container images (up to 10 GB). Their findings show that container image deployments incur 2–5× longer cold starts (500 ms–2 seconds added latency) due to image pull and extraction overhead, even with Elastic Container Registry caching. They recommend ZIP deployment with dependency layer sharing for latency-critical applications. This aligns with our package-size hypothesis: bloated dependencies dominate initialization cost.
 
-Prior work such as Wang et al. (2025) laid foundations, but While keeping functions warm statically works, it wastes cost. This research implements predictive provisioning based on temporal access patterns.
+\citet{eismann2021sizeless} present Sizeless, a machine learning model that predicts optimal memory configuration for serverless functions based on workload characteristics. Their evaluation across 40 production functions shows that ML-guided memory allocation reduces execution time by 15–35\% while maintaining cost neutrality. However, their model does not distinguish between execution-time optimization and cold-start reduction, conflating two distinct performance concerns.
 
+\section{Platform-Level Innovations: Snapshotting and Checkpoint-Restore}
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+Platform-level optimizations target sandbox initialization overhead through VM snapshotting and checkpoint-restore mechanisms.
 
+\citet{ao2022faasnap} introduce FaaSnap, a snapshot-based VM approach for AWS Lambda that pre-initializes language runtimes and common dependencies, storing snapshots on fast NVMe SSDs. Their prototype demonstrates 90\% reduction in cold-start latency (from 600 ms to 60 ms for Python functions with boto3/requests). However, FaaSnap requires platform-level modifications (hypervisor snapshot integration) not accessible to developers via AWS APIs.
 
-Prior work such as Wang et al. (2025) laid foundations, but While keeping functions warm statically works, it wastes cost. This research implements predictive provisioning based on temporal access patterns.
+\citet{panda2023snapstore} extend snapshotting to multi-function scenarios with SnapStore, a distributed snapshot storage system that deduplicates common dependency layers across functions. Evaluation on OpenWhisk shows 70\% storage savings and 50\% faster cold starts when functions share popular libraries (NumPy, TensorFlow). This work underscores the importance of package-size optimization: smaller unique footprints enable faster snapshot restore.
 
+\citet{kohli2024pronghorn} propose Pronghorn, a checkpoint orchestration system that selectively checkpoints functions based on invocation frequency predictions. Their system achieves 80\% cold-start elimination for bursty workloads with predictable patterns. However, Pronghorn assumes platform-level instrumentation (AWS SnapStart or equivalent), which is only available for Java 11/17 Corretto runtimes as of September 2026.
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+While these platform innovations demonstrate significant potential, they are unavailable to developers working with standard AWS Lambda APIs. This research focuses exclusively on developer-accessible controls: runtime selection, package pruning, memory tuning, and EventBridge warming.
 
+\section{Machine Learning-Based Provisioning and Prediction}
 
-Moreover, bridging the gap identified in Wang et al. (2025) necessitates this novel perspective: While keeping functions warm statically works, it wastes cost. This research implements predictive provisioning based on temporal access patterns.
+Several studies apply machine learning to predict cold-start occurrences and proactively provision containers.
 
-Prior work such as Wang et al. (2025) laid foundations, but While keeping functions warm statically works, it wastes cost. This research implements predictive provisioning based on temporal access patterns.
+\citet{saravanakumar2025prediction} propose a deep learning model (LSTM + attention mechanism) that predicts cold starts 5–10 minutes in advance based on historical invocation patterns, achieving 87\% precision. Their provisioning strategy reduces cold-start frequency from 32\% to 8\% in evaluation workloads. However, this approach requires continuous container warm-up (similar to provisioned concurrency), incurring baseline costs that contradict the serverless pay-per-use model.
 
-In reference to Lewis (2025), the integration highlights a distinct improvement metric.
+\citet{golec2024master} present MASTER, a reinforcement learning framework for serverless edge environments (Industry 4.0 applications) that jointly optimizes cold-start prediction and resource allocation. Evaluation on edge-cloud hybrid deployments shows 40\% latency reduction with 15\% cost overhead. The authors note that prediction accuracy degrades for sporadic workloads with coefficient of variation above 1.5, suggesting that deterministic developer controls (package optimization, runtime selection) may be more reliable for unpredictable traffic patterns.
 
+\citet{vahidinia2023mitigating} apply Q-learning to container keep-warm strategies, learning optimal warm-up frequencies per function based on invocation traces. Their approach reduces cold starts by 60\% with 10\% cost overhead compared to static provisioning. However, the study assumes workload stationarity (invocation patterns remain stable over days), which may not hold for event-driven microservices.
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+\citet{mahgoub2022orion} tackle cold starts in serverless directed acyclic graphs (DAGs) with ORION, a system that jointly optimizes function sizing, bundling (co-locating dependent functions), and pre-warming. Evaluation on image processing and video analytics pipelines shows 50\% end-to-end latency reduction. The bundling strategy implicitly addresses our package-size concern: merging functions eliminates inter-function cold starts but increases individual function package size, suggesting a trade-off space.
 
+While ML-based approaches show promise, they require historical data, stable workload patterns, and often incur baseline provisioning costs. This research prioritizes zero-cost developer controls that work independently of workload predictability.
 
-Prior work such as Wang et al. (2025) laid foundations, but While keeping functions warm statically works, it wastes cost. This research implements predictive provisioning based on temporal access patterns.
+\section{Developer-Adjustable Optimizations}
 
+\citet{wen2025variance} investigate performance variance in serverless platforms, revealing that identical configurations can exhibit 2–3× latency variance due to platform-level factors (host machine load, network proximity to log collectors). Their statistical analysis emphasizes the need for repeated measurements and robust statistical testing (normality checks, non-parametric alternatives). This directly informs our experimental design: Shapiro-Wilk normality tests select appropriate hypothesis tests (ANOVA vs. Kruskal-Wallis, Welch t vs. Mann-Whitney U).
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+\citet{lee2024spes} propose SPES, a performance-resource trade-off optimizer that dynamically adjusts memory allocation based on runtime profiling. Their evaluation shows that memory-optimized configurations reduce cold-start latency by 20–40\% with minimal cost increase (5–8\%). This aligns with our H4 exploratory hypothesis: memory allocation may impact Init Duration due to vCPU coupling above 1769 MB.
 
+\citet{liu2025cidre} introduce concurrency-informed orchestration for serverless functions, demonstrating that batching cold-start initialization across concurrent invocations reduces aggregate latency by 35\%. However, their approach requires application-level coordination (e.g., via Redis), adding operational complexity.
 
-As noted in Lewis (2025), scalability remains paramount. The system design strictly adheres to this, as evidenced by the empirical measurements.
+\citet{li2022help} propose inter-function container sharing to alleviate cold starts by reusing partially-initialized containers across different functions. Evaluation on Alibaba Cloud shows 50\% cold-start reduction for functions sharing common runtimes and dependencies. This reinforces our hypothesis: large shared dependencies (boto3 in Python, aws-sdk in Node.js) dominate initialization cost, and eliminating unused dependencies should yield proportional speedup.
 
-Prior work such as Wang et al. (2025) laid foundations, but While keeping functions warm statically works, it wastes cost. This research implements predictive provisioning based on temporal access patterns.
+\section{Benchmarking Frameworks and Reproducibility}
 
+Standardized benchmarking is critical for comparing optimization strategies across studies.
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+\citet{copik2021sebs} present SeBS, a comprehensive serverless benchmark suite with 21 workloads spanning data processing, machine learning inference, and web serving. SeBS provides standardized deployment templates, monitoring instrumentation, and statistical analysis scripts. Our workload design (fixed SHA-256 computation with identical output across runtimes) follows SeBS principles: deterministic execution, measurable CPU intensity, and cross-runtime portability.
 
+\citet{yu2020serverlessbench} introduce ServerlessBench with focus on end-to-end application scenarios (e-commerce, video streaming). Their characterization reveals that real-world cold-start frequency ranges from 2\% (high-traffic APIs) to 60\% (cron jobs, IoT event handlers), validating our H3 hypothesis that low-frequency warming can significantly reduce cold-start rates for moderate-traffic functions.
 
-Prior work such as Wang et al. (2025) laid foundations, but While keeping functions warm statically works, it wastes cost. This research implements predictive provisioning based on temporal access patterns.
+\citet{grambow2021befaas} propose BeFaaS, an application-centric benchmarking framework emphasizing user-perceived latency (P95, P99 tail latencies). Their methodology aligns with our decision matrix approach: express optimizations as \textit{tail latency improvement per cost unit}.
 
-In reference to Thompson (2026), the integration highlights a distinct improvement metric.
+\section{Summary and Research Gap}
 
+The literature establishes cold-start latency as a critical serverless performance bottleneck, with initialization components (runtime bootstrap, dependency loading) contributing 100–3000 ms overhead. Prior work demonstrates that:
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+\begin{enumerate}
+    \item Platform-level innovations (snapshotting, checkpoint-restore) are highly effective but inaccessible to developers on AWS Lambda.
+    \item ML-based provisioning reduces cold-start frequency but incurs baseline costs.
+    \item Package size and dependency management significantly impact initialization, yet systematic multi-runtime comparisons are absent.
+    \item Most studies measure aggregate Duration; Init Duration isolation is rare.
+\end{enumerate}
+
+\textbf{Research Gap:} No prior study systematically compares developer-accessible controls (runtime, package size, memory, low-frequency warming) with explicit Init Duration isolation across multiple languages. This research fills that gap by:
+
+\begin{itemize}
+    \item Extending \citet{bluemke2025ijet}'s methodology with Init Duration extraction.
+    \item Comparing three production runtimes (Python 3.12, Node.js 20, Java 21) under controlled package-size conditions (bloated vs. minimal dependencies).
+    \item Evaluating low-frequency EventBridge warming as a zero-baseline-cost alternative to provisioned concurrency.
+    \item Expressing findings as a decision matrix: \textit{ms saved per dollar per 1,000 invocations}, enabling practitioners to select optimizations matching their latency and budget constraints.
+\end{itemize}
+
+This chapter established the theoretical foundation and identified the specific gap this research addresses. The next chapter details the experimental methodology employed to investigate the research questions. 
