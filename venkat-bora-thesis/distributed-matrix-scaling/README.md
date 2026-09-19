@@ -6,7 +6,13 @@
 
 ## Overview
 
-This project implements a comprehensive performance comparison of multi-threaded and distributed parallel processing for matrix workloads on cloud infrastructure. It extends the baseline work of Sabir & Alebrahim (2025) by adding distributed (scale-out) comparison alongside their multi-threaded (scale-up) approach.
+This project implements a comprehensive performance comparison of multi-threaded and distributed parallel processing for matrix workloads. It extends the baseline work of Sabir & Alebrahim (2025) by adding distributed (scale-out) comparison alongside their multi-threaded (scale-up) approach.
+
+### ⚠️ Execution Environment
+
+**This implementation runs on LOCAL machines using Dask local clusters, NOT on AWS EC2.** The "distributed" results simulate multi-node architecture but execute on a single machine. Results do not reflect true cloud network latency or multi-instance overhead.
+
+The code is cloud-ready but was not deployed to AWS. See `../STATUS.md` for AWS deployment instructions.
 
 ### Research Question
 
@@ -219,26 +225,28 @@ Results are saved in three formats:
    - Speedup analysis
    - LU factorization comparison
 
-### Key Findings (Example from local runs)
+### Key Findings (Local runs only)
 
-*Note: Actual results will vary by hardware. Run benchmarks to generate your system-specific results.*
+**Important:** These results are from **local Dask clusters** (same machine), not actual multi-node EC2 deployment.
 
 - Multi-threaded shows good speedup up to 4 cores for matrix multiplication
-- Distributed overhead dominates for small matrices (<500)
+- Local "distributed" overhead dominates for small matrices (<500)
 - Crossover point typically around 1000×1000 matrices
-- Memory overhead higher for distributed due to data serialization
+- Memory overhead higher for Dask due to data serialization
 - CPU efficiency decreases with worker count due to coordination overhead
 
-## AWS Deployment (Optional)
+**Note:** Real AWS EC2 multi-instance results would show additional network latency and different scaling characteristics.
 
-While this implementation runs locally, it can be deployed to AWS EC2. See `../STATUS.md` for detailed instructions.
+## AWS Deployment (Not Executed)
+
+This implementation is **cloud-ready** but was **not deployed to AWS EC2**. See `../STATUS.md` for detailed deployment instructions.
 
 **Brief overview:**
-1. Launch EC2 instances (e.g., t3.xlarge)
+1. Launch 2-3 EC2 instances (e.g., t3.xlarge) in same VPC
 2. Install dependencies on each instance
-3. Start Dask scheduler and workers
-4. Run benchmark with remote scheduler address
-5. Results will show true cloud network overhead
+3. Start Dask scheduler on one instance, workers on others
+4. Run: `python src/main.py --mode distributed --scheduler-address tcp://[scheduler-ip]:8786`
+5. Results would show true cloud network overhead
 
 **Cost estimate:** ~$1-2 for full benchmark suite on 3×t3.xlarge instances.
 
