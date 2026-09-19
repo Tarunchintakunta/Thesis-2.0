@@ -1,0 +1,223 @@
+\section{System Design}
+\label{sec:design}
+
+This section describes the architecture and design decisions for SecureFL-IDS, building upon the baseline PP-FL-DP-IDS framework while incorporating enhancements for adaptive privacy and communication efficiency.
+
+\subsection{System Architecture}
+
+Figure~\ref{fig:architecture} illustrates the overall system architecture consisting of federated clients (cloud tenants), a central aggregator server, and data preprocessing pipelines.
+
+\subsubsection{Federated Client}
+
+Each client represents a cloud tenant with local network traffic data. Key components include:
+
+\begin{itemize}
+    \item \textbf{Data Loader:} Preprocesses raw network traffic into feature vectors
+    \item \textbf{Local Model:} CNN or CNN-LSTM classifier for intrusion detection
+    \item \textbf{Local Trainer:} Trains model on client data for specified epochs
+    \item \textbf{Privacy Mechanism:} Applies differential privacy to model updates before transmission
+    \item \textbf{Communication Module:} Sends privatized updates to server, receives global model
+\end{itemize}
+
+\subsubsection{Aggregation Server}
+
+The server coordinates federated learning without accessing raw client data:
+
+\begin{itemize}
+    \item \textbf{Aggregator:} Combines client updates using FedAvg or quality-weighted averaging
+    \item \textbf{Compression Module:} (Improved only) Applies top-k sparsification to reduce bandwidth
+    \item \textbf{Global Model:} Maintains and broadcasts updated global parameters
+    \item \textbf{Evaluation Module:} Assesses global model on held-out test set
+\end{itemize}
+
+\subsection{Data Pipeline}
+
+\subsubsection{Preprocessing}
+
+Raw UNSW-NB15 data undergoes:
+
+\begin{enumerate}
+    \item Missing value imputation (zero-fill for numeric features)
+    \item Categorical encoding (one-hot or label encoding)
+    \item Feature selection (retain 20 most informative features)
+    \item Normalization (StandardScaler: zero mean, unit variance)
+    \item Train/test split (80\%/20\%, stratified by label)
+\end{enumerate}
+
+\subsubsection{Non-IID Distribution}
+
+Training data partitions across clients via Dirichlet($\alpha=0.5$) sampling, ensuring each client receives heterogeneous attack type distributions representing different tenant security profiles.
+
+\subsection{Model Architectures}
+
+\subsubsection{Baseline: CNN Classifier}
+
+\begin{verbatim}
+Input (batch, 20 features)
+  ↓ Unsqueeze → (batch, 1, 20)
+  ↓ Conv1D(1→32) + BatchNorm + ReLU + MaxPool(2)
+  ↓ Conv1D(32→64) + BatchNorm + ReLU + MaxPool(2)
+  ↓ Flatten
+  ↓ Linear(64*5 → 128) + ReLU + Dropout(0.5)
+  ↓ Linear(128 → 2) [Softmax]
+Output: [P(normal), P(attack)]
+\end{verbatim}
+
+\subsubsection{Improved: CNN-LSTM Classifier}
+
+\begin{verbatim}
+Input (batch, 20 features)
+  ↓ Conv layers (same as baseline)
+  ↓ Permute → (batch, seq_len, channels)
+  ↓ LSTM(input=64, hidden=64, layers=2, dropout=0.3)
+  ↓ Extract last hidden state
+  ↓ Linear(64 → 128) + ReLU + Dropout(0.5)
+  ↓ Linear(128 → 2) [Softmax]
+Output: [P(normal), P(attack)]
+\end{verbatim}
+
+\textbf{Rationale:} LSTM layers capture temporal dependencies in network flow sequences, improving detection of multi-step attack patterns.
+
+\subsection{Privacy Mechanisms}
+
+\subsubsection{Baseline: Fixed Differential Privacy}
+
+Following \citet{saklani2026privacy}:
+
+\begin{algorithm}
+\caption{Fixed DP-SGD}
+\begin{algorithmic}
+\STATE \textbf{Input:} Model $\theta$, gradients $g$, clip $C=1.0$, $\epsilon=1.0$, $\delta=10^{-5}$
+\STATE \textbf{Compute:} $\sigma = C \sqrt{2\ln(1.25/\delta)} / \epsilon$
+\STATE $g \leftarrow g / \max(1, \|g\|_2 / C)$ \COMMENT{Clip}
+\STATE $g \leftarrow g + \mathcal{N}(0, \sigma^2 C^2 \mathbf{I})$ \COMMENT{Add noise}
+\RETURN $g$
+\end{algorithmic}
+\end{algorithm}
+
+\subsubsection{Improved: Adaptive Differential Privacy}
+
+Calculates client-specific $\epsilon$ based on data quality:
+
+\begin{algorithm}
+\caption{Adaptive Privacy Budget}
+\begin{algorithmic}
+\STATE \textbf{Input:} Base $\epsilon_0=1.0$, client data quality $q \in [0,1]$
+\STATE $\epsilon_{\text{client}} \leftarrow \epsilon_0 \cdot (1 / (q + 0.1))$
+\STATE $\epsilon_{\text{client}} \leftarrow \text{clip}(\epsilon_{\text{client}}, 0.5\epsilon_0, 2.0\epsilon_0)$
+\RETURN $\epsilon_{\text{client}}$
+\end{algorithmic}
+\end{algorithm}
+
+Data quality $q$ is estimated via class balance entropy:
+\begin{equation}
+q = \frac{H(p)}{H_{\text{max}}} = \frac{-\sum_i p_i \log_2 p_i}{\log_2 K}
+\end{equation}
+where $p_i$ is the proportion of class $i$ and $K$ is the total number of classes.
+
+\subsection{Communication-Efficient Aggregation}
+
+\subsubsection{Top-k Gradient Compression}
+
+\begin{algorithm}
+\caption{Top-k Sparsification}
+\begin{algorithmic}
+\STATE \textbf{Input:} Gradient $g$, compression ratio $r=0.5$
+\STATE $k \leftarrow \lfloor r \cdot |g| \rfloor$
+\STATE $\text{indices} \leftarrow \text{top-k-by-magnitude}(g, k)$
+\STATE $g_{\text{sparse}} \leftarrow \text{zeros-like}(g)$
+\STATE $g_{\text{sparse}}[\text{indices}] \leftarrow g[\text{indices}]$
+\RETURN $g_{\text{sparse}}$
+\end{algorithmic}
+\end{algorithm}
+
+Only the top 50\% of gradients by absolute value are transmitted, reducing bandwidth by approximately 45\% while retaining the most informative parameter updates.
+
+\subsubsection{Quality-Weighted FedAvg}
+
+Standard FedAvg weights clients by data size:
+\begin{equation}
+\theta_{\text{global}} = \sum_{k=1}^{K} \frac{n_k}{n} \theta_k
+\end{equation}
+
+SecureFL-IDS incorporates data quality:
+\begin{equation}
+\theta_{\text{global}} = \sum_{k=1}^{K} \frac{q_k \cdot n_k}{\sum_j q_j \cdot n_j} \theta_k
+\end{equation}
+
+where $q_k$ is client $k$'s data quality score, down-weighting contributions from clients with highly imbalanced or low-quality data.
+
+\subsection{Federated Learning Protocol}
+
+\begin{algorithm}
+\caption{SecureFL-IDS Training Protocol}
+\begin{algorithmic}
+\STATE \textbf{Server initializes} global model $\theta_0$
+\FOR{round $t = 1$ to $T$}
+    \STATE \textbf{Server} broadcasts $\theta_t$ to all clients
+    \FOR{each client $k \in \{1, \ldots, K\}$ in parallel}
+        \STATE $\epsilon_k \leftarrow \text{AdaptivePrivacy}(q_k)$ \COMMENT{Improved only}
+        \STATE $\theta_k \leftarrow$ LocalTrain($\theta_t$, $\mathcal{D}_k$, $\epsilon_k$)
+        \STATE $\Delta_k \leftarrow \theta_k - \theta_t$
+        \STATE $\Delta_k \leftarrow$ Compress($\Delta_k$) \COMMENT{Improved only}
+        \STATE \textbf{Send} $\Delta_k$ to server
+    \ENDFOR
+    \STATE $\theta_{t+1} \leftarrow \theta_t + \text{Aggregate}(\{\Delta_k\})$
+    \STATE \textbf{Evaluate} $\theta_{t+1}$ on test set
+\ENDFOR
+\RETURN final model $\theta_T$
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{Deployment Considerations}
+
+\subsubsection{Local Simulation}
+
+Default mode for development and evaluation:
+\begin{itemize}
+    \item Multi-process clients sharing test set via memory
+    \item No network overhead
+    \item Deterministic for reproducibility
+\end{itemize}
+
+\subsubsection{Containerized Deployment}
+
+Docker Compose configuration:
+\begin{itemize}
+    \item Separate container per client + server
+    \item gRPC or REST API for parameter exchange
+    \item Persistent volume for model checkpoints
+\end{itemize}
+
+\subsubsection{Cloud Deployment}
+
+AWS ECS or Kubernetes:
+\begin{itemize}
+    \item Clients as ECS tasks / K8s pods
+    \item Server as central service with load balancer
+    \item S3 / persistent volumes for model storage
+    \item CloudWatch / Prometheus for monitoring
+\end{itemize}
+
+\subsection{Security Considerations}
+
+\textbf{Threat Model Assumptions:}
+\begin{itemize}
+    \item Honest-but-curious server (follows protocol but may infer from updates)
+    \item No Byzantine clients (all follow training protocol)
+    \item No model poisoning or gradient manipulation attacks
+\end{itemize}
+
+\textbf{Privacy Guarantees:}
+\begin{itemize}
+    \item ($\epsilon$, $\delta$)-DP protects against membership inference
+    \item Gradient clipping bounds sensitivity to individual records
+    \item No raw data leaves client boundaries
+\end{itemize}
+
+\textbf{Limitations:}
+\begin{itemize}
+    \item Not robust to Byzantine attacks (future work: Krum/Trimmed Mean)
+    \item Vulnerable to sophisticated gradient attacks (future: secure aggregation)
+    \item Assumes secure communication channels (implement TLS in production)
+\end{itemize}

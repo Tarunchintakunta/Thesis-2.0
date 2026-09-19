@@ -1,0 +1,74 @@
+\section{Related Work}
+\label{sec:relatedwork}
+
+This section reviews relevant literature in cloud-native intrusion detection, federated learning approaches for security, differential privacy mechanisms, and communication-efficient distributed learning.
+
+\subsection{Cloud-Native Intrusion Detection}
+
+Cloud-native architectures introduce unique security challenges due to their distributed, dynamic, and ephemeral nature. \citet{boosa2025monolithic} discuss the transition from monolithic systems to cloud-native ecosystems, highlighting the increased attack surface and complexity of securing containerized microservices orchestrated by Kubernetes.
+
+\citet{naydenov2025framework} propose an ML-based framework for containerized, cloud-native intrusion detection that leverages Kubernetes-native monitoring capabilities. Their approach demonstrates improved visibility into distributed workloads but does not address privacy concerns inherent in centralized data collection. Similarly, \citet{alenezi2026cids} present a collaborative IDS for SDN-based industrial plants, achieving improved detection through distributed sensors but requiring significant communication bandwidth for coordinating detection decisions.
+
+Traditional centralized IDS approaches face scalability limitations as cloud deployments grow. \citet{sharma2025multi} identify communication overhead, privacy exposure, and single points of failure as critical weaknesses of centralized architectures in multi-tenant cloud environments.
+
+\subsection{Federated Learning for Intrusion Detection}
+
+Federated Learning has emerged as a promising paradigm for privacy-preserving collaborative IDS. Several recent works demonstrate the viability of FL for distributed threat detection:
+
+\citet{verma2025hybrid} propose HMFLA-ADS, a hybrid metaheuristic federated learning system combining Stacked Sparse Autoencoders with Fish School Search optimization for multi-cloud attack detection. Their approach achieves 99.52\% accuracy while preserving data privacy across cloud platforms. However, the work does not investigate secure aggregation against adversarial participants or evaluate communication efficiency under constrained bandwidth scenarios.
+
+\citet{nellutla2025scalable} integrate Federated Learning with Kubernetes and streaming analytics for cloud-native threat detection, reporting 2.3\% improvement in accuracy and 34\% reduction in communication overhead compared to standard FL. Their architecture emphasizes container orchestration and scalability but provides limited analysis of privacy guarantees against gradient-based attacks.
+
+\citet{pr2026cloud} implement a federated deep learning IDS combining LSTM Autoencoders for anomaly detection with CNN-GRU networks for attack classification, deployed on AWS infrastructure. They achieve 96.3\% accuracy for DDoS detection but focus exclusively on single-cloud deployment, limiting applicability to heterogeneous multi-cloud scenarios.
+
+\citet{laddi2024advanced} introduce a federated machine learning framework using predictive analytics and unsupervised learning for adaptive cyberattack detection. While their approach supports continuous model adaptation without centralized data sharing, implementation details and experimental validation remain limited.
+
+\citet{selvaprasanth2025federated} present FL-IDS for decentralized cloud and IoT networks, incorporating deep learning classifiers with feature selection techniques. They report accuracy exceeding 95\% across distributed environments but do not adequately address communication overhead or resilience against model poisoning attacks.
+
+\citet{mishra2026next} propose a next-generation IDS integrating FL with LSTM, Random Forest, Reinforcement Learning, and Large Language Models for intelligent threat detection and automated reporting. Their Random Forest model achieves 99.77\% accuracy, with the federated global model reaching approximately 90\% accuracy. However, the work provides limited emphasis on federated aggregation security, communication efficiency, and explainability of federated decisions.
+
+\subsection{Privacy-Preserving Federated Learning}
+
+Differential Privacy (DP) provides formal mathematical guarantees for privacy protection in machine learning systems. \citet{dwork2014algorithmic} establish the foundational theory of DP, defining the $(\epsilon, \delta)$-differential privacy framework widely adopted in privacy-preserving ML.
+
+For cloud-native intrusion detection specifically, \citet{saklani2026privacy} propose PP-FL-DP-IDS, combining Federated Learning with Differential Privacy for collaborative network traffic analysis across cloud tenants. Their system achieves 91.8\% accuracy with F1-score above 90\% on non-IID UNSW-NB15 data, demonstrating stable federated training despite DP noise ($\epsilon=1.0$, $\delta=10^{-5}$). This work serves as the baseline for comparison in the present research.
+
+\citet{li2026privacy} introduce HierFedDP, a hierarchical privacy-preserving federated learning framework for cloud service anomaly detection. Their three-tier architecture (edge servers, local clients, central cloud server) applies DP before hierarchical aggregation, achieving detection performance comparable to standard FL while reducing WAN communication overhead by 49\%. However, both PP-FL-DP-IDS and HierFedDP use fixed privacy budgets across all clients, potentially suboptimal when client data quality varies significantly.
+
+\citet{chen2026federated} investigate federated deep learning for intrusion detection in smart grid power networks, introducing a layer-selective privacy mechanism combining Paillier homomorphic encryption with calibrated DP. Their hybrid approach achieves strong privacy preservation (membership inference advantage below 0.08) while remaining within 0.7 F1 points of centralized baselines. However, cryptographic operations introduce computational overhead not suitable for resource-constrained edge deployments.
+
+Recent work by \citet{tory2026privacy} examines trade-offs between privacy, robustness, and fairness in federated NIDS under class imbalance. They demonstrate that DP noise combined with robust aggregation can disproportionately degrade detection of rare attacks, highlighting the need for careful privacy mechanism design in security applications with skewed class distributions.
+
+\subsection{Communication-Efficient Federated Learning}
+
+Communication overhead represents a significant bottleneck in federated learning, particularly for cloud-edge deployments. \citet{jia2025comprehensive} provide a comprehensive survey of communication-efficient FL techniques, categorizing approaches into:
+
+\begin{enumerate}
+    \item \textbf{Communication compression:} Gradient quantization, sparsification, and low-rank approximations
+    \item \textbf{Adaptive resource scheduling:} Client selection and asynchronous aggregation strategies
+    \item \textbf{Over-the-air computation:} Exploiting wireless channel properties for implicit aggregation
+\end{enumerate}
+
+\citet{luo2024communication} propose FedAda, an adaptive aggregation mechanism for client-edge-cloud FL that dynamically determines aggregation frequency based on theoretical convergence analysis and node heterogeneity. FedAda reduces training time and communication overhead significantly while maintaining or improving accuracy compared to fixed-frequency aggregation.
+
+\citet{deng2024communication} introduce a hierarchical federated learning structure with optimal edge aggregator selection, reducing communication cost through reduced diversity of data distribution at edge aggregators. Their approach enhances learning accuracy without unnecessary cloud aggregations by exploiting edge-level data locality.
+
+For intrusion detection specifically, \citet{albshaier2025federated} review federated learning approaches for cloud and edge security, identifying communication compression and adaptive resource scheduling as critical techniques for practical IDS deployment. However, existing compression methods have not been extensively evaluated for their impact on intrusion detection accuracy, particularly under privacy constraints.
+
+\subsection{Research Gaps}
+
+While existing research demonstrates the feasibility of federated learning for privacy-preserving intrusion detection, several gaps remain:
+
+\begin{enumerate}
+    \item \textbf{Fixed Privacy Budgets:} Current approaches apply uniform $\epsilon$ across all clients, ignoring data quality heterogeneity. Adaptive privacy mechanisms that allocate budgets based on client characteristics remain underexplored.
+    
+    \item \textbf{Communication-Privacy Trade-offs:} The interaction between gradient compression (for communication efficiency) and differential privacy (for privacy protection) has not been thoroughly investigated for intrusion detection workloads.
+    
+    \item \textbf{Non-IID Robustness:} Most evaluations use artificially partitioned datasets. Systematic evaluation of FL-IDS performance under realistic non-IID scenarios with varying degrees of heterogeneity is lacking.
+    
+    \item \textbf{Practical Implementation:} Few works provide complete, reproducible implementations suitable for real cloud deployment. Most remain simulation-based or theoretical.
+    
+    \item \textbf{Multi-Objective Optimization:} Balancing detection accuracy, privacy guarantees, communication efficiency, and convergence speed simultaneously requires principled multi-objective optimization, which existing work addresses piecemeal.
+\end{enumerate}
+
+This research addresses these gaps by developing SecureFL-IDS, a comprehensive framework integrating adaptive differential privacy, communication-efficient aggregation, and enhanced neural architectures, with thorough experimental validation and an open-source implementation for practical deployment.

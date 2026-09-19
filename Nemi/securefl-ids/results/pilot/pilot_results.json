@@ -1,0 +1,18 @@
+{
+  "baseline": {
+    "accuracy": 0.4,
+    "f1_score": 0.3135011441647597,
+    "avg_communication_cost": 1.0957489013671875,
+    "total_communication_cost": 10.957489013671875,
+    "convergence_rounds": 10,
+    "avg_round_time": 0.20068349838256835
+  },
+  "improved": {
+    "accuracy": 0.8,
+    "f1_score": 0.0,
+    "avg_communication_cost": 1.8691864013671875,
+    "total_communication_cost": 18.691864013671875,
+    "convergence_rounds": 10,
+    "avg_round_time": 0.21732256412506104
+  }
+}

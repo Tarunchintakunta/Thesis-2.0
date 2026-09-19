@@ -1,0 +1,55 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+ENV/
+env/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Data
+data/raw/
+data/processed/
+*.csv
+# *.pkl  # Allow result pickles to be committed
+!results/**/*.pkl
+*.h5
+
+# Experiments - allow committed results
+# results/*/  # Commented out to allow committing actual results
+!results/.gitkeep
+# *.log  # Allow experiment logs to be committed
+
+# Figures - allow generated plots
+# figures/*.png  # Commented to allow committing generated plots
+# figures/*.pdf
+!figures/.gitkeep
+
+# Models
+models/
+*.pth
+*.pt
+
+# Secrets
+.env
+*.key
+*.pem
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Coverage
+.coverage
+htmlcov/
+
+# Pytest
+.pytest_cache/
