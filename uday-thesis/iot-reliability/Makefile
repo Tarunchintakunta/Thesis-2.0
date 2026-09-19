@@ -1,4 +1,4 @@
-.PHONY: install test train clean lint help
+.PHONY: install test train clean lint help aws-verify
 
 help:  ## Display this help message
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
@@ -28,3 +28,6 @@ pdf:  ## Compile LaTeX report to PDF
 	cd latex_report && pdflatex -interaction=nonstopmode projectReport.tex && bibtex projectReport && pdflatex -interaction=nonstopmode projectReport.tex && pdflatex -interaction=nonstopmode projectReport.tex
 
 all: install test train  ## Install, test, and train
+
+aws-verify:
+	@bash ../../scripts/aws-verify/uday-iot.sh

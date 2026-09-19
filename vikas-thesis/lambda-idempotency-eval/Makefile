@@ -9,7 +9,7 @@ WORKERS ?= 16
 N ?= $(shell $(PY) -c "import json;print(json.load(open('results/live/pilot_choice.json'))['N'])" 2>/dev/null)
 
 .PHONY: setup test lint check-bib tf-check budget build deploy pilot pilot-size campaign sensitivity cloudwatch \
-	analyse destroy functional clean
+	analyse destroy functional clean aws-verify
 
 setup:
 	python3.12 -m venv .venv
@@ -86,3 +86,6 @@ functional:
 
 clean:
 	rm -rf build $(MOTO) data/runs/local
+
+aws-verify:
+	@bash ../../scripts/aws-verify/vikas-lambda.sh
