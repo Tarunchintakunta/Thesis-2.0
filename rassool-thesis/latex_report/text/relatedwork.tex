@@ -1,105 +1,77 @@
-\chapter{Related Work}
-Prior work such as Sharma et al. (2026) laid foundations, but The baseline focuses on throughput in ideal conditions. We introduce backpressure mechanisms during variable burst loads to prevent cascading failures.
+\section{Related Work}
 
-In reference to Morris (2026), the integration highlights a distinct improvement metric.
+This section reviews prior research organised into six thematic areas: cloud database benchmarking and performance evaluation (§2.1), NoSQL and DynamoDB architectural foundations (§2.2), partition-key design and sharding strategies (§2.3), cloud database resource management and cost optimisation (§2.4), serverless and disaggregated storage architectures (§2.5), and scalable OLTP in cloud environments (§2.6). Together, these strands contextualise the present study's focus on DynamoDB configuration-level trade-offs.
 
+\subsection{Cloud Database Benchmarking and Performance Evaluation}
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+Benchmarking cloud databases presents methodological challenges distinct from self-hosted systems: multi-tenancy, variable network latency, opaque auto-scaling policies, and metered cost as a first-class dependent variable \citep{vanrenen2023cloud}. \citet{vanrenen2023cloud} introduce the Cloud Analytics Benchmark, a suite designed to evaluate cloud data warehouses (Snowflake, BigQuery, Redshift) under realistic analytics workloads. Their study highlights the importance of measuring not only query latency and throughput but also monetary cost per query, storage cost, and cost predictability. Similarly, \citet{bodner2025serverless} present an empirical evaluation of serverless cloud infrastructure for large-scale data processing, benchmarking AWS Lambda, Azure Functions, and Google Cloud Functions. They identify cold-start latency, memory-to-CPU allocation ratios, and network I/O as primary determinants of serverless data processing performance, and emphasise the need for workload-specific configuration tuning rather than default settings.
 
+\textbf{Baseline study:} \citet{pantelic2026benchmarking} provide the direct baseline for the present research. Their study, ``Benchmarking SQL and NoSQL Persistence in Microservices Under Variable Workloads,'' evaluates PostgreSQL, MongoDB, Redis, and Cassandra under three workload profiles—read-heavy (90\% read), write-heavy (70\% write), and mixed (50/50)—on a single self-hosted server node. They measure mean latency, p95 latency, and throughput (operations per second), finding that NoSQL systems exhibit lower latency under read-heavy workloads but higher latency variance under write-heavy loads. Crucially, their experimental setting has no concept of RCU/WCU, no admission control throttling, and no per-operation billing. The present study retains their latency and throughput metrics for comparability but extends the evaluation to metered infrastructure, adding throttling rate, consumed capacity, and cost per 10,000 operations—dependent variables that self-hosted nodes cannot produce.
 
-Moreover, bridging the gap identified in Sharma et al. (2026) necessitates this novel perspective: The baseline focuses on throughput in ideal conditions. We introduce backpressure mechanisms during variable burst loads to prevent cascading failures.
+\citet{ferreira2024consistency} and \citet{ferreira2025ycsb} investigate consistency levels in cloud-based NoSQL databases (DynamoDB, Cosmos DB, Cassandra) using the Yahoo! Cloud Serving Benchmark (YCSB). \citet{ferreira2024consistency} demonstrate that eventual consistency reduces latency by 20–40\% compared to strong consistency across workloads A–F, but at the cost of stale reads in 5–15\% of operations. \citet{ferreira2025ycsb} extend this analysis by benchmarking DynamoDB's consistent and eventually consistent read modes, finding that eventual consistency achieves 1.8× higher throughput but introduces 12–18\% stale-read rates under high write concurrency. These studies establish consistency as a critical performance dimension but do not address partition-key design or capacity mode—the focus of the present work.
 
-As noted in Murphy (2026), scalability remains paramount. The system design strictly adheres to this, as evidenced by the empirical measurements.
+\citet{zhang2023cdsben} present CDSBen, a benchmark for storage services in ByteDance's cloud-native database system. They evaluate persistent block storage, distributed file systems, and object storage under OLTP and OLAP workloads, finding that storage-layer latency contributes 30–60\% of end-to-end query latency in disaggregated architectures. Their emphasis on storage-layer performance as a primary bottleneck aligns with DynamoDB's partition-level throttling behaviour, where hot keys can degrade performance despite adequate table-level capacity.
 
-Prior work such as Sharma et al. (2026) laid foundations, but The baseline focuses on throughput in ideal conditions. We introduce backpressure mechanisms during variable burst loads to prevent cascading failures.
+\subsection{NoSQL and DynamoDB Architectural Foundations}
 
+DynamoDB's architecture, performance characteristics, and evolution have been documented in a series of USENIX conference papers authored by Amazon engineers. \citet{elhemali2022dynamodb} describe DynamoDB's design as ``a scalable, predictably performant, and fully managed NoSQL database service,'' emphasising its consistent hashing for data partitioning, storage-level replication across three availability zones, and admission control through RCU/WCU metering. The paper introduces DynamoDB's adaptive capacity mechanism, which temporarily allows partitions to borrow capacity from underutilised partitions to absorb transient traffic spikes—a feature central to understanding throttling behaviour under skewed workloads \citep{aws2025adaptive}.
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+\citet{idziorek2023transactions} extend this architectural documentation by describing DynamoDB's distributed transaction protocol, which provides ACID guarantees across multiple items and tables without requiring application-level coordination. Their study reveals that transactional writes consume 2× the WCU of standard writes, and transactional reads consume 2× the RCU, introducing a cost penalty for strong consistency. While the present study focuses on non-transactional single-item and batch operations, the WCU/RCU consumption model documented by \citet{idziorek2023transactions} informs the cost-modelling component of the experimental artefact.
 
+\citet{lei2024xstor} present X-Stor, a cloud-native NoSQL database service developed by Alibaba Cloud that supports multiple data models (key-value, document, wide-column) within a unified storage engine. They identify three architectural trade-offs relevant to DynamoDB: (1) whether to co-locate indexing with storage (low latency) or separate them (elastic scaling); (2) whether to use fixed-size partitions (predictable performance) or dynamic splitting (adaptive capacity); (3) whether to meter at the request level (on-demand) or reserve capacity (provisioned). X-Stor's multi-model support contrasts with DynamoDB's key-value/document focus, but the trade-off framing is directly applicable.
 
-Prior work such as Sharma et al. (2026) laid foundations, but The baseline focuses on throughput in ideal conditions. We introduce backpressure mechanisms during variable burst loads to prevent cascading failures.
+\subsection{Partition-Key Design and Sharding Strategies}
 
+Partition-key design is fundamental to horizontal scalability in distributed databases, yet few studies provide controlled empirical evaluations of design patterns under production workloads. \citet{eldeeb2022neuroshard} propose Neuroshard, a deep reinforcement learning system for automatic multi-objective sharding in distributed key-value stores. Neuroshard learns sharding policies that minimise cross-partition queries while balancing load across nodes, reducing tail latency by 30–50\% compared to hash-based and range-based sharding on TPC-C and YCSB workloads. While Neuroshard targets general key-value stores rather than DynamoDB specifically, its multi-objective optimisation framework (latency, load balance, cross-partition query minimisation) aligns with the present study's goal of characterising performance–cost trade-offs.
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+\citet{li2023lbchain} address partition imbalance in blockchain sharding, introducing LB-Chain, a load-balancing protocol that migrates accounts between shards to equalise transaction throughput. Their evaluation on Ethereum-style workloads finds that account migration reduces median block-confirmation latency by 28\% and eliminates long-tail delays caused by overloaded shards. The account-migration strategy is analogous to DynamoDB's write-sharding pattern (appending shard suffixes to distribute hot keys), though LB-Chain operates at the protocol level rather than the application schema level.
 
+\citet{kanellis2025f2} present F2, an evolution of Microsoft Research's FASTER key-value store, optimised for large skewed workloads. F2 introduces a hybrid indexing strategy that separates hot keys (frequently accessed) into an in-memory hash table and cold keys (infrequently accessed) into a disk-backed log-structured merge (LSM) tree. Under Zipfian workloads (α = 0.99, matching the access skew in the present study), F2 achieves 2.1× higher throughput and 40\% lower tail latency than FASTER by avoiding cache thrashing on hot keys. This hot/cold separation mirrors DynamoDB's adaptive capacity mechanism, which allocates burst capacity to hot partitions at the expense of cold partitions \citep{aws2025adaptive}.
 
-Prior work such as Sharma et al. (2026) laid foundations, but The baseline focuses on throughput in ideal conditions. We introduce backpressure mechanisms during variable burst loads to prevent cascading failures.
+AWS vendor documentation \citep{aws2025sharding} formalises three partition-key design patterns: (1) high-cardinality simple keys (e.g., order IDs, user IDs) for uniform distribution; (2) composite keys (partition key + sort key) for range queries and customer-localised access; (3) write-sharded keys (appending a random or deterministic shard suffix, e.g., \texttt{orderId\#shard}, where shard $\in \{0, \ldots, N-1\}$) to distribute write-heavy traffic. The documentation recommends write sharding when anticipated write throughput exceeds 1,000 WCU/s per partition, but provides no empirical cost–performance comparison across patterns. The present study operationalises these three patterns in a factorial experiment.
 
-In reference to Reyes & Stewart (2025), the integration highlights a distinct improvement metric.
+\subsection{Cloud Database Resource Management and Cost Optimisation}
 
+Resource management in cloud databases involves capacity planning, auto-scaling, and cost-performance optimisation under variable workloads. \citet{haubenschild2025oltp} survey OLTP architectures in the cloud, comparing Aurora, CockroachDB, Spanner, and Cosmos DB. They identify provisioned vs. on-demand capacity as a primary architectural choice, noting that on-demand models simplify operations but incur 2–5× higher per-operation costs than reserved capacity. Their empirical evaluation finds that workloads with coefficient of variation (CV) $<$ 0.5 (predictable load) achieve lower cost with provisioned capacity, while workloads with CV $>$ 1.5 (bursty load) benefit from on-demand. This threshold-based heuristic provides a hypothesis for the present study: we expect DynamoDB's on-demand mode to outperform provisioned mode on cost efficiency under the burst workload (W4), and provisioned mode to outperform under sustained workloads (W1–W3).
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+\citet{barnhart2024aurora} describe resource management in Aurora Serverless, a MySQL/PostgreSQL-compatible relational database with automatic scaling. Aurora Serverless meters capacity in Aurora Capacity Units (ACUs), analogous to DynamoDB's RCU/WCU, and scales in response to CPU utilisation, connection count, and query queue depth. The paper reveals that auto-scaling introduces 10–30 second warm-up latency during scale-up events, during which admission control may throttle requests—a phenomenon we anticipate observing in DynamoDB's provisioned mode under the burst workload (W4).
 
+\citet{konig2023solver} propose a solver-in-the-loop approach to cluster resource management for database-as-a-service (DBaaS) platforms. Their constraint-satisfaction solver allocates CPU, memory, and IOPS across co-located database instances to minimise cost while satisfying SLA latency requirements. Applied to Azure SQL Database, the solver reduces cost by 18–25\% compared to rule-based auto-scaling. While DynamoDB's single-tenant table model differs from multi-tenant DBaaS, the solver's cost-minimisation objective under latency constraints mirrors Objective 3 of the present study.
 
-Prior work such as Sharma et al. (2026) laid foundations, but The baseline focuses on throughput in ideal conditions. We introduce backpressure mechanisms during variable burst loads to prevent cascading failures.
+\citet{zhou2024contract} introduce a contract-aware LSM store for cloud storage with low latency spikes. Their system negotiates I/O rate contracts with the underlying storage service (EBS, Azure Disk) to avoid throttling during compaction. Under write-heavy workloads, contract-aware compaction reduces p99 latency by 60\% compared to traditional LSM trees. DynamoDB's provisioned mode similarly requires ``contracts'' (reserved RCU/WCU), and adaptive capacity acts as a short-term burst allowance \citep{aws2025adaptive}. Zhou et al.'s finding that contract violations cause latency spikes informs our hypothesis that provisioned DynamoDB tables with insufficient reserved capacity will experience throttling under W4.
 
+\subsection{Serverless and Disaggregated Storage Architectures}
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+The serverless computing paradigm decouples compute from storage, introducing new performance considerations for data-layer persistence. \citet{pang2024disaggregated} investigate storage-disaggregated databases, in which compute nodes are stateless and storage is managed by a separate service (e.g., Amazon S3, Azure Blob Storage). They identify network bandwidth and storage API latency as primary bottlenecks, finding that disaggregated architectures achieve 70–80\% of the throughput of co-located storage under OLTP workloads. DynamoDB's architecture is partially disaggregated: Lambda functions (compute) are stateless, while DynamoDB tables (storage) are fully managed, introducing network round-trip latency for every data access.
 
+\citet{zhang2023infinistore} present InfiniStore, an elastic serverless cloud storage system that dynamically provisions object storage (S3) as a cache for frequently accessed data. Under skewed workloads (Zipfian α = 1.0), InfiniStore reduces median read latency by 50\% compared to direct S3 access by caching hot objects in-memory. This hot-key optimisation aligns with DynamoDB's adaptive capacity mechanism \citep{aws2025adaptive}, which similarly prioritises hot partitions.
 
-Prior work such as Sharma et al. (2026) laid foundations, but The baseline focuses on throughput in ideal conditions. We introduce backpressure mechanisms during variable burst loads to prevent cascading failures.
+\citet{durner2023object} explore exploiting cloud object storage for high-performance analytics, demonstrating that S3's per-request pricing model (USD 0.0004 per GET request) makes it cost-competitive with block storage for read-heavy analytics workloads. Their cost model, which separates storage cost, request cost, and data-transfer cost, parallels the present study's cost-modelling approach for DynamoDB (on-demand per-request cost vs. provisioned reserved capacity cost).
 
+\citet{liu2023faaslight} address cold-start latency in Function-as-a-Service (FaaS) platforms, introducing FaaSLight, a framework that pre-warms Lambda functions based on predicted invocation patterns. Under bursty workloads, FaaSLight reduces cold-start latency from 800–1200 ms to 50–80 ms. While the present study focuses on DynamoDB performance rather than Lambda cold starts, Liu et al.'s emphasis on bursty workloads as a distinct performance regime motivates the inclusion of the W4 burst profile in the experimental design.
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+\subsection{Scalable OLTP in Cloud Environments}
 
+\citet{ziegler2023oltp} pose the provocative question, ``Is Scalable OLTP in the Cloud a Solved Problem?'' Their analysis compares five cloud OLTP systems (Aurora, Spanner, CockroachDB, YugabyteDB, FoundationDB) on TPC-C and TPC-E benchmarks. They conclude that while horizontal scalability has been achieved, predictable performance under skewed workloads and cost efficiency remain open challenges. Specifically, they find that all systems exhibit 2–5× latency increases when 10\% of transactions access 1\% of keys (Zipfian skew)—a distribution pattern replicated in the present study (90\% of operations on 10\% of keys, Zipfian s = 1.070916). Ziegler et al.'s finding that skewed workloads degrade predictable performance motivates the present study's focus on partition-key design as a mitigation strategy.
 
-Moreover, bridging the gap identified in Sharma et al. (2026) necessitates this novel perspective: The baseline focuses on throughput in ideal conditions. We introduce backpressure mechanisms during variable burst loads to prevent cascading failures.
+\subsection{AWS Documentation on Capacity Modes and Adaptive Capacity}
 
-Prior work such as Sharma et al. (2026) laid foundations, but The baseline focuses on throughput in ideal conditions. We introduce backpressure mechanisms during variable burst loads to prevent cascading failures.
+AWS provides three vendor documentation resources that describe DynamoDB's capacity modes and throttling mechanisms, cited here for mechanism documentation only (these are not peer-reviewed sources):
 
-In reference to Collins (2026), the integration highlights a distinct improvement metric.
+\begin{itemize}
+    \item \textbf{Capacity mode:} \citet{aws2025capacitymode} document the billing and scaling behaviour of on-demand and provisioned modes. On-demand charges per request (USD 1.25 per million WRU, USD 0.25 per million RRU in us-east-1 as of 2025), with automatic scaling to accommodate any traffic level. Provisioned mode charges for reserved capacity (USD 0.00065 per WCU-hour, USD 0.00013 per RCU-hour), with optional auto-scaling within administrator-defined bounds.
+    \item \textbf{Adaptive capacity:} \citet{aws2025adaptive} describe DynamoDB's burst capacity and adaptive capacity mechanisms. Burst capacity allows tables to absorb short spikes (up to 300 seconds) by borrowing unused capacity from prior 300-second windows. Adaptive capacity isolates frequently accessed items to dedicated partitions, enabling them to consume disproportionate capacity without throttling less-accessed items. These mechanisms are opaque (not administrator-configurable), making empirical measurement the only viable evaluation method.
+    \item \textbf{Write sharding:} \citet{aws2025sharding} recommend write sharding (appending shard suffixes) to distribute write-heavy workloads across multiple partitions. The documentation provides no empirical performance data or cost comparison.
+\end{itemize}
 
+\subsection{Research Gap and Positioning}
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+The reviewed literature establishes robust foundations in cloud database benchmarking \citep{vanrenen2023cloud, bodner2025serverless}, NoSQL architecture \citep{elhemali2022dynamodb, lei2024xstor}, partition-key design principles \citep{eldeeb2022neuroshard, kanellis2025f2}, resource management \citep{haubenschild2025oltp, barnhart2024aurora}, and serverless storage \citep{pang2024disaggregated, durner2023object}. However, no prior study provides a controlled empirical evaluation that:
 
+\begin{enumerate}
+    \item Simultaneously varies partition-key design (simple, composite, write-sharded) and capacity mode (on-demand, provisioned) in a factorial design;
+    \item Quantifies throttling rate, consumed RCU/WCU, and cost per 10,000 operations—dependent variables absent from self-hosted benchmarks \citep{pantelic2026benchmarking};
+    \item Evaluates performance under Lambda-driven serverless workloads with realistic access skew (Zipfian) and burst patterns.
+\end{enumerate}
 
-Prior work such as Sharma et al. (2026) laid foundations, but The baseline focuses on throughput in ideal conditions. We introduce backpressure mechanisms during variable burst loads to prevent cascading failures.
-
-
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
-
-
-As noted in Murphy (2026), scalability remains paramount. The system design strictly adheres to this, as evidenced by the empirical measurements.
-
-Prior work such as Sharma et al. (2026) laid foundations, but The baseline focuses on throughput in ideal conditions. We introduce backpressure mechanisms during variable burst loads to prevent cascading failures.
-
-
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
-
-
-Prior work such as Sharma et al. (2026) laid foundations, but The baseline focuses on throughput in ideal conditions. We introduce backpressure mechanisms during variable burst loads to prevent cascading failures.
-
-In reference to Rogers (2026), the integration highlights a distinct improvement metric.
-
-
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+The present study fills this gap, extending the latency and throughput baseline of \citet{pantelic2026benchmarking} to metered cloud infrastructure and providing actionable configuration guidance for DynamoDB practitioners.
