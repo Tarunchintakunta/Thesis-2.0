@@ -6,16 +6,106 @@
 \label{sec:Implementation}
 %% ==============================
 
-The system is implemented in Python 3 with PyTorch. Key modules:
+This section describes the implementation of the experimental framework (Section~\ref{subsec:impl_modules}), deployment architecture (Section~\ref{subsec:deployment}), and reproducibility considerations (Section~\ref{subsec:reproducibility}).
 
+\subsection{Implementation Modules}
+\label{subsec:impl_modules}
+
+The system is implemented in Python 3.9+ with PyTorch 1.13+ as the deep learning framework. Key modules and their responsibilities are as follows:
+
+\textbf{Data Generation:} \texttt{src/data/telemetry\_simulator.py} implements the synthetic telemetry generator described in Section~\ref{subsec:synth}. The \texttt{TelemetrySimulator} class generates 4-metric sequences with configurable sequence length, transient ratio, and random seed. The transient burst injection mechanism (Section~\ref{subsec:transient}) is implemented in the \texttt{\_inject\_transient} method, which randomly selects a primary metric, injects a fast ramp in the future window, and injects correlated rider ramps 3--6 steps earlier in the history window. The \texttt{TelemetryDataset} class wraps the generated data for PyTorch's \texttt{DataLoader}, yielding tuples of \texttt{(X, y, is\_transient)} where \texttt{X} is the 10-step history window, \texttt{y} is the per-metric violation label, and \texttt{is\_transient} is a boolean flag used to compute transient-specific metrics.
+
+\textbf{Model Architecture:} \texttt{src/models/mhsa\_model.py} implements the three attention-based architectures described in Section~\ref{sec:Design}:
 \begin{itemize}
-  \item \texttt{src/data/telemetry\_simulator.py} -- synthetic telemetry generator described in Section~\ref{sec:Methodology}.
-  \item \texttt{src/models/mhsa\_model.py} -- \texttt{SharedBackbone}, \texttt{MHSAPerHead} (baseline), \texttt{MHSAFused} (improved), and the \texttt{CrossHeadFusion} layer.
-  \item \texttt{src/models/baseline.py} -- \texttt{ThresholdBaseline}, the reactive monitoring comparison.
-  \item \texttt{scripts/train\_and\_evaluate.py} -- trains and evaluates all three approaches across 3 seeds, writes \texttt{results/results\_per\_seed.csv} and \texttt{results/results\_summary.csv}, and exports the trained \texttt{MHSAFused} weights to \texttt{models/mhsa\_fused.pt} for deployment.
-  \item \texttt{src/lambda\_handler/app.py} -- an AWS Lambda handler that loads the exported model and runs real inference (not a mock) over telemetry records arriving on a Kinesis stream, in a 30-day rolling window per node.
-  \item \texttt{template.yaml} -- AWS SAM template provisioning the Kinesis stream and Lambda function.
-  \item \texttt{.github/workflows/deploy.yml} -- CI pipeline that runs the training/evaluation script and, on push to \texttt{main}, deploys the SAM stack to the configured AWS region using repository secrets.
+  \item \texttt{SharedBackbone}: the common temporal encoder (embedding, positional encoding, multi-head self-attention, feed-forward) shared by both MHSA-PerHead and MHSA-Fused.
+  \item \texttt{MHSAPerHead}: the baseline reproduction with strict per-head architecture. After the shared backbone, the output is manually split into 4 non-overlapping 8-dimensional head vectors, each passed to an independent attention layer and classifier. No cross-head communication occurs.
+  \item \texttt{CrossHeadFusion}: a self-attention layer that treats the 4 head context vectors as a 4-token sequence, computing pairwise attention between heads before classification. Implemented as a standard PyTorch \texttt{nn.MultiheadAttention} module with 1 head and dimension 8.
+  \item \texttt{MHSAFused}: identical to \texttt{MHSAPerHead} but inserts the \texttt{CrossHeadFusion} layer between the per-head attention and classifiers.
 \end{itemize}
 
-Running \texttt{python scripts/train\_and\_evaluate.py} reproduces every number in Section~\ref{sec:Evaluation} from scratch (no external dataset dependency, since telemetry is synthetically generated with a fixed seed).
+All models are implemented as PyTorch \texttt{nn.Module} subclasses with forward methods that accept batched input tensors of shape \texttt{(batch\_size, seq\_length=10, num\_metrics=4)} and return logits of shape \texttt{(batch\_size, num\_metrics=4, num\_classes=3)}.
+
+\textbf{Baseline:} \texttt{src/models/baseline.py} implements \texttt{ThresholdBaseline}, the reactive monitoring baseline described in Section~\ref{subsec:threshold}. This is a non-learning baseline: it computes the peak value over the last 3 timesteps of each metric and applies fixed thresholds to bucket into None/L1/L2.
+
+\textbf{Training and Evaluation:} \texttt{scripts/train\_and\_evaluate.py} orchestrates the full experimental pipeline:
+\begin{enumerate}
+  \item For each of 5 seeds (42--46):
+  \begin{itemize}
+    \item Generate 20,000 synthetic samples with the \texttt{TelemetrySimulator}, seeded with the current seed.
+    \item Split into 80/20 train/test sets, stratified on the transient flag.
+    \item Seed PyTorch's RNG (used for model initialization and DataLoader shuffling) with the current seed.
+    \item Train \texttt{ThresholdBaseline}, \texttt{MHSAPerHead}, and \texttt{MHSAFused} on the training set.
+    \item Evaluate all three models on the test set, computing Accuracy, Macro-F1, Transient Violation Recall, and Transient Underprediction Bias (Section~\ref{subsec:metrics}).
+    \item Record per-seed results and inference latency (milliseconds per sample).
+  \end{itemize}
+  \item Aggregate results across seeds, computing mean and standard deviation per model.
+  \item Write \texttt{results/results\_per\_seed.csv} (one row per model per seed) and \texttt{results/results\_summary.csv} (mean $\pm$ std per model).
+  \item Export the trained \texttt{MHSAFused} model from the final seed to \texttt{src/lambda\_handler/model/mhsa\_fused.pt} for deployment (Section~\ref{subsec:deployment}).
+\end{enumerate}
+
+The script completes in approximately 15--20 minutes on a laptop CPU (Intel i7, 16GB RAM), or 5--8 minutes on a GPU (NVIDIA RTX 3060).
+
+\textbf{Deployment Inference Handler:} \texttt{src/lambda\_handler/app.py} implements an AWS Lambda handler that loads the exported \texttt{MHSAFused} model and runs real (not mock) inference over telemetry records arriving on a Kinesis stream. The handler:
+\begin{enumerate}
+  \item Deserializes Kinesis records (JSON-encoded telemetry samples).
+  \item Maintains a 30-day rolling window of historical telemetry per node in an in-memory buffer (scaled to thousands of nodes via a distributed key-value store in production).
+  \item Extracts the most recent 10-step history window for each node.
+  \item Runs the \texttt{MHSAFused} model to predict None/L1/L2 violation labels for the next 5 steps.
+  \item Emits prediction events (JSON) to a downstream SNS topic for alerting and logging.
+\end{enumerate}
+
+The handler demonstrates that the trained model can be operationalized in a production monitoring pipeline, though the full deployment (including the distributed state store, alerting logic, and failure recovery) is beyond the scope of this thesis.
+
+\subsection{Deployment Architecture}
+\label{subsec:deployment}
+
+The deployment architecture follows a serverless event-driven pattern using AWS services:
+
+\begin{itemize}
+  \item \textbf{Kinesis Data Stream}: a real-time telemetry ingestion stream that receives JSON-encoded metric samples from cluster nodes. Each record contains \texttt{\{node\_id, timestamp, cpu, memory, disk, network\}}.
+  \item \textbf{Lambda Function}: the inference handler (\texttt{app.py}) is packaged as a Lambda function triggered by Kinesis stream events. The function is configured with 1GB memory (sufficient for the small model) and a 30-second timeout (allowing batch processing of up to 100 records per invocation).
+  \item \textbf{SNS Topic}: prediction events are published to an SNS topic, which fans out to downstream subscribers (e.g., an alerting service, a CloudWatch dashboard, an S3 archive for audit logs).
+\end{itemize}
+
+Infrastructure is defined in \texttt{template.yaml}, an AWS Serverless Application Model (SAM) template. The template provisions the Kinesis stream, Lambda function, SNS topic, and necessary IAM roles with least-privilege permissions. The SAM CLI compiles the template into CloudFormation and deploys the stack to the configured AWS region.
+
+\textbf{Known Simplification:} PyTorch is a heavy dependency for a Lambda zip package (~1GB uncompressed). In a production deployment, the Lambda would be packaged as a container image (allowing larger packages) or PyTorch would be placed in a Lambda Layer (shared across functions). The current implementation keeps the code simple and correct locally, deferring packaging optimizations to future work.
+
+\subsection{CI/CD Pipeline}
+\label{subsec:cicd}
+
+Continuous integration and deployment are automated via \texttt{.github/workflows/deploy.yml}, a GitHub Actions workflow that:
+\begin{enumerate}
+  \item On every push to any branch:
+  \begin{itemize}
+    \item Installs Python dependencies (\texttt{requirements.txt}).
+    \item Runs the training and evaluation script (\texttt{scripts/train\_and\_evaluate.py}), ensuring all experiments remain reproducible as code evolves.
+    \item Uploads the generated results CSVs as build artifacts.
+  \end{itemize}
+  \item On push to \texttt{main} (or manual workflow dispatch):
+  \begin{itemize}
+    \item Authenticates to AWS using repository secrets (\texttt{AWS\_ACCESS\_KEY\_ID}, \texttt{AWS\_SECRET\_ACCESS\_KEY}, \texttt{AWS\_REGION}).
+    \item Installs the AWS SAM CLI.
+    \item Runs \texttt{sam build} to package the Lambda function and dependencies.
+    \item Runs \texttt{sam deploy --no-confirm-changeset} to deploy the SAM stack, creating or updating the Kinesis stream, Lambda function, and SNS topic.
+  \end{itemize}
+\end{enumerate}
+
+This pipeline ensures that every commit is validated by re-running the full experimental evaluation, and that the latest trained model is automatically deployed to the staging environment on merge to \texttt{main}. Production deployment requires manual approval via a separate workflow (not included in this repository).
+
+\subsection{Reproducibility}
+\label{subsec:reproducibility}
+
+Every result reported in Section~\ref{sec:Evaluation} is fully reproducible by running \texttt{python scripts/train\_and\_evaluate.py} from the \texttt{mhsa-tdl-framework/} directory. No external dataset dependency exists: telemetry is synthetically generated with a fixed seed per run.
+
+Reproducibility is ensured through rigorous random seed control:
+\begin{itemize}
+  \item \textbf{Data generation}: NumPy's random number generator is seeded with the current seed (42--46) at the start of each run, ensuring the same synthetic telemetry is generated per seed.
+  \item \textbf{Model initialization and training}: PyTorch's random number generator is seeded with the current seed immediately before model instantiation, ensuring the same initial weights and DataLoader shuffling order per seed.
+  \item \textbf{Environment}: the \texttt{requirements.txt} file pins exact package versions (e.g., \texttt{torch==1.13.1}, \texttt{numpy==1.23.5}) to prevent version-dependent numerical differences.
+\end{itemize}
+
+An earlier, unseeded version of this experiment showed a much larger apparent improvement from fusion ($\sim$20\% bias reduction) that did not replicate once training randomness was properly controlled (see Section~\ref{sec:discussion}). The properly-seeded, 5-seed results reported in this paper are the ones that should be trusted. This experience underscores the importance of rigorous seed control in small-scale neural network experiments: without it, a single lucky random initialization can produce a result that looks like a clean win but is actually an artefact of uncontrolled randomness.
+
+All code, datasets, results, and trained model weights are available in the \texttt{mhsa-tdl-framework/} directory. The LaTeX source for this report is in \texttt{latex\_report/}. The full repository is version-controlled with Git and available at [repository URL redacted for blind review].
+
