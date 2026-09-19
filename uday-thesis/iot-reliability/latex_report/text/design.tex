@@ -6,14 +6,89 @@
 \label{sec:Design}
 %% ==============================
 
+This section provides the detailed design specification for the three model variants evaluated in this project: the centralized Random Forest baseline, the federated ensemble alternative, and the single-site local-only lower bound.
+
+\subsection{Design Goals}
+\label{subsec:design-goals}
+
+The design is driven by three goals:
+
+\begin{enumerate}
+  \item \textbf{Faithful baseline reproduction}: Reproduce the centralized Random Forest classifier from Et-Tousy et al.\ \cite{EtTousy26} as closely as possible given synthetic data, using their exact decision thresholds, SMOTE-based class balancing, and Random Forest hyperparameters.
+  \item \textbf{Privacy-preserving federation}: Build a federated alternative where no site's raw QoS telemetry ever leaves that site -- only trained model predictions are shared at inference time, addressing the baseline paper's named privacy and centralization concerns.
+  \item \textbf{Quantifiable trade-off}: Measure the privacy-utility trade-off by comparing three points: (a) full centralization (best utility, worst privacy), (b) federation (middle ground), and (c) local-only (worst utility, best privacy for a single site). This three-point comparison establishes whether federation is actually worth building relative to going it alone.
+\end{enumerate}
+
 \subsection{Decision Labels and Thresholds}
-Each QoS record is labelled using the baseline paper's own thresholds: \emph{Keep Local} (Preferable) when RTT $<$ 2s with healthy resource usage and success rate; \emph{Partial Offload} (Acceptable) when RTT is between 2s and 4s; \emph{Full Offload} (Critical) when RTT exceeds 4s, success rate drops below 90\%, or CPU/RAM usage exceeds 80\%.
+\label{subsec:decision-labels}
+
+Each QoS record is labelled using the baseline paper's own thresholds:
+
+\begin{itemize}
+  \item \textbf{Class 0: Keep Local (Preferable)}: System is operating within normal parameters. RTT $<$ 2s, success rate $>$ 95\%, CPU utilization $<$ 70\%, RAM utilization $<$ 70\%. All processing remains on the local IoT edge server.
+  
+  \item \textbf{Class 1: Partial Offload (Acceptable)}: System is experiencing moderate load. RTT between 2s and 4s, success rate 90-95\%, CPU 70-80\%, RAM 70-80\%. Some non-critical tasks can be offloaded to the cloud while latency-sensitive processing stays local.
+  
+  \item \textbf{Class 2: Full Offload (Critical)}: System is overloaded or approaching failure. RTT $>$ 4s, success rate $<$ 90\%, CPU utilization $>$ 80\%, or RAM utilization $>$ 80\%. All possible workload should be migrated to cloud resources to prevent local system degradation or failure.
+\end{itemize}
+
+These thresholds match the baseline paper's MAPE-K monitoring loop's state classification exactly. In production deployment, the model's predicted class drives the ``Plan'' stage of the MAPE-K loop, triggering automatic traffic redistribution actions.
 
 \subsection{Centralized RF (baseline reproduction)}
-All sites' raw QoS telemetry (RTT, CPU, RAM, success rate, latency, throughput) is pooled into one training set, class-balanced with SMOTE (matching the paper's methodology for its reported 48\%/42\%/10\% class split), and a single Random Forest (200 trees, max depth 10) is trained on the pooled, balanced data -- reproducing the model the paper actually selected for production deployment.
+\label{subsec:centralized}
+
+The centralized variant reproduces the baseline paper's approach:
+
+\begin{enumerate}
+  \item \textbf{Data pooling}: All sites' raw QoS telemetry (RTT, CPU, RAM, success rate, latency, throughput) is pooled into one centralized training set. For the synthetic dataset, this is 7,200 training records (6 sites $\times$ 1,200 records per site).
+  
+  \item \textbf{Class balancing}: SMOTE (Synthetic Minority Over-sampling Technique) is applied to the pooled training set to balance the three classes to equal proportions. The baseline paper reports a 48\%/42\%/10\% class distribution in their real Azure IoT data; our synthetic generator produces a similar distribution (approximately 48\%/42\%/10\% averaged across sites, with site-specific variation due to non-IID skew). SMOTE up-samples the minority class (Class 2) by generating synthetic instances along line segments connecting existing minority-class samples to their k-nearest neighbors (k=5 by default).
+  
+  \item \textbf{Model training}: A single Random Forest classifier is trained on the SMOTE-balanced pooled data. Hyperparameters are set to match the baseline paper's best-performing model: 200 trees, maximum depth 10, Gini impurity splitting criterion, minimum samples per leaf 1, minimum samples per split 2. No pruning or feature selection is applied.
+  
+  \item \textbf{Deployment}: The trained centralized model is evaluated on the pooled held-out test set. In a production deployment, this model would be hosted on a central server or cloud platform, receiving QoS telemetry from all sites in real time and returning offload decisions.
+\end{enumerate}
+
+\textbf{Privacy limitation}: This design requires all sites to transmit their raw QoS telemetry to a central location for training and potentially for inference (if the model is centrally hosted). This is the privacy/centralization concern the baseline paper names in its Discussion section.
 
 \subsection{Federated Ensemble RF (proposed improvement)}
-Each of the 6 simulated IoT sites trains its own Random Forest using the same hyperparameters, on its own local telemetry only, SMOTE-balanced locally. At inference time, the site models' predicted class probabilities are averaged and the highest-probability class is returned. No site's raw telemetry is ever transmitted to or pooled with another site's data, or with a central server -- only the independently-trained models are combined.
+\label{subsec:federated}
+
+The federated variant addresses the baseline's privacy limitation:
+
+\begin{enumerate}
+  \item \textbf{Local training}: Each of the 6 simulated IoT sites trains its own Random Forest classifier independently, using the same hyperparameters as the centralized model (200 trees, max depth 10). Training data is the site's own local telemetry only (1,200 records per site), never transmitted to any other site or central server.
+  
+  \item \textbf{Local class balancing}: SMOTE is applied locally within each site to balance the three classes within that site's training set. Because each site has a skewed traffic distribution (80\% one scenario, 10\% each of the other two), SMOTE must work with less diverse minority-class samples than the centralized case. This is a key disadvantage of the federated approach: local SMOTE cannot generate synthetic samples that bridge the gap between different sites' distributions.
+  
+  \item \textbf{Model storage}: Each site stores its trained Random Forest model locally. Models are not transmitted to any other site or central coordinator. No model parameters or gradients are shared -- the models are entirely independent.
+  
+  \item \textbf{Inference-time combination}: At inference time, when a new QoS record must be classified:
+  \begin{itemize}
+    \item Each of the 6 site models predicts a class probability distribution over the 3 classes: $\mathbf{p}_i = [p_{i,0}, p_{i,1}, p_{i,2}]$ for site $i$.
+    \item The 6 probability vectors are averaged element-wise: $\mathbf{p}_{\text{ensemble}} = \frac{1}{6} \sum_{i=1}^{6} \mathbf{p}_i$.
+    \item The class with the highest averaged probability is returned: $\arg\max_c p_{\text{ensemble},c}$.
+  \end{itemize}
+  This simple probability-averaging scheme requires no training or tuning beyond the per-site Random Forests. More sophisticated aggregation schemes (e.g., weighting each site by its local validation performance, or learning a meta-model over the site predictions) are left as future work.
+  
+  \item \textbf{Deployment}: In a production deployment, the 6 site models could be hosted on their respective local edge servers, or replicated to a central inference server that applies the averaging. Crucially, only the trained models (and their predictions on specific instances) are ever transmitted; raw telemetry never leaves the site that generated it.
+\end{enumerate}
+
+\textbf{Privacy guarantee}: No site's raw QoS telemetry is ever transmitted to or pooled with another site's data. Training is entirely local. Only model predictions (probabilities over 3 classes) are combined at inference time. This addresses the centralization concern the baseline paper names.
+
+\textbf{Limitation}: The federated ensemble does not employ secure aggregation or differential privacy, so a malicious central inference server could inspect individual site models' predictions and potentially infer properties of the training data. Secure aggregation and differential privacy are explicitly identified as future work in Section~\ref{sec:Conclusion}.
 
 \subsection{Single-Site Local Only (lower bound)}
-To establish whether federating is actually worth the engineering effort, each site's own local model is also evaluated in isolation (no combination with any other site) against the same held-out global test set. This represents what an individual IoT gateway is stuck with if it can neither share data nor collaborate on a model with any other site.
+\label{subsec:single-site}
+
+To establish whether federating is actually worth the engineering effort, each site's own local model is also evaluated in isolation:
+
+\begin{enumerate}
+  \item \textbf{Training}: Identical to the federated case -- each site trains a Random Forest (200 trees, max depth 10) on its own locally SMOTE-balanced training set (1,200 records).
+  
+  \item \textbf{Evaluation}: Each site's model is evaluated individually on the pooled held-out test set (1,800 records from all 6 sites), with no combination with any other site's model. This measures the performance a single site achieves if it can neither share data (centralization) nor collaborate on a model (federation).
+  
+  \item \textbf{Reporting}: Results are averaged across all 6 sites to produce a mean $\pm$ standard deviation. This represents the expected performance of a site chosen uniformly at random from the population, under the assumption that it cannot leverage any other site's data or model.
+\end{enumerate}
+
+This variant establishes the lower bound on performance: what a site is stuck with if it must go it alone. Comparing single-site to federated quantifies the benefit of collaboration without centralization; comparing federated to centralized quantifies the cost of preserving privacy.

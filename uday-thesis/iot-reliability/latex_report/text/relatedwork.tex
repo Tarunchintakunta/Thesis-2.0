@@ -1,13 +1,109 @@
+%% relatedwork.tex
+%%
+
+%% ==============================
 \section{Related Work}
 \label{sec:rw}
+%% ==============================
 
-IoT middleware standards such as OneM2M provide interoperability across vendors and device types, but leave dynamic Quality-of-Service (QoS) management and traffic-offload decisions largely unaddressed, forcing operators to rely on manual, reactive intervention when systems become overloaded.
+IoT middleware standards such as OneM2M provide interoperability across vendors and device types, but leave dynamic Quality-of-Service (QoS) management and traffic-offload decisions largely unaddressed, forcing operators to rely on manual, reactive intervention when systems become overloaded. This literature review first contextualizes the baseline paper's contributions in Section~\ref{subsec:baseline}, identifies the specific gap this project targets in Section~\ref{subsec:gap}, and then surveys five bodies of literature that motivate and contextualize the federated learning alternative: federated learning for IoT and edge computing (Section~\ref{subsec:fl-iot}), QoS management and offloading in IoT (Section~\ref{subsec:qos-offload}), privacy-preserving distributed learning (Section~\ref{subsec:privacy}), non-IID data challenges in federated learning (Section~\ref{subsec:noniid}), class imbalance and ensemble methods (Section~\ref{subsec:imbalance-ensemble}), and autonomic computing with MAPE-K (Section~\ref{subsec:mapek}).
 
+%% ==============================
 \subsection{Baseline: ML/DL for OneM2M QoS Optimization}
-The baseline for this project is Et-Tousy, Zyane \& Sharif \cite{EtTousy26}, ``Adaptive QoS Management in OneM2M Standard: Machine Learning and Deep Learning for IoT Network Optimization'' (Journal of Network and Systems Management, May 2026). The paper collects real-time QoS telemetry (RTT, CPU, RAM, success rate) from Azure IoT devices via a MAPE-K monitoring loop, labels each window as Preferable / Acceptable / Critical using fixed thresholds, and trains classical ML models (Random Forest, SVC, KNN, XGBoost, LightGBM), ensembles (Voting/Stacking of RF+LightGBM), and deep learning models (CNN, LSTM, VAE+RF) to recommend a traffic-offload decision: keep processing local, partially offload to the cloud, or fully offload. Their best model (a Random Forest / LightGBM ensemble) reaches 98\% accuracy and is deployed as a live API that drives the Analyzer stage of a MAPE-K loop, reducing RTT by 30-50\% and increasing success rates by 10-15\% across uniform, burst, and real-time traffic scenarios.
+\label{subsec:baseline}
+%% ==============================
 
+The baseline for this project is Et-Tousy, Zyane \& Sharif \cite{EtTousy26}, ``Adaptive QoS Management in OneM2M Standard: Machine Learning and Deep Learning for IoT Network Optimization'' (Journal of Network and Systems Management, May 2026, DOI: 10.1007/s10922-026-10071-4). The paper collects real-time QoS telemetry (RTT, CPU, RAM, success rate) from Azure IoT devices via a MAPE-K monitoring loop, labels each window as Preferable / Acceptable / Critical using fixed thresholds, and trains classical ML models (Random Forest, SVC, KNN, XGBoost, LightGBM), ensembles (Voting/Stacking of RF+LightGBM), and deep learning models (CNN, LSTM, VAE+RF) to recommend a traffic-offload decision: keep processing local, partially offload to the cloud, or fully offload. Their best model (a Random Forest / LightGBM ensemble) reaches 98\% accuracy and is deployed as a live API that drives the Analyzer stage of a MAPE-K loop, reducing RTT by 30-50\% and increasing success rates by 10-15\% across uniform, burst, and real-time traffic scenarios.
+
+The same authors' 2025 conference paper \cite{EtTousy25FiCloud} applies machine learning to OneM2M QoS optimization with SMOTE-based balancing and ensemble methods (Voting/Stacking) for traffic classification, achieving 98\% F1-score. A companion paper \cite{Zyane25FiCloud} explores deep learning (AutoEncoders, LSTM, CNN) for OneM2M QoS parameter optimization.
+
+%% ==============================
 \subsection{The Gap This Project Targets}
-The paper is explicit about what it does not address. In their own Discussion section: ``the system currently relies on a centralized learning mechanism, which might not scale well or guarantee data privacy in distributed IoT environments. To overcome this, we plan to explore federated learning.'' This is stated as future work, not built or evaluated in the paper itself.
+\label{subsec:gap}
+%% ==============================
 
-\subsection{Federated Learning for Edge/IoT Systems}
-Federated learning is a well-established response to exactly this concern -- training models across distributed clients without centralizing raw data -- but the baseline paper's own centralized Random Forest pipeline does not use it. This project reproduces that centralized baseline, then builds and evaluates a federated alternative: one Random Forest per simulated IoT site, trained only on that site's local telemetry, combined at inference time by averaging predicted class probabilities across sites. No raw telemetry is pooled across sites at any point, directly addressing the privacy and centralization concern the baseline paper names but does not resolve.
+The paper is explicit about what it does not address. In their own Discussion section: ``the system currently relies on a centralized learning mechanism, which might not scale well or guarantee data privacy in distributed IoT environments. To overcome this, we plan to explore federated learning.'' This is stated as future work, not built or evaluated in the paper itself. This project reproduces that centralized baseline, then builds and evaluates the federated alternative the baseline paper names but does not implement.
+
+%% ==============================
+\subsection{Federated Learning for IoT and Edge Computing}
+\label{subsec:fl-iot}
+%% ==============================
+
+Federated learning is a well-established response to exactly the centralization concern the baseline paper names -- training models across distributed clients without centralizing raw data. Trigka and Dritsas \cite{Trigka25JSAN} survey federated learning for IoT, covering techniques, privacy, energy efficiency, non-IID data challenges, and scalability across IoT applications (smart cities, healthcare, industrial automation). Wu et al.\ \cite{Wu24ACM} provide a comprehensive survey of topology-aware federated learning in edge computing, reviewing star, hierarchical, peer-to-peer, and mesh topologies and their implications for latency, communication overhead, and fault tolerance in 5G/6G edge networks. Li \cite{Li24AIR} surveys data security and privacy-preserving techniques (secure multi-party computation, homomorphic encryption, secret sharing, differential privacy) for federated learning in edge-IoT systems.
+
+Abreha et al.\ \cite{Abreha26KBS} provide the most comprehensive recent survey, covering federated learning for edge computing-enabled Artificial Intelligence of Things (AIoT), emphasizing synergies between FL and edge computing for low-latency, privacy-preserving distributed learning. A 2025 IEEE Communications Surveys \& Tutorials paper \cite{Xiao25ComST} examines the three-way trade-off between privacy, model performance, and network efficiency in IoT-deployed federated learning, evaluating Privacy-Preserving FL (PPFL) solutions across diverse QoS and network constraints.
+
+Xiao et al.\ \cite{Xiao24IoTJ} propose a federated deep Q-network (DQN) approach for task offloading in mobile edge computing-enabled heterogeneous networks, where each user device optimizes both the offloading decision (for processing) and the participation decision (for learning), minimizing total energy consumption under deadline constraints while accounting for the cost of the federated learning process itself -- demonstrating that federating the learning process carries measurable overhead that must be explicitly optimized. Wu et al.\ \cite{Wu24JCC} apply distributed deep reinforcement learning (Actor-Critic) for dynamic task offloading in 5G edge-cloud continuum, maximizing Quality-of-Experience (battery level) subject to latency requirements -- confirming that offloading decisions must adapt to the environment's evolution.
+
+%% ==============================
+\subsection{QoS Management and Offloading in IoT}
+\label{subsec:qos-offload}
+%% ==============================
+
+\subsubsection{OneM2M and IoT Middleware}
+
+The OneM2M standard provides interoperability but lacks built-in mechanisms for dynamic QoS optimization and overload management, motivating the baseline paper's contribution. Recent work on OneM2M addresses this gap across several dimensions. Vo et al.\ \cite{Vo23ACCESS} propose an enhanced interoperating mechanism between OneM2M and Open Connectivity Foundation (OCF) using a rules engine and interworking proxy, addressing heterogeneous IoT network integration. Kim et al.\ \cite{Kim23JIPS} design a blockchain-based interworking proxy between OneM2M and LWM2M to ensure trusted, auditable cross-standard communication with data integrity guarantees. B et al.\ \cite{B24DSIT} present a lightweight OneM2M implementation for resource-constrained IoT devices, addressing protocol interoperability and latency challenges. Ihita et al.\ \cite{Ihita23COMSNETS} evaluate security mechanisms for OneM2M-based smart city networks using the OM2M open-source implementation.
+
+Et-Tousy and Zyane \cite{EtTousy25LNNS} analyze QoS in OneM2M across HTTP, MQTT, and CoAP protocols with automatic traffic SLA management. Extensive protocol comparison shows CoAP exhibits best efficiency (low RTT, minimal resource usage), MQTT QoS Level 2 ensures highest reliability for mission-critical applications, and HTTP suffers from excessive overhead limiting scalability. Queueing theory modeling categorizes system behavior into preferable/acceptable/critical zones based on utilization, validated through real-world overload scenarios. Automated MAPE-K-based traffic orchestration prevents overload by dynamically prioritizing data streams and offloading excess traffic to cloud resources.
+
+\subsubsection{Edge Computing and Offloading Decisions}
+
+Deep reinforcement learning has emerged as a dominant approach for dynamic task offloading. Zhang et al.\ \cite{Zhang24TMC} propose a hybrid DRL-based (SD3: Softmax Deep Double Deterministic Policy Gradients) task offloading scheme for D2D-assisted cloud-edge-device collaborative networks, jointly optimizing offloading decisions, transmission power, transmission rate, and computational resource allocation to minimize time and energy consumption. Li et al.\ \cite{Li24TVT} address mobility-aware partial task offloading with DRL, introducing virtual energy queues and Lyapunov optimization to handle long-term energy constraints under stochastic user movement and time-varying channel conditions.
+
+Pang et al.\ \cite{Pang25ELEC} propose DAPO (Dynamic Adaptive Partitioning and Offloading), a DDPG-based framework for multi-user, multi-edge server collaborative LLM inference, jointly optimizing model partition points and offloading destinations while accounting for user mobility -- achieving 27\% lower latency and 18\% lower energy consumption than PPO and A2C. Qu et al.\ \cite{Qu25IOT} propose KroQoSNet, a lightweight Kronecker-enhanced CNN combined with a deep Q-network (DQN) scheduler for protocol-agnostic, encrypted traffic-aware QoS prediction and adaptive protocol selection, demonstrating real-time inference on Raspberry Pi 4 with over 65.8\% model compression.
+
+%% ==============================
+\subsection{Privacy-Preserving Distributed Learning}
+\label{subsec:privacy}
+%% ==============================
+
+Privacy preservation in distributed learning spans cryptographic and perturbation-based approaches. Xu et al.\ \cite{Xu25SIGMOD} present Sequoia, a framework for privacy-preserving machine learning (PPML) over distributed data that decouples ML models from cryptographic protocols, efficiently supporting horizontal and vertical FL across multi-party, multi-host clusters with secure multi-party computation (MPC) primitives. Allouah et al.\ \cite{Allouah24ICML} propose Decor, a decentralized SGD variant with differential privacy guarantees using pairwise-canceling correlated Gaussian noise -- introducing SecLDP (secret-based local differential privacy), which protects user communications against external eavesdroppers and curious users under the assumption that connected user pairs share secrets.
+
+Bienstock et al.\ \cite{Bienstock25ICML} introduce DMM (Distributed Matrix Mechanism) for differentially-private federated learning, achieving both distributed DP and the privacy-utility trade-off of central DP via a constant-overhead linear secret resharing protocol that securely transfers values across client committees with dynamic participation. Elangovan et al.\ \cite{Elangovan24IACR} present communication-efficient secure and private multi-party deep learning, combining differential privacy with MPC protocols -- achieving 56-794$\times$ communication efficiency and 16-182$\times$ speedup over prior DP-MPC approaches. Sabater et al.\ \cite{Sabater25ARXIV} propose CAFCOR, a privacy-preserving and robust distributed learning algorithm under SecLDP, addressing untrusted servers and malicious workers through correlated noise injection and a novel robust aggregation method -- achieving near-CDP performance under limited corruption.
+
+%% ==============================
+\subsection{Non-IID Data Challenges in Federated Learning}
+\label{subsec:noniid}
+%% ==============================
+
+Non-IID data remains the central unsolved challenge in federated learning, degrading model performance and slowing convergence when client data distributions diverge. Jim\'enez et al.\ \cite{Jimenez24ARXIV} survey non-IID data in federated learning, providing a taxonomy for data heterogeneity (label skew, feature distribution skew, quantity skew, and temporal/spatial skew), partition protocols, and metrics to quantify heterogeneity. The survey concludes no universal solution exists; methods must be tailored to specific heterogeneity types.
+
+Gu et al.\ \cite{Gu24ARXIV} propose HFLDD (Hybrid Federated Learning with Dataset Distillation), partitioning clients into heterogeneous clusters with balanced inter-cluster label distributions and unbalanced intra-cluster distributions; cluster heads collect distilled (approximately IID) data from members, enabling training similar to traditional FL on IID data -- effectively alleviating non-IID impact. Xu et al.\ \cite{Xu24SREP} propose FedPRL, a personalized federated learning approach using reinforcement learning for client selection and global knowledge distillation of non-target classes, addressing catastrophic forgetting during global updates -- enhancing generalization and personalized model performance under data and system heterogeneity.
+
+Zhang et al.\ \cite{Zhang25JKSUCIS} introduce Fed-GDBD (Federated learning with Global Decision Boundary Distillation), supporting heterogeneous models across clients by distilling global decision boundaries rather than aggregating gradients -- addressing both data and model heterogeneity simultaneously. Bai et al.\ \cite{Bai25KDD} propose FedHydra, a unified solution to diverse heterogeneities in one-shot federated learning (single communication round), using auxiliary public datasets and embedding techniques to mitigate data, model, and system heterogeneity without multi-round communication.
+
+%% ==============================
+\subsection{Class Imbalance and Ensemble Methods}
+\label{subsec:imbalance-ensemble}
+%% ==============================
+
+\subsubsection{SMOTE and Class Imbalance}
+
+Synthetic Minority Over-sampling Technique (SMOTE) is widely deployed to handle class imbalance in IoT datasets. The baseline paper \cite{EtTousy26} applies SMOTE to balance its 48\%/42\%/10\% three-class QoS decision problem. Recent work confirms SMOTE's effectiveness across IoT domains.
+
+Haider et al.\ \cite{Haider23IEC} evaluate SMOTE with KNN, SVM, and ANN on the IoT-23 dataset, showing SMOTE improves accuracy across all three algorithms, albeit differently per algorithm. Kharisma et al.\ \cite{Kharisma24ELEC} evaluate sampling methods (SMOTE, ADASYN, undersampling) with five classifiers on IoTID20; SMOTE-XGBoost achieves best performance (75\% accuracy, 82\% weighted precision, 78\% F1-score). Ibrahim et al.\ \cite{Ibrahim24IJICIS} study BoT-IoT balancing with SMOTE, reporting minority class F1-score increases from 0.77 to 1.0 (KNN), 0 to 0.989 (Gradient Boosting), and 0 to 0.999 (SVM) after balancing. Da Silva et al.\ \cite{DaSilva25JISA} apply SMOTE to the CICIoT2023 dataset with lightweight classifiers (Bernoulli NB, Decision Tree, Random Forest, XGBoost); XGBoost and Random Forest with SMOTE achieve high, balanced detection across 34 attack types.
+
+Saini et al.\ \cite{Saini25CSNT} combine SMOTE with Transformers and black-winged kite algorithm-based feature selection for IoT intrusion detection on BoT-IoT, TON-IoT, and CIC-DDoS2019, addressing imbalance as a first-class concern.
+
+\subsubsection{Ensemble Methods for Edge/IoT}
+
+Random Forests and ensemble methods are favored for edge deployment due to their interpretability, robustness, and parallelizability. Alkhoury et al.\ \cite{Alkhoury25ML} introduce Splitting Stump Forests (SSF), compressing trained Random Forests into small ensembles of weak learners by selecting nodes that evenly split training data and applying linear models on the representation -- achieving two-to-three orders of magnitude model-size reduction with minimal accuracy loss, suitable for memory-limited embedded devices including Arduino deployments. Verosimile et al.\ \cite{Verosimile25FCCM} propose Moyogi, a memory-centric hardware-software codesign accelerator for Random Forest inference on embedded IoT devices, achieving 3.88$\times$ geomean latency reduction on IoT datasets. Haraguchi et al.\ \cite{Haraguchi25JGRID} survey decision-tree-based distributed learning for IoT, highlighting Random Forest and Gradient Boosting Decision Trees (GBDT) as lightweight, distributed alternatives to deep neural networks for resource-constrained devices.
+
+%% ==============================
+\subsection{Autonomic Computing with MAPE-K}
+\label{subsec:mapek}
+%% ==============================
+
+The MAPE-K (Monitor, Analyze, Plan, Execute, Knowledge) loop, introduced by Kephart and Chess \cite{KephartChess03} as a reference architecture for autonomic computing, provides a structured framework for self-adaptive systems. The baseline paper \cite{EtTousy26} employs MAPE-K to integrate ML-driven QoS decisions into a continuous monitoring and adaptation loop.
+
+Recent work extends MAPE-K to IoT and edge contexts. Riegler et al.\ \cite{Riegler23SEAMS} propose DSec4IoT, a distributed MAPE-K framework for self-protective IoT devices, leveraging distributed MAPE-K patterns to enable resource-constrained devices to detect and mitigate security threats (e.g., port scans) without relying solely on centralized infrastructure. Stadler et al.\ \cite{Stadler24ICSA} apply multi-level MAPE-K loops to cyber-resilient edge computing, demonstrating effectiveness on real-world industrial edge devices. Alfonso et al.\ \cite{Alfonso23JOT} present a model-based MAPE-K framework for IoT systems in wastewater treatment plants, combining domain-specific language (DSL) modeling with MAPE-K-driven runtime adaptation to manage sensor data and process block diagrams.
+
+%% ==============================
+\subsection{Summary: Positioning This Work}
+\label{subsec:positioning}
+%% ==============================
+
+The literature establishes federated learning as a mature approach for privacy-preserving distributed ML across IoT and edge systems, confirms that non-IID data remains the central challenge, validates SMOTE and ensemble methods (especially Random Forest) as effective for imbalanced IoT classification tasks, and demonstrates MAPE-K as a proven framework for autonomic QoS management. However, no prior work combines these elements as the baseline paper \cite{EtTousy26} proposes: a federated Random Forest alternative to centralized QoS-driven offload decisions in OneM2M, evaluated explicitly against the centralized baseline and a local-only lower bound on non-IID synthetic multi-site telemetry.
+
+This project fills exactly the gap the baseline paper names: it reproduces the centralized Random Forest classifier on multi-site QoS telemetry, builds the federated alternative the paper proposes as future work, and quantifies the privacy-utility trade-off by measuring what each site loses by going it alone versus federating versus full centralization. The federated ensemble design (per-site local Random Forests combined via probability averaging) is simpler than weighted aggregation schemes surveyed in \cite{Jimenez24ARXIV} and \cite{Abreha26KBS}, and does not employ secure aggregation as in \cite{Bienstock25ICML} or \cite{Allouah24ICML} -- these are explicitly identified as future work in Section~\ref{sec:Conclusion}.
+
