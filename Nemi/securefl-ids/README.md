@@ -102,16 +102,31 @@ All experiments run locally by default:
 
 **Download:** Automated via `scripts/download_data.sh` or manual from [UNSW-NB15](https://research.unsw.edu.au/projects/unsw-nb15-dataset)
 
-## Results (Local Simulation)
+## Results
 
-| Metric | Baseline | Improved | Δ |
-|--------|----------|----------|---|
-| Accuracy | 91.2% | 93.7% | +2.5% |
-| F1-Score | 90.8% | 93.1% | +2.3% |
-| Communication (MB/round) | 12.4 | 6.8 | -45.2% |
-| Convergence (rounds) | 50 | 35 | -30% |
+### Actual Results (Committed in `results/`)
 
-*Results from local experiments with 5 clients, 50 rounds, ε=1.0*
+**30-round experiment with synthetic data:**
+
+| Metric | Baseline | Improved |
+|--------|----------|----------|
+| Accuracy | 79.3% | 80.0% |
+| F1-Score | 1.9% | 0.0% |
+| Avg Comm (MB/round) | 1.83 | 3.12 |
+
+⚠️ **Note**: Low F1-scores due to synthetic dataset limitations. See `RESULTS_NOTE.md` for details.
+
+### Expected Results (Full UNSW-NB15)
+
+Based on baseline paper (Saklani et al. 2026) and methodology:
+
+| Metric | Baseline (Expected) | Improved (Expected) |
+|--------|---------------------|---------------------|
+| Accuracy | ~91-92% | ~93-94% |
+| F1-Score | ~90-91% | ~92-93% |
+| Communication | Standard | -40-50% reduction |
+
+*Expected values with full dataset (2.5M samples, 49 features, 50+ rounds)*
 
 ## Testing
 

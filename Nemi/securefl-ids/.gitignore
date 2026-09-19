@@ -19,17 +19,18 @@ env/
 data/raw/
 data/processed/
 *.csv
-*.pkl
+# *.pkl  # Allow result pickles to be committed
+!results/**/*.pkl
 *.h5
 
-# Experiments
-results/*/
+# Experiments - allow committed results
+# results/*/  # Commented out to allow committing actual results
 !results/.gitkeep
-*.log
+# *.log  # Allow experiment logs to be committed
 
-# Figures
-figures/*.png
-figures/*.pdf
+# Figures - allow generated plots
+# figures/*.png  # Commented to allow committing generated plots
+# figures/*.pdf
 !figures/.gitkeep
 
 # Models

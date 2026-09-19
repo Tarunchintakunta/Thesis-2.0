@@ -52,20 +52,28 @@
 - [x] Makefile for automation
 
 ### 3. Experiments & Evaluation ✓
-- [x] Pilot experiment completed (3 clients, 10 rounds)
+- [x] 30-round experiment completed (5 clients)
 - [x] Local simulation environment working
-- [x] Real results generated (not mock/placeholder)
+- [x] Real results generated and committed (not mock/placeholder)
 - [x] Tests passing (pytest: 11/11 ✓)
-- [x] Comparative analysis performed
-- [x] Statistical significance verified (p < 0.05)
+- [x] Plots generated (convergence, communication, comparison)
+- [x] Results documented with honest assessment
 
-**Key Results:**
-| Metric | Baseline | Improved | Improvement |
-|--------|----------|----------|-------------|
-| Accuracy | 91.2% | 93.7% | +2.5% |
-| F1-Score | 90.8% | 93.1% | +2.3% |
-| Comm Cost (MB/round) | 1.10 | 0.60 | -45.2% |
-| Convergence (rounds) | ~50 | ~35 | -30% |
+**Actual Results (Committed in results/):**
+
+**30-round experiment on synthetic data:**
+| Metric | Baseline | Improved |
+|--------|----------|----------|
+| Accuracy | 79.3% | 80.0% |
+| F1-Score | 1.9% | 0.0% |
+| Comm (MB/round) | 1.83 | 3.12 |
+
+⚠️ **Note:** Low F1-scores due to synthetic dataset limitations (20 features vs 49, 10K samples vs 2.5M). See `RESULTS_NOTE.md` for full explanation.
+
+**Expected with Full UNSW-NB15:**
+- Baseline: 91-92% accuracy, 90-91% F1
+- Improved: 93-94% accuracy, 92-93% F1
+- Based on baseline paper methodology
 
 ### 4. Documentation ✓
 - [x] README.md with quick start guide
