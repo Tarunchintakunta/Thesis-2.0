@@ -61,36 +61,35 @@ The artefact is **ready to deploy** but has **not** been run on live AWS. The re
 2. **Cost consciousness** — even though the estimated spend is only ~USD 0.17 (see `results/moto/pilot_report.md` and budget estimate), this is the researcher's own account
 3. **Research integrity** — the moto results are explicitly labelled as **NOT AWS data**; they serve only to validate the implementation, not to answer the research question
 
-**What would happen on live AWS:**
+### ✓ Live campaign runbook available
+
+**See `RUNBOOK.md` for complete step-by-step instructions.**
+
+**One-command path (requires AWS credentials):**
 
 ```bash
-# One-time setup (requires AWS credentials)
+# Set credentials first (fails closed without them)
+export AWS_PROFILE=your-profile
+
+# Complete campaign
 make deploy              # Terraform apply: table + Lambda + IAM
-
-# Pilot phase (50 requests × 3 paths)
 make pilot && make pilot-size
-
-# Full campaign (N determined by pilot, provisionally 1000 per path per multiplicity)
 make campaign WORKERS=16
-
-# Sensitivity test (P3 timeout between writes)
 make sensitivity WORKERS=16
-
-# Wait ~10 minutes, then collect CloudWatch metrics
-make cloudwatch
-
-# Analyse and generate real figures
+make cloudwatch         # Wait ~10 min after campaign
 make analyse
-
-# Tear down
 make destroy
 ```
 
-The driver has **safety guards:**
+**Credential safety:** All live targets (`deploy`, `pilot`, `campaign`, `sensitivity`, `cloudwatch`, `destroy`) check for AWS credentials via `make check-aws-creds` and **fail immediately** with a clear error message if credentials are not found. No live target will proceed without valid credentials.
 
-- Maximum 60,000 invocations (hard-coded limit in `src/driver/run.py`)
-- Budget alarm (Terraform creates a CloudWatch alarm at USD 1.00)
-- Seed guard (deterministic request IDs allow exact replication)
+**Safety guards:**
+
+- **Credential check:** Makefile fails closed without `AWS_PROFILE` or `AWS_ACCESS_KEY_ID`
+- **Invocation limit:** Maximum 60,000 invocations (hard-coded in `src/driver/run.py`)
+- **Budget alarm:** Terraform creates CloudWatch alarm at USD 1.00
+- **Seed guard:** Deterministic request IDs allow exact replication
+- **Path separation:** `results/live/` and `figures/live/` are distinct from `results/moto/` and `figures/moto/`
 
 **Expected outcomes on live AWS:**
 
@@ -101,6 +100,8 @@ The driver has **safety guards:**
 ---
 
 ## Moto vs live AWS: what is trustworthy
+
+### Summary Table
 
 | Aspect | Moto functional check | Live AWS campaign |
 |--------|----------------------|-------------------|
@@ -114,26 +115,73 @@ The driver has **safety guards:**
 | **Statistical power (N)** | ⚠ PARTIAL — N=30 too small for narrow CIs | ✓ YES — pilot-determined N~1000 |
 | **Expectation E2 at multiplicity 2** | ⚠ INCONCLUSIVE (wide CI) | ✓ WILL TEST with larger N |
 
-**Interpretation:**
+### Critical Distinction
+
+**Moto results (`results/moto/`, `figures/moto/`):**
+- ❌ **NOT an AWS measurement**
+- ❌ **NOT suitable for research conclusions**
+- ✓ **Proves implementation works** (functional validation only)
+- ✓ **Tests pass** (logic is correct)
+
+**Live AWS results (`results/live/`, `figures/live/`):**
+- ✓ **Real AWS measurements** (DynamoDB on-demand, Lambda arm64)
+- ✓ **Suitable for research conclusions**
+- ✓ **Answers the research question** (quantitative duplicate rate, latency, capacity)
+- 🚧 **Not yet run** (requires AWS credentials and ~USD 0.17 spend)
+
+### Interpretation
 
 - **Moto results are NOT a measurement.** They prove the code works — paths execute, injections produce the expected duplicate/no-duplicate pattern, tests run, figures generate.
 - **Research conclusions require live AWS data.** The research question asks "**by how much** do P2 and P3 reduce duplicates, and what do they cost in latency and capacity?" — those numbers must come from real AWS.
+- **Path separation enforced:** Makefile writes moto output to `results/moto/` and `figures/moto/`; live output goes to `results/live/` and `figures/live/`. These paths are never conflated.
 
 ---
 
 ## How to recognize moto vs live results
 
+### Directory Structure (Enforced Separation)
+
+```
+lambda-idempotency-eval/
+├── results/
+│   ├── moto/          ← Functional validation (NOT AWS data)
+│   │   ├── summary.md
+│   │   ├── cells.csv
+│   │   └── ...
+│   └── live/          ← Real AWS measurements (ONLY source for conclusions)
+│       ├── .gitkeep   (directory exists but empty until campaign runs)
+│       └── ...
+└── figures/
+    ├── moto/          ← Figures from functional check
+    │   ├── dup_rate.png
+    │   └── ...
+    └── live/          ← Figures from live AWS
+        ├── .gitkeep   (directory exists but empty until campaign runs)
+        └── ...
+```
+
+### Source Labels in Output Files
+
 All outputs carry a **source label** in the first line or metadata:
 
 - **Moto:** `results/moto/summary.md` begins with "Source: **moto functional check - NOT an AWS measurement (capacity and latency are not AWS numbers)**"
-- **Live:** `results/live/summary.md` would state the AWS region, date, and note "AWS Lambda + DynamoDB on-demand"
+- **Live:** `results/live/summary.md` will state "Source: **AWS Lambda eu-west-1 + DynamoDB on-demand**" with date and run metadata
 
-Figure filenames and subdirectories also distinguish them:
+### Makefile Target Separation
 
-- `figures/moto/dup_rate.png` — from moto (functional check only)
-- `figures/live/dup_rate.png` — from live AWS (does not exist yet)
+| Target | Output Path | AWS Data? | Requires Credentials? |
+|--------|-------------|-----------|----------------------|
+| `make functional` | `results/moto/`, `figures/moto/` | ❌ NO | ❌ NO |
+| `make pilot` | `data/runs/live/pilot/` | ✅ YES | ✅ YES |
+| `make pilot-size` | `results/live/` | ✅ YES | ❌ NO (reads pilot data) |
+| `make campaign` | `data/runs/live/campaign/` | ✅ YES | ✅ YES |
+| `make sensitivity` | `data/runs/live/sensitivity/` | ✅ YES | ✅ YES |
+| `make cloudwatch` | `data/runs/live/campaign/cloudwatch.json` | ✅ YES | ✅ YES |
+| `make analyse` | `results/live/`, `figures/live/` | Depends on input | ❌ NO (reads campaign data) |
 
 **Never conflate the two.** Any research paper, report, or presentation must clearly state whether results are from the moto functional check (implementation validation) or the live AWS campaign (the actual measurement that answers the research question).
+
+**Credential enforcement:** See `RUNBOOK.md` for complete documentation of credential requirements and fail-closed behavior.
 
 ---
 

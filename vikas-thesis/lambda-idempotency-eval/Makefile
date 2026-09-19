@@ -34,33 +34,44 @@ build:
 	PY=$(PY) scripts/build_lambda.sh
 
 # ---- live AWS (needs credentials; spend is bounded by config/experiment.yaml) ----
-deploy: build
+# Credential check: all live targets require AWS_PROFILE or AWS_ACCESS_KEY_ID
+.PHONY: check-aws-creds
+check-aws-creds:
+	@if [ -z "$$AWS_PROFILE" ] && [ -z "$$AWS_ACCESS_KEY_ID" ]; then \
+		echo "ERROR: AWS credentials not found."; \
+		echo "Set AWS_PROFILE or AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY before running live targets."; \
+		echo "See docs/CONFIGURATION_MANUAL.md for setup instructions."; \
+		exit 1; \
+	fi
+	@echo "✓ AWS credentials detected"
+
+deploy: check-aws-creds build
 	cd infra && terraform init -input=false && terraform apply
 
-pilot:
+pilot: check-aws-creds
 	$(PY) -m driver.run --phase pilot --out $(LIVE)/pilot
 	$(PY) -m driver.streams --out $(LIVE)/pilot
 
 pilot-size:
 	$(PY) analysis/pilot_size.py --run $(LIVE)/pilot --out results/live
 
-campaign:
+campaign: check-aws-creds
 	@test -n "$(N)" || (echo "run make pilot-size first (or pass N=...)"; exit 1)
 	$(PY) -m driver.run --phase campaign --n $(N) --workers $(WORKERS) --out $(LIVE)/campaign
 	$(PY) -m driver.streams --out $(LIVE)/campaign
 
-sensitivity:
+sensitivity: check-aws-creds
 	$(PY) -m driver.run --phase sensitivity --workers $(WORKERS) --out $(LIVE)/sensitivity
 	$(PY) -m driver.streams --out $(LIVE)/sensitivity
 
-cloudwatch:
+cloudwatch: check-aws-creds
 	$(PY) scripts/collect_cloudwatch.py --run $(LIVE)/campaign
 
 analyse:
 	$(PY) analysis/analyse.py --campaign $(LIVE)/campaign --sensitivity $(LIVE)/sensitivity \
 		--out results/live --figures figures/live
 
-destroy:
+destroy: check-aws-creds
 	cd infra && terraform destroy
 
 # ---- functional check on moto: no AWS, NOT a measurement ----

@@ -68,17 +68,23 @@ make functional
 
 ## Live runs
 
-Full steps, permissions and troubleshooting: `docs/CONFIGURATION_MANUAL.md`.
+**Complete runbook:** `RUNBOOK.md` — step-by-step instructions, credential setup, troubleshooting.  
+**Configuration details:** `docs/CONFIGURATION_MANUAL.md` — permissions, Terraform, AWS setup.
+
+**Quick start (requires AWS credentials):**
 
 ```bash
-make deploy                 # builds the zip, terraform apply
+export AWS_PROFILE=your-profile   # or AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY
+make deploy                       # builds the zip, terraform apply
 make pilot && make pilot-size
-make campaign WORKERS=16    # N from the pilot rule
+make campaign WORKERS=16          # N from the pilot rule
 make sensitivity WORKERS=16
-make cloudwatch             # ~10 minutes later
+make cloudwatch                   # ~10 minutes later
 make analyse
 make destroy
 ```
+
+**Credential safety:** All live targets fail immediately without AWS credentials. See `RUNBOOK.md` for details.
 
 ## Budget (`make budget`, list prices published 2026-09-11)
 
