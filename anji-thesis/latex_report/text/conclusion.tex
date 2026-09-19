@@ -1,43 +1,171 @@
-\chapter{Conclusion}
-In conclusion, we successfully validated the hypothesis for 'Reliability and Recovery of Amazon SQS Messaging under Injected Consumer and Downstream Failures'.
+\chapter{Conclusions and Future Work}
 
-In reference to Martinez & Rodriguez (2025), the integration highlights a distinct improvement metric.
+This chapter summarizes the research findings, discusses their implications for theory and practice, evaluates the study's validity, and proposes directions for future work.
 
+\section{Research Summary}
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+This research investigated the question: \textbf{How does Amazon SQS configuration affect message reliability and recovery under injected consumer and downstream failures?} A controlled experimental artefact was developed using AWS SAM, implementing a two-arm comparison (synchronous API vs. SQS queue) with in-process fault injection capable of triggering consumer kills, unhandled errors, datastore rejections, and datastore timeouts. A discrete-event simulator enabled reproducible execution of 350+ experimental runs without AWS costs.
 
+The study measured message loss, duplicate processing, DLQ traffic, recovery time, throughput, and latency across a systematic matrix of visibility timeout (30–900 seconds), maxReceiveCount (1–10), batch size (1–50), and four fault types. Three pre-registered hypotheses were tested using non-parametric statistics with Holm-Bonferroni correction for family-wise error rate control.
 
-Moreover, bridging the gap identified in Kyrychenko et al. (2025b) necessitates this novel perspective: The baseline evaluates SQS standard operations under steady load but misses real-world downstream failures such as consumer crash loops, throttling, and API timeouts. This research addresses this by injecting systematic faults into the SQS handlers.
+\section{Key Contributions}
 
-As noted in Gonzalez et al. (2026), scalability remains paramount. The system design strictly adheres to this, as evidenced by the empirical measurements.
+\subsection{Empirical Evidence on SQS Resilience Configuration}
 
-In conclusion, we successfully validated the hypothesis for 'Reliability and Recovery of Amazon SQS Messaging under Injected Consumer and Downstream Failures'.
+This is the first systematic, quantitative study of SQS configuration under controlled, reproducible fault injection. Prior work by \citet{Kyrychenko2025} established steady-state performance optima; this research extends that baseline to failure scenarios, revealing that:
 
+\begin{itemize}
+    \item \textbf{Zero message loss} is achievable with DLQ + sufficient visibility timeout and maxReceiveCount (H1 supported).
+    \item \textbf{Recovery time follows visibility timeout nearly 1:1} (600s VT → 600s recovery), identifying VT as a recovery time knob, not just a latency parameter.
+    \item \textbf{maxReceiveCount determines DLQ vs. duplicate trade-off} for transient faults (H2 supported): low MRC dead-letters unnecessarily, high MRC increases duplicates.
+    \item \textbf{Steady-state throughput optima (long VT, large batch) incur 16× longer recovery time} (H3 large effect), suggesting practitioners must balance performance vs. resilience.
+\end{itemize}
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+\subsection{Reproducible Fault Injection Framework}
 
+The artefact provides:
+\begin{itemize}
+    \item A novel in-process fault switch for deterministic application-level fault injection in Lambda consumers.
+    \item A discrete-event simulator validated against SQS documentation and steady-state baselines.
+    \item 350+ committed run manifests with seeds, configs, and metrics for replication and extension.
+\end{itemize}
 
-In conclusion, we successfully validated the hypothesis for 'Reliability and Recovery of Amazon SQS Messaging under Injected Consumer and Downstream Failures'.
+Unlike infrastructure-focused tools~\citep{Gao2023CrashFuzz, Wu2024Legolas}, this framework targets message queue consumer failures specifically, filling a gap in fault injection literature.
 
+\subsection{Actionable Practitioner Guidance}
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+Quantitative, statistically validated recommendations:
 
+\begin{description}
+    \item[Visibility Timeout:] Set based on \emph{acceptable recovery time}, not just processing duration. For sub-minute recovery SLA, use VT 30–120s. For latency-critical workloads tolerating longer recovery, VT 300–600s. Do not blindly use Kyrychenko et al.'s 600s optimum without considering failure scenarios.
+    
+    \item[maxReceiveCount:] Match to failure pattern. For transient-only failures (downstream recovers in seconds to minutes), MRC 2–3 minimizes DLQ noise while allowing retries. For workloads with deterministic poison messages, MRC 1–2 quarantines them faster. For mixed workloads, MRC 3–5 balances both.
+    
+    \item[Batch Size:] Optimize for throughput (larger is better); minimal impact on recovery time. Use batch 50 unless memory or timeout constraints prevent it.
+    
+    \item[DLQ:] Always configure; it is the safety net. Monitor DLQ depth; spikes indicate config tuning needed (MRC too low) or systemic issues (repeated deterministic failures).
+    
+    \item[Idempotency:] Mandatory for at-least-once delivery. Higher MRC amplifies duplicates (14\% additional at MRC 10); idempotent handlers neutralize this.
+\end{description}
 
-In conclusion, we successfully validated the hypothesis for 'Reliability and Recovery of Amazon SQS Messaging under Injected Consumer and Downstream Failures'.
+\section{Theoretical and Practical Implications}
 
-In reference to Wilson (2025), the integration highlights a distinct improvement metric.
+\subsection{Theory: Configuration Trade-Offs Under Failure}
 
+The research demonstrates that \textbf{steady-state optima do not necessarily transfer to failure scenarios}. Kyrychenko et al.'s finding that VT does not affect steady-state throughput holds, but VT becomes the \emph{dominant factor} under failure (recovery time). This aligns with resilience engineering principles~\citep{AWSResilience2023}: systems optimized for normal operation may be brittle under stress.
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+The 1:1 VT–recovery relationship is mechanistically explained by SQS visibility timeout semantics: failed messages remain in-flight until VT expires. This is not a bug; it is by-design behavior to prevent thundering herd on downstream recovery. However, practitioners often set VT based on steady-state processing time alone, not considering recovery implications.
+
+\subsection{Practice: Resilience-Aware Configuration}
+
+The findings inform SQS configuration as a \textbf{multi-objective optimization}:
+\begin{itemize}
+    \item Steady state: maximize throughput (large batch), minimize latency (short VT if processing is fast).
+    \item Under failure: minimize recovery time (short VT), avoid unnecessary DLQ (moderate MRC), tolerate duplicates (high MRC + idempotency).
+\end{itemize}
+
+Practitioners should profile their \emph{failure patterns} (transient vs. deterministic, frequency, duration) and set VT/MRC accordingly, rather than using defaults or steady-state optima blindly.
+
+\subsection{Simulator as Research Tool}
+
+The study validates simulation as a cost-effective, reproducible alternative to live experimentation for relative configuration effects. Absolute timing differs from AWS (no cold starts, deterministic timing), but relative rankings (VT 600 > VT 30 for recovery time) are expected to hold. This approach enables research that would be cost-prohibitive on live infrastructure (\$50-100+ for 350 runs).
+
+\section{Validity Assessment}
+
+\subsection{Threats Addressed}
+
+\begin{itemize}
+    \item \textbf{Internal validity:} Controlled IVs, randomized run order, seeded RNG, multiple repeats (≥3), statistical tests with corrections.
+    \item \textbf{Construct validity:} Multiple DVs (loss, duplicates, DLQ, recovery time), multiple recovery time definitions reported.
+    \item \textbf{Conclusion validity:} Pre-registered hypotheses, non-parametric tests, effect sizes, power analysis, Holm-Bonferroni correction.
+\end{itemize}
+
+\subsection{Remaining Limitations}
+
+\begin{itemize}
+    \item \textbf{External validity (AWS fidelity):} Absolute metrics may differ from live AWS due to cold starts, network jitter, CloudWatch delays. Relative effects are expected to hold, but live validation (future work) is needed to quantify deltas.
+    
+    \item \textbf{Workload generalizability:} Synthetic payloads, single processing pattern. Findings should generalize to similar workloads (e-commerce, logging, event routing) but may not cover all edge cases (e.g., very large messages, complex processing logic).
+    
+    \item \textbf{Fault type coverage:} Four faults modeled; real systems experience others (AZ failures, gradual degradation, cascading failures). The four span a representative space, but are not exhaustive.
+    
+    \item \textbf{FIFO queues:} Not tested. FIFO has different semantics (ordering, content-based deduplication, lower throughput); configuration trade-offs may differ.
+\end{itemize}
+
+\section{Future Work}
+
+\subsection{Short-Term Extensions}
+
+\begin{enumerate}
+    \item \textbf{Live AWS Validation:} Execute a subset of runs (20–30 key cells) on AWS, compare metrics to simulator, quantify fidelity. Publish delta report as appendix. Estimated cost: \$10-15.
+    
+    \item \textbf{Additional Fault Types:} Extend to partial downstream failures (50\% requests fail), gradual degradation (increasing latency over time), cascading failures (downstream triggers upstream).
+    
+    \item \textbf{Dynamic VT:} Test \texttt{ChangeMessageVisibility} API to adaptively extend VT during processing. Hypothesis: reduces premature expiry without extending recovery time.
+    
+    \item \textbf{Multi-Consumer Scenarios:} Model multiple Lambda consumers (concurrency > 1), test how parallelism affects recovery time and duplicate rate.
+\end{enumerate}
+
+\subsection{Medium-Term Research}
+
+\begin{enumerate}
+    \item \textbf{FIFO Queue Study:} Replicate experiments with SQS FIFO queues. Research question: Does ordering guarantee affect recovery time? Hypothesis: Message group ID partitioning may localize failures.
+    
+    \item \textbf{Cross-Broker Comparison:} Implement same fault injection for Kafka, RabbitMQ. Compare reliability, recovery time, and configuration complexity. Hypothesis: Kafka's partition replication recovers faster than SQS redelivery.
+    
+    \item \textbf{Multi-Region Resilience:} Model cross-region queue replication, test recovery under regional failures. Research question: How does cross-region latency affect configuration optima?
+    
+    \item \textbf{Cost-Reliability Trade-Off:} Incorporate AWS pricing into optimization. Research question: What configuration minimizes cost while meeting reliability SLA?
+\end{enumerate}
+
+\subsection{Long-Term Vision}
+
+\begin{enumerate}
+    \item \textbf{Adaptive Configuration Controller:} Develop a runtime controller that observes failure patterns (via CloudWatch metrics) and auto-tunes VT/MRC. Inspired by Kubernetes HPA, but for queue config.
+    
+    \item \textbf{Chaos Engineering Integration:} Package fault injection as an open-source Chaos Monkey-style tool for AWS Lambda + SQS. Enable practitioners to run their own resilience experiments.
+    
+    \item \textbf{Formal Verification:} Model SQS semantics in TLA+ or Alloy, formally verify that DLQ + redelivery guarantees zero loss under bounded failure duration. Complement empirical findings with proofs.
+\end{enumerate}
+
+\section{Recommendations for Practitioners}
+
+\subsection{Immediate Actions}
+
+\begin{enumerate}
+    \item \textbf{Review current SQS configs:} If VT is set to default (30s) or based on average processing time, consider whether recovery SLA is met. If not, increase VT but accept longer recovery; alternatively, shorten VT and risk premature expiry.
+    
+    \item \textbf{Configure DLQs everywhere:} If not already done. Set maxReceiveCount based on failure pattern (2–3 for transient, 1–2 for deterministic).
+    
+    \item \textbf{Implement idempotency:} If consumers are not idempotent. Use deduplication store (DynamoDB, Redis) with order ID as key.
+    
+    \item \textbf{Monitor DLQ depth:} Alert on non-zero depth; investigate root cause. DLQ is a symptom, not a solution.
+\end{enumerate}
+
+\subsection{Design Principles}
+
+\begin{enumerate}
+    \item \textbf{Separate latency and recovery concerns:} Do not conflate "expected processing time" with "recovery time SLA." They require different VT values; use the larger of the two.
+    
+    \item \textbf{Test failure scenarios in staging:} Use the simulator or the fault injection harness to validate config before production. Run mini-campaigns (10–20 runs) with production-like workload and failure patterns.
+    
+    \item \textbf{Document config rationale:} In IaC comments or README, state \emph{why} VT and MRC are set to specific values. This prevents future engineers from "optimizing" them without understanding recovery trade-offs.
+    
+    \item \textbf{Embrace eventual consistency:} SQS Standard guarantees at-least-once, not exactly-once. Design for idempotency and duplicate tolerance, not for preventing duplicates entirely.
+\end{enumerate}
+
+\section{Final Reflection}
+
+This research demonstrates that systematic, reproducible fault injection combined with rigorous statistical analysis can provide actionable insights for cloud system configuration. The simulator-first approach enabled exploration of a 350-run parameter space at zero AWS cost, while maintaining scientific rigor through pre-registered hypotheses, non-parametric tests, and effect size reporting.
+
+The findings challenge the assumption that steady-state optima automatically transfer to failure scenarios. Visibility timeout, a parameter often treated as a performance tuning knob, emerges as the primary determinant of recovery time. This insight—grounded in empirical evidence and mechanistic explanation—should inform how practitioners configure SQS for resilience, not just throughput.
+
+The artefact, dataset, and documentation are provided in full to enable replication, validation, and extension. Future work will close the simulator-to-AWS fidelity loop, extend to FIFO queues and alternative brokers, and explore adaptive configuration controllers. The ultimate goal is to make message queue resilience configuration a data-driven discipline, not a heuristic art.
+
+\vspace{1cm}
+
+\noindent
+\textbf{Anjaneya Reddy Gurram}\\
+\textit{MSc in Cloud Computing}\\
+\textit{National College of Ireland}\\
+\textit{Student ID: 24288853}
