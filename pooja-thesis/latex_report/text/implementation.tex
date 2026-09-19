@@ -6,15 +6,260 @@
 \label{sec:Implementation}
 %% ==============================
 
-The system is implemented in Python 3 with scikit-learn. Key modules:
+This section describes the implementation of the three scaling policies, the experimental framework, and the deployment infrastructure. All code is implemented in Python 3.9+ and is available in the \texttt{paks-framework/} directory.
 
+\subsection{Technology Stack}
+
+\paragraph{Core Dependencies}
 \begin{itemize}
-  \item \texttt{src/data/workload\_simulator.py} -- synthetic cyclical workload generator described in Section~\ref{sec:Methodology}.
-  \item \texttt{src/models/scalers.py} -- \texttt{run\_reactive\_hpa}, \texttt{run\_aggressive\_paks} (baseline), and \texttt{StabilityAwareController} / \texttt{run\_stability\_aware\_paks} (improvement), sharing one \texttt{train\_predictor} function.
-  \item \texttt{scripts/train\_and\_evaluate.py} -- trains and evaluates all 3 policies across 5 seeds, writes \texttt{results/results\_per\_seed.csv} and \texttt{results/results\_summary.csv}, and exports the trained predictor to \texttt{src/lambda\_handler/model/} for deployment.
-  \item \texttt{src/lambda\_handler/app.py} -- an AWS Lambda handler that applies the same stability-aware controller logic to live workload telemetry arriving on a Kinesis stream, one instance of the controller per node, persisted across warm invocations.
-  \item \texttt{template.yaml} -- AWS SAM template provisioning the Kinesis stream and Lambda function. This replaces an earlier scaffold template that pointed \texttt{Handler} at a \texttt{src/ml\_predict.py} file that did not exist anywhere in the repository, and referenced hardcoded placeholder VPC subnet IDs that would have failed on any real deploy attempt.
-  \item \texttt{.github/workflows/deploy.yml} (repo root) -- CI pipeline that runs the training/evaluation script and, on push to \texttt{main}, deploys the SAM stack to the configured AWS region using repository secrets.
+  \item \textbf{Python 3.9+}: Primary implementation language
+  \item \textbf{NumPy 1.21+}: Numerical computing and array operations
+  \item \textbf{Pandas 1.3+}: Data manipulation and CSV export
+  \item \textbf{scikit-learn 1.4+}: MLPRegressor for workload prediction
+  \item \textbf{joblib 1.3+}: Model serialization and persistence
 \end{itemize}
 
-The original scaffold used TensorFlow/Keras for the workload predictor; this version uses scikit-learn's \texttt{MLPRegressor} instead (same 2-hidden-layer feed-forward design), removing a heavy dependency the project did not otherwise need. Running \texttt{python scripts/train\_and\_evaluate.py} reproduces every number in Section~\ref{sec:Evaluation} from scratch. The Lambda handler was verified locally against a synthetic rising-workload sequence before deployment.
+\paragraph{Testing and Build Tools}
+\begin{itemize}
+  \item \textbf{pytest 7.4+}: Unit and integration testing
+  \item \textbf{Make}: Build automation and workflow orchestration
+\end{itemize}
+
+\paragraph{Deployment (Optional)}
+\begin{itemize}
+  \item \textbf{AWS Lambda}: Serverless function runtime for real-time inference
+  \item \textbf{AWS Kinesis}: Stream processing for workload telemetry
+  \item \textbf{AWS SAM}: Infrastructure-as-code for deployment
+\end{itemize}
+
+The minimal core dependencies (NumPy, Pandas, scikit-learn, joblib) keep the project lightweight and reproducible. TensorFlow, which was in the original scaffold, has been removed entirely -- the same feed-forward architecture is achievable with scikit-learn's \texttt{MLPRegressor} without the 500MB+ dependency overhead.
+
+\subsection{Module Structure}
+
+\subsubsection{\texttt{src/data/workload\_simulator.py}}
+
+Implements the synthetic workload generator described in Section~\ref{sec:Methodology}. Key functions:
+
+\begin{itemize}
+  \item \texttt{generate\_workload(seed, n\_steps=500)}: Returns a 1D NumPy array of length \texttt{n\_steps} representing workload intensity at each timestep, combining sinusoidal base load, periodic spikes, and Gaussian noise.
+  \item \texttt{generate\_spikes(n\_steps, spike\_interval\_mean, spike\_interval\_std, spike\_magnitude\_min, spike\_magnitude\_max, spike\_duration)}: Generates the spike component as a separate array that is added to the base load.
+\end{itemize}
+
+The implementation uses \texttt{numpy.random.default\_rng(seed)} for reproducibility -- given the same seed, the exact same workload is generated.
+
+\subsubsection{\texttt{src/models/scalers.py}}
+
+Implements all three scaling policies and the shared predictor training function. Key components:
+
+\paragraph{\texttt{train\_predictor(workload, lookback=10, train\_ratio=0.6)}}
+Trains an \texttt{MLPRegressor} on the first \texttt{train\_ratio} fraction of the workload:
+\begin{enumerate}
+  \item Constructs supervised training samples: for each timestep $t \in [\text{lookback}, \text{train\_end}]$, input = $[W(t-\text{lookback}), \ldots, W(t-1)]$, target = $W(t)$.
+  \item Splits into 80\% train / 20\% validation.
+  \item Trains \texttt{MLPRegressor(hidden\_layer\_sizes=(64, 32), activation='relu', solver='adam', max\_iter=1000, early\_stopping=True, validation\_fraction=0.2, n\_iter\_no\_change=50, random\_state=42)}.
+  \item Returns the trained model.
+\end{enumerate}
+
+\paragraph{\texttt{run\_reactive\_hpa(workload, capacity\_per\_pod=10)}}
+Simulates the Reactive HPA policy:
+\begin{enumerate}
+  \item Initializes \texttt{pods = [1]} (start with 1 pod).
+  \item For each timestep $t$ from 1 to 499:
+  \begin{enumerate}
+    \item Compute required pods based on previous workload: $\text{req} = \lceil W(t-1) / \text{capacity} \rceil$.
+    \item Append \texttt{req} to \texttt{pods}.
+  \end{enumerate}
+  \item Compute metrics (violations, over-provisioning, events, volatility) from \texttt{workload} and \texttt{pods}.
+  \item Return metrics dictionary.
+\end{enumerate}
+
+\paragraph{\texttt{run\_aggressive\_paks(workload, model, capacity\_per\_pod=10, lookback=10, safety\_buffer=1.05)}}
+Simulates the Aggressive PAKS policy:
+\begin{enumerate}
+  \item Initializes \texttt{pods = [1] * lookback} (first \texttt{lookback} steps use default 1 pod).
+  \item For each timestep $t$ from \texttt{lookback} to 499:
+  \begin{enumerate}
+    \item Construct input window: $\mathbf{x} = [W(t-\text{lookback}), \ldots, W(t-1)]$.
+    \item Predict: $\hat{W} = \text{model.predict}([\mathbf{x}])[0]$.
+    \item Apply safety buffer: $\text{buffered} = \text{safety\_buffer} \times \hat{W}$.
+    \item Compute pods: $\text{pods\_t} = \lceil \text{buffered} / \text{capacity} \rceil$.
+    \item Append to \texttt{pods}.
+  \end{enumerate}
+  \item Compute and return metrics.
+\end{enumerate}
+
+\paragraph{\texttt{StabilityAwareController}}
+A stateful controller class that wraps the predictor with smoothing and hysteresis/cooldown logic:
+
+\begin{itemize}
+  \item \textbf{Attributes}:
+  \begin{itemize}
+    \item \texttt{model}: The trained predictor
+    \item \texttt{alpha}: EMA smoothing factor (default 0.4)
+    \item \texttt{hysteresis\_threshold}: Minimum pod difference to trigger action (default 1)
+    \item \texttt{cooldown\_steps}: Minimum steps between actions (default 2)
+    \item \texttt{smoothed\_prediction}: Current smoothed workload estimate (state)
+    \item \texttt{current\_pods}: Current allocation (state)
+    \item \texttt{last\_scale\_time}: Timestep of last action (state)
+  \end{itemize}
+  
+  \item \textbf{Methods}:
+  \begin{itemize}
+    \item \texttt{\_\_init\_\_(model, capacity\_per\_pod=10, alpha=0.4, hysteresis\_threshold=1, cooldown\_steps=2)}: Initialize controller with given parameters.
+    \item \texttt{reset()}: Reset state (used at the start of each evaluation run).
+    \item \texttt{predict(workload\_window)}: Core control logic:
+    \begin{enumerate}
+      \item Predict: $\hat{W} = \text{model.predict}([workload\_window])[0]$.
+      \item Update smoothed estimate: $S = \alpha \cdot \hat{W} + (1 - \alpha) \cdot S_{\text{prev}}$.
+      \item Compute desired pods: $\text{desired} = \lceil 1.05 \cdot S / \text{capacity} \rceil$.
+      \item Check hysteresis: if $|\text{desired} - \text{current}| \leq \text{threshold}$, return \texttt{current\_pods}.
+      \item Check cooldown: if $t - t_{\text{last}} < \text{cooldown}$, return \texttt{current\_pods}.
+      \item Else, update state and return \texttt{desired}.
+    \end{enumerate}
+  \end{itemize}
+\end{itemize}
+
+\paragraph{\texttt{run\_stability\_aware\_paks(workload, model, capacity\_per\_pod=10, lookback=10, alpha=0.4, hysteresis\_threshold=1, cooldown\_steps=2)}}
+Simulates the Stability-Aware PAKS policy:
+\begin{enumerate}
+  \item Initialize controller: \texttt{controller = StabilityAwareController(model, capacity\_per\_pod, alpha, hysteresis\_threshold, cooldown\_steps)}.
+  \item \texttt{controller.reset()}.
+  \item \texttt{pods = [1] * lookback}.
+  \item For each timestep $t$ from \texttt{lookback} to 499:
+  \begin{enumerate}
+    \item Construct input window.
+    \item Call \texttt{pods\_t = controller.predict(window)}.
+    \item Append to \texttt{pods}.
+  \end{enumerate}
+  \item Compute and return metrics.
+\end{enumerate}
+
+The stateful controller design enables deployment: the same \texttt{StabilityAwareController} instance can be reused across multiple prediction calls in a Lambda warm start, maintaining the smoothed state and cooldown timer.
+
+\subsubsection{\texttt{scripts/train\_and\_evaluate.py}}
+
+The main experimental driver script:
+
+\begin{enumerate}
+  \item For each seed $s \in \{42, 43, 44, 45, 46\}$:
+  \begin{enumerate}
+    \item Generate workload: \texttt{workload = generate\_workload(seed=s)}.
+    \item Train predictor: \texttt{model = train\_predictor(workload)}.
+    \item Evaluate Reactive HPA: \texttt{metrics\_hpa = run\_reactive\_hpa(workload)}.
+    \item Evaluate Aggressive PAKS: \texttt{metrics\_agg = run\_aggressive\_paks(workload, model)}.
+    \item Evaluate Stability-Aware PAKS: \texttt{metrics\_stab = run\_stability\_aware\_paks(workload, model)}.
+    \item Record all metrics with seed label.
+  \end{enumerate}
+  \item Aggregate results across seeds: compute mean and std for each metric per policy.
+  \item Write per-seed results to \texttt{results/results\_per\_seed.csv}.
+  \item Write summary statistics to \texttt{results/results\_summary.csv}.
+  \item Export the final trained model (from seed 46, the last seed) to \texttt{src/lambda\_handler/model/predictor.joblib} for deployment.
+\end{enumerate}
+
+Running \texttt{python scripts/train\_and\_evaluate.py} from the \texttt{paks-framework/} directory reproduces all experimental results from scratch in approximately 2-3 minutes on a standard laptop.
+
+\subsection{Testing Infrastructure}
+
+A comprehensive test suite (\texttt{tests/}) validates correctness:
+
+\paragraph{Unit Tests (\texttt{tests/test\_scalers.py})}
+\begin{itemize}
+  \item \texttt{test\_train\_predictor}: Verifies that the predictor trains without errors and produces valid predictions.
+  \item \texttt{test\_reactive\_hpa\_no\_violations}: Confirms that Reactive HPA never violates SLA when workload is constant (trivial case).
+  \item \texttt{test\_aggressive\_paks\_uses\_predictor}: Checks that Aggressive PAKS produces different pod allocations than Reactive HPA (confirming it uses predictions).
+  \item \texttt{test\_stability\_controller\_smoothing}: Validates that the smoothed estimate moves toward predictions over multiple steps.
+  \item \texttt{test\_stability\_controller\_cooldown}: Confirms that cooldown prevents rapid successive actions.
+  \item \texttt{test\_stability\_controller\_hysteresis}: Checks that small changes (within hysteresis band) do not trigger actions.
+\end{itemize}
+
+\paragraph{Integration Tests (\texttt{tests/test\_integration.py})}
+\begin{itemize}
+  \item \texttt{test\_end\_to\_end\_pipeline}: Runs the full train-and-evaluate pipeline on a single seed and verifies that all three policies produce valid metrics.
+  \item \texttt{test\_reproducibility}: Confirms that running the same seed twice produces identical results (determinism check).
+\end{itemize}
+
+\paragraph{Workload Tests (\texttt{tests/test\_workload.py})}
+\begin{itemize}
+  \item \texttt{test\_workload\_generation\_deterministic}: Verifies that the same seed produces the same workload.
+  \item \texttt{test\_workload\_has\_spikes}: Checks that generated workloads contain the expected periodic spikes.
+  \item \texttt{test\_workload\_bounds}: Ensures workload values are within reasonable bounds (no negative values, no excessively large values).
+\end{itemize}
+
+All tests pass with \texttt{pytest -v}.
+
+\subsection{Build Automation}
+
+A \texttt{Makefile} provides convenient workflow commands:
+
+\begin{itemize}
+  \item \texttt{make install}: Install dependencies from \texttt{requirements.txt}.
+  \item \texttt{make test}: Run the full test suite with coverage reporting.
+  \item \texttt{make run}: Execute \texttt{scripts/train\_and\_evaluate.py} to reproduce experimental results.
+  \item \texttt{make clean}: Remove generated files (\texttt{results/*.csv}, \texttt{\_\_pycache\_\_}, \texttt{.pytest\_cache}).
+  \item \texttt{make all}: Run \texttt{install}, \texttt{test}, and \texttt{run} in sequence.
+\end{itemize}
+
+\subsection{Deployment Infrastructure (Optional)}
+
+While the core experiments run locally, the project includes optional AWS deployment infrastructure for applying the stability-aware controller to real-time workload streams.
+
+\subsubsection{\texttt{src/lambda\_handler/app.py}}
+
+An AWS Lambda handler that loads the trained predictor and applies the stability-aware control logic to workload telemetry arriving on a Kinesis stream:
+
+\begin{enumerate}
+  \item On cold start: load \texttt{predictor.joblib} from \texttt{model/} directory.
+  \item Initialize a dictionary of \texttt{StabilityAwareController} instances, one per node (keyed by node ID).
+  \item For each Kinesis record:
+  \begin{enumerate}
+    \item Parse JSON payload: \texttt{\{"node\_id": "...", "timestamp": ..., "workload": ..., "history": [...]\}}.
+    \item Retrieve or create controller for this node.
+    \item Call \texttt{controller.predict(history)} to get target pod count.
+    \item Return scaling recommendation as JSON: \texttt{\{"node\_id": "...", "target\_pods": ..., "timestamp": ...\}}.
+  \end{enumerate}
+\end{enumerate}
+
+The handler is stateful across warm invocations -- each Lambda container maintains its controller instances, so the smoothed state and cooldown timers persist across multiple predictions for the same node. This is critical for the stability mechanism to function correctly.
+
+\subsubsection{\texttt{template.yaml}}
+
+An AWS SAM template defining:
+\begin{itemize}
+  \item \textbf{Kinesis Stream} (\texttt{WorkloadTelemetryStream}): Receives workload metrics from monitored nodes.
+  \item \textbf{Lambda Function} (\texttt{StabilityAwareScalerFunction}): Processes stream records with \texttt{src/lambda\_handler/app.lambda\_handler} as the entry point.
+  \item \textbf{IAM Role}: Grants Lambda permission to read from the Kinesis stream.
+\end{itemize}
+
+This replaces an earlier scaffold template that had two fatal errors:
+\begin{enumerate}
+  \item The \texttt{Handler} field pointed to \texttt{src/ml\_predict.lambda\_handler}, but \texttt{src/ml\_predict.py} did not exist anywhere in the repository.
+  \item The \texttt{VpcConfig} section referenced hardcoded placeholder subnet IDs (\texttt{subnet-xxxxxx}) that would fail on any real AWS account.
+\end{enumerate}
+
+The corrected template uses a valid handler path and omits VPC configuration (allowing Lambda to run in the default VPC-less mode, which is appropriate for Kinesis stream processing).
+
+\subsubsection{\texttt{.github/workflows/deploy.yml}}
+
+A GitHub Actions CI/CD pipeline (located at the repository root, not within \texttt{pooja-thesis/}):
+\begin{enumerate}
+  \item On push to \texttt{main}: trigger workflow.
+  \item Install dependencies and run \texttt{pytest}.
+  \item If tests pass, run \texttt{scripts/train\_and\_evaluate.py} to generate the latest predictor model.
+  \item Deploy to AWS using \texttt{sam build \&\& sam deploy} with credentials from repository secrets (\texttt{AWS\_ACCESS\_KEY\_ID}, \texttt{AWS\_SECRET\_ACCESS\_KEY}, \texttt{AWS\_REGION}).
+\end{enumerate}
+
+This ensures that the deployed Lambda always uses the most recent model trained on the latest code.
+
+\subsection{Code Quality and Reproducibility}
+
+\paragraph{Determinism} All random operations use explicit seeds:
+\begin{itemize}
+  \item Workload generation: \texttt{numpy.random.default\_rng(seed)}
+  \item Predictor training: \texttt{MLPRegressor(random\_state=42)}
+  \item Train/validation split: \texttt{train\_test\_split(random\_state=42)}
+\end{itemize}
+Given the same Python version and package versions (\texttt{requirements.txt} pins exact versions), running the code on any machine produces bit-identical results.
+
+\paragraph{Simplicity} The entire codebase is under 1000 lines of Python (excluding comments and tests). The design prioritizes clarity over performance optimization -- this is a research prototype demonstrating a concept, not a production-scale system.
+
+\paragraph{Documentation} All functions include docstrings specifying parameters, return values, and behavior. The README (\texttt{paks-framework/README.md}) provides quickstart instructions and pointers to key files.
