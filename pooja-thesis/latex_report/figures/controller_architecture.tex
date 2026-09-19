@@ -1,0 +1,63 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[
+  block/.style={rectangle, draw, fill=blue!10, text width=2.5cm, text centered, rounded corners, minimum height=0.8cm, font=\small},
+  process/.style={rectangle, draw, fill=green!10, text width=2.5cm, text centered, rounded corners, minimum height=0.8cm, font=\small},
+  decision/.style={diamond, draw, fill=yellow!10, text width=1.8cm, text centered, minimum height=0.8cm, font=\scriptsize},
+  line/.style={draw, -Latex},
+  node distance=1.2cm and 1.5cm
+]
+
+% Reactive HPA (Left column)
+\node[block] (hpa-workload) {Observed\\Workload $W(t-1)$};
+\node[process, below=of hpa-workload] (hpa-calc) {Direct\\Calculation};
+\node[block, below=of hpa-calc] (hpa-pods) {Target\\Pods};
+
+\draw[line] (hpa-workload) -- (hpa-calc);
+\draw[line] (hpa-calc) -- (hpa-pods);
+
+\node[above=0.3cm of hpa-workload, font=\bfseries] {Reactive HPA};
+
+% Aggressive PAKS (Middle column)
+\node[block, right=2.5cm of hpa-workload] (agg-workload) {Historical\\Workload};
+\node[process, below=of agg-workload] (agg-predictor) {ML Predictor\\(MLP)};
+\node[block, below=of agg-predictor] (agg-forecast) {Raw Forecast\\$\hat{W}(t+1)$};
+\node[process, below=of agg-forecast] (agg-buffer) {+5\% Safety\\Buffer};
+\node[block, below=of agg-buffer] (agg-pods) {Target\\Pods};
+
+\draw[line] (agg-workload) -- (agg-predictor);
+\draw[line] (agg-predictor) -- (agg-forecast);
+\draw[line] (agg-forecast) -- (agg-buffer);
+\draw[line] (agg-buffer) -- (agg-pods);
+
+\node[above=0.3cm of agg-workload, font=\bfseries] {Aggressive PAKS};
+
+% Stability-Aware PAKS (Right column)
+\node[block, right=2.5cm of agg-workload] (sa-workload) {Historical\\Workload};
+\node[process, below=of sa-workload] (sa-predictor) {ML Predictor\\(MLP)};
+\node[block, below=of sa-predictor] (sa-forecast) {Raw Forecast\\$\hat{W}(t+1)$};
+\node[process, below=of sa-forecast] (sa-ema) {EMA Smoothing\\($\alpha=0.4$)};
+\node[process, below=of sa-ema] (sa-buffer) {+5\% Safety\\Buffer};
+\node[decision, below=of sa-buffer] (sa-hyst) {$\Delta > 1$ pod\\AND\\cooldown?};
+\node[block, below=0.8cm of sa-hyst] (sa-pods) {Target\\Pods};
+
+\draw[line] (sa-workload) -- (sa-predictor);
+\draw[line] (sa-predictor) -- (sa-forecast);
+\draw[line] (sa-forecast) -- (sa-ema);
+\draw[line] (sa-ema) -- (sa-buffer);
+\draw[line] (sa-buffer) -- (sa-hyst);
+\draw[line] (sa-hyst) -- node[right, font=\scriptsize] {yes} (sa-pods);
+\draw[line] (sa-hyst.west) -- ++(-0.8,0) |- node[left, pos=0.25, font=\scriptsize] {no: hold} (sa-pods.west);
+
+\node[above=0.3cm of sa-workload, font=\bfseries] {Stability-Aware PAKS};
+
+% Legend
+\node[below=1.2cm of hpa-pods, font=\scriptsize\itshape, text width=10cm, text centered] {
+  \textbf{Key difference:} Reactive HPA reacts to past workload; both PAKS policies predict future demand. 
+  Stability-Aware adds smoothing + hysteresis/cooldown to prevent overreaction to noise.
+};
+
+\end{tikzpicture}
+\caption{Controller architecture dataflow for the three scaling policies. Reactive HPA uses only observed workload with a delay. Aggressive PAKS applies raw predictions directly. Stability-Aware PAKS wraps the same predictor in exponential smoothing and hysteresis/cooldown gates to filter transient fluctuations.}
+\label{fig:controller_architecture}
+\end{figure}

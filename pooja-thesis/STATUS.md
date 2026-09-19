@@ -155,8 +155,11 @@ Results will be written to `results/` directory. Tests must pass before experime
 
 1. **Synthetic Workload:** Evaluation uses synthetic cyclical workloads; real-world traces (Google Cluster, Alibaba, Azure Functions) would strengthen generalizability
 2. **Parameter Tuning:** Smoothing factor (α=0.4), hysteresis (1 pod), and cooldown (2 steps) were chosen based on literature + limited empirical observation; full parameter sweep would map the complete trade-off curve
-3. **PDF Compilation:** LaTeX compilation to PDF attempted but may require additional packages (pdflatex, bibtex) not installed in current environment
-4. **Diagrams:** Methodology diagrams described in text but not yet rendered as figures (would require TikZ/PGF or external tool)
+3. **PDF Compilation:** LaTeX compilation to PDF completed successfully with all methodology diagrams rendered
+4. **Diagrams:** Methodology diagrams now rendered as TikZ figures and wired into the report:
+   - `fig:controller_architecture`: Dataflow comparison of all three scaling policies
+   - `fig:controller_comparison`: Conceptual response comparison to noisy demand spikes  
+   - `fig:scaling_events_timeseries`: Time series visualization of scaling event frequency
 
 ## Submission Notes
 
