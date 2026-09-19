@@ -1,53 +1,442 @@
-\chapter{Design}
-[IMAGE PLACEHOLDER: methodology_flow.png]
-The design isolates the core variables.
+\chapter{Design and Implementation Specifications}
 
-In reference to Kelly (2026), the integration highlights a distinct improvement metric.
+This chapter describes the system design, including the Lambda function structure, driver architecture, analysis pipeline, and infrastructure-as-code specifications.
 
+\section{System Overview}
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+The experimental system comprises four main components:
 
+\begin{enumerate}
+    \item \textbf{AWS Lambda function} (\texttt{src/lambda\_fn/}): A single Python 3.12 function that implements the three write paths (P1, P2, P3), accepts invocation payloads with \texttt{request\_id}, \texttt{path}, \texttt{delivery\_index}, and \texttt{inject\_timeout}, and returns structured response metadata.
+    \item \textbf{Driver} (\texttt{src/driver/}): A Python application that generates the experimental schedule, invokes Lambda (or a local backend), collects response metadata, polls DynamoDB Streams for mutation ground truth, and writes results to disk.
+    \item \textbf{Analysis pipeline} (\texttt{analysis/}): Python modules that implement pilot-sizing logic, compute metrics (duplicate rate, latency, capacity), perform hypothesis tests (z-test, chi-square, Mann–Whitney U, Holm–Bonferroni correction), evaluate pre-registered expectations, and generate figures.
+    \item \textbf{Infrastructure as Code} (\texttt{infra/}): Terraform configurations that provision the DynamoDB table, Lambda function (from a deployment package), IAM roles and policies, CloudWatch log group, billing alarm, and budget.
+\end{enumerate}
 
-Moreover, bridging the gap identified in Nguyen et al. (2025) necessitates this novel perspective: Prior work evaluates latency bounds theoretically. This research empirically injects network partitioning to measure read-stall degradation.
+\section{Lambda Function Design}
 
-As noted in Ramos & Kim (2026), scalability remains paramount. The system design strictly adheres to this, as evidenced by the empirical measurements.
+\subsection{Entry Point: \texttt{handler.py}}
 
-The design isolates the core variables.
+The Lambda function's entry point is \texttt{handler.lambda\_handler(event, context)}. The handler:
 
+\begin{enumerate}
+    \item Parses the \texttt{event} payload to extract \texttt{request\_id}, \texttt{path}, \texttt{delivery\_index}, and \texttt{inject\_timeout}.
+    \item Validates inputs (path must be one of P1, P2, P3; delivery\_index must be a positive integer).
+    \item Calls the appropriate write-path function (\texttt{paths.write\_p1}, \texttt{paths.write\_p2}, or \texttt{paths.write\_p3}).
+    \item If \texttt{inject\_timeout = true} and the write succeeded, sleeps for 3 seconds to force a Lambda timeout (exceeding the 2-second configured timeout). The platform terminates the invocation mid-sleep.
+    \item If \texttt{inject\_timeout = false}, returns a success response with \texttt{statusCode: 200} and a JSON body containing \texttt{write\_outcome}, \texttt{consumed\_capacity}, \texttt{item\_version}, and \texttt{latency\_ms}.
+    \item Logs all operations in structured JSON format (one line per log entry) to facilitate CloudWatch Logs Insights queries.
+\end{enumerate}
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+\subsection{Write Paths: \texttt{paths.py}}
 
+The \texttt{paths.py} module implements the three write strategies.
 
-The design isolates the core variables.
+\subsubsection{P1: Plain Unconditional Put}
 
+\begin{verbatim}
+def write_p1(table, request_id, data):
+    response = table.put_item(
+        Item={
+            'pk': f'BUSINESS#{request_id}',
+            'sk': 'ITEM',
+            'data': data,
+            'written_at': datetime.utcnow().isoformat(),
+            'version': 1
+        },
+        ReturnConsumedCapacity='TOTAL'
+    )
+    return {
+        'outcome': 'APPLIED',
+        'capacity': response['ConsumedCapacity']
+    }
+\end{verbatim}
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+\textbf{Behaviour:} Every invocation writes the item unconditionally. On retry, the same \texttt{pk} is overwritten, incrementing the version or updating the timestamp---a duplicate mutation.
 
+\subsubsection{P2: Conditional Put}
 
-The design isolates the core variables.
+\begin{verbatim}
+def write_p2(table, request_id, data):
+    try:
+        response = table.put_item(
+            Item={
+                'pk': f'BUSINESS#{request_id}',
+                'sk': 'ITEM',
+                'data': data,
+                'written_at': datetime.utcnow().isoformat(),
+                'version': 1
+            },
+            ConditionExpression='attribute_not_exists(pk)',
+            ReturnConsumedCapacity='TOTAL'
+        )
+        return {
+            'outcome': 'APPLIED',
+            'capacity': response['ConsumedCapacity']
+        }
+    except ClientError as e:
+        if e.response['Error']['Code'] == 'ConditionalCheckFailedException':
+            return {
+                'outcome': 'CONDITION_FAILED',
+                'capacity': {'WriteCapacityUnits': 1.0}  # Failed check still billed
+            }
+        else:
+            raise
+\end{verbatim}
 
-In reference to Ward (2026), the integration highlights a distinct improvement metric.
+\textbf{Behaviour:} On first delivery, the item does not exist, so the condition passes and the item is written. On retry, the item already exists, so the condition fails. The function returns success (because the desired state---item exists---is achieved), but logs \texttt{CONDITION\_FAILED}. DynamoDB bills one WCU for the failed check.
 
+\subsubsection{P3: Idempotency-Key Pattern}
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+\begin{verbatim}
+def write_p3(table, request_id, data):
+    # Step 1: Check for existing idempotency record
+    idem_pk = f'IDEM#{request_id}'
+    try:
+        idem_response = table.get_item(Key={'pk': idem_pk, 'sk': 'IDEM'},
+                                       ReturnConsumedCapacity='TOTAL')
+        if 'Item' in idem_response:
+            # Idempotency hit: return cached response
+            return {
+                'outcome': 'IDEMPOTENCY_HIT',
+                'capacity': idem_response['ConsumedCapacity'],
+                'cached_response': idem_response['Item']['response']
+            }
+    except ClientError:
+        pass  # Item does not exist, proceed
 
+    # Step 2: Write business item
+    biz_response = table.put_item(
+        Item={
+            'pk': f'BUSINESS#{request_id}',
+            'sk': 'ITEM',
+            'data': data,
+            'written_at': datetime.utcnow().isoformat(),
+            'version': 1
+        },
+        ReturnConsumedCapacity='TOTAL'
+    )
 
-The design isolates the core variables.
+    # Step 3: Atomically write idempotency record (guard against race)
+    idem_response = table.put_item(
+        Item={
+            'pk': idem_pk,
+            'sk': 'IDEM',
+            'response': {'statusCode': 200, 'data': data},
+            'expires_at': int(time.time()) + 3600  # TTL
+        },
+        ConditionExpression='attribute_not_exists(pk)',
+        ReturnConsumedCapacity='TOTAL'
+    )
 
+    total_capacity = (biz_response['ConsumedCapacity']['WriteCapacityUnits'] +
+                      idem_response['ConsumedCapacity']['WriteCapacityUnits'])
+    return {
+        'outcome': 'APPLIED',
+        'capacity': {'WriteCapacityUnits': total_capacity}
+    }
+\end{verbatim}
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+\textbf{Behaviour:} On first delivery, the idempotency record does not exist, so the function writes the business item and then the idempotency record (with a conditional guard to handle races). On retry, the \texttt{get\_item} finds the existing idempotency record, so the function skips the business write and returns the cached response. Total capacity: 1 RCU (on hit) or 2--3 WCUs (on first write: business + idempotency).
+
+\subsection{Structured Logging}
+
+The function logs every operation in JSON format:
+
+\begin{verbatim}
+{
+  "request_id": "...",
+  "path": "P2",
+  "delivery_index": 2,
+  "write_outcome": "CONDITION_FAILED",
+  "consumed_capacity": {"WriteCapacityUnits": 1.0},
+  "latency_ddb_ms": 3.2,
+  "timestamp": "2026-09-19T08:15:42.123Z"
+}
+\end{verbatim}
+
+CloudWatch Logs Insights can query these logs to cross-validate the driver's ground-truth schedule.
+
+\section{Driver Architecture}
+
+The driver (\texttt{src/driver/}) is a command-line application with three submodules: \texttt{schedule.py}, \texttt{run.py}, and \texttt{streams.py}.
+
+\subsection{Schedule Generation: \texttt{schedule.py}}
+
+\texttt{schedule.py} generates a factorial design of requests:
+
+\begin{verbatim}
+cells = [
+    ('P1', 1), ('P1', 2), ('P1', 5),
+    ('P2', 1), ('P2', 2), ('P2', 5),
+    ('P3', 1), ('P3', 2), ('P3', 5)
+]
+for (path, multiplicity) in cells:
+    for i in range(N):  # N determined by pilot or specified by user
+        request_id = uuid.uuid4()
+        schedule.append({
+            'request_id': str(request_id),
+            'path': path,
+            'deliveries': multiplicity
+        })
+\end{verbatim}
+
+The schedule is written to \texttt{data/runs/<phase>/schedule.csv}. A deterministic seed ensures reproducibility.
+
+\subsection{Invocation: \texttt{run.py}}
+
+\texttt{run.py} reads the schedule and invokes Lambda for each request:
+
+\begin{verbatim}
+for request in schedule:
+    for delivery_index in range(1, request['deliveries'] + 1):
+        inject_timeout = (delivery_index < request['deliveries'])
+        response = invoke_lambda(
+            request_id=request['request_id'],
+            path=request['path'],
+            delivery_index=delivery_index,
+            inject_timeout=inject_timeout
+        )
+        log_delivery({
+            'request_id': request['request_id'],
+            'path': request['path'],
+            'delivery_index': delivery_index,
+            'inject_timeout': inject_timeout,
+            'status_code': response['statusCode'],
+            'latency_ms': response['latency'],
+            'capacity': response.get('ConsumedCapacity', {}),
+            'timed_out': response.get('FunctionError') == 'Timeout'
+        })
+\end{verbatim}
+
+Invocations are parallelised using \texttt{concurrent.futures.ThreadPoolExecutor(max\_workers=16)} to reduce wall-clock time. The driver respects a hard limit of 60,000 invocations (configurable in \texttt{config/experiment.yaml}).
+
+\subsection{Backend Abstraction}
+
+\texttt{run.py} supports two backends:
+
+\begin{itemize}
+    \item \textbf{Lambda backend} (\texttt{--backend lambda}): Uses boto3 \texttt{lambda\_client.invoke()} to call the deployed AWS Lambda function.
+    \item \textbf{Local backend} (\texttt{--backend local --moto}): Uses moto to mock DynamoDB and Streams in-process. The Lambda handler is imported and called directly (no actual Lambda invocation). This backend is used for functional validation and CI testing.
+\end{itemize}
+
+\subsection{Streams Processing: \texttt{streams.py}}
+
+After all invocations complete, \texttt{streams.py} polls DynamoDB Streams to reconstruct mutation ground truth:
+
+\begin{verbatim}
+stream_client = boto3.client('dynamodbstreams')
+shards = get_all_shards(stream_arn)
+for shard in shards:
+    iterator = stream_client.get_shard_iterator(
+        StreamArn=stream_arn,
+        ShardId=shard['ShardId'],
+        ShardIteratorType='TRIM_HORIZON'
+    )['ShardIterator']
+    
+    while iterator:
+        response = stream_client.get_records(ShardIterator=iterator)
+        for record in response['Records']:
+            if record['eventName'] in ['INSERT', 'MODIFY']:
+                pk = record['dynamodb']['Keys']['pk']['S']
+                if pk.startswith('BUSINESS#'):
+                    request_id = pk.replace('BUSINESS#', '')
+                    mutations[request_id].append(record)
+        iterator = response.get('NextShardIterator')
+\end{verbatim}
+
+The driver counts mutations per \texttt{request\_id} and compares to the scheduled retry count. Mismatches are flagged in \texttt{results/<phase>/checks.csv}.
+
+\section{Analysis Pipeline}
+
+The analysis pipeline (\texttt{analysis/}) consists of four modules:
+
+\subsection{Pilot Sizing: \texttt{pilot\_size.py}}
+
+Reads pilot data (\texttt{data/runs/pilot/}), estimates variance for latency and duplicate-rate Bernoulli variance, computes required $N$ for 95\% CI width targets (1 pp for duplicate rate, 5\% for capacity), and writes \texttt{results/pilot\_report.md} and \texttt{results/pilot\_choice.json}.
+
+\subsection{Metrics: \texttt{metrics.py}}
+
+Aggregates raw deliveries into per-request and per-cell summaries:
+
+\begin{itemize}
+    \item Duplicate-mutation rate: count retries where stream shows $>1$ mutation.
+    \item Latency: mean, median, p95, p99; separate cold vs warm.
+    \item Capacity: mean, median, p95 per request.
+\end{itemize}
+
+Outputs \texttt{results/<phase>/cells.csv}.
+
+\subsection{Statistical Tests: \texttt{stats.py}}
+
+Implements:
+
+\begin{itemize}
+    \item Wilson score interval for proportions.
+    \item Cluster-bootstrap CI (2000 resamples, treating each request as a cluster).
+    \item Two-proportion $z$-test with pooled standard error.
+    \item Chi-square test for contingency tables.
+    \item Shapiro–Wilk normality test.
+    \item Mann–Whitney $U$ test with rank-biserial effect size.
+    \item Welch's $t$-test (if normality holds).
+    \item Holm–Bonferroni correction.
+\end{itemize}
+
+\subsection{Analysis Orchestration: \texttt{analyse.py}}
+
+Reads campaign and sensitivity data, calls \texttt{metrics.py} and \texttt{stats.py}, evaluates pre-registered expectations, generates figures (using \texttt{matplotlib} and \texttt{seaborn}), and writes \texttt{results/<phase>/summary.md}.
+
+Figures:
+
+\begin{itemize}
+    \item \texttt{dup\_rate.png}: Duplicate-mutation rate by path and multiplicity, with 95\% CIs.
+    \item \texttt{latency.png}: Mean latency by path and multiplicity, with 95\% CIs.
+    \item \texttt{capacity.png}: Mean consumed capacity by path and multiplicity, with 95\% CIs.
+    \item \texttt{surface.png}: 3D surface plot of correctness (1 - dup\_rate) vs latency vs capacity.
+\end{itemize}
+
+\section{Infrastructure as Code}
+
+The Terraform configuration (\texttt{infra/}) provisions:
+
+\subsection{DynamoDB Table}
+
+\begin{verbatim}
+resource "aws_dynamodb_table" "main" {
+  name           = "vikas-thesis-idempotency-eval"
+  billing_mode   = "PAY_PER_REQUEST"
+  hash_key       = "pk"
+  range_key      = "sk"
+  stream_enabled = true
+  stream_view_type = "NEW_AND_OLD_IMAGES"
+
+  attribute {
+    name = "pk"
+    type = "S"
+  }
+  attribute {
+    name = "sk"
+    type = "S"
+  }
+
+  ttl {
+    attribute_name = "expires_at"
+    enabled        = true
+  }
+}
+\end{verbatim}
+
+\subsection{Lambda Function}
+
+\begin{verbatim}
+resource "aws_lambda_function" "handler" {
+  function_name = "vikas-thesis-idempotency-handler"
+  runtime       = "python3.12"
+  architectures = ["arm64"]
+  memory_size   = 256
+  timeout       = 2
+  role          = aws_iam_role.lambda_role.arn
+  handler       = "handler.lambda_handler"
+  filename      = "../build/lambda.zip"
+  source_code_hash = filebase64sha256("../build/lambda.zip")
+
+  environment {
+    variables = {
+      TABLE_NAME = aws_dynamodb_table.main.name
+    }
+  }
+}
+\end{verbatim}
+
+\subsection{IAM Role}
+
+\begin{verbatim}
+resource "aws_iam_role" "lambda_role" {
+  name = "vikas-thesis-lambda-role"
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect = "Allow"
+      Principal = { Service = "lambda.amazonaws.com" }
+      Action = "sts:AssumeRole"
+    }]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_logs" {
+  role       = aws_iam_role.lambda_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+}
+
+resource "aws_iam_policy" "dynamodb_access" {
+  name = "vikas-thesis-dynamodb-access"
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect = "Allow"
+      Action = [
+        "dynamodb:PutItem",
+        "dynamodb:GetItem",
+        "dynamodb:UpdateItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:Query",
+        "dynamodb:Scan"
+      ]
+      Resource = aws_dynamodb_table.main.arn
+    }]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_dynamodb" {
+  role       = aws_iam_role.lambda_role.name
+  policy_arn = aws_iam_policy.dynamodb_access.arn
+}
+\end{verbatim}
+
+\subsection{CloudWatch Billing Alarm}
+
+\begin{verbatim}
+resource "aws_cloudwatch_metric_alarm" "budget" {
+  alarm_name          = "vikas-thesis-budget-alarm"
+  comparison_operator = "GreaterThanThreshold"
+  evaluation_periods  = 1
+  metric_name         = "EstimatedCharges"
+  namespace           = "AWS/Billing"
+  period              = 3600
+  statistic           = "Maximum"
+  threshold           = 1.0
+  alarm_description   = "Alert if estimated charges exceed USD 1.00"
+}
+\end{verbatim}
+
+\section{Configuration and Versioning}
+
+All versions are pinned in \texttt{config/versions.yaml}:
+
+\begin{verbatim}
+region: eu-west-1
+runtime: python3.12
+architecture: arm64
+memory_mb: 256
+timeout_s: 2
+boto3_version: 1.35.36  # bundled with Lambda Python 3.12
+terraform_version: 1.15.7
+aws_provider_version: 6.64.0
+\end{verbatim}
+
+Experiment parameters are in \texttt{config/experiment.yaml}:
+
+\begin{verbatim}
+pilot_n_per_cell: 50
+max_invocations: 60000
+workers: 16
+seed: 42
+alpha: 0.05
+bootstrap_b: 2000
+\end{verbatim}
+
+\section{Summary}
+
+The design separates concerns: the Lambda function implements the three write paths; the driver generates the schedule, invokes Lambda, and polls streams; the analysis pipeline computes metrics and performs hypothesis tests; Terraform provisions infrastructure. All components are version-controlled, reproducible, and tested. The next chapter describes the implementation details and functional validation results.
+
+Vikas Reddy Amanagantti

@@ -1,75 +1,295 @@
 \chapter{Implementation}
-[IMAGE PLACEHOLDER: aws_cloudwatch_dashboard.png]
-AWS SAM is used to deploy. Code incorporates improvements over Nguyen et al. (2025).
 
-In reference to Watson (2026), the integration highlights a distinct improvement metric.
+This chapter describes the implementation details, build process, testing strategy, and functional validation results on moto.
 
+\section{Development Environment and Tools}
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+\begin{itemize}
+    \item \textbf{Language:} Python 3.12
+    \item \textbf{Package management:} pip with \texttt{requirements-dev.txt} (includes pytest, moto, boto3, pandas, scipy, statsmodels, matplotlib, seaborn, ruff, pyyaml)
+    \item \textbf{Lambda dependencies:} boto3 1.35.36 (bundled with AWS Lambda Python 3.12 runtime; no additional dependencies packaged)
+    \item \textbf{Testing:} pytest 8.x with moto 5.x for DynamoDB and Streams mocking
+    \item \textbf{Linting:} ruff for code quality checks
+    \item \textbf{CI/CD:} GitHub Actions workflow (not currently enabled; placeholder in \texttt{.github/workflows/})
+    \item \textbf{Version control:} Git, hosted on GitHub (repository: \texttt{Tarunchintakunta/Thesis-2.0}, subdirectory: \texttt{vikas-thesis/lambda-idempotency-eval})
+\end{itemize}
 
+\section{Build Process}
 
-Moreover, bridging the gap identified in Nguyen et al. (2025) necessitates this novel perspective: Prior work evaluates latency bounds theoretically. This research empirically injects network partitioning to measure read-stall degradation.
+The Lambda deployment package is built via \texttt{scripts/build\_lambda.sh}:
 
-As noted in Ramos & Kim (2026), scalability remains paramount. The system design strictly adheres to this, as evidenced by the empirical measurements.
+\begin{verbatim}
+#!/usr/bin/env bash
+set -euo pipefail
 
-AWS SAM is used to deploy. Code incorporates improvements over Nguyen et al. (2025).
+BUILD_DIR="build"
+SRC_DIR="src/lambda_fn"
 
+rm -rf "$BUILD_DIR"
+mkdir -p "$BUILD_DIR"
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+# Copy Lambda function code
+cp "$SRC_DIR"/handler.py "$SRC_DIR"/paths.py "$BUILD_DIR/"
 
+# No external dependencies (boto3 is bundled with Lambda Python 3.12)
 
-AWS SAM is used to deploy. Code incorporates improvements over Nguyen et al. (2025).
+# Create deployment zip
+cd "$BUILD_DIR" && zip -r lambda.zip . && cd -
 
+echo "Deployment package: build/lambda.zip"
+\end{verbatim}
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+Terraform references \texttt{build/lambda.zip} and computes a SHA256 hash to trigger redeployment only when the code changes.
 
+\section{Testing Strategy}
 
-AWS SAM is used to deploy. Code incorporates improvements over Nguyen et al. (2025).
+\subsection{Unit Tests}
 
-In reference to Reed (2025), the integration highlights a distinct improvement metric.
+The test suite (\texttt{tests/}) contains 63 tests covering:
 
+\begin{itemize}
+    \item \texttt{test\_paths.py} (17 tests): Each write path (P1, P2, P3) under normal and error conditions (e.g., P2 conditional check failure, P3 idempotency hit).
+    \item \texttt{test\_schedule.py} (8 tests): Schedule generation, deterministic seeding, factorial design coverage.
+    \item \texttt{test\_driver.py} (12 tests): Invocation logic, timeout handling, capacity aggregation.
+    \item \texttt{test\_streams.py} (6 tests): Stream record parsing, mutation counting, cross-validation with ground truth.
+    \item \texttt{test\_metrics.py} (10 tests): Duplicate-rate calculation, latency aggregation, cold/warm separation.
+    \item \texttt{test\_stats.py} (8 tests): Wilson CI, bootstrap CI, z-test, chi-square, Mann–Whitney U, Holm correction.
+    \item \texttt{test\_pilot\_size.py} (4 tests): Variance estimation, power analysis, $N$ computation.
+    \item \texttt{test\_analyse.py} (3 tests): End-to-end analysis pipeline (moto data).
+    \item \texttt{test\_infra.py} (2 tests): Terraform validation (\texttt{terraform validate}, \texttt{terraform fmt}).
+    \item \texttt{test\_budget\_estimate.py} (2 tests): Cost calculation from config/prices.yaml.
+    \item \texttt{test\_check\_bib.py} (1 test): Verify all in-text citations have corresponding BibTeX entries.
+    \item \texttt{test\_collect\_cloudwatch.py} (1 test): CloudWatch Logs Insights query construction.
+\end{itemize}
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+All tests use moto to mock DynamoDB and DynamoDB Streams, avoiding the need for live AWS credentials during development and CI.
 
+\subsection{Functional Validation}
 
-AWS SAM is used to deploy. Code incorporates improvements over Nguyen et al. (2025).
+The \texttt{make functional} target runs the complete experiment pipeline on moto with small $N$ (30 per cell for campaign, 20 per cell for sensitivity). This validates:
 
+\begin{itemize}
+    \item P1 produces 100\% duplicate mutations at multiplicity 2 and 5 (as expected).
+    \item P2 and P3 produce 0\% duplicate mutations (guarded paths work).
+    \item Stream-observed mutations match the function's self-reported write outcomes (0 mismatches out of 720 invocations).
+    \item Analysis pipeline runs without errors, generating all tables and figures.
+\end{itemize}
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+Functional validation results are labelled "moto functional check - NOT an AWS measurement" in all outputs.
 
+\subsection{Test Execution}
 
-AWS SAM is used to deploy. Code incorporates improvements over Nguyen et al. (2025).
+\begin{verbatim}
+$ make test
+...............................................................          [100%]
+63 passed in 8.05s
+\end{verbatim}
 
+All tests pass. No test failures are tolerated in the repository.
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+\section{Makefile Targets}
 
+The \texttt{Makefile} provides high-level commands:
 
-Moreover, bridging the gap identified in Nguyen et al. (2025) necessitates this novel perspective: Prior work evaluates latency bounds theoretically. This research empirically injects network partitioning to measure read-stall degradation.
+\begin{itemize}
+    \item \texttt{make setup}: Create virtual environment and install dependencies.
+    \item \texttt{make test}: Run pytest.
+    \item \texttt{make lint}: Run ruff code quality checks.
+    \item \texttt{make check-bib}: Verify BibTeX references match in-text citations.
+    \item \texttt{make tf-check}: Run \texttt{terraform fmt -check} and \texttt{terraform validate}.
+    \item \texttt{make budget}: Print cost estimate for pilot, campaign, and sensitivity phases.
+    \item \texttt{make build}: Build Lambda deployment package (\texttt{build/lambda.zip}).
+    \item \texttt{make deploy}: Run \texttt{terraform apply} to provision AWS resources.
+    \item \texttt{make pilot}: Run pilot experiment (50 requests per cell, live AWS).
+    \item \texttt{make pilot-size}: Compute required $N$ from pilot variance.
+    \item \texttt{make campaign}: Run full campaign (N from pilot, live AWS).
+    \item \texttt{make sensitivity}: Run sensitivity test (P3 crash between writes, live AWS).
+    \item \texttt{make cloudwatch}: Collect CloudWatch Logs Insights data.
+    \item \texttt{make analyse}: Run analysis pipeline, generate figures and summary.
+    \item \texttt{make destroy}: Run \texttt{terraform destroy} to clean up AWS resources.
+    \item \texttt{make functional}: Run end-to-end functional validation on moto (no AWS).
+    \item \texttt{make clean}: Remove build artifacts and local run data.
+\end{itemize}
 
-AWS SAM is used to deploy. Code incorporates improvements over Nguyen et al. (2025).
+\section{Functional Validation Results on Moto}
 
-In reference to Kelly (2026), the integration highlights a distinct improvement metric.
+The functional check was executed on 2026-09-19 with the following configuration:
 
+\begin{itemize}
+    \item Backend: moto (local DynamoDB mock)
+    \item Pilot: 50 requests per cell (150 requests, 300 invocations)
+    \item Campaign: 30 requests per cell (270 requests, 720 invocations)
+    \item Sensitivity: 20 requests per cell for P3 only (40 requests, 140 invocations)
+    \item Total: 460 requests, 1160 invocations
+\end{itemize}
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+\subsection{Data Quality Checks}
+
+All data-quality checks passed (see \texttt{results/moto/summary.md}):
+
+\begin{table}[h]
+\centering
+\caption{Moto functional check: data quality}
+\begin{tabular}{lr}
+\hline
+\textbf{Check} & \textbf{Value} \\
+\hline
+Planned deliveries & 720 \\
+Observed deliveries & 720 \\
+Missing deliveries & 0 \\
+Deliveries with status error & 0 \\
+After-commit injections that did not time out & 0 \\
+Deliveries whose record was lost (no capacity) & 0 \\
+Requests with no business mutation & 0 \\
+Requests where stream and self-report disagree & 0 \\
+Final deliveries that were cold starts & 0 \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Duplicate-Mutation Rates}
+
+Table~\ref{tab:moto_dup_rates} shows the duplicate-mutation rates from the moto functional check.
+
+\begin{table}[h]
+\centering
+\caption{Moto functional check: duplicate-mutation rates}
+\label{tab:moto_dup_rates}
+\begin{tabular}{llrrrrr}
+\hline
+\textbf{Path} & \textbf{Mult.} & \textbf{Requests} & \textbf{Retries} & \textbf{Dups} & \textbf{Rate} & \textbf{95\% CI} \\
+\hline
+P1 & 2 & 30 & 30 & 30 & 1.00 & [0.89, 1.00] \\
+P1 & 5 & 30 & 120 & 120 & 1.00 & [0.97, 1.00] \\
+P2 & 2 & 30 & 30 & 0 & 0.00 & [0.00, 0.11] \\
+P2 & 5 & 30 & 120 & 0 & 0.00 & [0.00, 0.03] \\
+P3 & 2 & 30 & 30 & 0 & 0.00 & [0.00, 0.11] \\
+P3 & 5 & 30 & 120 & 0 & 0.00 & [0.00, 0.03] \\
+\hline
+\end{tabular}
+\end{table}
+
+\textbf{Interpretation:} P1 produces 100\% duplicate mutations (as expected). P2 and P3 produce 0\% duplicate mutations (guarded paths work). The narrow CIs at multiplicity 5 reflect the larger number of retry observations (120 vs 30).
+
+\subsection{Hypothesis Tests}
+
+Two-proportion $z$-tests (Table~\ref{tab:moto_z_tests}) confirm that P1 has a significantly higher duplicate rate than P2 and P3 at both multiplicities (Holm-corrected $p < 10^{-14}$). P2 and P3 do not differ significantly (both achieve 0\% duplicates).
+
+\begin{table}[h]
+\centering
+\caption{Moto functional check: two-proportion $z$-tests (Holm-corrected)}
+\label{tab:moto_z_tests}
+\begin{tabular}{lllrrrr}
+\hline
+\textbf{Mult.} & \textbf{Comparison} & \textbf{Alternative} & \textbf{$z$} & \textbf{$p$} & \textbf{$p_{\text{Holm}}$} & \textbf{Reject $H_0$?} \\
+\hline
+2 & P1 vs P2 & P1 higher & 7.75 & $4.7 \times 10^{-15}$ & $1.9 \times 10^{-14}$ & Yes \\
+2 & P1 vs P3 & P1 higher & 7.75 & $4.7 \times 10^{-15}$ & $1.9 \times 10^{-14}$ & Yes \\
+2 & P2 vs P3 & two-sided & 0.00 & 1.00 & 1.00 & No \\
+5 & P1 vs P2 & P1 higher & 15.49 & $2.0 \times 10^{-54}$ & $1.2 \times 10^{-53}$ & Yes \\
+5 & P1 vs P3 & P1 higher & 15.49 & $2.0 \times 10^{-54}$ & $1.2 \times 10^{-53}$ & Yes \\
+5 & P2 vs P3 & two-sided & 0.00 & 1.00 & 1.00 & No \\
+\hline
+\end{tabular}
+\end{table}
+
+Chi-square test for the full contingency table (path $\times$ multiplicity $\times$ duplicate yes/no) yields $\chi^2 = 450$, $p < 10^{-94}$, strongly rejecting the null hypothesis of independence (i.e., path and multiplicity jointly affect duplicate rate).
+
+\subsection{Pre-Registered Expectations}
+
+Table~\ref{tab:moto_expectations} summarises the evaluation of pre-registered expectations on moto data.
+
+\begin{table}[h]
+\centering
+\caption{Moto functional check: pre-registered expectations}
+\label{tab:moto_expectations}
+\begin{tabular}{llll}
+\hline
+\textbf{Expectation} & \textbf{Mult.} & \textbf{Subject} & \textbf{Decision} \\
+\hline
+E1 & 2 & P1 dup. rate $> 0.5$ & Supported \\
+E1 & 5 & P1 dup. rate $> 0.5$ & Supported \\
+E2 & 2 & P2 reduction $> 90\%$ & Inconclusive (CI wide) \\
+E2 & 2 & P3 reduction $> 90\%$ & Inconclusive (CI wide) \\
+E2 & 5 & P2 reduction $> 90\%$ & Supported \\
+E2 & 5 & P3 reduction $> 90\%$ & Supported \\
+E3 & 1 & P3 - P2 capacity $> 0$ & Supported \\
+E3 & 2 & P3 - P2 capacity $> 0$ & Supported \\
+E3 & 5 & P3 - P2 capacity $> 0$ & Supported \\
+\hline
+\end{tabular}
+\end{table}
+
+\textbf{Interpretation:} E1 (P1 majority duplicates) is supported at both multiplicities. E2 (guarded paths $> 90\%$ reduction) is supported at multiplicity 5 but inconclusive at multiplicity 2 due to small $N$ (30 requests $\rightarrow$ 30 retries $\rightarrow$ wide CI for a proportion near 0). E3 (P3 higher capacity) is supported: moto reports fixed capacity values (P2: 2 WCUs for retries, P3: 3.5 WCUs for retries), so the difference is deterministic.
+
+\subsection{Latency and Capacity (Moto Limitations)}
+
+Moto does not model latency or consumed capacity realistically:
+
+\begin{itemize}
+    \item \textbf{Latency:} Moto reports sub-2 ms mean latency for all paths, with no cold-start overhead. Real AWS Lambda exhibits 100--500 ms cold-start latency and 1--10 ms warm latency.
+    \item \textbf{Capacity:} Moto reports fixed 0.5 WCUs for every UpdateItem, regardless of condition success/failure. Real AWS DynamoDB bills 1.0 WCU for conditional writes (whether condition passes or fails), 1.0 RCU for reads, and variable WCUs for large items.
+\end{itemize}
+
+\textbf{Conclusion:} Latency and capacity measurements from moto are \textit{not trustworthy} and must not be reported as research findings. They serve only to verify that the analysis pipeline computes metrics and CIs without errors. Live AWS campaign data is required to answer the research question.
+
+\subsection{Sensitivity Test: P3 Crash Between Writes}
+
+The sensitivity test simulates a scenario where the Lambda function crashes (or times out) \textit{between} writing the business item and marking the idempotency record as COMPLETED. In this case, a retry sees an incomplete idempotency record and writes the business item again---producing a duplicate mutation.
+
+Moto results (Table~\ref{tab:moto_sensitivity}):
+
+\begin{table}[h]
+\centering
+\caption{Moto sensitivity test: P3 crash between writes}
+\label{tab:moto_sensitivity}
+\begin{tabular}{llrrrrr}
+\hline
+\textbf{Path} & \textbf{Mult.} & \textbf{Requests} & \textbf{Retries} & \textbf{Dups} & \textbf{Rate} & \textbf{95\% CI} \\
+\hline
+P3 & 2 & 20 & 20 & 20 & 1.00 & [0.84, 1.00] \\
+P3 & 5 & 20 & 80 & 80 & 1.00 & [0.95, 1.00] \\
+\hline
+\end{tabular}
+\end{table}
+
+\textbf{Interpretation:} When the idempotency-key pattern is incomplete (crash before marking COMPLETED), P3 behaves like P1---100\% duplicate mutations. This confirms the importance of atomic idempotency-record writes (using conditional guards to prevent races). In the main campaign, P3 uses \texttt{attribute\_not\_exists} on the idempotency record to ensure atomicity, so this failure mode does not occur.
+
+\subsection{Figures}
+
+Four figures were generated from the moto functional check (see \texttt{figures/moto/}):
+
+\begin{itemize}
+    \item \texttt{dup\_rate.png}: Bar chart of duplicate-mutation rate by path and multiplicity, with 95\% CIs.
+    \item \texttt{latency.png}: Bar chart of mean latency by path and multiplicity (moto data; not real AWS latency).
+    \item \texttt{capacity.png}: Bar chart of mean consumed capacity by path and multiplicity (moto data; not real AWS capacity).
+    \item \texttt{surface.png}: 3D surface plot of correctness (1 - dup\_rate) vs latency vs capacity (moto data; illustrative only).
+\end{itemize}
+
+These figures are included in the repository but labelled "moto functional check" to avoid conflation with live AWS results.
+
+\section{Implementation Challenges and Solutions}
+
+\subsection{Challenge 1: Injecting Timeouts Reliably}
+
+\textbf{Problem:} Lambda may cache warm containers across invocations, and a sleep-based timeout in invocation $i$ could affect invocation $i+1$ if they run on the same container.
+
+\textbf{Solution:} The driver uses synchronous invocation (blocking on each response) and waits for the timeout error before invoking the next delivery. Each invocation receives a fresh \texttt{delivery\_index}, so the function can distinguish first vs retry deliveries. The function only sleeps if \texttt{inject\_timeout = true} and \texttt{delivery\_index < deliveries}.
+
+\subsection{Challenge 2: DynamoDB Streams Pagination}
+
+\textbf{Problem:} DynamoDB Streams return records in shards, with pagination via \texttt{NextShardIterator}. Missing a page would lose mutation records.
+
+\textbf{Solution:} The driver iterates through all shards (via \texttt{DescribeStream} $\rightarrow$ \texttt{ListShards}) and polls each shard's iterator until \texttt{NextShardIterator} is null. A sanity check compares the total number of stream records to the expected number of business-item writes.
+
+\subsection{Challenge 3: Moto Capacity Reporting}
+
+\textbf{Problem:} Moto reports fixed 0.5 WCUs for all writes, which is incorrect for conditional writes and idempotency-key reads.
+
+\textbf{Solution:} Document this limitation in \texttt{STATUS.md} and the report. Do not claim moto capacity measurements as research findings. Live AWS campaign is required.
+
+\section{Summary}
+
+The implementation is complete, tested (63 passing unit tests), and functionally validated on moto. The artefact successfully demonstrates that P1 produces duplicate mutations, P2 and P3 prevent duplicates, and the analysis pipeline computes metrics and hypothesis tests correctly. However, moto does not provide realistic latency or capacity measurements, so live AWS campaign data is required to answer the research question quantitatively. The next chapter presents the evaluation plan and discusses how live AWS results would be integrated into the report.
+
+Vikas Reddy Amanagantti

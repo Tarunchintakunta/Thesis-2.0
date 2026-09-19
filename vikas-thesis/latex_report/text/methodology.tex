@@ -1,86 +1,277 @@
-\chapter{Methodology}
-We simulate and deploy infrastructure tailored for 'Evaluating Latency in Multi-Region Cloud Deployments with Eventual Consistency'.
+\chapter{Research Methodology}
 
-In reference to Chavez et al. (2026), the integration highlights a distinct improvement metric.
+This chapter describes the experimental design, independent and dependent variables, injection protocol, pilot-sizing rule, statistical tests, ethics considerations, and threats to validity.
 
+\section{Research Paradigm}
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+The study adopts a \textit{quantitative experimental} paradigm. A controlled experiment is conducted on AWS Lambda and Amazon DynamoDB to measure the causal effect of three write-path treatments (P1, P2, P3) on duplicate-mutation rate, latency, and consumed capacity under known retry multiplicities (1, 2, 5 deliveries per request). The experiment follows the pilot-first replication methodology advocated by \citet{Wen2025Variance} to ensure statistical power despite serverless performance variance.
 
+\section{Experimental Design}
 
-Moreover, bridging the gap identified in Nguyen et al. (2025) necessitates this novel perspective: Prior work evaluates latency bounds theoretically. This research empirically injects network partitioning to measure read-stall degradation.
+\subsection{Architecture}
 
-As noted in Watson (2026), scalability remains paramount. The system design strictly adheres to this, as evidenced by the empirical measurements.
+Figure~\ref{fig:architecture} illustrates the system architecture.
 
-We simulate and deploy infrastructure tailored for 'Evaluating Latency in Multi-Region Cloud Deployments with Eventual Consistency'.
+\begin{figure}[h]
+\centering
+\begin{verbatim}
+Driver (Python, local machine or EC2)
+  |
+  |--- schedules requests: (request_id, path, deliveries) ---
+  |
+  v
+AWS Lambda (single function, Python 3.12 arm64, 256 MB, 2s timeout)
+  |--- path selector: P1 | P2 | P3 ---
+  |
+  v
+Amazon DynamoDB (one table, on-demand capacity, streams enabled)
+  |--- business items (pk, sk, data, version, ...) ---
+  |--- idempotency items (pk=IDEM#<request_id>, response, ...) ---
+  |
+  |<-- DynamoDB Streams -->
+  |
+Driver collects stream records (mutation ground truth)
+  |
+  v
+Analysis pipeline (Python: pandas, scipy, statsmodels)
+  |--- pilot sizing, metrics, hypothesis tests, figures ---
+\end{verbatim}
+\caption{System architecture for controlled retry experiment}
+\label{fig:architecture}
+\end{figure}
 
+The driver runs locally (or on an EC2 instance in the same region for low latency). It generates a deterministic schedule of requests, invokes the Lambda function (or a local backend for moto testing), and collects response metadata (ConsumedCapacity, latency, status code). After all invocations complete, the driver polls DynamoDB Streams to reconstruct the mutation ground truth (which items were written, how many times, by which delivery).
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+\subsection{Independent Variables}
 
+\begin{itemize}
+    \item \textbf{Write path} (categorical, 3 levels): P1 (plain unconditional put), P2 (conditional put with \texttt{attribute\_not\_exists(pk)} or version guard), P3 (idempotency-key pattern: persist request ID and response, skip business mutation on duplicate).
+    \item \textbf{Retry multiplicity} (ordinal, 3 levels): 1 (no retry), 2 (one retry), 5 (four retries). The driver schedules exactly $M$ deliveries of the same \texttt{request\_id}, injecting timeouts on deliveries $1..(M-1)$ after the write has committed.
+\end{itemize}
 
-We simulate and deploy infrastructure tailored for 'Evaluating Latency in Multi-Region Cloud Deployments with Eventual Consistency'.
+\subsection{Dependent Variables}
 
+\begin{itemize}
+    \item \textbf{Duplicate-mutation rate} (primary): proportion of injected retries that cause a second state change (i.e., increment a counter or overwrite an item). Measured from DynamoDB Streams.
+    \item \textbf{Conditional-check-failure rate}: proportion of retries where the conditional write fails (for P2). These invocations consume capacity but do not mutate state.
+    \item \textbf{Successful-retry rate}: proportion of retries where no second mutation occurs (the idempotency guard works).
+    \item \textbf{End-to-end latency} (mean, p95): time from driver invoke to response received, in milliseconds. Reported separately for cold starts and warm invocations.
+    \item \textbf{Consumed capacity per request}: DynamoDB read and write capacity units (RCU, WCU) or on-demand request units, obtained from \texttt{ReturnConsumedCapacity=TOTAL} on every operation. Includes failed conditional checks.
+\end{itemize}
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+\subsection{Control Variables (Constants)}
 
+The following parameters are held constant to isolate the effect of write path and retry multiplicity:
 
-We simulate and deploy infrastructure tailored for 'Evaluating Latency in Multi-Region Cloud Deployments with Eventual Consistency'.
+\begin{itemize}
+    \item AWS region: eu-west-1
+    \item Lambda runtime: Python 3.12 arm64
+    \item Lambda memory: 256 MB
+    \item Lambda timeout: 2 seconds
+    \item DynamoDB capacity mode: on-demand
+    \item DynamoDB table schema: single table with \texttt{pk} (partition key), \texttt{sk} (sort key)
+    \item Item payload size: approximately 1 KB (business data + metadata)
+    \item boto3 SDK version: 1.35.36 (bundled with Lambda Python 3.12)
+    \item Terraform version: 1.15.7
+    \item AWS provider version: 6.64.0
+    \item Driver invocation concurrency: controlled via \texttt{ThreadPoolExecutor} with \texttt{max\_workers=16} (adjustable)
+\end{itemize}
 
-In reference to Ward (2026), the integration highlights a distinct improvement metric.
+\section{Write-Path Semantics}
 
+Table~\ref{tab:write_paths} specifies the behaviour of each write path on first delivery and duplicate delivery.
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+\begin{table}[h]
+\centering
+\caption{Write-path semantics}
+\label{tab:write_paths}
+\begin{tabular}{p{2cm}p{5cm}p{5cm}}
+\hline
+\textbf{Path} & \textbf{First delivery} & \textbf{Duplicate delivery} \\
+\hline
+P1 & Unconditional \texttt{PutItem(pk, sk, data)} & Second \texttt{PutItem} applies again $\rightarrow$ duplicate mutation expected \\
+\hline
+P2 & \texttt{PutItem} or \texttt{UpdateItem} with \texttt{ConditionExpression="attribute\_not\_exists(pk)"} or \texttt{"version = :v"} & Condition fails $\rightarrow$ \texttt{ConditionalCheckFailedException}, no mutation, capacity still consumed \\
+\hline
+P3 & (1) Write business item \texttt{PutItem(pk, sk, data)}; (2) Write idempotency item \texttt{PutItem(pk=IDEM\#<request\_id>, response=...)} with \texttt{attribute\_not\_exists} guard & Same \texttt{request\_id} $\rightarrow$ idempotency item already exists $\rightarrow$ return cached response, skip business mutation \\
+\hline
+\end{tabular}
+\end{table}
 
+\textbf{Implementation notes:}
 
-We simulate and deploy infrastructure tailored for 'Evaluating Latency in Multi-Region Cloud Deployments with Eventual Consistency'.
+\begin{itemize}
+    \item P1 uses a simple unconditional \texttt{table.put\_item()} with no guards.
+    \item P2 uses \texttt{table.put\_item(ConditionExpression="attribute\_not\_exists(pk)")} on first write. On retry, the condition fails and the function catches \texttt{ConditionalCheckFailedException}, logging the failure and returning success (because the item already exists as desired).
+    \item P3 follows the Powertools for AWS Lambda idempotency pattern \citep{AWSPowertoolsDocs}: before mutating the business item, the function checks whether an idempotency record exists for the current \texttt{request\_id}. If so, it returns the cached response. If not, it writes the business item, then atomically writes the idempotency record with a conditional guard to prevent race conditions. On retry, the idempotency record exists, so the business mutation is skipped.
+\end{itemize}
 
+\section{Injection Protocol}
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+The driver schedules requests with known delivery counts to establish ground truth for duplicate detection.
 
+\subsection{Schedule Generation}
 
-We simulate and deploy infrastructure tailored for 'Evaluating Latency in Multi-Region Cloud Deployments with Eventual Consistency'.
+For each cell in the factorial design (3 paths $\times$ 3 multiplicities), the driver generates $N$ requests. Each request is assigned:
 
+\begin{itemize}
+    \item A unique \texttt{request\_id} (UUID4, deterministically seeded for reproducibility).
+    \item A \texttt{path} (P1, P2, or P3).
+    \item A \texttt{deliveries} count (1, 2, or 5).
+\end{itemize}
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+The schedule is written to a CSV file (\texttt{schedule.csv}) before any invocations begin.
 
+\subsection{Invocation and Timeout Injection}
 
-Moreover, bridging the gap identified in Nguyen et al. (2025) necessitates this novel perspective: Prior work evaluates latency bounds theoretically. This research empirically injects network partitioning to measure read-stall degradation.
+For each request with \texttt{deliveries = M}:
 
-We simulate and deploy infrastructure tailored for 'Evaluating Latency in Multi-Region Cloud Deployments with Eventual Consistency'.
+\begin{enumerate}
+    \item The driver invokes the Lambda function with payload \texttt{\{"request\_id": ..., "path": ..., "delivery\_index": 1, "inject\_timeout": true\}}.
+    \item The Lambda function executes the write path logic (P1, P2, or P3), successfully committing the write to DynamoDB.
+    \item If \texttt{inject\_timeout = true} and \texttt{delivery\_index < M}, the function sleeps for 3 seconds (exceeding the 2-second Lambda timeout), causing the invocation to be forcibly terminated by the platform. The driver receives a timeout error (HTTP 5xx or SDK exception).
+    \item The driver waits briefly, then invokes again with \texttt{\{"request\_id": ..., "path": ..., "delivery\_index": 2, "inject\_timeout": true\}}.
+    \item Steps repeat until \texttt{delivery\_index = M}, at which point \texttt{inject\_timeout = false} and the function completes normally, returning success.
+\end{enumerate}
 
-In reference to Howard (2025), the integration highlights a distinct improvement metric.
+\textbf{Critical property:} The timeout occurs \textit{after} the DynamoDB write has committed and the function has logged the write outcome. From the platform's perspective, the invocation failed (timeout), so a retry is warranted. From the database's perspective, the state has already changed. This is the duplicate-generating scenario that idempotency guards must handle.
 
+\subsection{Ground-Truth Logging}
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+The driver writes a ground-truth log (\texttt{deliveries.jsonl}) with one entry per invocation:
 
+\begin{verbatim}
+{"request_id": "...", "path": "P1", "delivery_index": 1, 
+ "inject_timeout": true, "status_code": 200, "timed_out": true, 
+ "latency_ms": 2003.5, "capacity": {"WriteCapacityUnits": 1.0}}
+\end{verbatim}
 
-We simulate and deploy infrastructure tailored for 'Evaluating Latency in Multi-Region Cloud Deployments with Eventual Consistency'.
+This log records the \textit{intended} retry count before any mutations occur, enabling comparison with the \textit{observed} mutation count from DynamoDB Streams.
 
+\section{Mutation Ground Truth from DynamoDB Streams}
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+After all invocations complete, the driver polls DynamoDB Streams to reconstruct which items were mutated and how many times.
 
+\subsection{Stream Processing}
 
-As noted in Kelly (2026), scalability remains paramount. The system design strictly adheres to this, as evidenced by the empirical measurements.
+DynamoDB Streams capture a time-ordered sequence of item-level changes (INSERT, MODIFY, REMOVE). For each business item written during the experiment, the driver:
+
+\begin{enumerate}
+    \item Extracts all stream records with \texttt{eventName = "INSERT"} or \texttt{"MODIFY"} matching the item's \texttt{pk} and \texttt{sk}.
+    \item Counts the number of distinct write events for that item.
+    \item Compares the count to the ground-truth schedule: if a request was scheduled for $M$ deliveries and the item has $M$ write events, no duplicate occurred (P2 or P3 worked). If the item has $>M$ write events, duplicate mutations occurred (P1 expected behaviour, or P2/P3 failure).
+\end{enumerate}
+
+The driver cross-checks stream-based mutation counts with the function's own structured logs (which include \texttt{write\_outcome}: "APPLIED", "CONDITION\_FAILED", or "IDEMPOTENCY\_HIT"). Mismatches are flagged as data-quality issues.
+
+\subsection{CloudWatch Metrics (Secondary Validation)}
+
+The driver optionally collects CloudWatch Logs Insights queries to count Lambda invocations, errors, and timeouts. CloudWatch serves as a secondary validation of the ground-truth schedule, but \textit{is never the primary measurement} (because CloudWatch may under-report fast timeouts or merge duplicate log streams).
+
+\section{Pilot-First Replication}
+
+\citet{Wen2025Variance} demonstrate that serverless latency variance can exceed 300\%, and that only 38\% of top-venue papers report multiple runs. They recommend a pilot-first approach:
+
+\begin{enumerate}
+    \item Run a pilot experiment with $n_{\text{pilot}} \approx 50$ requests per cell (3 paths $\times$ 3 multiplicities $\times$ 50 = 450 requests, provisionally 900 invocations after retries).
+    \item Estimate the variance of latency $\hat{\sigma}^2_{\text{latency}}$ and the Bernoulli variance for duplicate-mutation rate $\hat{p}(1 - \hat{p})$.
+    \item Compute the required full-campaign sample size $N$ using power analysis: for duplicate-rate comparisons, use the Wilson score interval formula to achieve 95\% CI width of $\pm 0.01$ (1 percentage point); for latency and capacity, use Cohen's $d$ or rank-biserial effect size with desired CI width.
+    \item If the pilot-determined $N$ exceeds the budget constraint (60,000 invocations max), cap $N$ at the feasible maximum and report the resulting CI widths.
+\end{enumerate}
+
+The pilot report (\texttt{results/pilot\_report.md}) documents the chosen $N$ and the statistical justification.
+
+\section{Statistical Tests and Hypothesis Testing}
+
+All hypothesis tests use $\alpha = 0.05$ (two-sided for exploratory comparisons, one-sided for directional hypotheses). The Holm–Bonferroni procedure corrects for multiple comparisons within each family of tests (duplicate rates, latency, capacity).
+
+\subsection{Duplicate-Mutation Rate}
+
+Duplicate-mutation rate is a proportion: \[\text{rate} = \frac{\#\text{ retries that caused a second mutation}}{\#\text{ total retries}}\]
+
+\textbf{Confidence intervals:} Wilson score interval (or Agresti–Coull), plus cluster-bootstrap CI (treating each request as a cluster, resampling with replacement 2000 times).
+
+\textbf{Hypothesis test:} Two-proportion $z$-test for pairwise comparisons (P1 vs P2, P1 vs P3, P2 vs P3 at each multiplicity). Null hypothesis: $H_0: p_A = p_B$. Alternative: $H_1: p_A > p_B$ (for P1 vs P2/P3, expecting P1 higher), or $H_1: p_A \neq p_B$ (for P2 vs P3, exploratory).
+
+\textbf{Chi-square test:} Contingency table of (path, multiplicity) cells vs (duplicate yes/no) to test independence.
+
+\subsection{Latency and Capacity}
+
+Latency and capacity may be non-normal (skewed or heavy-tailed).
+
+\textbf{Normality assessment:} Shapiro–Wilk test and Q-Q plots.
+
+\textbf{If normal:} Welch's $t$-test (unequal variances) for pairwise comparisons. Confidence intervals from bootstrap (2000 resamples).
+
+\textbf{If non-normal:} Mann–Whitney $U$ test (two-sample rank test) with rank-biserial effect size. Bootstrap CI for medians or means.
+
+\textbf{All tests:} Report effect size (Cohen's $d$, rank-biserial, or relative difference) and 95\% CI alongside $p$-value. Holm–Bonferroni correction within each family (9 pairwise latency tests, 9 pairwise capacity tests).
+
+\subsection{Pre-Registered Expectations}
+
+The master prompt specifies three falsifiable expectations, stated before data collection:
+
+\begin{itemize}
+    \item \textbf{E1:} Plain write (P1) produces a duplicate mutation on a \textit{majority} of injected retries (i.e., duplicate-rate $> 0.5$). Decision rule: Wilson and cluster-bootstrap lower bounds both exceed 0.5 at multiplicities 2 and 5.
+    \item \textbf{E2:} Both guarded paths (P2, P3) reduce the duplicate rate by \textit{more than 90\%} relative to P1. Decision rule: lower bound of the relative reduction $1 - (\text{rate}_{\text{guarded}} / \text{rate}_{\text{P1}})$ exceeds 0.90 at each multiplicity.
+    \item \textbf{E3:} Idempotency-key path (P3) costs \textit{more} consumed capacity than conditional path (P2), due to the extra read and write for the idempotency record. Decision rule: 95\% CI of (P3 mean capacity - P2 mean capacity) is entirely above zero, and Holm-corrected $p < 0.05$.
+\end{itemize}
+
+These expectations are reported as "supported", "refuted", or "inconclusive" based on the data.
+
+\section{Ethics and Acceptable Use}
+
+\subsection{Ethics Declaration}
+
+The study involves no human participants, no personal data, and no sensitive information. All data is synthetically generated (random UUIDs, placeholder strings). The target infrastructure (AWS Lambda, DynamoDB) is provisioned in the researcher's own AWS account specifically for this study, with appropriate budget alarms and resource tagging. No third-party systems are accessed; no penetration testing or adversarial load is conducted.
+
+\textbf{National College of Ireland (NCI) ethics approval:} The study falls under the "no human participants" category and requires a Declaration of Ethics form confirming the above. The form is included in \texttt{docs/ETHICS.md}.
+
+\subsection{Acceptable Use and Cost Control}
+
+\begin{itemize}
+    \item \textbf{Bounded spend:} The Terraform configuration includes a CloudWatch billing alarm set at USD 1.00. The driver has a hard-coded maximum of 60,000 invocations. Budget estimates (based on AWS list prices as of 2026-09-11) predict total spend of approximately USD 0.17 for the full campaign (pilot + main + sensitivity).
+    \item \textbf{No denial-of-service:} Timeouts are injected \textit{inside} the function (via \texttt{time.sleep}), not by flooding the platform with concurrent requests. Invocation concurrency is limited to 16 workers.
+    \item \textbf{Resource cleanup:} \texttt{make destroy} runs \texttt{terraform destroy} to delete all resources (table, function, IAM roles, log groups) after the experiment.
+    \item \textbf{Synthetic data only:} No personally identifiable information (PII), no real user data, no production accounts.
+\end{itemize}
+
+\section{Threats to Validity}
+
+\subsection{Internal Validity}
+
+\textbf{Threat:} The injected timeout may not faithfully simulate all real-world failure modes (e.g., partial writes, network partitions mid-transaction).
+
+\textbf{Mitigation:} The study explicitly measures \textit{post-commit retry correctness}---the case where the write has succeeded but the platform treats the invocation as failed. This is a common and well-documented failure scenario \citep{AWSLambdaDocs}. Partial writes or mid-transaction failures would require different instrumentation (e.g., network fault injection with Chaos Engineering tools), which is deferred to future work.
+
+\textbf{Threat:} The driver's ground-truth log may be out of sync with actual Lambda invocations (e.g., if invocations are retried by the driver but not recorded).
+
+\textbf{Mitigation:} The driver uses synchronous invocation (blocking on each response) and logs every invocation immediately before returning. DynamoDB Streams provide independent verification: if a mutation occurs without a corresponding ground-truth entry, it is flagged as a data-quality issue.
+
+\subsection{External Validity}
+
+\textbf{Threat:} Results may not generalise to other AWS regions, other Lambda runtimes (e.g., Node.js, Java), other memory allocations, or other NoSQL stores (e.g., Google Cloud Firestore, Azure Cosmos DB).
+
+\textbf{Acknowledgement:} The study is scoped to a single region (eu-west-1), single runtime (Python 3.12 arm64), single memory allocation (256 MB), and single datastore (DynamoDB on-demand). Generalisability to other configurations is an empirical question requiring additional experiments. The methodology is reproducible, and the IaC and driver code are provided to facilitate replication in other contexts.
+
+\subsection{Construct Validity}
+
+\textbf{Threat:} Consumed capacity is reported by the DynamoDB service API (\texttt{ReturnConsumedCapacity}), not independently measured. The service may round or estimate capacity for billing purposes.
+
+\textbf{Mitigation:} The study uses the service's own reported capacity as the ground truth, consistent with the billing model practitioners face. Cross-validation with AWS Cost Explorer (actual billed units) could be performed post-campaign, though Cost Explorer data may have a 24-hour delay.
+
+\textbf{Threat:} End-to-end latency includes driver overhead (network round-trip, SDK serialisation). This may not reflect the latency experienced by an in-region microservice invoking Lambda.
+
+\textbf{Mitigation:} The driver runs on an EC2 instance in the same region and availability zone as the Lambda function (or locally for moto tests). Network latency is approximately 1--5 ms, which is small relative to the Lambda execution time (cold start: 100--500 ms; warm: 1--10 ms). The study reports DynamoDB operation latency separately (extracted from the function's structured logs) to isolate the datastore component.
+
+\subsection{Conclusion Validity}
+
+\textbf{Threat:} Serverless performance variance \citep{Wen2025Variance} may lead to inconclusive results if sample size is insufficient.
+
+\textbf{Mitigation:} The pilot-first methodology ensures that $N$ is chosen based on observed variance, not an arbitrary fixed value. If pilot variance is high, the full-campaign $N$ will be increased accordingly (within the 60,000-invocation budget). Wide confidence intervals are reported honestly; "inconclusive" is a valid research outcome.
+
+\section{Summary}
+
+The methodology adopts a quantitative experimental design with controlled retry injection, pilot-first replication, and rigorous statistical testing. The experiment isolates the effect of three write paths (P1, P2, P3) and three retry multiplicities (1, 2, 5) on duplicate-mutation rate, latency, and capacity. Ethics considerations are addressed through synthetic data, own-account resources, and bounded spend. Threats to validity are acknowledged and mitigated where possible; limitations are explicitly stated.
+
+Vikas Reddy Amanagantti

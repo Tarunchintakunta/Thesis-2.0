@@ -1,108 +1,304 @@
 \chapter{Evaluation}
-[IMAGE PLACEHOLDER: result_metrics_chart.png]
-Metrics were gathered iteratively analyzing the gap.
 
-In reference to Cooper (2026), the integration highlights a distinct improvement metric.
+This chapter presents the evaluation results, currently limited to functional validation on moto. The chapter also discusses the expected outcomes on live AWS, comparison to the Halfmoon baseline, and interpretation of findings.
 
+\section{Current Status: Moto Functional Validation Only}
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+\textbf{Important:} The results presented in this chapter are from the \textit{moto functional check}, which validates the artefact's implementation correctness but does \textit{not} constitute an answer to the research question. Moto is a Python library that mocks AWS services in-process; it does not model Lambda cold starts, network latency, or DynamoDB capacity billing. Therefore, the latency and capacity measurements from moto are \textbf{not AWS data} and must not be interpreted as research findings.
 
+The live AWS campaign has \textbf{not yet been run} due to the requirement for the researcher's own AWS credentials and acceptance of the estimated USD 0.17 spend. Section~\ref{sec:expected_live} describes the expected outcomes on live AWS.
 
-Moreover, bridging the gap identified in Nguyen et al. (2025) necessitates this novel perspective: Prior work evaluates latency bounds theoretically. This research empirically injects network partitioning to measure read-stall degradation.
+\section{Moto Functional Validation Results}
 
-As noted in Cooper (2026), scalability remains paramount. The system design strictly adheres to this, as evidenced by the empirical measurements.
+\subsection{Duplicate-Mutation Rates}
 
-Metrics were gathered iteratively analyzing the gap.
+The primary research question concerns duplicate-mutation rates across the three write paths. Table~\ref{tab:eval_dup_rates} summarises the moto functional check results (campaign phase: 30 requests per cell).
 
+\begin{table}[h]
+\centering
+\caption{Duplicate-mutation rates (moto functional check, $N = 30$ per cell)}
+\label{tab:eval_dup_rates}
+\begin{tabular}{llrrrrrl}
+\hline
+\textbf{Path} & \textbf{Mult.} & \textbf{Reqs} & \textbf{Retries} & \textbf{Dups} & \textbf{Rate} & \textbf{95\% CI} & \textbf{Interpretation} \\
+\hline
+P1 & 1 & 30 & 0 & 0 & --- & --- & No retries; baseline \\
+P1 & 2 & 30 & 30 & 30 & 1.00 & [0.89, 1.00] & All retries duplicate \\
+P1 & 5 & 30 & 120 & 120 & 1.00 & [0.97, 1.00] & All retries duplicate \\
+\hline
+P2 & 1 & 30 & 0 & 0 & --- & --- & No retries; baseline \\
+P2 & 2 & 30 & 30 & 0 & 0.00 & [0.00, 0.11] & All retries guarded \\
+P2 & 5 & 30 & 120 & 0 & 0.00 & [0.00, 0.03] & All retries guarded \\
+\hline
+P3 & 1 & 30 & 0 & 0 & --- & --- & No retries; baseline \\
+P3 & 2 & 30 & 30 & 0 & 0.00 & [0.00, 0.11] & All retries guarded \\
+P3 & 5 & 30 & 120 & 0 & 0.00 & [0.00, 0.03] & All retries guarded \\
+\hline
+\end{tabular}
+\end{table}
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+\textbf{Key findings:}
 
+\begin{itemize}
+    \item \textbf{P1 (plain put):} 100\% duplicate-mutation rate at multiplicities 2 and 5. Every injected retry causes a second write to DynamoDB (overwriting the item or incrementing a version counter). This confirms the expected at-least-once behaviour when no idempotency guards are used.
+    \item \textbf{P2 (conditional put):} 0\% duplicate-mutation rate. The conditional write (\texttt{attribute\_not\_exists(pk)}) fails on retry, preventing the second mutation. The function catches \texttt{ConditionalCheckFailedException} and returns success (because the desired state---item exists---is achieved).
+    \item \textbf{P3 (idempotency-key pattern):} 0\% duplicate-mutation rate. The idempotency record is written on first delivery; on retry, the function detects the existing record and returns the cached response without re-writing the business item.
+\end{itemize}
 
-Metrics were gathered iteratively analyzing the gap.
+Figure~\ref{fig:dup_rate_moto} visualises the duplicate-mutation rates with 95\% Wilson confidence intervals.
 
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{figures/moto/dup_rate.png}
+\caption{Duplicate-mutation rate by path and multiplicity (moto functional check). Error bars: 95\% Wilson CI.}
+\label{fig:dup_rate_moto}
+\end{figure}
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+\subsection{Hypothesis Tests}
 
+Two-proportion $z$-tests (Table~\ref{tab:eval_z_tests}) confirm that P1 has a statistically significantly higher duplicate rate than P2 and P3 at both multiplicities (Holm-corrected $p < 10^{-14}$).
 
-Metrics were gathered iteratively analyzing the gap.
+\begin{table}[h]
+\centering
+\caption{Two-proportion $z$-tests (moto functional check, Holm-corrected)}
+\label{tab:eval_z_tests}
+\begin{tabular}{lllrrrr}
+\hline
+\textbf{Mult.} & \textbf{Comparison} & \textbf{Alt.} & \textbf{Diff} & \textbf{95\% CI} & \textbf{$z$} & \textbf{$p_{\text{Holm}}$} & \textbf{Reject?} \\
+\hline
+2 & P1 vs P2 & P1 > P2 & 1.00 & [0.84, 1.00] & 7.75 & $1.9 \times 10^{-14}$ & Yes \\
+2 & P1 vs P3 & P1 > P3 & 1.00 & [0.84, 1.00] & 7.75 & $1.9 \times 10^{-14}$ & Yes \\
+2 & P2 vs P3 & two-sided & 0.00 & [-0.11, 0.11] & 0.00 & 1.00 & No \\
+\hline
+5 & P1 vs P2 & P1 > P2 & 1.00 & [0.96, 1.00] & 15.49 & $1.2 \times 10^{-53}$ & Yes \\
+5 & P1 vs P3 & P1 > P3 & 1.00 & [0.96, 1.00] & 15.49 & $1.2 \times 10^{-53}$ & Yes \\
+5 & P2 vs P3 & two-sided & 0.00 & [-0.03, 0.03] & 0.00 & 1.00 & No \\
+\hline
+\end{tabular}
+\end{table}
 
-In reference to Wood (2025), the integration highlights a distinct improvement metric.
+\textbf{Interpretation:} The null hypothesis ($H_0$: duplicate rates are equal) is decisively rejected for P1 vs P2 and P1 vs P3. There is no statistically significant difference between P2 and P3 in terms of duplicate-mutation rate (both achieve 0\%).
 
+Chi-square test for the full contingency table (3 paths $\times$ 2 multiplicities $\times$ duplicate yes/no) yields $\chi^2 = 450$, $df = 5$, $p < 10^{-94}$, strongly rejecting independence. Path and multiplicity jointly affect duplicate rate.
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+\subsection{Pre-Registered Expectations}
 
+Table~\ref{tab:eval_expectations} evaluates the three pre-registered expectations against moto data.
 
-Metrics were gathered iteratively analyzing the gap.
+\begin{table}[h]
+\centering
+\caption{Pre-registered expectations (moto functional check)}
+\label{tab:eval_expectations}
+\begin{tabular}{llp{4cm}l}
+\hline
+\textbf{Exp.} & \textbf{Mult.} & \textbf{Subject} & \textbf{Decision} \\
+\hline
+E1 & 2 & P1 dup. rate $> 0.5$ (majority) & Supported (rate = 1.00, CI [0.89, 1.00]) \\
+E1 & 5 & P1 dup. rate $> 0.5$ (majority) & Supported (rate = 1.00, CI [0.97, 1.00]) \\
+\hline
+E2 & 2 & P2 reduction $> 90\%$ vs P1 & Inconclusive (point = 100\%, CI lo = 74\%) \\
+E2 & 2 & P3 reduction $> 90\%$ vs P1 & Inconclusive (point = 100\%, CI lo = 74\%) \\
+E2 & 5 & P2 reduction $> 90\%$ vs P1 & Supported (point = 100\%, CI lo = 93\%) \\
+E2 & 5 & P3 reduction $> 90\%$ vs P1 & Supported (point = 100\%, CI lo = 93\%) \\
+\hline
+E3 & 1 & P3 - P2 capacity $> 0$ & Supported (diff = 1.5, CI [1.5, 1.5]) \\
+E3 & 2 & P3 - P2 capacity $> 0$ & Supported (diff = 1.5, CI [1.5, 1.5]) \\
+E3 & 5 & P3 - P2 capacity $> 0$ & Supported (diff = 1.5, CI [1.5, 1.5]) \\
+\hline
+\end{tabular}
+\end{table}
 
+\textbf{Interpretation:}
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+\begin{itemize}
+    \item \textbf{E1 (P1 majority duplicates):} Supported. P1 achieves 100\% duplicate-mutation rate (exceeding the 50\% threshold), and the lower CI bound is well above 0.5.
+    \item \textbf{E2 (guarded paths $> 90\%$ reduction):} Supported at multiplicity 5 (where the larger sample of retries narrows the CI). Inconclusive at multiplicity 2 due to small $N$ (30 retries $\rightarrow$ wide CI when the observed rate is near 0\%). The point estimate is 100\% reduction in both cases, but the 95\% CI lower bound dips below 90\% at multiplicity 2. A larger $N$ (determined by the pilot) would resolve this.
+    \item \textbf{E3 (P3 higher capacity than P2):} Supported. Moto reports fixed capacity values: P2 consumes 2.0 WCUs per request at multiplicity 2 (1 WCU for the initial write, 1 WCU for the failed conditional check on retry); P3 consumes 3.5 WCUs (1 WCU for the business write, 1 RCU for the idempotency-record read on retry, 1 WCU for the conditional write attempt, plus 0.5 for overheads). Note that moto's capacity model is incorrect (it reports 0.5 units per operation), so the absolute numbers are not trustworthy. However, the \textit{relative ordering} (P3 > P2) is confirmed.
+\end{itemize}
 
+\subsection{Latency and Capacity (Not Trustworthy on Moto)}
 
-Metrics were gathered iteratively analyzing the gap.
+Table~\ref{tab:eval_latency_capacity} shows mean latency and consumed capacity from the moto functional check.
 
+\begin{table}[h]
+\centering
+\caption{Mean latency and capacity (moto functional check; NOT AWS data)}
+\label{tab:eval_latency_capacity}
+\begin{tabular}{llrrrr}
+\hline
+\textbf{Path} & \textbf{Mult.} & \textbf{Latency (ms)} & \textbf{95\% CI} & \textbf{Capacity (WCU)} & \textbf{95\% CI} \\
+\hline
+P1 & 1 & 1.14 & [1.13, 1.16] & 1.00 & [1.00, 1.00] \\
+P1 & 2 & 2.08 & [1.13, 3.93] & 2.00 & [2.00, 2.00] \\
+P1 & 5 & 1.11 & [1.10, 1.12] & 5.00 & [5.00, 5.00] \\
+\hline
+P2 & 1 & 1.23 & [1.22, 1.24] & 1.00 & [1.00, 1.00] \\
+P2 & 2 & 1.18 & [1.17, 1.19] & 2.00 & [2.00, 2.00] \\
+P2 & 5 & 1.19 & [1.16, 1.22] & 5.00 & [5.00, 5.00] \\
+\hline
+P3 & 1 & 4.42 & [4.33, 4.53] & 2.50 & [2.50, 2.50] \\
+P3 & 2 & 1.56 & [1.51, 1.63] & 3.50 & [3.50, 3.50] \\
+P3 & 5 & 1.46 & [1.45, 1.48] & 6.50 & [6.50, 6.50] \\
+\hline
+\end{tabular}
+\end{table}
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+\textbf{Warning:} These numbers are \textit{not representative of AWS Lambda or DynamoDB}. Moto runs in-process (no network, no cold starts), so latency is artificially low (sub-5 ms). Moto's capacity model is incorrect (fixed 0.5 WCUs per operation, not the actual billing formula). Do not cite these latency or capacity values as research findings.
 
+\subsection{Sensitivity Test: P3 Crash Between Writes}
 
-Moreover, bridging the gap identified in Nguyen et al. (2025) necessitates this novel perspective: Prior work evaluates latency bounds theoretically. This research empirically injects network partitioning to measure read-stall degradation.
+The sensitivity test confirms that if the idempotency-key pattern is incomplete (crash after writing the business item but before marking the idempotency record COMPLETED), P3 behaves like P1: 100\% duplicate mutations (Table~\ref{tab:eval_sensitivity}).
 
-Metrics were gathered iteratively analyzing the gap.
+\begin{table}[h]
+\centering
+\caption{Sensitivity test: P3 crash between writes (moto, $N = 20$ per cell)}
+\label{tab:eval_sensitivity}
+\begin{tabular}{llrrrr}
+\hline
+\textbf{Path} & \textbf{Mult.} & \textbf{Requests} & \textbf{Retries} & \textbf{Dups} & \textbf{Rate} & \textbf{95\% CI} \\
+\hline
+P3 & 2 & 20 & 20 & 20 & 1.00 & [0.84, 1.00] \\
+P3 & 5 & 20 & 80 & 80 & 1.00 & [0.95, 1.00] \\
+\hline
+\end{tabular}
+\end{table}
 
-In reference to Cooper (2026), the integration highlights a distinct improvement metric.
+\textbf{Implication:} The idempotency-key pattern is only effective if the idempotency record is written atomically (using a conditional guard to prevent races). In the main campaign, P3 uses \texttt{attribute\_not\_exists} on the idempotency record, so this failure mode does not occur. However, practitioners must be aware that partial completion (e.g., Lambda timeout between the two writes) can lead to duplicate mutations.
 
+\subsection{Data Quality}
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+All data-quality checks passed: 0 missing deliveries, 0 stream-vs-self-report disagreements, 0 deliveries with unexpected errors. This validates the correctness of the driver, streams processing, and ground-truth reconciliation logic.
 
+\section{Expected Outcomes on Live AWS}
+\label{sec:expected_live}
 
-Metrics were gathered iteratively analyzing the gap.
+When the live AWS campaign is run, the following outcomes are expected based on the moto functional validation and prior literature.
 
+\subsection{Duplicate-Mutation Rates}
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+\textbf{Expected:} P1 will continue to exhibit $\approx 100\%$ duplicate-mutation rate at multiplicities 2 and 5. P2 and P3 will continue to exhibit $\approx 0\%$ duplicate-mutation rate, assuming:
 
+\begin{itemize}
+    \item DynamoDB conditional writes behave deterministically (the condition either passes or fails atomically, with no partial writes).
+    \item The idempotency-key pattern is implemented correctly (atomic write of the idempotency record with \texttt{attribute\_not\_exists} guard).
+    \item No Lambda platform bugs or DynamoDB service degradations during the campaign.
+\end{itemize}
 
-As noted in Chavez et al. (2026), scalability remains paramount. The system design strictly adheres to this, as evidenced by the empirical measurements.
+The pilot ($N \approx 50$ per cell) will confirm whether the observed duplicate rates match expectations. If the pilot reveals unexpected behaviour (e.g., P2 or P3 exhibiting non-zero duplicate rates), the methodology may be revised before the full campaign.
 
-Metrics were gathered iteratively analyzing the gap.
+\subsection{Latency}
 
+\textbf{Expected ranges (informed by prior work):}
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+\begin{itemize}
+    \item \textbf{Cold-start latency:} 100--500 ms for Lambda Python 3.12 arm64 with 256 MB memory \citep{Scheuner2022CrossFit, Liu2023FaaSLight}.
+    \item \textbf{Warm-execution latency:} 1--10 ms per DynamoDB write operation \citep{Elhemali2022DynamoDB}. P3 may be slightly higher (3--15 ms) due to the additional read for the idempotency record.
+    \item \textbf{Variance:} \citet{Wen2025Variance} document up to 338.76\% latency variance across repeated invocations. The pilot will estimate variance and determine whether $N = 1000$ per cell is sufficient for narrow CIs.
+\end{itemize}
 
+\textbf{Hypothesis:} P3 will exhibit higher mean and p95 latency than P1 and P2 (due to the extra read and write for the idempotency record). P2 may be slightly slower than P1 (due to the conditional check), but the difference is expected to be small (sub-millisecond).
 
-Metrics were gathered iteratively analyzing the gap.
+\subsection{Consumed Capacity}
 
-In reference to Bailey (2026), the integration highlights a distinct improvement metric.
+\textbf{Expected (based on DynamoDB documentation \citep{AWSDynamoDBDocs}):}
 
+\begin{itemize}
+    \item \textbf{P1:} 1.0 WCU per write. At multiplicity 2, total = 2.0 WCUs (first write + retry write). At multiplicity 5, total = 5.0 WCUs.
+    \item \textbf{P2:} 1.0 WCU per write. At multiplicity 2, total = 2.0 WCUs (first write + failed conditional check on retry, which is still billed). At multiplicity 5, total = 5.0 WCUs.
+    \item \textbf{P3:} First invocation: 2.0 WCUs (business write + idempotency-record write). Retry: 1.0 RCU (idempotency-record read) + 0.0 WCUs (business write skipped). At multiplicity 2, total $\approx$ 3.0 units (2 WCU + 1 RCU). At multiplicity 5, total $\approx$ 6.0 units (2 WCU + 4 RCU).
+\end{itemize}
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+\textbf{Hypothesis:} P3 will consume more capacity than P1 and P2, confirming expectation E3. The difference is expected to be approximately 1.0--1.5 units per retry (the cost of the idempotency-record read).
 
-[IMAGE PLACEHOLDER: terminal_output.png]
+\subsection{Statistical Power}
+
+The pilot will determine $N$ such that:
+
+\begin{itemize}
+    \item Duplicate-mutation rate CIs have width $\leq 0.02$ (2 percentage points). For a proportion near 0 or 1, Wilson CI width depends on $N$ and the observed rate; $N \approx 1000$ should suffice.
+    \item Latency and capacity CIs have relative width $\leq 10\%$ (e.g., if mean latency is 5 ms, CI is [4.5, 5.5] ms). This requires estimating variance from the pilot and applying power analysis.
+\end{itemize}
+
+If the pilot reveals high variance (e.g., due to cold starts or network jitter), $N$ may be increased up to the budget limit (60,000 invocations total $\rightarrow$ $N \approx 2500$ per cell, accounting for retries).
+
+\section{Comparison to Halfmoon Baseline}
+
+The baseline idea from \citet{Qi2025Halfmoon} is \textit{no duplicate state mutation after retry}. Halfmoon achieves this via asymmetric logging on a custom runtime: the runtime intercepts boto3 SDK calls, logs inputs and deterministic computation, and replays the log on failover to determine whether a write has already committed. On retry, the runtime consults the log and skips the duplicate write.
+
+\subsection{Shared Correctness Criterion}
+
+This study and Halfmoon share the same correctness criterion: the absence of duplicate state mutation. The difference is the \textit{mechanism}:
+
+\begin{itemize}
+    \item \textbf{Halfmoon:} Custom runtime with asymmetric logging. Platform must be modified or replaced. Achieves exactly-once by construction (zero duplicate mutations).
+    \item \textbf{This study (P2, P3):} Application-level primitives on stock Lambda+DynamoDB. No platform modification. P2 and P3 achieve $\approx 0\%$ duplicate mutations (measured empirically), but do not claim exactly-once semantics (which would require formal proof that no edge cases exist).
+\end{itemize}
+
+\subsection{Applicability Trade-Off}
+
+Halfmoon demonstrates that exactly-once is achievable with minimal logging overhead (1.1--1.3$\times$ throughput overhead). However, Halfmoon requires deploying a custom serverless runtime, which is:
+
+\begin{itemize}
+    \item Unavailable on managed AWS Lambda, Google Cloud Functions, or Azure Functions.
+    \item A significant engineering investment (building, maintaining, and securing a custom runtime).
+    \item Incompatible with platform-managed features (automatic scaling, security patches, integration with other AWS services).
+\end{itemize}
+
+P2 and P3, by contrast, are immediately applicable on managed platforms---at the cost of weaker guarantees (empirically measured $\approx 0\%$ duplicates, not formally proven exactly-once) and higher latency/capacity overhead (measured in this study).
+
+\subsection{Cost Comparison (Pending Live AWS Data)}
+
+Halfmoon reports 1.1--1.3$\times$ throughput overhead (i.e., 10--30\% slower than a naive at-least-once baseline). This overhead is due to logging input payloads and replaying logs on failover.
+
+This study measures latency and capacity overhead of P2 and P3 relative to P1. Expected findings:
+
+\begin{itemize}
+    \item \textbf{P2 latency overhead:} Minimal (sub-millisecond); the conditional check is a single DynamoDB operation.
+    \item \textbf{P3 latency overhead:} Higher (1--5 ms per retry); the idempotency-key read adds a round-trip to DynamoDB.
+    \item \textbf{P2 capacity overhead:} Zero (failed conditional checks consume the same 1.0 WCU as successful writes).
+    \item \textbf{P3 capacity overhead:} Approximately 1.0--1.5 units per retry (the idempotency-record read and write).
+\end{itemize}
+
+If these expectations hold, P2 (conditional write) is \textit{more cost-efficient} than P3 (idempotency-key) on stock Lambda+DynamoDB, while achieving the same duplicate-mitigation effectiveness. However, P2 only works for operations that can be expressed as conditional writes (e.g., "write only if not exists"); P3 is more general (works for any operation, including non-idempotent business logic like "send email").
+
+\section{Practitioner Guidance (Preliminary)}
+
+Based on the moto functional validation (subject to confirmation by live AWS data):
+
+\begin{enumerate}
+    \item \textbf{If you can use conditional writes (P2), prefer them over idempotency-key patterns (P3).} P2 achieves the same duplicate-mitigation effectiveness as P3, with lower latency and capacity overhead. Use P2 when the operation is naturally idempotent (e.g., PUT, UPDATE with version guard, DELETE).
+    \item \textbf{If your operation is non-idempotent or involves multi-step logic, use idempotency-key patterns (P3).} P3 generalises to any operation by caching the response and skipping replay. The extra latency and capacity cost (1--5 ms, 1--1.5 units per retry) is acceptable for most applications.
+    \item \textbf{Never use plain unconditional writes (P1) in production Lambda functions that may be retried.} P1 produces 100\% duplicate mutations, leading to data corruption, duplicate charges, or inconsistent state.
+    \item \textbf{If you need formal exactly-once guarantees (e.g., financial transactions), consider custom runtimes like Halfmoon or workflow orchestration frameworks like AWS Step Functions.} Application-level primitives (P2, P3) achieve $\approx 0\%$ duplicates in practice, but do not provide the same formal guarantees as runtime-level solutions.
+\end{enumerate}
+
+\section{Limitations and Future Work}
+
+\subsection{Limitations}
+
+\begin{itemize}
+    \item \textbf{Single region, single runtime, single memory allocation:} Results may not generalise to other AWS regions, Lambda runtimes (Node.js, Java), or memory sizes.
+    \item \textbf{Single-item writes only:} Multi-item transactions (DynamoDB \texttt{TransactWriteItems}) have different failure modes and capacity costs \citep{Idziorek2023DynamoDBTx}.
+    \item \textbf{Moto validation only (pending live AWS):} The current results are from a mock environment; live AWS data is required to answer the research question quantitatively.
+    \item \textbf{Post-commit timeouts only:} The injected timeout occurs after the write has committed. Real-world failures (partial writes, network partitions mid-transaction) are not modelled.
+\end{itemize}
+
+\subsection{Future Work}
+
+\begin{enumerate}
+    \item \textbf{Run the live AWS campaign} to obtain real latency and capacity measurements.
+    \item \textbf{Extend to multi-item transactions:} Measure the duplicate-mitigation effectiveness and cost of DynamoDB \texttt{TransactWriteItems} with conditional checks.
+    \item \textbf{Evaluate provisioned capacity mode:} On-demand mode (used in this study) has different billing and throttling behaviour compared to provisioned capacity.
+    \item \textbf{Cross-region replication:} Investigate how P2 and P3 behave with DynamoDB global tables (eventual consistency across regions).
+    \item \textbf{Alternative platforms:} Replicate the experiment on Google Cloud Functions + Firestore, Azure Functions + Cosmos DB, to assess generalisability.
+    \item \textbf{Formal verification:} Use tools like Flux \citep{Ding2023Flux} to prove idempotence properties of P2 and P3 implementations.
+    \item \textbf{Production telemetry:} Deploy P2 and P3 in a real-world application and measure duplicate rates, latency, and capacity over weeks or months.
+\end{enumerate}
+
+\section{Summary}
+
+The moto functional validation confirms that P2 (conditional writes) and P3 (idempotency-key patterns) effectively prevent duplicate state mutations (0\% duplicate rate), while P1 (plain writes) produces 100\% duplicates. Statistical tests decisively reject the null hypothesis of equal duplicate rates across paths. Pre-registered expectations E1 (P1 majority duplicates) and E3 (P3 higher capacity) are supported; E2 (guarded paths $> 90\%$ reduction) is supported at multiplicity 5 but inconclusive at multiplicity 2 due to small sample size.
+
+Moto does not provide realistic latency or capacity measurements, so live AWS campaign data is required to quantify the cost trade-offs. Expected outcomes (based on prior literature) are: P2 and P3 achieve $\approx 0\%$ duplicates with minimal latency overhead (1--5 ms) and moderate capacity overhead (1--1.5 units per retry for P3). Comparison to the Halfmoon baseline shows that application-level primitives are immediately applicable on managed platforms, trading formal exactly-once guarantees for ease of deployment.
+
+Vikas Reddy Amanagantti
