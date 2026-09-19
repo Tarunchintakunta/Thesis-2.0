@@ -1,86 +1,107 @@
 \chapter{Introduction}
-Cloud computing represents a shift. We investigate 'Optimizing AWS Fargate Container Startup for Microservices'.
 
-In reference to James (2026), the integration highlights a distinct improvement metric.
+\section{Background and Motivation}
 
+Modern cloud-native applications increasingly adopt microservice architectures, where complex business logic is decomposed into loosely coupled, independently deployable services. This architectural pattern offers significant advantages in scalability, resilience, and development velocity. Amazon Web Services (AWS) Lambda and similar serverless computing platforms amplify these benefits by eliminating infrastructure management overhead and enabling pay-per-invocation billing.
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+However, the distributed nature of microservices introduces fundamental challenges in observability and fault diagnosis. When a request fails or exhibits high latency, operations teams must identify which service in a potentially deep call chain is responsible—a task known as root cause analysis (RCA). Traditional monolithic application debugging techniques do not scale to microservice environments where a single user request may trigger dozens of inter-service calls across ephemeral containers.
 
+State-of-the-art research in microservice RCA has achieved impressive accuracy through deep learning approaches. \citet{xing2025dualchannel} report detection F1-scores of 93.8\% and localisation precision of 87.6\% using dual-channel neural networks with causal inference. However, these methods share a common prerequisite: large labeled training datasets capturing both normal and anomalous behaviour, plus substantial computational resources for model training and inference.
 
-Moreover, bridging the gap identified in Gupta & Singh (2025) necessitates this novel perspective: The baseline optimizes monolithic container images. We explore layered image pre-caching and lazy-loading in serverless environments.
+For a newly deployed serverless microservice application—precisely the scenario where AWS Lambda's operational simplicity is most attractive—these prerequisites are unavailable. The service has no historical telemetry, no labeled fault examples, and typically operates under tight cost constraints that preclude extensive model training. This reality gap renders the most accurate published RCA methods \textit{inapplicable}, not merely suboptimal.
 
-As noted in Foster et al. (2025), scalability remains paramount. The system design strictly adheres to this, as evidenced by the empirical measurements.
+\section{Research Problem}
 
-Cloud computing represents a shift. We investigate 'Optimizing AWS Fargate Container Startup for Microservices'.
+The core problem is twofold: \textbf{accuracy} and \textbf{overhead}. 
 
+First, what detection and localisation accuracy can an \textit{untrained} method achieve relative to learned deep baselines when both are evaluated on common data? Prior work either presents deep learning methods on private datasets or threshold-based methods in isolation, making fair comparison impossible. 
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+Second, what is the \textit{monitoring cost}—in telemetry volume, added latency, and dollar expenditure—of continuous fault detection in serverless environments? Academic RCA research typically ignores these operational concerns, yet in cost-sensitive serverless deployments where compute is billed per 100ms, monitoring overhead directly impacts the business case for observability.
 
+These two dimensions (accuracy and overhead) are typically studied separately, but they interact: more telemetry (full distributed tracing, verbose logging) improves fault localisation but increases costs, while aggressive sampling reduces costs but may miss transient anomalies. The \textit{accuracy-overhead Pareto frontier} for serverless microservice RCA has not been empirically characterised.
 
-Cloud computing represents a shift. We investigate 'Optimizing AWS Fargate Container Startup for Microservices'.
+\section{Research Question and Objectives}
 
+\subsection{Primary Research Question}
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+\textbf{What accuracy-overhead position does rule-based fault detection and localisation occupy relative to learned deep baselines in AWS serverless microservices?}
 
+\subsection{Specific Objectives}
 
-Cloud computing represents a shift. We investigate 'Optimizing AWS Fargate Container Startup for Microservices'.
+\begin{enumerate}
+    \item \textbf{Design and implement} a hybrid lightweight fault detection and localisation method combining:
+    \begin{itemize}
+        \item Rule-based detection using CloudWatch 3-sigma thresholds on AWS Lambda metrics (Errors, Duration, Throttles, Invocations)
+        \item Unsupervised ML localisation using Isolation Forest trained dynamically on control-period metrics
+        \item X-Ray trace-based dependency ranking to complement metric-based analysis
+    \end{itemize}
+    
+    \item \textbf{Establish a three-leg evaluation protocol} that fairly compares trained vs untrained methods:
+    \begin{itemize}
+        \item \textbf{Leg 1 (Ceiling):} Position against Xing et al.'s (2025) published deep learning F1 of 93.8\% as the accuracy ceiling under ideal labeled-data conditions
+        \item \textbf{Leg 2 (Like-for-Like):} Direct comparison against reproducible RCAEval baselines (BARO, CIRCA, TraceRCA, CausalRCA) on identical 90-case benchmark
+        \item \textbf{Leg 3 (Overhead):} Measure telemetry volume, latency impact, and estimated cost for the rule-based approach on AWS infrastructure
+    \end{itemize}
+    
+    \item \textbf{Validate} the following pre-committed, refutable expectations:
+    \begin{itemize}
+        \item Rule-based detection concedes $\leq$10 percentage points of F1 vs the strongest reproducible baseline on common data
+        \item Rule-based localisation concedes $>$10 percentage points in Top-3 accuracy vs deep methods
+        \item Rule-based monitoring reduces telemetry volume by $\geq$50\% vs full tracing/logging under the stated sampling policy
+    \end{itemize}
+    
+    \item \textbf{Decision rule for competitiveness:} The rule-based approach is competitive if F1 is within 10 percentage points of the strongest baseline \textit{and} telemetry volume is reduced by at least half.
+\end{enumerate}
 
-In reference to Ruiz (2026), the integration highlights a distinct improvement metric.
+\section{Scope and Limitations}
 
+This research focuses narrowly on a specific deployment context to enable rigorous evaluation:
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+\begin{itemize}
+    \item \textbf{Platform:} AWS serverless (Lambda, API Gateway, DynamoDB, CloudWatch, X-Ray)
+    \item \textbf{Application:} Order-processing microservices (4 Lambda functions: orders-api, inventory, payments, notifications)
+    \item \textbf{Traffic:} Synthetic workloads only (no production customer data)
+    \item \textbf{Faults:} Four types aligned with RCAEval taxonomy (timeout, dependency\_failure, throttling, elevated\_latency)
+    \item \textbf{Scale:} Single AWS account/region; one microservice topology
+    \item \textbf{Evaluation data:} Simulated AWS telemetry + RCAEval public benchmark (90 cases)
+\end{itemize}
 
+\textbf{External validity does not extend to:} multi-cloud deployments, large heterogeneous microservice estates, production workloads with complex traffic patterns, or microservice systems using non-AWS observability tooling. The research provides an existence proof that competitive accuracy-overhead positions are achievable for new serverless deployments, but does not claim universal applicability.
 
-Cloud computing represents a shift. We investigate 'Optimizing AWS Fargate Container Startup for Microservices'.
+\textbf{Future work} includes: online rule adaptation, hybrid rule+model detection, multi-region fault correlation, and cross-provider observability comparison.
 
+\section{Research Contributions}
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+This work makes the following contributions to microservice RCA research:
 
+\begin{enumerate}
+    \item \textbf{Novel Hybrid Method:} A lightweight approach combining fast statistical detection with unsupervised ML localisation—a middle ground between pure threshold methods and supervised deep learning that prior work has not explored.
+    
+    \item \textbf{Fair Comparison Protocol:} A three-leg evaluation framework that makes trained and untrained methods ``legible'' to one another by separating ideal-data ceilings (citations), common-data comparisons (RCAEval), and overhead measurement (live infrastructure).
+    
+    \item \textbf{Empirical Accuracy-Overhead Positioning:} Joint reporting of detection/localisation accuracy and monitoring overhead on common terms—a dimension prior work typically omits.
+    
+    \item \textbf{Complete Artefact:} A production-ready AWS SAM application (Infrastructure as Code, Lambda handlers, fault injector, detector, ranker, evaluator) that is fully tested, deployable, and reproducible.
+    
+    \item \textbf{Verified Bibliography:} 24 verified sources (DOI/URL confirmed, 2022-2026) providing comprehensive coverage of deep learning RCA, causal inference methods, training-free detection, benchmarks, and AWS observability.
+\end{enumerate}
 
-Cloud computing represents a shift. We investigate 'Optimizing AWS Fargate Container Startup for Microservices'.
+\section{Report Structure}
 
+The remainder of this report is organised as follows:
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+\begin{itemize}
+    \item \textbf{Chapter 2 (Literature Review):} Critical analysis of deep learning RCA, causal inference methods, training-free approaches, benchmarks, and overhead research, culminating in identification of the research gap.
+    
+    \item \textbf{Chapter 3 (Research Methodology):} Detailed description of the three-leg evaluation protocol, independent/dependent variables, replication strategy, hypothesis testing plan, and validity considerations.
+    
+    \item \textbf{Chapter 4 (Design Specifications):} Architecture of the AWS serverless artefact, fault injection mechanism, rule-based detection algorithm, X-Ray dependency ranking formula, and overhead measurement approach.
+    
+    \item \textbf{Chapter 5 (Implementation):} Technology choices, AWS SAM template structure, Lambda handler implementations, detector/ranker/evaluator code organisation, and testing strategy.
+    
+    \item \textbf{Chapter 6 (Evaluation and Results):} Presentation of detection/localisation accuracy results, comparison against RCAEval baselines, overhead measurements, hypothesis test outcomes, and interpretation.
+    
+    \item \textbf{Chapter 7 (Conclusions and Future Work):} Summary of findings, confidence assessment, implications for research and practice, and directions for future investigation.
+\end{itemize}
 
-
-Moreover, bridging the gap identified in Gupta & Singh (2025) necessitates this novel perspective: The baseline optimizes monolithic container images. We explore layered image pre-caching and lazy-loading in serverless environments.
-
-Cloud computing represents a shift. We investigate 'Optimizing AWS Fargate Container Startup for Microservices'.
-
-In reference to James (2026), the integration highlights a distinct improvement metric.
-
-
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
-
-
-Cloud computing represents a shift. We investigate 'Optimizing AWS Fargate Container Startup for Microservices'.
-
-
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
-
-
-As noted in Ruiz (2026), scalability remains paramount. The system design strictly adheres to this, as evidenced by the empirical measurements.
+This research ultimately demonstrates that newly deployed serverless microservices can achieve competitive fault detection and localisation without the training data and computational resources required by state-of-the-art deep learning methods, at a monitoring cost that is practically sustainable.
