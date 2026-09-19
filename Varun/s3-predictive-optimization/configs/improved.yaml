@@ -1,0 +1,69 @@
+experiment:
+  name: "improved_ml_forecast"
+  description: "ML recommendation + time-series forecasting + savings estimation"
+  mode: "dry_run"
+  
+workload:
+  num_objects: 1000
+  duration_days: 90
+  access_patterns:
+    - hot: 0.15
+    - warm: 0.35
+    - cold: 0.50
+  size_distribution:
+    mean_mb: 25
+    std_mb: 15
+    min_mb: 0.1
+    max_mb: 500
+
+recommendation:
+  method: "ml"
+  ml:
+    model: "xgboost"
+    train_fraction: 0.7
+    features:
+      - object_size_mb
+      - age_days
+      - access_frequency
+      - access_recency
+      - days_since_creation
+    hyperparameters:
+      max_depth: 6
+      learning_rate: 0.1
+      n_estimators: 100
+
+forecasting:
+  enabled: true
+  method: "prophet"
+  horizon_days: 30
+  naive_baseline: true
+  confidence_interval: 0.95
+
+savings:
+  enabled: true
+  estimation_method: "delta_pricing"
+  compare_against:
+    - current_unoptimized
+    - aws_lifecycle
+    - aws_intelligent_tiering
+
+evaluation:
+  metrics:
+    - allocation_accuracy
+    - precision
+    - recall
+    - f1_score
+    - forecast_mape
+    - forecast_rmse
+    - cost_savings_usd
+    - cost_savings_percent
+  statistical_test: "wilcoxon"
+  alpha: 0.05
+  compare_baseline: true
+
+output:
+  results_dir: "results/data"
+  figures_dir: "results/figures"
+  save_raw: true
+  save_audit_log: true
+  save_model: true

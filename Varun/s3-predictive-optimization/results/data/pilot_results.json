@@ -1,0 +1,3670 @@
+{
+  "experiment": {
+    "name": "pilot",
+    "description": "Quick pilot run with synthetic data",
+    "mode": "dry_run"
+  },
+  "timestamp": "2026-09-19T07:55:07.247145",
+  "config": {
+    "experiment": {
+      "name": "pilot",
+      "description": "Quick pilot run with synthetic data",
+      "mode": "dry_run"
+    },
+    "workload": {
+      "num_objects": 100,
+      "duration_days": 30,
+      "access_patterns": [
+        {
+          "hot": 0.2
+        },
+        {
+          "warm": 0.3
+        },
+        {
+          "cold": 0.5
+        }
+      ],
+      "size_distribution": {
+        "mean_mb": 10,
+        "std_mb": 5,
+        "min_mb": 0.1,
+        "max_mb": 100
+      }
+    },
+    "recommendation": {
+      "method": "both",
+      "baseline": {
+        "age_threshold_ia": 30,
+        "age_threshold_glacier": 90,
+        "access_threshold_ia": 5
+      },
+      "ml": {
+        "model": "xgboost",
+        "train_fraction": 0.7
+      }
+    },
+    "forecasting": {
+      "enabled": true,
+      "method": "prophet",
+      "horizon_days": 30,
+      "naive_baseline": true
+    },
+    "evaluation": {
+      "metrics": [
+        "allocation_accuracy",
+        "forecast_mape",
+        "forecast_rmse",
+        "cost_savings_usd",
+        "cost_savings_percent"
+      ]
+    },
+    "output": {
+      "results_dir": "results/data",
+      "figures_dir": "results/figures",
+      "save_raw": true
+    }
+  },
+  "workload": {
+    "num_objects": 100,
+    "duration_days": 30,
+    "access_log_entries": 4135,
+    "metrics": {
+      "bucket_name": "simulated-bucket",
+      "object_count": 100,
+      "total_size_mb": 951.33,
+      "total_size_gb": 0.93,
+      "storage_class_distribution": {
+        "STANDARD": 100
+      },
+      "access_log_entries": 4135,
+      "dry_run_mode": true
+    }
+  },
+  "baseline_recommendation": {
+    "metadata": {
+      "method": "baseline_tierbase",
+      "reference": "Shen et al. (2025), TierBase, ICDE 2025",
+      "doi": "10.1109/ICDE65448.2025.00049",
+      "thresholds": {
+        "age_threshold_ia": 30,
+        "age_threshold_glacier_instant": 90,
+        "age_threshold_glacier_deep": 180,
+        "access_threshold_ia": 5,
+        "access_threshold_glacier": 1,
+        "size_threshold_kb": 128
+      }
+    },
+    "num_recommendations": 100,
+    "recommendations": [
+      {
+        "object_id": "obj_000000",
+        "key": "data/test-object-000000.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD_IA",
+        "age_days": 205,
+        "access_frequency": 5,
+        "size_kb": 12783.18,
+        "reason": "Infrequent access (5 accesses/month), age 205 days"
+      },
+      {
+        "object_id": "obj_000001",
+        "key": "data/test-object-000001.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "age_days": 65,
+        "access_frequency": 11,
+        "size_kb": 9532.09,
+        "reason": "Frequently accessed (11 accesses/month)"
+      },
+      {
+        "object_id": "obj_000002",
+        "key": "data/test-object-000002.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD_IA",
+        "age_days": 269,
+        "access_frequency": 4,
+        "size_kb": 13556.17,
+        "reason": "Infrequent access (4 accesses/month), age 269 days"
+      },
+      {
+        "object_id": "obj_000003",
+        "key": "data/test-object-000003.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "age_days": 3,
+        "access_frequency": 105,
+        "size_kb": 18037.91,
+        "reason": "Frequently accessed (105 accesses/month)"
+      },
+      {
+        "object_id": "obj_000004",
+        "key": "data/test-object-000004.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD_IA",
+        "age_days": 207,
+        "access_frequency": 4,
+        "size_kb": 9041.13,
+        "reason": "Infrequent access (4 accesses/month), age 207 days"
+      },
+      {
+        "object_id": "obj_000005",
+        "key": "data/test-object-000005.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD_IA",
+        "age_days": 609,
+        "access_frequency": 1,
+        "size_kb": 9041.22,
+        "reason": "Infrequent access (1 accesses/month), age 609 days"
+      },
+      {
+        "object_id": "obj_000006",
+        "key": "data/test-object-000006.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD_IA",
+        "age_days": 186,
+        "access_frequency": 1,
+        "size_kb": 18325.57,
+        "reason": "Infrequent access (1 accesses/month), age 186 days"
+      },
+      {
+        "object_id": "obj_000007",
+        "key": "data/test-object-000007.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "age_days": 101,
+        "access_frequency": 14,
+        "size_kb": 14169.27,
+        "reason": "Frequently accessed (14 accesses/month)"
+      },
+      {
+        "object_id": "obj_000008",
+        "key": "data/test-object-000008.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "GLACIER_DEEP_ARCHIVE",
+        "age_days": 524,
+        "access_frequency": 0,
+        "size_kb": 7836.29,
+        "reason": "Long-term archive, age 524 days"
+      },
+      {
+        "object_id": "obj_000009",
+        "key": "data/test-object-000009.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "age_days": 121,
+        "access_frequency": 27,
+        "size_kb": 13017.91,
+        "reason": "Frequently accessed (27 accesses/month)"
+      },
+      {
+        "object_id": "obj_000010",
+        "key": "data/test-object-000010.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "age_days": 41,
+        "access_frequency": 34,
+        "size_kb": 7867.3,
+        "reason": "Frequently accessed (34 accesses/month)"
+      },
+      {
+        "object_id": "obj_000011",
+        "key": "data/test-object-000011.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "age_days": 30,
+        "access_frequency": 146,
+        "size_kb": 7855.46,
+        "reason": "Frequently accessed (146 accesses/month)"
+      },
+      {
+        "object_id": "obj_000012",
+        "key": "data/test-object-000012.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD_IA",
+        "age_days": 550,
+        "access_frequency": 4,
+        "size_kb": 11478.85,
+        "reason": "Infrequent access (4 accesses/month), age 550 days"
+      },
+      {
+        "object_id": "obj_000013",
+        "key": "data/test-object-000013.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD_IA",
+        "age_days": 226,
+        "access_frequency": 5,
+        "size_kb": 444.01,
+        "reason": "Infrequent access (5 accesses/month), age 226 days"
+      },
+      {
+        "object_id": "obj_000014",
+        "key": "data/test-object-000014.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD_IA",
+        "age_days": 261,
+        "access_frequency": 1,
+        "size_kb": 1408.42,
+        "reason": "Infrequent access (1 accesses/month), age 261 days"
+      },
+      {
+        "object_id": "obj_000015",
+        "key": "data/test-object-000015.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "age_days": 9,
+        "access_frequency": 166,
+        "size_kb": 7361.09,
+        "reason": "Frequently accessed (166 accesses/month)"
+      },
+      {
+        "object_id": "obj_000016",
+        "key": "data/test-object-000016.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "age_days": 12,
+        "access_frequency": 103,
+        "size_kb": 5054.3,
+        "reason": "Frequently accessed (103 accesses/month)"
+      },
+      {
+        "object_id": "obj_000017",
+        "key": "data/test-object-000017.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "age_days": 48,
+        "access_frequency": 43,
+        "size_kb": 11848.95,
+        "reason": "Frequently accessed (43 accesses/month)"
+      },
+      {
+        "object_id": "obj_000018",
+        "key": "data/test-object-000018.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "age_days": 24,
+        "access_frequency": 112,
+        "size_kb": 5590.92,
+        "reason": "Frequently accessed (112 accesses/month)"
+      },
+      {
+        "object_id": "obj_000019",
+        "key": "data/test-object-000019.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "age_days": 99,
+        "access_frequency": 45,
+        "size_kb": 3009.01,
+        "reason": "Frequently accessed (45 accesses/month)"
+      },
+      {
+        "object_id": "obj_000020",
+        "key": "data/test-object-000020.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "GLACIER_DEEP_ARCHIVE",
+        "age_days": 512,
+        "access_frequency": 0,
+        "size_kb": 17744.12,
+        "reason": "Long-term archive, age 512 days"
+      },
+      {
+        "object_id": "obj_000021",
+        "key": "data/test-object-000021.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD_IA",
+        "age_days": 503,
+        "access_frequency": 3,
+        "size_kb": 9084.03,
+        "reason": "Infrequent access (3 accesses/month), age 503 days"
+      },
+      {
+        "object_id": "obj_000022",
+        "key": "data/test-object-000022.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "age_days": 30,
+        "access_frequency": 195,
+        "size_kb": 10585.74,
+        "reason": "Frequently accessed (195 accesses/month)"
+      },
+      {
+        "object_id": "obj_000023",
+        "key": "data/test-object-000023.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD_IA",
+        "age_days": 397,
+        "access_frequency": 5,
+        "size_kb": 2945.29,
+        "reason": "Infrequent access (5 accesses/month), age 397 days"
+      },
+      {
+        "object_id": "obj_000024",
+        "key": "data/test-object-000024.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "age_days": 147,
+        "access_frequency": 14,
+        "size_kb": 7452.76,
+        "reason": "Frequently accessed (14 accesses/month)"
+      },
+      {
+        "object_id": "obj_000025",
+        "key": "data/test-object-000025.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "age_days": 24,
+        "access_frequency": 193,
+        "size_kb": 10807.92,
+        "reason": "Frequently accessed (193 accesses/month)"
+      },
+      {
+        "object_id": "obj_000026",
+        "key": "data/test-object-000026.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "age_days": 179,
+        "access_frequency": 32,
+        "size_kb": 4346.91,
+        "reason": "Frequently accessed (32 accesses/month)"
+      },
+      {
+        "object_id": "obj_000027",
+        "key": "data/test-object-000027.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD_IA",
+        "age_days": 550,
+        "access_frequency": 1,
+        "size_kb": 12163.57,
+        "reason": "Infrequent access (1 accesses/month), age 550 days"
+      },
+      {
+        "object_id": "obj_000028",
+        "key": "data/test-object-000028.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "GLACIER_DEEP_ARCHIVE",
+        "age_days": 273,
+        "access_frequency": 0,
+        "size_kb": 7164.73,
+        "reason": "Long-term archive, age 273 days"
+      },
+      {
+        "object_id": "obj_000029",
+        "key": "data/test-object-000029.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "age_days": 21,
+        "access_frequency": 90,
+        "size_kb": 8746.53,
+        "reason": "Frequently accessed (90 accesses/month)"
+      },
+      {
+        "object_id": "obj_000030",
+        "key": "data/test-object-000030.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "age_days": 46,
+        "access_frequency": 29,
+        "size_kb": 7159.26,
+        "reason": "Frequently accessed (29 accesses/month)"
+      },
+      {
+        "object_id": "obj_000031",
+        "key": "data/test-object-000031.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD_IA",
+        "age_days": 659,
+        "access_frequency": 4,
+        "size_kb": 19723.66,
+        "reason": "Infrequent access (4 accesses/month), age 659 days"
+      },
+      {
+        "object_id": "obj_000032",
+        "key": "data/test-object-000032.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD_IA",
+        "age_days": 191,
+        "access_frequency": 5,
+        "size_kb": 10170.89,
+        "reason": "Infrequent access (5 accesses/month), age 191 days"
+      },
+      {
+        "object_id": "obj_000033",
+        "key": "data/test-object-000033.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "age_days": 29,
+        "access_frequency": 187,
+        "size_kb": 4824.52,
+        "reason": "Frequently accessed (187 accesses/month)"
+      },
+      {
+        "object_id": "obj_000034",
+        "key": "data/test-object-000034.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "age_days": 117,
+        "access_frequency": 12,
+        "size_kb": 14451.43,
+        "reason": "Frequently accessed (12 accesses/month)"
+      },
+      {
+        "object_id": "obj_000035",
+        "key": "data/test-object-000035.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD_IA",
+        "age_days": 146,
+        "access_frequency": 5,
+        "size_kb": 3989.28,
+        "reason": "Infrequent access (5 accesses/month), age 146 days"
+      },
+      {
+        "object_id": "obj_000036",
+        "key": "data/test-object-000036.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD_IA",
+        "age_days": 449,
+        "access_frequency": 4,
+        "size_kb": 11309.38,
+        "reason": "Infrequent access (4 accesses/month), age 449 days"
+      },
+      {
+        "object_id": "obj_000037",
+        "key": "data/test-object-000037.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "age_days": 30,
+        "access_frequency": 77,
+        "size_kb": 206.49,
+        "reason": "Frequently accessed (77 accesses/month)"
+      },
+      {
+        "object_id": "obj_000038",
+        "key": "data/test-object-000038.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD_IA",
+        "age_days": 699,
+        "access_frequency": 4,
+        "size_kb": 3439.69,
+        "reason": "Infrequent access (4 accesses/month), age 699 days"
+      },
+      {
+        "object_id": "obj_000039",
+        "key": "data/test-object-000039.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "age_days": 25,
+        "access_frequency": 91,
+        "size_kb": 11247.93,
+        "reason": "Frequently accessed (91 accesses/month)"
+      },
+      {
+        "object_id": "obj_000040",
+        "key": "data/test-object-000040.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD_IA",
+        "age_days": 180,
+        "access_frequency": 4,
+        "size_kb": 14020.95,
+        "reason": "Infrequent access (4 accesses/month), age 180 days"
+      },
+      {
+        "object_id": "obj_000041",
+        "key": "data/test-object-000041.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "age_days": 58,
+        "access_frequency": 28,
+        "size_kb": 11117.41,
+        "reason": "Frequently accessed (28 accesses/month)"
+      },
+      {
+        "object_id": "obj_000042",
+        "key": "data/test-object-000042.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD_IA",
+        "age_days": 494,
+        "access_frequency": 1,
+        "size_kb": 9647.88,
+        "reason": "Infrequent access (1 accesses/month), age 494 days"
+      },
+      {
+        "object_id": "obj_000043",
+        "key": "data/test-object-000043.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "age_days": 175,
+        "access_frequency": 10,
+        "size_kb": 8698.35,
+        "reason": "Frequently accessed (10 accesses/month)"
+      },
+      {
+        "object_id": "obj_000044",
+        "key": "data/test-object-000044.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD_IA",
+        "age_days": 250,
+        "access_frequency": 4,
+        "size_kb": 2669.97,
+        "reason": "Infrequent access (4 accesses/month), age 250 days"
+      },
+      {
+        "object_id": "obj_000045",
+        "key": "data/test-object-000045.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "age_days": 22,
+        "access_frequency": 171,
+        "size_kb": 6554.4,
+        "reason": "Frequently accessed (171 accesses/month)"
+      },
+      {
+        "object_id": "obj_000046",
+        "key": "data/test-object-000046.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "age_days": 17,
+        "access_frequency": 158,
+        "size_kb": 7881.53,
+        "reason": "Frequently accessed (158 accesses/month)"
+      },
+      {
+        "object_id": "obj_000047",
+        "key": "data/test-object-000047.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD_IA",
+        "age_days": 385,
+        "access_frequency": 5,
+        "size_kb": 15652.47,
+        "reason": "Infrequent access (5 accesses/month), age 385 days"
+      },
+      {
+        "object_id": "obj_000048",
+        "key": "data/test-object-000048.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "age_days": 125,
+        "access_frequency": 33,
+        "size_kb": 11999.33,
+        "reason": "Frequently accessed (33 accesses/month)"
+      },
+      {
+        "object_id": "obj_000049",
+        "key": "data/test-object-000049.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD_IA",
+        "age_days": 303,
+        "access_frequency": 1,
+        "size_kb": 1213.23,
+        "reason": "Infrequent access (1 accesses/month), age 303 days"
+      },
+      {
+        "object_id": "obj_000050",
+        "key": "data/test-object-000050.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "age_days": 1,
+        "access_frequency": 200,
+        "size_kb": 11899.31,
+        "reason": "Frequently accessed (200 accesses/month)"
+      },
+      {
+        "object_id": "obj_000051",
+        "key": "data/test-object-000051.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "GLACIER_DEEP_ARCHIVE",
+        "age_days": 187,
+        "access_frequency": 0,
+        "size_kb": 8268.38,
+        "reason": "Long-term archive, age 187 days"
+      },
+      {
+        "object_id": "obj_000052",
+        "key": "data/test-object-000052.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "GLACIER_DEEP_ARCHIVE",
+        "age_days": 414,
+        "access_frequency": 0,
+        "size_kb": 6774.16,
+        "reason": "Long-term archive, age 414 days"
+      },
+      {
+        "object_id": "obj_000053",
+        "key": "data/test-object-000053.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "age_days": 11,
+        "access_frequency": 68,
+        "size_kb": 13371.78,
+        "reason": "Frequently accessed (68 accesses/month)"
+      },
+      {
+        "object_id": "obj_000054",
+        "key": "data/test-object-000054.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "age_days": 154,
+        "access_frequency": 18,
+        "size_kb": 15518.72,
+        "reason": "Frequently accessed (18 accesses/month)"
+      },
+      {
+        "object_id": "obj_000055",
+        "key": "data/test-object-000055.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "age_days": 30,
+        "access_frequency": 196,
+        "size_kb": 15008.15,
+        "reason": "Frequently accessed (196 accesses/month)"
+      },
+      {
+        "object_id": "obj_000056",
+        "key": "data/test-object-000056.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "age_days": 151,
+        "access_frequency": 31,
+        "size_kb": 5943.21,
+        "reason": "Frequently accessed (31 accesses/month)"
+      },
+      {
+        "object_id": "obj_000057",
+        "key": "data/test-object-000057.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "age_days": 22,
+        "access_frequency": 160,
+        "size_kb": 8656.83,
+        "reason": "Frequently accessed (160 accesses/month)"
+      },
+      {
+        "object_id": "obj_000058",
+        "key": "data/test-object-000058.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "age_days": 149,
+        "access_frequency": 8,
+        "size_kb": 11936.07,
+        "reason": "Frequently accessed (8 accesses/month)"
+      },
+      {
+        "object_id": "obj_000059",
+        "key": "data/test-object-000059.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "GLACIER_DEEP_ARCHIVE",
+        "age_days": 280,
+        "access_frequency": 0,
+        "size_kb": 15234.79,
+        "reason": "Long-term archive, age 280 days"
+      },
+      {
+        "object_id": "obj_000060",
+        "key": "data/test-object-000060.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD_IA",
+        "age_days": 291,
+        "access_frequency": 1,
+        "size_kb": 7786.63,
+        "reason": "Infrequent access (1 accesses/month), age 291 days"
+      },
+      {
+        "object_id": "obj_000061",
+        "key": "data/test-object-000061.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "age_days": 15,
+        "access_frequency": 85,
+        "size_kb": 9289.43,
+        "reason": "Frequently accessed (85 accesses/month)"
+      },
+      {
+        "object_id": "obj_000062",
+        "key": "data/test-object-000062.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "age_days": 15,
+        "access_frequency": 113,
+        "size_kb": 4575.56,
+        "reason": "Frequently accessed (113 accesses/month)"
+      },
+      {
+        "object_id": "obj_000063",
+        "key": "data/test-object-000063.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "age_days": 170,
+        "access_frequency": 11,
+        "size_kb": 4115.42,
+        "reason": "Frequently accessed (11 accesses/month)"
+      },
+      {
+        "object_id": "obj_000064",
+        "key": "data/test-object-000064.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "GLACIER_DEEP_ARCHIVE",
+        "age_days": 195,
+        "access_frequency": 0,
+        "size_kb": 14400.13,
+        "reason": "Long-term archive, age 195 days"
+      },
+      {
+        "object_id": "obj_000065",
+        "key": "data/test-object-000065.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD_IA",
+        "age_days": 422,
+        "access_frequency": 1,
+        "size_kb": 17183.95,
+        "reason": "Infrequent access (1 accesses/month), age 422 days"
+      },
+      {
+        "object_id": "obj_000066",
+        "key": "data/test-object-000066.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "age_days": 84,
+        "access_frequency": 30,
+        "size_kb": 9871.31,
+        "reason": "Frequently accessed (30 accesses/month)"
+      },
+      {
+        "object_id": "obj_000067",
+        "key": "data/test-object-000067.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "age_days": 13,
+        "access_frequency": 50,
+        "size_kb": 15378.09,
+        "reason": "Frequently accessed (50 accesses/month)"
+      },
+      {
+        "object_id": "obj_000068",
+        "key": "data/test-object-000068.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "age_days": 146,
+        "access_frequency": 23,
+        "size_kb": 12091.58,
+        "reason": "Frequently accessed (23 accesses/month)"
+      },
+      {
+        "object_id": "obj_000069",
+        "key": "data/test-object-000069.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD_IA",
+        "age_days": 678,
+        "access_frequency": 1,
+        "size_kb": 6936.99,
+        "reason": "Infrequent access (1 accesses/month), age 678 days"
+      },
+      {
+        "object_id": "obj_000070",
+        "key": "data/test-object-000070.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "age_days": 44,
+        "access_frequency": 42,
+        "size_kb": 12090.35,
+        "reason": "Frequently accessed (42 accesses/month)"
+      },
+      {
+        "object_id": "obj_000071",
+        "key": "data/test-object-000071.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "GLACIER_DEEP_ARCHIVE",
+        "age_days": 501,
+        "access_frequency": 0,
+        "size_kb": 18114.75,
+        "reason": "Long-term archive, age 501 days"
+      },
+      {
+        "object_id": "obj_000072",
+        "key": "data/test-object-000072.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD_IA",
+        "age_days": 694,
+        "access_frequency": 4,
+        "size_kb": 10056.57,
+        "reason": "Infrequent access (4 accesses/month), age 694 days"
+      },
+      {
+        "object_id": "obj_000073",
+        "key": "data/test-object-000073.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "age_days": 17,
+        "access_frequency": 70,
+        "size_kb": 18250.98,
+        "reason": "Frequently accessed (70 accesses/month)"
+      },
+      {
+        "object_id": "obj_000074",
+        "key": "data/test-object-000074.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "age_days": 3,
+        "access_frequency": 110,
+        "size_kb": 102.4,
+        "reason": "Too small (102.4 KB < 128 KB threshold)"
+      },
+      {
+        "object_id": "obj_000075",
+        "key": "data/test-object-000075.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "age_days": 29,
+        "access_frequency": 195,
+        "size_kb": 14448.14,
+        "reason": "Frequently accessed (195 accesses/month)"
+      },
+      {
+        "object_id": "obj_000076",
+        "key": "data/test-object-000076.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD_IA",
+        "age_days": 220,
+        "access_frequency": 4,
+        "size_kb": 10685.68,
+        "reason": "Infrequent access (4 accesses/month), age 220 days"
+      },
+      {
+        "object_id": "obj_000077",
+        "key": "data/test-object-000077.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "age_days": 179,
+        "access_frequency": 41,
+        "size_kb": 8709.08,
+        "reason": "Frequently accessed (41 accesses/month)"
+      },
+      {
+        "object_id": "obj_000078",
+        "key": "data/test-object-000078.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "age_days": 96,
+        "access_frequency": 18,
+        "size_kb": 10709.82,
+        "reason": "Frequently accessed (18 accesses/month)"
+      },
+      {
+        "object_id": "obj_000079",
+        "key": "data/test-object-000079.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "age_days": 424,
+        "access_frequency": 2,
+        "size_kb": 102.4,
+        "reason": "Too small (102.4 KB < 128 KB threshold)"
+      },
+      {
+        "object_id": "obj_000080",
+        "key": "data/test-object-000080.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "age_days": 21,
+        "access_frequency": 126,
+        "size_kb": 9115.28,
+        "reason": "Frequently accessed (126 accesses/month)"
+      },
+      {
+        "object_id": "obj_000081",
+        "key": "data/test-object-000081.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD_IA",
+        "age_days": 48,
+        "access_frequency": 5,
+        "size_kb": 12068.42,
+        "reason": "Infrequent access (5 accesses/month), age 48 days"
+      },
+      {
+        "object_id": "obj_000082",
+        "key": "data/test-object-000082.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "GLACIER_DEEP_ARCHIVE",
+        "age_days": 282,
+        "access_frequency": 0,
+        "size_kb": 17806.82,
+        "reason": "Long-term archive, age 282 days"
+      },
+      {
+        "object_id": "obj_000083",
+        "key": "data/test-object-000083.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "age_days": 97,
+        "access_frequency": 13,
+        "size_kb": 7586.46,
+        "reason": "Frequently accessed (13 accesses/month)"
+      },
+      {
+        "object_id": "obj_000084",
+        "key": "data/test-object-000084.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "age_days": 47,
+        "access_frequency": 20,
+        "size_kb": 6100.51,
+        "reason": "Frequently accessed (20 accesses/month)"
+      },
+      {
+        "object_id": "obj_000085",
+        "key": "data/test-object-000085.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "age_days": 142,
+        "access_frequency": 39,
+        "size_kb": 7671.0,
+        "reason": "Frequently accessed (39 accesses/month)"
+      },
+      {
+        "object_id": "obj_000086",
+        "key": "data/test-object-000086.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD_IA",
+        "age_days": 165,
+        "access_frequency": 5,
+        "size_kb": 14926.86,
+        "reason": "Infrequent access (5 accesses/month), age 165 days"
+      },
+      {
+        "object_id": "obj_000087",
+        "key": "data/test-object-000087.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD_IA",
+        "age_days": 486,
+        "access_frequency": 5,
+        "size_kb": 11923.21,
+        "reason": "Infrequent access (5 accesses/month), age 486 days"
+      },
+      {
+        "object_id": "obj_000088",
+        "key": "data/test-object-000088.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD_IA",
+        "age_days": 317,
+        "access_frequency": 2,
+        "size_kb": 7527.63,
+        "reason": "Infrequent access (2 accesses/month), age 317 days"
+      },
+      {
+        "object_id": "obj_000089",
+        "key": "data/test-object-000089.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD_IA",
+        "age_days": 339,
+        "access_frequency": 2,
+        "size_kb": 12867.93,
+        "reason": "Infrequent access (2 accesses/month), age 339 days"
+      },
+      {
+        "object_id": "obj_000090",
+        "key": "data/test-object-000090.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD_IA",
+        "age_days": 531,
+        "access_frequency": 1,
+        "size_kb": 10737.04,
+        "reason": "Infrequent access (1 accesses/month), age 531 days"
+      },
+      {
+        "object_id": "obj_000091",
+        "key": "data/test-object-000091.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD_IA",
+        "age_days": 450,
+        "access_frequency": 4,
+        "size_kb": 15199.46,
+        "reason": "Infrequent access (4 accesses/month), age 450 days"
+      },
+      {
+        "object_id": "obj_000092",
+        "key": "data/test-object-000092.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "age_days": 43,
+        "access_frequency": 10,
+        "size_kb": 6645.49,
+        "reason": "Frequently accessed (10 accesses/month)"
+      },
+      {
+        "object_id": "obj_000093",
+        "key": "data/test-object-000093.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "age_days": 100,
+        "access_frequency": 7,
+        "size_kb": 8562.37,
+        "reason": "Frequently accessed (7 accesses/month)"
+      },
+      {
+        "object_id": "obj_000094",
+        "key": "data/test-object-000094.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "age_days": 63,
+        "access_frequency": 45,
+        "size_kb": 8232.41,
+        "reason": "Frequently accessed (45 accesses/month)"
+      },
+      {
+        "object_id": "obj_000095",
+        "key": "data/test-object-000095.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "age_days": 15,
+        "access_frequency": 191,
+        "size_kb": 2746.8,
+        "reason": "Frequently accessed (191 accesses/month)"
+      },
+      {
+        "object_id": "obj_000096",
+        "key": "data/test-object-000096.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "GLACIER_DEEP_ARCHIVE",
+        "age_days": 294,
+        "access_frequency": 0,
+        "size_kb": 11756.14,
+        "reason": "Long-term archive, age 294 days"
+      },
+      {
+        "object_id": "obj_000097",
+        "key": "data/test-object-000097.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD_IA",
+        "age_days": 332,
+        "access_frequency": 4,
+        "size_kb": 11576.6,
+        "reason": "Infrequent access (4 accesses/month), age 332 days"
+      },
+      {
+        "object_id": "obj_000098",
+        "key": "data/test-object-000098.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD_IA",
+        "age_days": 331,
+        "access_frequency": 3,
+        "size_kb": 10266.18,
+        "reason": "Infrequent access (3 accesses/month), age 331 days"
+      },
+      {
+        "object_id": "obj_000099",
+        "key": "data/test-object-000099.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "age_days": 12,
+        "access_frequency": 60,
+        "size_kb": 9038.91,
+        "reason": "Frequently accessed (60 accesses/month)"
+      }
+    ]
+  },
+  "ml_recommendation": {
+    "metadata": {
+      "method": "ml_xgboost",
+      "reference": "Yang et al. (2025), MLSys 2025",
+      "arxiv": "2501.05651",
+      "model": "XGBoost",
+      "hyperparameters": {
+        "max_depth": 6,
+        "learning_rate": 0.1,
+        "n_estimators": 100,
+        "objective": "multi:softmax"
+      },
+      "features": [
+        "object_size_mb",
+        "age_days",
+        "access_frequency",
+        "access_recency",
+        "days_since_creation"
+      ],
+      "trained": true,
+      "num_classes": 5
+    },
+    "training": {
+      "train_accuracy": 0.9714285714285714,
+      "test_accuracy": 0.9333333333333333,
+      "train_size": 70,
+      "test_size": 30,
+      "num_classes": 5,
+      "classes": [
+        "GLACIER_DEEP_ARCHIVE",
+        "GLACIER_FLEXIBLE",
+        "GLACIER_INSTANT",
+        "STANDARD",
+        "STANDARD_IA"
+      ]
+    },
+    "num_recommendations": 100,
+    "recommendations": [
+      {
+        "object_id": "obj_000000",
+        "key": "data/test-object-000000.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "GLACIER_INSTANT",
+        "confidence": 0.9886743426322937,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.0021076223347336054,
+          "GLACIER_FLEXIBLE": 0.0021076223347336054,
+          "GLACIER_INSTANT": 0.9886743426322937,
+          "STANDARD": 0.0008246367797255516,
+          "STANDARD_IA": 0.006285771727561951
+        },
+        "reason": "ML prediction (confidence: 98.87%)"
+      },
+      {
+        "object_id": "obj_000001",
+        "key": "data/test-object-000001.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD_IA",
+        "confidence": 0.9783550500869751,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.004196599125862122,
+          "GLACIER_FLEXIBLE": 0.004196599125862122,
+          "GLACIER_INSTANT": 0.011145276017487049,
+          "STANDARD": 0.002106489147990942,
+          "STANDARD_IA": 0.9783550500869751
+        },
+        "reason": "ML prediction (confidence: 97.84%)"
+      },
+      {
+        "object_id": "obj_000002",
+        "key": "data/test-object-000002.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "GLACIER_INSTANT",
+        "confidence": 0.9871871471405029,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.0021702090743929148,
+          "GLACIER_FLEXIBLE": 0.0021702090743929148,
+          "GLACIER_INSTANT": 0.9871871471405029,
+          "STANDARD": 0.001050623133778572,
+          "STANDARD_IA": 0.007421671412885189
+        },
+        "reason": "ML prediction (confidence: 98.72%)"
+      },
+      {
+        "object_id": "obj_000003",
+        "key": "data/test-object-000003.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "confidence": 0.9757826328277588,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.0039023372810333967,
+          "GLACIER_FLEXIBLE": 0.0039023372810333967,
+          "GLACIER_INSTANT": 0.008358664810657501,
+          "STANDARD": 0.9757826328277588,
+          "STANDARD_IA": 0.008054004050791264
+        },
+        "reason": "ML prediction (confidence: 97.58%)"
+      },
+      {
+        "object_id": "obj_000004",
+        "key": "data/test-object-000004.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "GLACIER_INSTANT",
+        "confidence": 0.9853496551513672,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.002029314637184143,
+          "GLACIER_FLEXIBLE": 0.002029314637184143,
+          "GLACIER_INSTANT": 0.9853496551513672,
+          "STANDARD": 0.0007939978968352079,
+          "STANDARD_IA": 0.009797719307243824
+        },
+        "reason": "ML prediction (confidence: 98.53%)"
+      },
+      {
+        "object_id": "obj_000005",
+        "key": "data/test-object-000005.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "GLACIER_INSTANT",
+        "confidence": 0.9784889221191406,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.0015901006991043687,
+          "GLACIER_FLEXIBLE": 0.0015901006991043687,
+          "GLACIER_INSTANT": 0.9784889221191406,
+          "STANDARD": 0.006855288986116648,
+          "STANDARD_IA": 0.0114755779504776
+        },
+        "reason": "ML prediction (confidence: 97.85%)"
+      },
+      {
+        "object_id": "obj_000006",
+        "key": "data/test-object-000006.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "GLACIER_INSTANT",
+        "confidence": 0.9919920563697815,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.0015293123433366418,
+          "GLACIER_FLEXIBLE": 0.0015293123433366418,
+          "GLACIER_INSTANT": 0.9919920563697815,
+          "STANDARD": 0.001422856585122645,
+          "STANDARD_IA": 0.003526525804772973
+        },
+        "reason": "ML prediction (confidence: 99.20%)"
+      },
+      {
+        "object_id": "obj_000007",
+        "key": "data/test-object-000007.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD_IA",
+        "confidence": 0.9528080821037292,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.00977602880448103,
+          "GLACIER_FLEXIBLE": 0.00977602880448103,
+          "GLACIER_INSTANT": 0.02381485141813755,
+          "STANDARD": 0.0038250084035098553,
+          "STANDARD_IA": 0.9528080821037292
+        },
+        "reason": "ML prediction (confidence: 95.28%)"
+      },
+      {
+        "object_id": "obj_000008",
+        "key": "data/test-object-000008.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "GLACIER_INSTANT",
+        "confidence": 0.975777268409729,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.002424367005005479,
+          "GLACIER_FLEXIBLE": 0.002424367005005479,
+          "GLACIER_INSTANT": 0.975777268409729,
+          "STANDARD": 0.008447421714663506,
+          "STANDARD_IA": 0.010926591232419014
+        },
+        "reason": "ML prediction (confidence: 97.58%)"
+      },
+      {
+        "object_id": "obj_000009",
+        "key": "data/test-object-000009.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD_IA",
+        "confidence": 0.9794334769248962,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.004609393421560526,
+          "GLACIER_FLEXIBLE": 0.004609393421560526,
+          "GLACIER_INSTANT": 0.009116247296333313,
+          "STANDARD": 0.0022314602974802256,
+          "STANDARD_IA": 0.9794334769248962
+        },
+        "reason": "ML prediction (confidence: 97.94%)"
+      },
+      {
+        "object_id": "obj_000010",
+        "key": "data/test-object-000010.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "confidence": 0.7329782247543335,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.004049998242408037,
+          "GLACIER_FLEXIBLE": 0.004049998242408037,
+          "GLACIER_INSTANT": 0.002228018594905734,
+          "STANDARD": 0.7329782247543335,
+          "STANDARD_IA": 0.2566937506198883
+        },
+        "reason": "ML prediction (confidence: 73.30%)"
+      },
+      {
+        "object_id": "obj_000011",
+        "key": "data/test-object-000011.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "confidence": 0.9767913818359375,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.003906371537595987,
+          "GLACIER_FLEXIBLE": 0.003906371537595987,
+          "GLACIER_INSTANT": 0.002473779022693634,
+          "STANDARD": 0.9767913818359375,
+          "STANDARD_IA": 0.012922062538564205
+        },
+        "reason": "ML prediction (confidence: 97.68%)"
+      },
+      {
+        "object_id": "obj_000012",
+        "key": "data/test-object-000012.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "GLACIER_INSTANT",
+        "confidence": 0.9838162064552307,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.0020261562895029783,
+          "GLACIER_FLEXIBLE": 0.0020261562895029783,
+          "GLACIER_INSTANT": 0.9838162064552307,
+          "STANDARD": 0.003673492232337594,
+          "STANDARD_IA": 0.008458158932626247
+        },
+        "reason": "ML prediction (confidence: 98.38%)"
+      },
+      {
+        "object_id": "obj_000013",
+        "key": "data/test-object-000013.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "confidence": 0.2307715117931366,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.20470315217971802,
+          "GLACIER_FLEXIBLE": 0.20470315217971802,
+          "GLACIER_INSTANT": 0.1443406492471695,
+          "STANDARD": 0.2307715117931366,
+          "STANDARD_IA": 0.21548154950141907
+        },
+        "reason": "ML prediction (confidence: 23.08%)"
+      },
+      {
+        "object_id": "obj_000014",
+        "key": "data/test-object-000014.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "GLACIER_INSTANT",
+        "confidence": 0.9068834781646729,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.022283749654889107,
+          "GLACIER_FLEXIBLE": 0.022283749654889107,
+          "GLACIER_INSTANT": 0.9068834781646729,
+          "STANDARD": 0.020398708060383797,
+          "STANDARD_IA": 0.028150226920843124
+        },
+        "reason": "ML prediction (confidence: 90.69%)"
+      },
+      {
+        "object_id": "obj_000015",
+        "key": "data/test-object-000015.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "confidence": 0.9767913818359375,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.003906371537595987,
+          "GLACIER_FLEXIBLE": 0.003906371537595987,
+          "GLACIER_INSTANT": 0.002473779022693634,
+          "STANDARD": 0.9767913818359375,
+          "STANDARD_IA": 0.012922062538564205
+        },
+        "reason": "ML prediction (confidence: 97.68%)"
+      },
+      {
+        "object_id": "obj_000016",
+        "key": "data/test-object-000016.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "confidence": 0.9805944561958313,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.003169464645907283,
+          "GLACIER_FLEXIBLE": 0.003169464645907283,
+          "GLACIER_INSTANT": 0.0012897311244159937,
+          "STANDARD": 0.9805944561958313,
+          "STANDARD_IA": 0.01177695021033287
+        },
+        "reason": "ML prediction (confidence: 98.06%)"
+      },
+      {
+        "object_id": "obj_000017",
+        "key": "data/test-object-000017.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD_IA",
+        "confidence": 0.9849047660827637,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.004033451434224844,
+          "GLACIER_FLEXIBLE": 0.004033451434224844,
+          "GLACIER_INSTANT": 0.00466245599091053,
+          "STANDARD": 0.002365853637456894,
+          "STANDARD_IA": 0.9849047660827637
+        },
+        "reason": "ML prediction (confidence: 98.49%)"
+      },
+      {
+        "object_id": "obj_000018",
+        "key": "data/test-object-000018.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "confidence": 0.9775897860527039,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.0039095645770430565,
+          "GLACIER_FLEXIBLE": 0.0039095645770430565,
+          "GLACIER_INSTANT": 0.0016584802651777864,
+          "STANDARD": 0.9775897860527039,
+          "STANDARD_IA": 0.01293262466788292
+        },
+        "reason": "ML prediction (confidence: 97.76%)"
+      },
+      {
+        "object_id": "obj_000019",
+        "key": "data/test-object-000019.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD_IA",
+        "confidence": 0.2592686712741852,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.22995635867118835,
+          "GLACIER_FLEXIBLE": 0.22995635867118835,
+          "GLACIER_INSTANT": 0.09357474744319916,
+          "STANDARD": 0.18724384903907776,
+          "STANDARD_IA": 0.2592686712741852
+        },
+        "reason": "ML prediction (confidence: 25.93%)"
+      },
+      {
+        "object_id": "obj_000020",
+        "key": "data/test-object-000020.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "GLACIER_INSTANT",
+        "confidence": 0.9892280101776123,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.0015250510768964887,
+          "GLACIER_FLEXIBLE": 0.0015250510768964887,
+          "GLACIER_INSTANT": 0.9892280101776123,
+          "STANDARD": 0.005313862580806017,
+          "STANDARD_IA": 0.0024080320727080107
+        },
+        "reason": "ML prediction (confidence: 98.92%)"
+      },
+      {
+        "object_id": "obj_000021",
+        "key": "data/test-object-000021.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "GLACIER_INSTANT",
+        "confidence": 0.9860801100730896,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.002030818723142147,
+          "GLACIER_FLEXIBLE": 0.002030818723142147,
+          "GLACIER_INSTANT": 0.9860801100730896,
+          "STANDARD": 0.0038390394765883684,
+          "STANDARD_IA": 0.006019281689077616
+        },
+        "reason": "ML prediction (confidence: 98.61%)"
+      },
+      {
+        "object_id": "obj_000022",
+        "key": "data/test-object-000022.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "confidence": 0.9714767932891846,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.0031399948056787252,
+          "GLACIER_FLEXIBLE": 0.0031399948056787252,
+          "GLACIER_INSTANT": 0.003629667218774557,
+          "STANDARD": 0.9714767932891846,
+          "STANDARD_IA": 0.018613526597619057
+        },
+        "reason": "ML prediction (confidence: 97.15%)"
+      },
+      {
+        "object_id": "obj_000023",
+        "key": "data/test-object-000023.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD_IA",
+        "confidence": 0.7233981490135193,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.08674256503582001,
+          "GLACIER_FLEXIBLE": 0.08674256503582001,
+          "GLACIER_INSTANT": 0.05173644423484802,
+          "STANDARD": 0.051380306482315063,
+          "STANDARD_IA": 0.7233981490135193
+        },
+        "reason": "ML prediction (confidence: 72.34%)"
+      },
+      {
+        "object_id": "obj_000024",
+        "key": "data/test-object-000024.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD_IA",
+        "confidence": 0.981174111366272,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.005927677266299725,
+          "GLACIER_FLEXIBLE": 0.005927677266299725,
+          "GLACIER_INSTANT": 0.004651271738111973,
+          "STANDARD": 0.0023192870430648327,
+          "STANDARD_IA": 0.981174111366272
+        },
+        "reason": "ML prediction (confidence: 98.12%)"
+      },
+      {
+        "object_id": "obj_000025",
+        "key": "data/test-object-000025.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "confidence": 0.9621893167495728,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.003109975950792432,
+          "GLACIER_FLEXIBLE": 0.003109975950792432,
+          "GLACIER_INSTANT": 0.0035949668381363153,
+          "STANDARD": 0.9621893167495728,
+          "STANDARD_IA": 0.027995722368359566
+        },
+        "reason": "ML prediction (confidence: 96.22%)"
+      },
+      {
+        "object_id": "obj_000026",
+        "key": "data/test-object-000026.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD_IA",
+        "confidence": 0.975806474685669,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.008120479062199593,
+          "GLACIER_FLEXIBLE": 0.008120479062199593,
+          "GLACIER_INSTANT": 0.004021353088319302,
+          "STANDARD": 0.003931217361241579,
+          "STANDARD_IA": 0.975806474685669
+        },
+        "reason": "ML prediction (confidence: 97.58%)"
+      },
+      {
+        "object_id": "obj_000027",
+        "key": "data/test-object-000027.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "GLACIER_INSTANT",
+        "confidence": 0.9873243570327759,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.0015221163630485535,
+          "GLACIER_FLEXIBLE": 0.0015221163630485535,
+          "GLACIER_INSTANT": 0.9873243570327759,
+          "STANDARD": 0.005303636658936739,
+          "STANDARD_IA": 0.004327818751335144
+        },
+        "reason": "ML prediction (confidence: 98.73%)"
+      },
+      {
+        "object_id": "obj_000028",
+        "key": "data/test-object-000028.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "GLACIER_INSTANT",
+        "confidence": 0.9868279695510864,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.0017417625058442354,
+          "GLACIER_FLEXIBLE": 0.0017417625058442354,
+          "GLACIER_INSTANT": 0.9868279695510864,
+          "STANDARD": 0.0016205181600525975,
+          "STANDARD_IA": 0.008067992515861988
+        },
+        "reason": "ML prediction (confidence: 98.68%)"
+      },
+      {
+        "object_id": "obj_000029",
+        "key": "data/test-object-000029.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "confidence": 0.9711349010467529,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.003138889791443944,
+          "GLACIER_FLEXIBLE": 0.003138889791443944,
+          "GLACIER_INSTANT": 0.0033267587423324585,
+          "STANDARD": 0.9711349010467529,
+          "STANDARD_IA": 0.01926056481897831
+        },
+        "reason": "ML prediction (confidence: 97.11%)"
+      },
+      {
+        "object_id": "obj_000030",
+        "key": "data/test-object-000030.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD_IA",
+        "confidence": 0.9786977171897888,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.006718812510371208,
+          "GLACIER_FLEXIBLE": 0.006718812510371208,
+          "GLACIER_INSTANT": 0.003696208819746971,
+          "STANDARD": 0.00416842894628644,
+          "STANDARD_IA": 0.9786977171897888
+        },
+        "reason": "ML prediction (confidence: 97.87%)"
+      },
+      {
+        "object_id": "obj_000031",
+        "key": "data/test-object-000031.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "GLACIER_INSTANT",
+        "confidence": 0.9877546429634094,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.0019486218225210905,
+          "GLACIER_FLEXIBLE": 0.0019486218225210905,
+          "GLACIER_INSTANT": 0.9877546429634094,
+          "STANDARD": 0.0035329191014170647,
+          "STANDARD_IA": 0.004815077409148216
+        },
+        "reason": "ML prediction (confidence: 98.78%)"
+      },
+      {
+        "object_id": "obj_000032",
+        "key": "data/test-object-000032.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "GLACIER_INSTANT",
+        "confidence": 0.9801979064941406,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.0028992127627134323,
+          "GLACIER_FLEXIBLE": 0.0028992127627134323,
+          "GLACIER_INSTANT": 0.9801979064941406,
+          "STANDARD": 0.001403541537001729,
+          "STANDARD_IA": 0.012600190006196499
+        },
+        "reason": "ML prediction (confidence: 98.02%)"
+      },
+      {
+        "object_id": "obj_000033",
+        "key": "data/test-object-000033.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "confidence": 0.9751195311546326,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.0031517688184976578,
+          "GLACIER_FLEXIBLE": 0.0031517688184976578,
+          "GLACIER_INSTANT": 0.0012825302546843886,
+          "STANDARD": 0.9751195311546326,
+          "STANDARD_IA": 0.017294472083449364
+        },
+        "reason": "ML prediction (confidence: 97.51%)"
+      },
+      {
+        "object_id": "obj_000034",
+        "key": "data/test-object-000034.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "GLACIER_INSTANT",
+        "confidence": 0.7387087941169739,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.03239797428250313,
+          "GLACIER_FLEXIBLE": 0.03239797428250313,
+          "GLACIER_INSTANT": 0.7387087941169739,
+          "STANDARD": 0.012676166370511055,
+          "STANDARD_IA": 0.1838190257549286
+        },
+        "reason": "ML prediction (confidence: 73.87%)"
+      },
+      {
+        "object_id": "obj_000035",
+        "key": "data/test-object-000035.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD_IA",
+        "confidence": 0.9579461812973022,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.013338976539671421,
+          "GLACIER_FLEXIBLE": 0.013338976539671421,
+          "GLACIER_INSTANT": 0.009022315964102745,
+          "STANDARD": 0.006353564094752073,
+          "STANDARD_IA": 0.9579461812973022
+        },
+        "reason": "ML prediction (confidence: 95.79%)"
+      },
+      {
+        "object_id": "obj_000036",
+        "key": "data/test-object-000036.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "GLACIER_INSTANT",
+        "confidence": 0.977547287940979,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.002566695911809802,
+          "GLACIER_FLEXIBLE": 0.002566695911809802,
+          "GLACIER_INSTANT": 0.977547287940979,
+          "STANDARD": 0.005757792852818966,
+          "STANDARD_IA": 0.011561599560081959
+        },
+        "reason": "ML prediction (confidence: 97.75%)"
+      },
+      {
+        "object_id": "obj_000037",
+        "key": "data/test-object-000037.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "confidence": 0.9908493757247925,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.003255025949329138,
+          "GLACIER_FLEXIBLE": 0.003255025949329138,
+          "GLACIER_INSTANT": 0.001324547454714775,
+          "STANDARD": 0.9908493757247925,
+          "STANDARD_IA": 0.001316083362326026
+        },
+        "reason": "ML prediction (confidence: 99.08%)"
+      },
+      {
+        "object_id": "obj_000038",
+        "key": "data/test-object-000038.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD_IA",
+        "confidence": 0.881984531879425,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.026129022240638733,
+          "GLACIER_FLEXIBLE": 0.026129022240638733,
+          "GLACIER_INSTANT": 0.019147401675581932,
+          "STANDARD": 0.04660999774932861,
+          "STANDARD_IA": 0.881984531879425
+        },
+        "reason": "ML prediction (confidence: 88.20%)"
+      },
+      {
+        "object_id": "obj_000039",
+        "key": "data/test-object-000039.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "confidence": 0.9621893167495728,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.003109975950792432,
+          "GLACIER_FLEXIBLE": 0.003109975950792432,
+          "GLACIER_INSTANT": 0.0035949668381363153,
+          "STANDARD": 0.9621893167495728,
+          "STANDARD_IA": 0.027995722368359566
+        },
+        "reason": "ML prediction (confidence: 96.22%)"
+      },
+      {
+        "object_id": "obj_000040",
+        "key": "data/test-object-000040.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "GLACIER_INSTANT",
+        "confidence": 0.971872091293335,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.0025278255343437195,
+          "GLACIER_FLEXIBLE": 0.0025278255343437195,
+          "GLACIER_INSTANT": 0.971872091293335,
+          "STANDARD": 0.001223748899064958,
+          "STANDARD_IA": 0.021848462522029877
+        },
+        "reason": "ML prediction (confidence: 97.19%)"
+      },
+      {
+        "object_id": "obj_000041",
+        "key": "data/test-object-000041.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD_IA",
+        "confidence": 0.9866427183151245,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.003598631825298071,
+          "GLACIER_FLEXIBLE": 0.003598631825298071,
+          "GLACIER_INSTANT": 0.004159827250987291,
+          "STANDARD": 0.0020001560915261507,
+          "STANDARD_IA": 0.9866427183151245
+        },
+        "reason": "ML prediction (confidence: 98.66%)"
+      },
+      {
+        "object_id": "obj_000042",
+        "key": "data/test-object-000042.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "GLACIER_INSTANT",
+        "confidence": 0.9792383313179016,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.002268597949296236,
+          "GLACIER_FLEXIBLE": 0.002268597949296236,
+          "GLACIER_INSTANT": 0.9792383313179016,
+          "STANDARD": 0.007904664613306522,
+          "STANDARD_IA": 0.008319715037941933
+        },
+        "reason": "ML prediction (confidence: 97.92%)"
+      },
+      {
+        "object_id": "obj_000043",
+        "key": "data/test-object-000043.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD_IA",
+        "confidence": 0.8774817585945129,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.010774378664791584,
+          "GLACIER_FLEXIBLE": 0.010774378664791584,
+          "GLACIER_INSTANT": 0.0967538058757782,
+          "STANDARD": 0.00421562697738409,
+          "STANDARD_IA": 0.8774817585945129
+        },
+        "reason": "ML prediction (confidence: 87.75%)"
+      },
+      {
+        "object_id": "obj_000044",
+        "key": "data/test-object-000044.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD_IA",
+        "confidence": 0.3310006260871887,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.20227667689323425,
+          "GLACIER_FLEXIBLE": 0.20227667689323425,
+          "GLACIER_INSTANT": 0.16809843480587006,
+          "STANDARD": 0.09634756296873093,
+          "STANDARD_IA": 0.3310006260871887
+        },
+        "reason": "ML prediction (confidence: 33.10%)"
+      },
+      {
+        "object_id": "obj_000045",
+        "key": "data/test-object-000045.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "confidence": 0.9664520025253296,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.0031237537041306496,
+          "GLACIER_FLEXIBLE": 0.0031237537041306496,
+          "GLACIER_INSTANT": 0.0012711301678791642,
+          "STANDARD": 0.9664520025253296,
+          "STANDARD_IA": 0.026029443368315697
+        },
+        "reason": "ML prediction (confidence: 96.65%)"
+      },
+      {
+        "object_id": "obj_000046",
+        "key": "data/test-object-000046.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "confidence": 0.9705077409744263,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.003881242126226425,
+          "GLACIER_FLEXIBLE": 0.003881242126226425,
+          "GLACIER_INSTANT": 0.0024578655138611794,
+          "STANDARD": 0.9705077409744263,
+          "STANDARD_IA": 0.019271859899163246
+        },
+        "reason": "ML prediction (confidence: 97.05%)"
+      },
+      {
+        "object_id": "obj_000047",
+        "key": "data/test-object-000047.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "GLACIER_INSTANT",
+        "confidence": 0.99017333984375,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.0021108179353177547,
+          "GLACIER_FLEXIBLE": 0.0021108179353177547,
+          "GLACIER_INSTANT": 0.99017333984375,
+          "STANDARD": 0.0008258871384896338,
+          "STANDARD_IA": 0.00477910041809082
+        },
+        "reason": "ML prediction (confidence: 99.02%)"
+      },
+      {
+        "object_id": "obj_000048",
+        "key": "data/test-object-000048.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD_IA",
+        "confidence": 0.9797874689102173,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.0045300740748643875,
+          "GLACIER_FLEXIBLE": 0.0045300740748643875,
+          "GLACIER_INSTANT": 0.008959373459219933,
+          "STANDARD": 0.0021930609364062548,
+          "STANDARD_IA": 0.9797874689102173
+        },
+        "reason": "ML prediction (confidence: 97.98%)"
+      },
+      {
+        "object_id": "obj_000049",
+        "key": "data/test-object-000049.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "GLACIER_INSTANT",
+        "confidence": 0.8907340168952942,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.021886928007006645,
+          "GLACIER_FLEXIBLE": 0.021886928007006645,
+          "GLACIER_INSTANT": 0.8907340168952942,
+          "STANDARD": 0.04742005839943886,
+          "STANDARD_IA": 0.0180721003562212
+        },
+        "reason": "ML prediction (confidence: 89.07%)"
+      },
+      {
+        "object_id": "obj_000050",
+        "key": "data/test-object-000050.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "confidence": 0.9734828472137451,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.003893140237778425,
+          "GLACIER_FLEXIBLE": 0.003893140237778425,
+          "GLACIER_INSTANT": 0.005772782023996115,
+          "STANDARD": 0.9734828472137451,
+          "STANDARD_IA": 0.012958059087395668
+        },
+        "reason": "ML prediction (confidence: 97.35%)"
+      },
+      {
+        "object_id": "obj_000051",
+        "key": "data/test-object-000051.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "GLACIER_INSTANT",
+        "confidence": 0.9869916439056396,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.001720127766020596,
+          "GLACIER_FLEXIBLE": 0.001720127766020596,
+          "GLACIER_INSTANT": 0.9869916439056396,
+          "STANDARD": 0.0016003892524167895,
+          "STANDARD_IA": 0.007967779412865639
+        },
+        "reason": "ML prediction (confidence: 98.70%)"
+      },
+      {
+        "object_id": "obj_000052",
+        "key": "data/test-object-000052.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "GLACIER_INSTANT",
+        "confidence": 0.9861459136009216,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.001740558771416545,
+          "GLACIER_FLEXIBLE": 0.001740558771416545,
+          "GLACIER_INSTANT": 0.9861459136009216,
+          "STANDARD": 0.002101150108501315,
+          "STANDARD_IA": 0.008271869271993637
+        },
+        "reason": "ML prediction (confidence: 98.61%)"
+      },
+      {
+        "object_id": "obj_000053",
+        "key": "data/test-object-000053.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "confidence": 0.97186678647995,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.0038866770919412374,
+          "GLACIER_FLEXIBLE": 0.0038866770919412374,
+          "GLACIER_INSTANT": 0.0057631987147033215,
+          "STANDARD": 0.97186678647995,
+          "STANDARD_IA": 0.014596615917980671
+        },
+        "reason": "ML prediction (confidence: 97.19%)"
+      },
+      {
+        "object_id": "obj_000054",
+        "key": "data/test-object-000054.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD_IA",
+        "confidence": 0.8455342650413513,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.02892053686082363,
+          "GLACIER_FLEXIBLE": 0.02892053686082363,
+          "GLACIER_INSTANT": 0.0826239213347435,
+          "STANDARD": 0.014000763185322285,
+          "STANDARD_IA": 0.8455342650413513
+        },
+        "reason": "ML prediction (confidence: 84.55%)"
+      },
+      {
+        "object_id": "obj_000055",
+        "key": "data/test-object-000055.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "confidence": 0.977035641670227,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.003157961880788207,
+          "GLACIER_FLEXIBLE": 0.003157961880788207,
+          "GLACIER_INSTANT": 0.0052731698378920555,
+          "STANDARD": 0.977035641670227,
+          "STANDARD_IA": 0.011375284753739834
+        },
+        "reason": "ML prediction (confidence: 97.70%)"
+      },
+      {
+        "object_id": "obj_000056",
+        "key": "data/test-object-000056.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD_IA",
+        "confidence": 0.9765732288360596,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.008057309314608574,
+          "GLACIER_FLEXIBLE": 0.008057309314608574,
+          "GLACIER_INSTANT": 0.004159579519182444,
+          "STANDARD": 0.00315253552980721,
+          "STANDARD_IA": 0.9765732288360596
+        },
+        "reason": "ML prediction (confidence: 97.66%)"
+      },
+      {
+        "object_id": "obj_000057",
+        "key": "data/test-object-000057.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "confidence": 0.9772112369537354,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.003158529521897435,
+          "GLACIER_FLEXIBLE": 0.003158529521897435,
+          "GLACIER_INSTANT": 0.003347574034705758,
+          "STANDARD": 0.9772112369537354,
+          "STANDARD_IA": 0.013124167919158936
+        },
+        "reason": "ML prediction (confidence: 97.72%)"
+      },
+      {
+        "object_id": "obj_000058",
+        "key": "data/test-object-000058.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "GLACIER_INSTANT",
+        "confidence": 0.9108395576477051,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.006428802851587534,
+          "GLACIER_FLEXIBLE": 0.006428802851587534,
+          "GLACIER_INSTANT": 0.9108395576477051,
+          "STANDARD": 0.003112255595624447,
+          "STANDARD_IA": 0.07319062948226929
+        },
+        "reason": "ML prediction (confidence: 91.08%)"
+      },
+      {
+        "object_id": "obj_000059",
+        "key": "data/test-object-000059.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "GLACIER_INSTANT",
+        "confidence": 0.9931568503379822,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.0015311080496758223,
+          "GLACIER_FLEXIBLE": 0.0015311080496758223,
+          "GLACIER_INSTANT": 0.9931568503379822,
+          "STANDARD": 0.0014245272614061832,
+          "STANDARD_IA": 0.0023563809227198362
+        },
+        "reason": "ML prediction (confidence: 99.32%)"
+      },
+      {
+        "object_id": "obj_000060",
+        "key": "data/test-object-000060.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "GLACIER_INSTANT",
+        "confidence": 0.9873296022415161,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.0017041555838659406,
+          "GLACIER_FLEXIBLE": 0.0017041555838659406,
+          "GLACIER_INSTANT": 0.9873296022415161,
+          "STANDARD": 0.0012814418878406286,
+          "STANDARD_IA": 0.00798064935952425
+        },
+        "reason": "ML prediction (confidence: 98.73%)"
+      },
+      {
+        "object_id": "obj_000061",
+        "key": "data/test-object-000061.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "confidence": 0.9784981608390808,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.0031626892741769552,
+          "GLACIER_FLEXIBLE": 0.0031626892741769552,
+          "GLACIER_INSTANT": 0.0033519824501127005,
+          "STANDARD": 0.9784981608390808,
+          "STANDARD_IA": 0.011824559420347214
+        },
+        "reason": "ML prediction (confidence: 97.85%)"
+      },
+      {
+        "object_id": "obj_000062",
+        "key": "data/test-object-000062.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "confidence": 0.9775897860527039,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.0039095645770430565,
+          "GLACIER_FLEXIBLE": 0.0039095645770430565,
+          "GLACIER_INSTANT": 0.0016584802651777864,
+          "STANDARD": 0.9775897860527039,
+          "STANDARD_IA": 0.01293262466788292
+        },
+        "reason": "ML prediction (confidence: 97.76%)"
+      },
+      {
+        "object_id": "obj_000063",
+        "key": "data/test-object-000063.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD_IA",
+        "confidence": 0.9652996063232422,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.010983612388372421,
+          "GLACIER_FLEXIBLE": 0.010983612388372421,
+          "GLACIER_INSTANT": 0.008435707539319992,
+          "STANDARD": 0.0042974925599992275,
+          "STANDARD_IA": 0.9652996063232422
+        },
+        "reason": "ML prediction (confidence: 96.53%)"
+      },
+      {
+        "object_id": "obj_000064",
+        "key": "data/test-object-000064.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "GLACIER_INSTANT",
+        "confidence": 0.9919920563697815,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.0015293123433366418,
+          "GLACIER_FLEXIBLE": 0.0015293123433366418,
+          "GLACIER_INSTANT": 0.9919920563697815,
+          "STANDARD": 0.001422856585122645,
+          "STANDARD_IA": 0.003526525804772973
+        },
+        "reason": "ML prediction (confidence: 99.20%)"
+      },
+      {
+        "object_id": "obj_000065",
+        "key": "data/test-object-000065.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "GLACIER_INSTANT",
+        "confidence": 0.992323637008667,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.0015298235230147839,
+          "GLACIER_FLEXIBLE": 0.0015298235230147839,
+          "GLACIER_INSTANT": 0.992323637008667,
+          "STANDARD": 0.0018467569025233388,
+          "STANDARD_IA": 0.002769834129139781
+        },
+        "reason": "ML prediction (confidence: 99.23%)"
+      },
+      {
+        "object_id": "obj_000066",
+        "key": "data/test-object-000066.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD_IA",
+        "confidence": 0.9864991903305054,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.0037904311902821064,
+          "GLACIER_FLEXIBLE": 0.0037904311902821064,
+          "GLACIER_INSTANT": 0.004017296247184277,
+          "STANDARD": 0.0019026125082746148,
+          "STANDARD_IA": 0.9864991903305054
+        },
+        "reason": "ML prediction (confidence: 98.65%)"
+      },
+      {
+        "object_id": "obj_000067",
+        "key": "data/test-object-000067.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "confidence": 0.9726499915122986,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.003889809362590313,
+          "GLACIER_FLEXIBLE": 0.003889809362590313,
+          "GLACIER_INSTANT": 0.008331830613315105,
+          "STANDARD": 0.9726499915122986,
+          "STANDARD_IA": 0.01123855635523796
+        },
+        "reason": "ML prediction (confidence: 97.26%)"
+      },
+      {
+        "object_id": "obj_000068",
+        "key": "data/test-object-000068.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD_IA",
+        "confidence": 0.9784995317459106,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.004818713758140802,
+          "GLACIER_FLEXIBLE": 0.004818713758140802,
+          "GLACIER_INSTANT": 0.009530231356620789,
+          "STANDARD": 0.0023327937815338373,
+          "STANDARD_IA": 0.9784995317459106
+        },
+        "reason": "ML prediction (confidence: 97.85%)"
+      },
+      {
+        "object_id": "obj_000069",
+        "key": "data/test-object-000069.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "GLACIER_INSTANT",
+        "confidence": 0.982332170009613,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.0017171400832012296,
+          "GLACIER_FLEXIBLE": 0.0017171400832012296,
+          "GLACIER_INSTANT": 0.982332170009613,
+          "STANDARD": 0.005983173381537199,
+          "STANDARD_IA": 0.008250361308455467
+        },
+        "reason": "ML prediction (confidence: 98.23%)"
+      },
+      {
+        "object_id": "obj_000070",
+        "key": "data/test-object-000070.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD_IA",
+        "confidence": 0.9812952280044556,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.004953120835125446,
+          "GLACIER_FLEXIBLE": 0.004953120835125446,
+          "GLACIER_INSTANT": 0.005725544411689043,
+          "STANDARD": 0.0030729733407497406,
+          "STANDARD_IA": 0.9812952280044556
+        },
+        "reason": "ML prediction (confidence: 98.13%)"
+      },
+      {
+        "object_id": "obj_000071",
+        "key": "data/test-object-000071.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "GLACIER_INSTANT",
+        "confidence": 0.983016312122345,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.002181470161303878,
+          "GLACIER_FLEXIBLE": 0.002181470161303878,
+          "GLACIER_INSTANT": 0.983016312122345,
+          "STANDARD": 0.007601077668368816,
+          "STANDARD_IA": 0.0050197383388876915
+        },
+        "reason": "ML prediction (confidence: 98.30%)"
+      },
+      {
+        "object_id": "obj_000072",
+        "key": "data/test-object-000072.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "GLACIER_INSTANT",
+        "confidence": 0.9839179515838623,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.002026365837082267,
+          "GLACIER_FLEXIBLE": 0.002026365837082267,
+          "GLACIER_INSTANT": 0.9839179515838623,
+          "STANDARD": 0.003673872211948037,
+          "STANDARD_IA": 0.008355525322258472
+        },
+        "reason": "ML prediction (confidence: 98.39%)"
+      },
+      {
+        "object_id": "obj_000073",
+        "key": "data/test-object-000073.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "confidence": 0.9757826328277588,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.0039023372810333967,
+          "GLACIER_FLEXIBLE": 0.0039023372810333967,
+          "GLACIER_INSTANT": 0.008358664810657501,
+          "STANDARD": 0.9757826328277588,
+          "STANDARD_IA": 0.008054004050791264
+        },
+        "reason": "ML prediction (confidence: 97.58%)"
+      },
+      {
+        "object_id": "obj_000074",
+        "key": "data/test-object-000074.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "confidence": 0.988132655620575,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.00401640310883522,
+          "GLACIER_FLEXIBLE": 0.00401640310883522,
+          "GLACIER_INSTANT": 0.0017038030782714486,
+          "STANDARD": 0.988132655620575,
+          "STANDARD_IA": 0.0021306476555764675
+        },
+        "reason": "ML prediction (confidence: 98.81%)"
+      },
+      {
+        "object_id": "obj_000075",
+        "key": "data/test-object-000075.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "confidence": 0.9798144698143005,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.003918461501598358,
+          "GLACIER_FLEXIBLE": 0.003918461501598358,
+          "GLACIER_INSTANT": 0.005810328293591738,
+          "STANDARD": 0.9798144698143005,
+          "STANDARD_IA": 0.006538241170346737
+        },
+        "reason": "ML prediction (confidence: 97.98%)"
+      },
+      {
+        "object_id": "obj_000076",
+        "key": "data/test-object-000076.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "GLACIER_INSTANT",
+        "confidence": 0.9822326898574829,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.0029118882957845926,
+          "GLACIER_FLEXIBLE": 0.0029118882957845926,
+          "GLACIER_INSTANT": 0.9822326898574829,
+          "STANDARD": 0.0011393174063414335,
+          "STANDARD_IA": 0.010804197750985622
+        },
+        "reason": "ML prediction (confidence: 98.22%)"
+      },
+      {
+        "object_id": "obj_000077",
+        "key": "data/test-object-000077.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD_IA",
+        "confidence": 0.9788119196891785,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.005001239478588104,
+          "GLACIER_FLEXIBLE": 0.005001239478588104,
+          "GLACIER_INSTANT": 0.008764496073126793,
+          "STANDARD": 0.002421156270429492,
+          "STANDARD_IA": 0.9788119196891785
+        },
+        "reason": "ML prediction (confidence: 97.88%)"
+      },
+      {
+        "object_id": "obj_000078",
+        "key": "data/test-object-000078.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD_IA",
+        "confidence": 0.9868974089622498,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.003599560586735606,
+          "GLACIER_FLEXIBLE": 0.003599560586735606,
+          "GLACIER_INSTANT": 0.004160901065915823,
+          "STANDARD": 0.0017425887053832412,
+          "STANDARD_IA": 0.9868974089622498
+        },
+        "reason": "ML prediction (confidence: 98.69%)"
+      },
+      {
+        "object_id": "obj_000079",
+        "key": "data/test-object-000079.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "confidence": 0.6519899964332581,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.0524870827794075,
+          "GLACIER_FLEXIBLE": 0.0524870827794075,
+          "GLACIER_INSTANT": 0.1662561595439911,
+          "STANDARD": 0.6519899964332581,
+          "STANDARD_IA": 0.07677972316741943
+        },
+        "reason": "ML prediction (confidence: 65.20%)"
+      },
+      {
+        "object_id": "obj_000080",
+        "key": "data/test-object-000080.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "confidence": 0.9624770283699036,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.0031109058763831854,
+          "GLACIER_FLEXIBLE": 0.0031109058763831854,
+          "GLACIER_INSTANT": 0.003297099843621254,
+          "STANDARD": 0.9624770283699036,
+          "STANDARD_IA": 0.02800409309566021
+        },
+        "reason": "ML prediction (confidence: 96.25%)"
+      },
+      {
+        "object_id": "obj_000081",
+        "key": "data/test-object-000081.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD_IA",
+        "confidence": 0.7770412564277649,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.010048327036201954,
+          "GLACIER_FLEXIBLE": 0.010048327036201954,
+          "GLACIER_INSTANT": 0.1969681829214096,
+          "STANDARD": 0.005893927998840809,
+          "STANDARD_IA": 0.7770412564277649
+        },
+        "reason": "ML prediction (confidence: 77.70%)"
+      },
+      {
+        "object_id": "obj_000082",
+        "key": "data/test-object-000082.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "GLACIER_INSTANT",
+        "confidence": 0.9901812076568604,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.00152652058750391,
+          "GLACIER_FLEXIBLE": 0.00152652058750391,
+          "GLACIER_INSTANT": 0.9901812076568604,
+          "STANDARD": 0.0014202591264620423,
+          "STANDARD_IA": 0.005345504265278578
+        },
+        "reason": "ML prediction (confidence: 99.02%)"
+      },
+      {
+        "object_id": "obj_000083",
+        "key": "data/test-object-000083.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD_IA",
+        "confidence": 0.983526885509491,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.004508240148425102,
+          "GLACIER_FLEXIBLE": 0.004508240148425102,
+          "GLACIER_INSTANT": 0.005274128634482622,
+          "STANDARD": 0.002182489726692438,
+          "STANDARD_IA": 0.983526885509491
+        },
+        "reason": "ML prediction (confidence: 98.35%)"
+      },
+      {
+        "object_id": "obj_000084",
+        "key": "data/test-object-000084.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD_IA",
+        "confidence": 0.9796403050422668,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.0067252833396196365,
+          "GLACIER_FLEXIBLE": 0.0067252833396196365,
+          "GLACIER_INSTANT": 0.0027366778813302517,
+          "STANDARD": 0.004172443877905607,
+          "STANDARD_IA": 0.9796403050422668
+        },
+        "reason": "ML prediction (confidence: 97.96%)"
+      },
+      {
+        "object_id": "obj_000085",
+        "key": "data/test-object-000085.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD_IA",
+        "confidence": 0.9845021367073059,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.004895462654531002,
+          "GLACIER_FLEXIBLE": 0.004895462654531002,
+          "GLACIER_INSTANT": 0.003337008645758033,
+          "STANDARD": 0.002369949594140053,
+          "STANDARD_IA": 0.9845021367073059
+        },
+        "reason": "ML prediction (confidence: 98.45%)"
+      },
+      {
+        "object_id": "obj_000086",
+        "key": "data/test-object-000086.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "GLACIER_INSTANT",
+        "confidence": 0.9703542590141296,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.003221452236175537,
+          "GLACIER_FLEXIBLE": 0.003221452236175537,
+          "GLACIER_INSTANT": 0.9703542590141296,
+          "STANDARD": 0.0015595413278788328,
+          "STANDARD_IA": 0.02164333313703537
+        },
+        "reason": "ML prediction (confidence: 97.04%)"
+      },
+      {
+        "object_id": "obj_000087",
+        "key": "data/test-object-000087.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "GLACIER_INSTANT",
+        "confidence": 0.9838323593139648,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.002189480932429433,
+          "GLACIER_FLEXIBLE": 0.002189480932429433,
+          "GLACIER_INSTANT": 0.9838323593139648,
+          "STANDARD": 0.003969605080783367,
+          "STANDARD_IA": 0.00781906209886074
+        },
+        "reason": "ML prediction (confidence: 98.38%)"
+      },
+      {
+        "object_id": "obj_000088",
+        "key": "data/test-object-000088.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "GLACIER_INSTANT",
+        "confidence": 0.8760429620742798,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.017349231988191605,
+          "GLACIER_FLEXIBLE": 0.017349231988191605,
+          "GLACIER_INSTANT": 0.8760429620742798,
+          "STANDARD": 0.013045776635408401,
+          "STANDARD_IA": 0.07621286809444427
+        },
+        "reason": "ML prediction (confidence: 87.60%)"
+      },
+      {
+        "object_id": "obj_000089",
+        "key": "data/test-object-000089.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "GLACIER_INSTANT",
+        "confidence": 0.9906596541404724,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.001954352715983987,
+          "GLACIER_FLEXIBLE": 0.001954352715983987,
+          "GLACIER_INSTANT": 0.9906596541404724,
+          "STANDARD": 0.0014695778954774141,
+          "STANDARD_IA": 0.003961984999477863
+        },
+        "reason": "ML prediction (confidence: 99.07%)"
+      },
+      {
+        "object_id": "obj_000090",
+        "key": "data/test-object-000090.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "GLACIER_INSTANT",
+        "confidence": 0.9838893413543701,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.0015988766681402922,
+          "GLACIER_FLEXIBLE": 0.0015988766681402922,
+          "GLACIER_INSTANT": 0.9838893413543701,
+          "STANDARD": 0.006893124431371689,
+          "STANDARD_IA": 0.0060197277925908566
+        },
+        "reason": "ML prediction (confidence: 98.39%)"
+      },
+      {
+        "object_id": "obj_000091",
+        "key": "data/test-object-000091.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "GLACIER_INSTANT",
+        "confidence": 0.9751380085945129,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.0024289682041853666,
+          "GLACIER_FLEXIBLE": 0.0024289682041853666,
+          "GLACIER_INSTANT": 0.9751380085945129,
+          "STANDARD": 0.005448832642287016,
+          "STANDARD_IA": 0.014555378817021847
+        },
+        "reason": "ML prediction (confidence: 97.51%)"
+      },
+      {
+        "object_id": "obj_000092",
+        "key": "data/test-object-000092.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD_IA",
+        "confidence": 0.9916893243789673,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.002576299477368593,
+          "GLACIER_FLEXIBLE": 0.002576299477368593,
+          "GLACIER_INSTANT": 0.0015596477314829826,
+          "STANDARD": 0.0015983660705387592,
+          "STANDARD_IA": 0.9916893243789673
+        },
+        "reason": "ML prediction (confidence: 99.17%)"
+      },
+      {
+        "object_id": "obj_000093",
+        "key": "data/test-object-000093.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "GLACIER_INSTANT",
+        "confidence": 0.8826376795768738,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.009253774769604206,
+          "GLACIER_FLEXIBLE": 0.009253774769604206,
+          "GLACIER_INSTANT": 0.8826376795768738,
+          "STANDARD": 0.0036206694785505533,
+          "STANDARD_IA": 0.09523405134677887
+        },
+        "reason": "ML prediction (confidence: 88.26%)"
+      },
+      {
+        "object_id": "obj_000094",
+        "key": "data/test-object-000094.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD_IA",
+        "confidence": 0.8987120389938354,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.02978011965751648,
+          "GLACIER_FLEXIBLE": 0.02978011965751648,
+          "GLACIER_INSTANT": 0.01885879971086979,
+          "STANDARD": 0.022868895903229713,
+          "STANDARD_IA": 0.8987120389938354
+        },
+        "reason": "ML prediction (confidence: 89.87%)"
+      },
+      {
+        "object_id": "obj_000095",
+        "key": "data/test-object-000095.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "confidence": 0.9908729791641235,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.0032551034819334745,
+          "GLACIER_FLEXIBLE": 0.0032551034819334745,
+          "GLACIER_INSTANT": 0.0013245790032669902,
+          "STANDARD": 0.9908729791641235,
+          "STANDARD_IA": 0.0012922093737870455
+        },
+        "reason": "ML prediction (confidence: 99.09%)"
+      },
+      {
+        "object_id": "obj_000096",
+        "key": "data/test-object-000096.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "GLACIER_INSTANT",
+        "confidence": 0.9897449612617493,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.001608392340131104,
+          "GLACIER_FLEXIBLE": 0.001608392340131104,
+          "GLACIER_INSTANT": 0.9897449612617493,
+          "STANDARD": 0.0014964317670091987,
+          "STANDARD_IA": 0.005541785154491663
+        },
+        "reason": "ML prediction (confidence: 98.97%)"
+      },
+      {
+        "object_id": "obj_000097",
+        "key": "data/test-object-000097.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "GLACIER_INSTANT",
+        "confidence": 0.9832106828689575,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.0029147877357900143,
+          "GLACIER_FLEXIBLE": 0.0029147877357900143,
+          "GLACIER_INSTANT": 0.9832106828689575,
+          "STANDARD": 0.0011404517572373152,
+          "STANDARD_IA": 0.00981934741139412
+        },
+        "reason": "ML prediction (confidence: 98.32%)"
+      },
+      {
+        "object_id": "obj_000098",
+        "key": "data/test-object-000098.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "GLACIER_INSTANT",
+        "confidence": 0.9882765412330627,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.002035342389717698,
+          "GLACIER_FLEXIBLE": 0.002035342389717698,
+          "GLACIER_INSTANT": 0.9882765412330627,
+          "STANDARD": 0.0008303337381221354,
+          "STANDARD_IA": 0.006822499912232161
+        },
+        "reason": "ML prediction (confidence: 98.83%)"
+      },
+      {
+        "object_id": "obj_000099",
+        "key": "data/test-object-000099.dat",
+        "current_storage_class": "STANDARD",
+        "recommended_storage_class": "STANDARD",
+        "confidence": 0.9730844497680664,
+        "class_probabilities": {
+          "GLACIER_DEEP_ARCHIVE": 0.003891546977683902,
+          "GLACIER_FLEXIBLE": 0.003891546977683902,
+          "GLACIER_INSTANT": 0.005290719214826822,
+          "STANDARD": 0.9730844497680664,
+          "STANDARD_IA": 0.013841639272868633
+        },
+        "reason": "ML prediction (confidence: 97.31%)"
+      }
+    ]
+  },
+  "forecasting": {
+    "method": "prophet",
+    "horizon_days": 30,
+    "historical_points": 60,
+    "naive_baseline": {
+      "forecast": [
+        0.0007,
+        0.0007,
+        0.0007,
+        0.0007,
+        0.0007
+      ],
+      "errors": {
+        "mape": 21.03767435851345,
+        "rmse": 0.00023641629949448635,
+        "mae": 0.00020299999999999997,
+        "method": "naive_persistence"
+      },
+      "metadata": {
+        "method": "naive_persistence",
+        "description": "Forecasts that next period cost equals current period cost",
+        "reference": "Beck, Dovern & Vogl (2025), Applied Intelligence",
+        "doi": "10.1007/s10489-025-06268-w",
+        "importance": "Essential baseline to avoid inflated accuracy claims"
+      }
+    },
+    "prophet": {
+      "forecast": [
+        {
+          "ds": "2026-09-19",
+          "yhat": 0.0007,
+          "yhat_lower": 0.000699999998644341,
+          "yhat_upper": 0.0007000000014671809
+        },
+        {
+          "ds": "2026-09-20",
+          "yhat": 0.0007,
+          "yhat_lower": 0.0006999999985535523,
+          "yhat_upper": 0.0007000000013565571
+        },
+        {
+          "ds": "2026-09-21",
+          "yhat": 0.0007,
+          "yhat_lower": 0.0006999999984522782,
+          "yhat_upper": 0.0007000000014140351
+        },
+        {
+          "ds": "2026-09-22",
+          "yhat": 0.0007,
+          "yhat_lower": 0.0006999999983419503,
+          "yhat_upper": 0.0007000000016417479
+        },
+        {
+          "ds": "2026-09-23",
+          "yhat": 0.0007,
+          "yhat_lower": 0.0006999999979977067,
+          "yhat_upper": 0.0007000000019398262
+        }
+      ],
+      "errors": {
+        "mape": 21.03767435851345,
+        "rmse": 0.00023641629949448635,
+        "mae": 0.00020299999999999997,
+        "r2": -2.805587707950342,
+        "method": "prophet"
+      },
+      "metadata": {
+        "method": "prophet",
+        "library": "Facebook Prophet",
+        "horizon_days": 30,
+        "confidence_interval": 0.95,
+        "trained": true
+      }
+    },
+    "beats_naive_baseline": false
+  },
+  "savings": {
+    "our_approach": {
+      "total_current_cost_monthly": 0.023056163671875,
+      "total_recommended_cost_monthly": 0.013277818749999998,
+      "total_savings_usd_monthly": 0.009778344921875003,
+      "total_savings_percent": 42.41097963488223,
+      "num_objects": 100,
+      "individual_savings": [
+        {
+          "object_id": "obj_000000",
+          "current_cost_monthly": 0.0002823125,
+          "recommended_cost_monthly": 9.875000000000002e-05,
+          "savings_usd_monthly": 0.0001835625,
+          "savings_percent": 65.02100862660753,
+          "current_class": "STANDARD",
+          "recommended_class": "GLACIER_INSTANT"
+        },
+        {
+          "object_id": "obj_000001",
+          "current_cost_monthly": 0.000213511328125,
+          "recommended_cost_monthly": 0.0001246474609375,
+          "savings_usd_monthly": 8.886386718750001e-05,
+          "savings_percent": 41.62019240275737,
+          "current_class": "STANDARD",
+          "recommended_class": "STANDARD_IA"
+        },
+        {
+          "object_id": "obj_000002",
+          "current_cost_monthly": 0.0002989828125,
+          "recommended_cost_monthly": 9.171875e-05,
+          "savings_usd_monthly": 0.0002072640625,
+          "savings_percent": 69.3230461791023,
+          "current_class": "STANDARD",
+          "recommended_class": "GLACIER_INSTANT"
+        },
+        {
+          "object_id": "obj_000003",
+          "current_cost_monthly": 0.00043776171875,
+          "recommended_cost_monthly": 0.00043776171875,
+          "savings_usd_monthly": 0.0,
+          "savings_percent": 0.0,
+          "current_class": "STANDARD",
+          "recommended_class": "STANDARD"
+        },
+        {
+          "object_id": "obj_000004",
+          "current_cost_monthly": 0.000199930078125,
+          "recommended_cost_monthly": 7.449218750000001e-05,
+          "savings_usd_monthly": 0.000125437890625,
+          "savings_percent": 62.74084873098743,
+          "current_class": "STANDARD",
+          "recommended_class": "GLACIER_INSTANT"
+        },
+        {
+          "object_id": "obj_000005",
+          "current_cost_monthly": 0.000198730078125,
+          "recommended_cost_monthly": 4.44921875e-05,
+          "savings_usd_monthly": 0.000154237890625,
+          "savings_percent": 77.61171055157277,
+          "current_class": "STANDARD",
+          "recommended_class": "GLACIER_INSTANT"
+        },
+        {
+          "object_id": "obj_000006",
+          "current_cost_monthly": 0.00040245078124999997,
+          "recommended_cost_monthly": 7.9921875e-05,
+          "savings_usd_monthly": 0.00032252890624999994,
+          "savings_percent": 80.14118524184497,
+          "current_class": "STANDARD",
+          "recommended_class": "GLACIER_INSTANT"
+        },
+        {
+          "object_id": "obj_000007",
+          "current_cost_monthly": 0.00031645937499999997,
+          "recommended_cost_monthly": 0.0001829453125,
+          "savings_usd_monthly": 0.00013351406249999996,
+          "savings_percent": 42.18993995992694,
+          "current_class": "STANDARD",
+          "recommended_class": "STANDARD_IA"
+        },
+        {
+          "object_id": "obj_000008",
+          "current_cost_monthly": 0.000171826171875,
+          "recommended_cost_monthly": 2.9882812500000002e-05,
+          "savings_usd_monthly": 0.00014194335937499998,
+          "savings_percent": 82.60864757530257,
+          "current_class": "STANDARD",
+          "recommended_class": "GLACIER_INSTANT"
+        },
+        {
+          "object_id": "obj_000009",
+          "current_cost_monthly": 0.000296278515625,
+          "recommended_cost_monthly": 0.00018215136718750002,
+          "savings_usd_monthly": 0.0001141271484375,
+          "savings_percent": 38.52021118593007,
+          "current_class": "STANDARD",
+          "recommended_class": "STANDARD_IA"
+        },
+        {
+          "object_id": "obj_000010",
+          "current_cost_monthly": 0.0001861,
+          "recommended_cost_monthly": 0.0001861,
+          "savings_usd_monthly": 0.0,
+          "savings_percent": 0.0,
+          "current_class": "STANDARD",
+          "recommended_class": "STANDARD"
+        },
+        {
+          "object_id": "obj_000011",
+          "current_cost_monthly": 0.00023067539062499997,
+          "recommended_cost_monthly": 0.00023067539062499997,
+          "savings_usd_monthly": 0.0,
+          "savings_percent": 0.0,
+          "current_class": "STANDARD",
+          "recommended_class": "STANDARD"
+        },
+        {
+          "object_id": "obj_000012",
+          "current_cost_monthly": 0.000253387109375,
+          "recommended_cost_monthly": 8.378906250000001e-05,
+          "savings_usd_monthly": 0.00016959804687499997,
+          "savings_percent": 66.9323630396843,
+          "current_class": "STANDARD",
+          "recommended_class": "GLACIER_INSTANT"
+        },
+        {
+          "object_id": "obj_000013",
+          "current_cost_monthly": 1.1658203125e-05,
+          "recommended_cost_monthly": 1.1658203125e-05,
+          "savings_usd_monthly": 0.0,
+          "savings_percent": 0.0,
+          "current_class": "STANDARD",
+          "recommended_class": "STANDARD"
+        },
+        {
+          "object_id": "obj_000014",
+          "current_cost_monthly": 3.139609375e-05,
+          "recommended_cost_monthly": 1.5390625e-05,
+          "savings_usd_monthly": 1.600546875e-05,
+          "savings_percent": 50.97900999543934,
+          "current_class": "STANDARD",
+          "recommended_class": "GLACIER_INSTANT"
+        },
+        {
+          "object_id": "obj_000015",
+          "current_cost_monthly": 0.000227894140625,
+          "recommended_cost_monthly": 0.000227894140625,
+          "savings_usd_monthly": 0.0,
+          "savings_percent": 0.0,
+          "current_class": "STANDARD",
+          "recommended_class": "STANDARD"
+        },
+        {
+          "object_id": "obj_000016",
+          "current_cost_monthly": 0.00015215703125000002,
+          "recommended_cost_monthly": 0.00015215703125000002,
+          "savings_usd_monthly": 0.0,
+          "savings_percent": 0.0,
+          "current_class": "STANDARD",
+          "recommended_class": "STANDARD"
+        },
+        {
+          "object_id": "obj_000017",
+          "current_cost_monthly": 0.000277073046875,
+          "recommended_cost_monthly": 0.0001842353515625,
+          "savings_usd_monthly": 9.28376953125e-05,
+          "savings_percent": 33.506565453772836,
+          "current_class": "STANDARD",
+          "recommended_class": "STANDARD_IA"
+        },
+        {
+          "object_id": "obj_000018",
+          "current_cost_monthly": 0.00016743671875,
+          "recommended_cost_monthly": 0.00016743671875,
+          "savings_usd_monthly": 0.0,
+          "savings_percent": 0.0,
+          "current_class": "STANDARD",
+          "recommended_class": "STANDARD"
+        },
+        {
+          "object_id": "obj_000019",
+          "current_cost_monthly": 8.403515625e-05,
+          "recommended_cost_monthly": 8.088867187499999e-05,
+          "savings_usd_monthly": 3.146484375000016e-06,
+          "savings_percent": 3.7442432086354427,
+          "current_class": "STANDARD",
+          "recommended_class": "STANDARD_IA"
+        },
+        {
+          "object_id": "obj_000020",
+          "current_cost_monthly": 0.00038924804687499995,
+          "recommended_cost_monthly": 6.769531249999999e-05,
+          "savings_usd_monthly": 0.00032155273437499995,
+          "savings_percent": 82.6086744295435,
+          "current_class": "STANDARD",
+          "recommended_class": "GLACIER_INSTANT"
+        },
+        {
+          "object_id": "obj_000021",
+          "current_cost_monthly": 0.00020042851562499997,
+          "recommended_cost_monthly": 6.46484375e-05,
+          "savings_usd_monthly": 0.00013578007812499996,
+          "savings_percent": 67.74485654236278,
+          "current_class": "STANDARD",
+          "recommended_class": "GLACIER_INSTANT"
+        },
+        {
+          "object_id": "obj_000022",
+          "current_cost_monthly": 0.00031024609375000003,
+          "recommended_cost_monthly": 0.00031024609375000003,
+          "savings_usd_monthly": 0.0,
+          "savings_percent": 0.0,
+          "current_class": "STANDARD",
+          "recommended_class": "STANDARD"
+        },
+        {
+          "object_id": "obj_000023",
+          "current_cost_monthly": 6.668749999999999e-05,
+          "recommended_cost_monthly": 4.015625e-05,
+          "savings_usd_monthly": 2.653124999999999e-05,
+          "savings_percent": 39.78438270383099,
+          "current_class": "STANDARD",
+          "recommended_class": "STANDARD_IA"
+        },
+        {
+          "object_id": "obj_000024",
+          "current_cost_monthly": 0.000169115625,
+          "recommended_cost_monthly": 0.00010286718750000001,
+          "savings_usd_monthly": 6.62484375e-05,
+          "savings_percent": 39.17343434503207,
+          "current_class": "STANDARD",
+          "recommended_class": "STANDARD_IA"
+        },
+        {
+          "object_id": "obj_000025",
+          "current_cost_monthly": 0.000314162890625,
+          "recommended_cost_monthly": 0.000314162890625,
+          "savings_usd_monthly": 0.0,
+          "savings_percent": 0.0,
+          "current_class": "STANDARD",
+          "recommended_class": "STANDARD"
+        },
+        {
+          "object_id": "obj_000026",
+          "current_cost_monthly": 0.000108258984375,
+          "recommended_cost_monthly": 8.38798828125e-05,
+          "savings_usd_monthly": 2.4379101562500006e-05,
+          "savings_percent": 22.519220168215103,
+          "current_class": "STANDARD",
+          "recommended_class": "STANDARD_IA"
+        },
+        {
+          "object_id": "obj_000027",
+          "current_cost_monthly": 0.00026723593750000005,
+          "recommended_cost_monthly": 5.6406250000000006e-05,
+          "savings_usd_monthly": 0.00021082968750000004,
+          "savings_percent": 78.89268583396056,
+          "current_class": "STANDARD",
+          "recommended_class": "GLACIER_INSTANT"
+        },
+        {
+          "object_id": "obj_000028",
+          "current_cost_monthly": 0.0001572265625,
+          "recommended_cost_monthly": 2.734375e-05,
+          "savings_usd_monthly": 0.0001298828125,
+          "savings_percent": 82.6086431110245,
+          "current_class": "STANDARD",
+          "recommended_class": "GLACIER_INSTANT"
+        },
+        {
+          "object_id": "obj_000029",
+          "current_cost_monthly": 0.00022781640625,
+          "recommended_cost_monthly": 0.00022781640625,
+          "savings_usd_monthly": 0.0,
+          "savings_percent": 0.0,
+          "current_class": "STANDARD",
+          "recommended_class": "STANDARD"
+        },
+        {
+          "object_id": "obj_000030",
+          "current_cost_monthly": 0.000168601953125,
+          "recommended_cost_monthly": 0.00011432714843750001,
+          "savings_usd_monthly": 5.42748046875e-05,
+          "savings_percent": 32.19106984851552,
+          "current_class": "STANDARD",
+          "recommended_class": "STANDARD_IA"
+        },
+        {
+          "object_id": "obj_000031",
+          "current_cost_monthly": 0.00043419765625,
+          "recommended_cost_monthly": 0.00011523437500000002,
+          "savings_usd_monthly": 0.00031896328125,
+          "savings_percent": 73.46037068564422,
+          "current_class": "STANDARD",
+          "recommended_class": "GLACIER_INSTANT"
+        },
+        {
+          "object_id": "obj_000032",
+          "current_cost_monthly": 0.00022503710937499998,
+          "recommended_cost_monthly": 8.87890625e-05,
+          "savings_usd_monthly": 0.00013624804687499998,
+          "savings_percent": 60.54467492438438,
+          "current_class": "STANDARD",
+          "recommended_class": "GLACIER_INSTANT"
+        },
+        {
+          "object_id": "obj_000033",
+          "current_cost_monthly": 0.000180591015625,
+          "recommended_cost_monthly": 0.000180591015625,
+          "savings_usd_monthly": 0.0,
+          "savings_percent": 0.0,
+          "current_class": "STANDARD",
+          "recommended_class": "STANDARD"
+        },
+        {
+          "object_id": "obj_000034",
+          "current_cost_monthly": 0.000321723828125,
+          "recommended_cost_monthly": 0.0001751171875,
+          "savings_usd_monthly": 0.000146606640625,
+          "savings_percent": 45.569082001273664,
+          "current_class": "STANDARD",
+          "recommended_class": "GLACIER_INSTANT"
+        },
+        {
+          "object_id": "obj_000035",
+          "current_cost_monthly": 8.959765625e-05,
+          "recommended_cost_monthly": 5.2607421875e-05,
+          "savings_usd_monthly": 3.6990234374999995e-05,
+          "savings_percent": 41.28477756941598,
+          "current_class": "STANDARD",
+          "recommended_class": "STANDARD_IA"
+        },
+        {
+          "object_id": "obj_000036",
+          "current_cost_monthly": 0.00024956874999999996,
+          "recommended_cost_monthly": 8.3125e-05,
+          "savings_usd_monthly": 0.00016644374999999996,
+          "savings_percent": 66.69251791639861,
+          "current_class": "STANDARD",
+          "recommended_class": "GLACIER_INSTANT"
+        },
+        {
+          "object_id": "obj_000037",
+          "current_cost_monthly": 3.52921875e-05,
+          "recommended_cost_monthly": 3.52921875e-05,
+          "savings_usd_monthly": 0.0,
+          "savings_percent": 0.0,
+          "current_class": "STANDARD",
+          "recommended_class": "STANDARD"
+        },
+        {
+          "object_id": "obj_000038",
+          "current_cost_monthly": 7.706875e-05,
+          "recommended_cost_monthly": 4.5015625000000005e-05,
+          "savings_usd_monthly": 3.2053124999999995e-05,
+          "savings_percent": 41.590246902607205,
+          "current_class": "STANDARD",
+          "recommended_class": "STANDARD_IA"
+        },
+        {
+          "object_id": "obj_000039",
+          "current_cost_monthly": 0.00028302109375,
+          "recommended_cost_monthly": 0.00028302109375,
+          "savings_usd_monthly": 0.0,
+          "savings_percent": 0.0,
+          "current_class": "STANDARD",
+          "recommended_class": "STANDARD"
+        },
+        {
+          "object_id": "obj_000040",
+          "current_cost_monthly": 0.00030909023437499997,
+          "recommended_cost_monthly": 9.34765625e-05,
+          "savings_usd_monthly": 0.00021561367187499997,
+          "savings_percent": 69.75749413548772,
+          "current_class": "STANDARD",
+          "recommended_class": "GLACIER_INSTANT"
+        },
+        {
+          "object_id": "obj_000041",
+          "current_cost_monthly": 0.00025512578124999995,
+          "recommended_cost_monthly": 0.000160568359375,
+          "savings_usd_monthly": 9.455742187499994e-05,
+          "savings_percent": 37.06304566659874,
+          "current_class": "STANDARD",
+          "recommended_class": "STANDARD_IA"
+        },
+        {
+          "object_id": "obj_000042",
+          "current_cost_monthly": 0.00021198203125,
+          "recommended_cost_monthly": 4.6796875e-05,
+          "savings_usd_monthly": 0.00016518515625,
+          "savings_percent": 77.92409448661961,
+          "current_class": "STANDARD",
+          "recommended_class": "GLACIER_INSTANT"
+        },
+        {
+          "object_id": "obj_000043",
+          "current_cost_monthly": 0.000194693359375,
+          "recommended_cost_monthly": 0.00011363769531250001,
+          "savings_usd_monthly": 8.105566406249998e-05,
+          "savings_percent": 41.63245356197523,
+          "current_class": "STANDARD",
+          "recommended_class": "STANDARD_IA"
+        },
+        {
+          "object_id": "obj_000044",
+          "current_cost_monthly": 6.022304687499999e-05,
+          "recommended_cost_monthly": 3.5860351562500004e-05,
+          "savings_usd_monthly": 2.4362695312499988e-05,
+          "savings_percent": 40.454038981170385,
+          "current_class": "STANDARD",
+          "recommended_class": "STANDARD_IA"
+        },
+        {
+          "object_id": "obj_000045",
+          "current_cost_monthly": 0.00021215,
+          "recommended_cost_monthly": 0.00021215,
+          "savings_usd_monthly": 0.0,
+          "savings_percent": 0.0,
+          "current_class": "STANDARD",
+          "recommended_class": "STANDARD"
+        },
+        {
+          "object_id": "obj_000046",
+          "current_cost_monthly": 0.00023614921875,
+          "recommended_cost_monthly": 0.00023614921875,
+          "savings_usd_monthly": 0.0,
+          "savings_percent": 0.0,
+          "current_class": "STANDARD",
+          "recommended_class": "STANDARD"
+        },
+        {
+          "object_id": "obj_000047",
+          "current_cost_monthly": 0.000345427734375,
+          "recommended_cost_monthly": 0.0001097265625,
+          "savings_usd_monthly": 0.00023570117187499996,
+          "savings_percent": 68.23456259726898,
+          "current_class": "STANDARD",
+          "recommended_class": "GLACIER_INSTANT"
+        },
+        {
+          "object_id": "obj_000048",
+          "current_cost_monthly": 0.0002764421875,
+          "recommended_cost_monthly": 0.00017606640625,
+          "savings_usd_monthly": 0.00010037578125000001,
+          "savings_percent": 36.30985047828473,
+          "current_class": "STANDARD",
+          "recommended_class": "STANDARD_IA"
+        },
+        {
+          "object_id": "obj_000049",
+          "current_cost_monthly": 2.6903906249999997e-05,
+          "recommended_cost_monthly": 1.4609375000000001e-05,
+          "savings_usd_monthly": 1.2294531249999996e-05,
+          "savings_percent": 45.69777131240444,
+          "current_class": "STANDARD",
+          "recommended_class": "GLACIER_INSTANT"
+        },
+        {
+          "object_id": "obj_000050",
+          "current_cost_monthly": 0.00034099609375,
+          "recommended_cost_monthly": 0.00034099609375,
+          "savings_usd_monthly": 0.0,
+          "savings_percent": 0.0,
+          "current_class": "STANDARD",
+          "recommended_class": "STANDARD"
+        },
+        {
+          "object_id": "obj_000051",
+          "current_cost_monthly": 0.000181259765625,
+          "recommended_cost_monthly": 3.15234375e-05,
+          "savings_usd_monthly": 0.000149736328125,
+          "savings_percent": 82.60865007744319,
+          "current_class": "STANDARD",
+          "recommended_class": "GLACIER_INSTANT"
+        },
+        {
+          "object_id": "obj_000052",
+          "current_cost_monthly": 0.00014869140625,
+          "recommended_cost_monthly": 2.5859375e-05,
+          "savings_usd_monthly": 0.00012283203125,
+          "savings_percent": 82.6086400950693,
+          "current_class": "STANDARD",
+          "recommended_class": "GLACIER_INSTANT"
+        },
+        {
+          "object_id": "obj_000053",
+          "current_cost_monthly": 0.00032053984375,
+          "recommended_cost_monthly": 0.00032053984375,
+          "savings_usd_monthly": 0.0,
+          "savings_percent": 0.0,
+          "current_class": "STANDARD",
+          "recommended_class": "STANDARD"
+        },
+        {
+          "object_id": "obj_000054",
+          "current_cost_monthly": 0.000347483203125,
+          "recommended_cost_monthly": 0.00020293652343750002,
+          "savings_usd_monthly": 0.00014454667968749998,
+          "savings_percent": 41.59816554854789,
+          "current_class": "STANDARD",
+          "recommended_class": "STANDARD_IA"
+        },
+        {
+          "object_id": "obj_000055",
+          "current_cost_monthly": 0.00040767734375,
+          "recommended_cost_monthly": 0.00040767734375,
+          "savings_usd_monthly": 0.0,
+          "savings_percent": 0.0,
+          "current_class": "STANDARD",
+          "recommended_class": "STANDARD"
+        },
+        {
+          "object_id": "obj_000056",
+          "current_cost_monthly": 0.0001426734375,
+          "recommended_cost_monthly": 0.00010180078125,
+          "savings_usd_monthly": 4.087265624999999e-05,
+          "savings_percent": 28.647678445626255,
+          "current_class": "STANDARD",
+          "recommended_class": "STANDARD_IA"
+        },
+        {
+          "object_id": "obj_000057",
+          "current_cost_monthly": 0.00025379492187499995,
+          "recommended_cost_monthly": 0.00025379492187499995,
+          "savings_usd_monthly": 0.0,
+          "savings_percent": 0.0,
+          "current_class": "STANDARD",
+          "recommended_class": "STANDARD"
+        },
+        {
+          "object_id": "obj_000058",
+          "current_cost_monthly": 0.00026509453125,
+          "recommended_cost_monthly": 0.000125546875,
+          "savings_usd_monthly": 0.00013954765625,
+          "savings_percent": 52.64069498201126,
+          "current_class": "STANDARD",
+          "recommended_class": "GLACIER_INSTANT"
+        },
+        {
+          "object_id": "obj_000059",
+          "current_cost_monthly": 0.00033421875,
+          "recommended_cost_monthly": 5.8125e-05,
+          "savings_usd_monthly": 0.00027609374999999997,
+          "savings_percent": 82.60867093522702,
+          "current_class": "STANDARD",
+          "recommended_class": "GLACIER_INSTANT"
+        },
+        {
+          "object_id": "obj_000060",
+          "current_cost_monthly": 0.000171103125,
+          "recommended_cost_monthly": 3.96875e-05,
+          "savings_usd_monthly": 0.00013141562499999998,
+          "savings_percent": 76.80487904304549,
+          "current_class": "STANDARD",
+          "recommended_class": "GLACIER_INSTANT"
+        },
+        {
+          "object_id": "obj_000061",
+          "current_cost_monthly": 0.000237720703125,
+          "recommended_cost_monthly": 0.000237720703125,
+          "savings_usd_monthly": 0.0,
+          "savings_percent": 0.0,
+          "current_class": "STANDARD",
+          "recommended_class": "STANDARD"
+        },
+        {
+          "object_id": "obj_000062",
+          "current_cost_monthly": 0.000145600390625,
+          "recommended_cost_monthly": 0.000145600390625,
+          "savings_usd_monthly": 0.0,
+          "savings_percent": 0.0,
+          "current_class": "STANDARD",
+          "recommended_class": "STANDARD"
+        },
+        {
+          "object_id": "obj_000063",
+          "current_cost_monthly": 9.469296874999999e-05,
+          "recommended_cost_monthly": 6.0072265625e-05,
+          "savings_usd_monthly": 3.4620703124999986e-05,
+          "savings_percent": 36.56096859254019,
+          "current_class": "STANDARD",
+          "recommended_class": "STANDARD_IA"
+        },
+        {
+          "object_id": "obj_000064",
+          "current_cost_monthly": 0.00031580078125,
+          "recommended_cost_monthly": 5.4921875000000005e-05,
+          "savings_usd_monthly": 0.00026087890625,
+          "savings_percent": 82.60866949369857,
+          "current_class": "STANDARD",
+          "recommended_class": "GLACIER_INSTANT"
+        },
+        {
+          "object_id": "obj_000065",
+          "current_cost_monthly": 0.00037729453125,
+          "recommended_cost_monthly": 7.5546875e-05,
+          "savings_usd_monthly": 0.00030174765625000003,
+          "savings_percent": 79.97666313201748,
+          "current_class": "STANDARD",
+          "recommended_class": "GLACIER_INSTANT"
+        },
+        {
+          "object_id": "obj_000066",
+          "current_cost_monthly": 0.0002285234375,
+          "recommended_cost_monthly": 0.00014767578125000002,
+          "savings_usd_monthly": 8.084765624999997e-05,
+          "savings_percent": 35.37826218448066,
+          "current_class": "STANDARD",
+          "recommended_class": "STANDARD_IA"
+        },
+        {
+          "object_id": "obj_000067",
+          "current_cost_monthly": 0.00035736328125,
+          "recommended_cost_monthly": 0.00035736328125,
+          "savings_usd_monthly": 0.0,
+          "savings_percent": 0.0,
+          "current_class": "STANDARD",
+          "recommended_class": "STANDARD"
+        },
+        {
+          "object_id": "obj_000068",
+          "current_cost_monthly": 0.000274463671875,
+          "recommended_cost_monthly": 0.0001671650390625,
+          "savings_usd_monthly": 0.0001072986328125,
+          "savings_percent": 39.09391468297951,
+          "current_class": "STANDARD",
+          "recommended_class": "STANDARD_IA"
+        },
+        {
+          "object_id": "obj_000069",
+          "current_cost_monthly": 0.000152460546875,
+          "recommended_cost_monthly": 3.64453125e-05,
+          "savings_usd_monthly": 0.000116015234375,
+          "savings_percent": 76.09520014047888,
+          "current_class": "STANDARD",
+          "recommended_class": "GLACIER_INSTANT"
+        },
+        {
+          "object_id": "obj_000070",
+          "current_cost_monthly": 0.000282063671875,
+          "recommended_cost_monthly": 0.0001861650390625,
+          "savings_usd_monthly": 9.589863281250001e-05,
+          "savings_percent": 33.99891881719523,
+          "current_class": "STANDARD",
+          "recommended_class": "STANDARD_IA"
+        },
+        {
+          "object_id": "obj_000071",
+          "current_cost_monthly": 0.000397333984375,
+          "recommended_cost_monthly": 6.91015625e-05,
+          "savings_usd_monthly": 0.000328232421875,
+          "savings_percent": 82.60867486143411,
+          "current_class": "STANDARD",
+          "recommended_class": "GLACIER_INSTANT"
+        },
+        {
+          "object_id": "obj_000072",
+          "current_cost_monthly": 0.00022216640625000002,
+          "recommended_cost_monthly": 7.8359375e-05,
+          "savings_usd_monthly": 0.00014380703125,
+          "savings_percent": 64.729393137315,
+          "current_class": "STANDARD",
+          "recommended_class": "GLACIER_INSTANT"
+        },
+        {
+          "object_id": "obj_000073",
+          "current_cost_monthly": 0.00042825390625000003,
+          "recommended_cost_monthly": 0.00042825390625000003,
+          "savings_usd_monthly": 0.0,
+          "savings_percent": 0.0,
+          "current_class": "STANDARD",
+          "recommended_class": "STANDARD"
+        },
+        {
+          "object_id": "obj_000074",
+          "current_cost_monthly": 4.624609375000001e-05,
+          "recommended_cost_monthly": 4.624609375000001e-05,
+          "savings_usd_monthly": 0.0,
+          "savings_percent": 0.0,
+          "current_class": "STANDARD",
+          "recommended_class": "STANDARD"
+        },
+        {
+          "object_id": "obj_000075",
+          "current_cost_monthly": 0.000394923828125,
+          "recommended_cost_monthly": 0.000394923828125,
+          "savings_usd_monthly": 0.0,
+          "savings_percent": 0.0,
+          "current_class": "STANDARD",
+          "recommended_class": "STANDARD"
+        },
+        {
+          "object_id": "obj_000076",
+          "current_cost_monthly": 0.00023609218749999998,
+          "recommended_cost_monthly": 8.078125e-05,
+          "savings_usd_monthly": 0.00015531093749999997,
+          "savings_percent": 65.7839945322229,
+          "current_class": "STANDARD",
+          "recommended_class": "GLACIER_INSTANT"
+        },
+        {
+          "object_id": "obj_000077",
+          "current_cost_monthly": 0.00020731796875,
+          "recommended_cost_monthly": 0.000144759765625,
+          "savings_usd_monthly": 6.2558203125e-05,
+          "savings_percent": 30.174988365552192,
+          "current_class": "STANDARD",
+          "recommended_class": "STANDARD_IA"
+        },
+        {
+          "object_id": "obj_000078",
+          "current_cost_monthly": 0.00024214140625000003,
+          "recommended_cost_monthly": 0.000145685546875,
+          "savings_usd_monthly": 9.645585937500002e-05,
+          "savings_percent": 39.83450044099988,
+          "current_class": "STANDARD",
+          "recommended_class": "STANDARD_IA"
+        },
+        {
+          "object_id": "obj_000079",
+          "current_cost_monthly": 3.04609375e-06,
+          "recommended_cost_monthly": 3.04609375e-06,
+          "savings_usd_monthly": 0.0,
+          "savings_percent": 0.0,
+          "current_class": "STANDARD",
+          "recommended_class": "STANDARD"
+        },
+        {
+          "object_id": "obj_000080",
+          "current_cost_monthly": 0.00025030234375,
+          "recommended_cost_monthly": 0.00025030234375,
+          "savings_usd_monthly": 0.0,
+          "savings_percent": 0.0,
+          "current_class": "STANDARD",
+          "recommended_class": "STANDARD"
+        },
+        {
+          "object_id": "obj_000081",
+          "current_cost_monthly": 0.00026681445312499996,
+          "recommended_cost_monthly": 0.00014892089843750002,
+          "savings_usd_monthly": 0.00011789355468749994,
+          "savings_percent": 44.18557882495563,
+          "current_class": "STANDARD",
+          "recommended_class": "STANDARD_IA"
+        },
+        {
+          "object_id": "obj_000082",
+          "current_cost_monthly": 0.000390595703125,
+          "recommended_cost_monthly": 6.79296875e-05,
+          "savings_usd_monthly": 0.000322666015625,
+          "savings_percent": 82.60867450276703,
+          "current_class": "STANDARD",
+          "recommended_class": "GLACIER_INSTANT"
+        },
+        {
+          "object_id": "obj_000083",
+          "current_cost_monthly": 0.000171635546875,
+          "recommended_cost_monthly": 0.00010345410156250002,
+          "savings_usd_monthly": 6.818144531249997e-05,
+          "savings_percent": 39.72452491885653,
+          "current_class": "STANDARD",
+          "recommended_class": "STANDARD_IA"
+        },
+        {
+          "object_id": "obj_000084",
+          "current_cost_monthly": 0.0001418671875,
+          "recommended_cost_monthly": 9.275390625e-05,
+          "savings_usd_monthly": 4.911328125000002e-05,
+          "savings_percent": 34.61917268982817,
+          "current_class": "STANDARD",
+          "recommended_class": "STANDARD_IA"
+        },
+        {
+          "object_id": "obj_000085",
+          "current_cost_monthly": 0.000183832421875,
+          "recommended_cost_monthly": 0.0001304306640625,
+          "savings_usd_monthly": 5.340175781249999e-05,
+          "savings_percent": 29.049135195355376,
+          "current_class": "STANDARD",
+          "recommended_class": "STANDARD_IA"
+        },
+        {
+          "object_id": "obj_000086",
+          "current_cost_monthly": 0.00032948046874999997,
+          "recommended_cost_monthly": 0.000106953125,
+          "savings_usd_monthly": 0.00022252734374999996,
+          "savings_percent": 67.53883684073858,
+          "current_class": "STANDARD",
+          "recommended_class": "GLACIER_INSTANT"
+        },
+        {
+          "object_id": "obj_000087",
+          "current_cost_monthly": 0.0002634453125,
+          "recommended_cost_monthly": 9.546875000000001e-05,
+          "savings_usd_monthly": 0.0001679765625,
+          "savings_percent": 63.76143008373699,
+          "current_class": "STANDARD",
+          "recommended_class": "GLACIER_INSTANT"
+        },
+        {
+          "object_id": "obj_000088",
+          "current_cost_monthly": 0.00016588789062499997,
+          "recommended_cost_monthly": 4.87109375e-05,
+          "savings_usd_monthly": 0.00011717695312499996,
+          "savings_percent": 70.63618811917837,
+          "current_class": "STANDARD",
+          "recommended_class": "GLACIER_INSTANT"
+        },
+        {
+          "object_id": "obj_000089",
+          "current_cost_monthly": 0.000283133984375,
+          "recommended_cost_monthly": 6.91015625e-05,
+          "savings_usd_monthly": 0.000214032421875,
+          "savings_percent": 75.59401488078082,
+          "current_class": "STANDARD",
+          "recommended_class": "GLACIER_INSTANT"
+        },
+        {
+          "object_id": "obj_000090",
+          "current_cost_monthly": 0.00023601523437500002,
+          "recommended_cost_monthly": 5.09765625e-05,
+          "savings_usd_monthly": 0.00018503867187500003,
+          "savings_percent": 78.40112269188229,
+          "current_class": "STANDARD",
+          "recommended_class": "GLACIER_INSTANT"
+        },
+        {
+          "object_id": "obj_000091",
+          "current_cost_monthly": 0.0003349203125,
+          "recommended_cost_monthly": 9.796875e-05,
+          "savings_usd_monthly": 0.00023695156249999998,
+          "savings_percent": 70.7486177779624,
+          "current_class": "STANDARD",
+          "recommended_class": "GLACIER_INSTANT"
+        },
+        {
+          "object_id": "obj_000092",
+          "current_cost_monthly": 0.000149771484375,
+          "recommended_cost_monthly": 8.92236328125e-05,
+          "savings_usd_monthly": 6.05478515625e-05,
+          "savings_percent": 40.4267951194931,
+          "current_class": "STANDARD",
+          "recommended_class": "STANDARD_IA"
+        },
+        {
+          "object_id": "obj_000093",
+          "current_cost_monthly": 0.00019057343749999997,
+          "recommended_cost_monthly": 0.00010265625,
+          "savings_usd_monthly": 8.791718749999996e-05,
+          "savings_percent": 46.13294618619334,
+          "current_class": "STANDARD",
+          "recommended_class": "GLACIER_INSTANT"
+        },
+        {
+          "object_id": "obj_000094",
+          "current_cost_monthly": 0.00019858593749999998,
+          "recommended_cost_monthly": 0.00014314453125,
+          "savings_usd_monthly": 5.544140624999999e-05,
+          "savings_percent": 27.91807870681744,
+          "current_class": "STANDARD",
+          "recommended_class": "STANDARD_IA"
+        },
+        {
+          "object_id": "obj_000095",
+          "current_cost_monthly": 0.0001365953125,
+          "recommended_cost_monthly": 0.0001365953125,
+          "savings_usd_monthly": 0.0,
+          "savings_percent": 0.0,
+          "current_class": "STANDARD",
+          "recommended_class": "STANDARD"
+        },
+        {
+          "object_id": "obj_000096",
+          "current_cost_monthly": 0.0002578515625,
+          "recommended_cost_monthly": 4.484375e-05,
+          "savings_usd_monthly": 0.00021300781249999998,
+          "savings_percent": 82.60866361487975,
+          "current_class": "STANDARD",
+          "recommended_class": "GLACIER_INSTANT"
+        },
+        {
+          "object_id": "obj_000097",
+          "current_cost_monthly": 0.000255633203125,
+          "recommended_cost_monthly": 8.41796875e-05,
+          "savings_usd_monthly": 0.000171453515625,
+          "savings_percent": 67.07010140269651,
+          "current_class": "STANDARD",
+          "recommended_class": "GLACIER_INSTANT"
+        },
+        {
+          "object_id": "obj_000098",
+          "current_cost_monthly": 0.00022648320312499998,
+          "recommended_cost_monthly": 6.91796875e-05,
+          "savings_usd_monthly": 0.00015730351562499997,
+          "savings_percent": 69.45479576398684,
+          "current_class": "STANDARD",
+          "recommended_class": "GLACIER_INSTANT"
+        },
+        {
+          "object_id": "obj_000099",
+          "current_cost_monthly": 0.00022233007812499998,
+          "recommended_cost_monthly": 0.00022233007812499998,
+          "savings_usd_monthly": 0.0,
+          "savings_percent": 0.0,
+          "current_class": "STANDARD",
+          "recommended_class": "STANDARD"
+        }
+      ]
+    },
+    "comparison_vs_aws": {
+      "our_approach": {
+        "cost_monthly": 0.013277818749999998,
+        "savings_vs_unoptimized": 0.009778344921875003,
+        "savings_percent": 42.41097963488223
+      },
+      "aws_lifecycle_policies": {
+        "cost_monthly": 0.022399831445312504,
+        "savings_vs_our_approach": -0.009122012695312506,
+        "description": "Age-based rules: <30d\u2192STANDARD, 30-90d\u2192IA, >90d\u2192GLACIER"
+      },
+      "aws_intelligent_tiering": {
+        "cost_monthly": 0.026784184570312505,
+        "savings_vs_our_approach": -0.013506365820312507,
+        "description": "Automatic tiering with monitoring fees"
+      },
+      "num_objects": 100
+    },
+    "metadata": {
+      "method": "delta_pricing",
+      "description": "Cost delta calculation using AWS Pricing API",
+      "baselines": [
+        "current_unoptimized",
+        "aws_lifecycle_policies",
+        "aws_intelligent_tiering"
+      ]
+    }
+  },
+  "evaluation": {
+    "classification": {
+      "precision": 0.47046798029556647,
+      "recall": 0.32,
+      "f1_score": 0.3507357757834287,
+      "accuracy": 0.32
+    },
+    "forecasting": {
+      "mape": 21.03767435851345,
+      "rmse": 0.00023641629949448635,
+      "naive_mape": 21.03767435851345,
+      "beats_naive": false
+    }
+  }
+}

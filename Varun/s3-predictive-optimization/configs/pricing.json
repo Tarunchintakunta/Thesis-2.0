@@ -1,0 +1,40 @@
+{
+  "storage_classes": {
+    "STANDARD": {
+      "storage_gb_month": 0.023,
+      "retrieval_per_1000": 0.0004,
+      "min_storage_days": 0
+    },
+    "STANDARD_IA": {
+      "storage_gb_month": 0.0125,
+      "retrieval_per_1000": 0.001,
+      "min_storage_days": 30,
+      "min_object_size_kb": 128
+    },
+    "INTELLIGENT_TIERING": {
+      "storage_gb_month": 0.023,
+      "monitoring_per_1000": 0.0025,
+      "retrieval_per_1000": 0.0,
+      "min_storage_days": 0
+    },
+    "GLACIER_INSTANT": {
+      "storage_gb_month": 0.004,
+      "retrieval_per_1000": 0.010,
+      "min_storage_days": 90,
+      "min_object_size_kb": 128
+    },
+    "GLACIER_FLEXIBLE": {
+      "storage_gb_month": 0.0036,
+      "retrieval_per_gb": 0.02,
+      "min_storage_days": 90,
+      "min_object_size_kb": 128
+    },
+    "GLACIER_DEEP_ARCHIVE": {
+      "storage_gb_month": 0.00099,
+      "retrieval_per_gb": 0.02,
+      "min_storage_days": 180,
+      "min_object_size_kb": 128
+    }
+  },
+  "note": "Prices in USD as of 2026, us-east-1 region"
+}
