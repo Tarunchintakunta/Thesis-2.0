@@ -5,7 +5,7 @@ STACK ?= faultlab
 RUN ?= data/runs/live
 
 .PHONY: setup test lint cfn-lint check-bib sim budget rcaeval-data rcaeval-venv leg2-rules leg2-baselines leg2 \
-	build deploy seed calibration steady peak collect rig destroy
+	build deploy seed calibration steady peak collect rig destroy aws-verify
 
 setup:
 	python3.12 -m venv .venv
@@ -66,3 +66,6 @@ rig:
 
 destroy:
 	sam delete --stack-name $(STACK)
+
+aws-verify:
+	@bash ../../scripts/aws-verify/yashaswini-serverless.sh

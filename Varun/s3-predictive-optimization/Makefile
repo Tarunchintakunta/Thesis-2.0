@@ -6,7 +6,7 @@ PY ?= .venv/bin/python
 PYTEST ?= .venv/bin/pytest
 export DRY_RUN ?= 1
 
-.PHONY: help setup test lint pilot baseline improved experiments stats figures gates clean pdf
+.PHONY: help setup test lint pilot baseline improved experiments stats figures gates clean pdf aws-verify
 
 help:
 	@echo "Available targets:"
@@ -21,6 +21,7 @@ help:
 	@echo "  figures     - Generate result visualizations"
 	@echo "  gates       - Run all quality gates (test, results check)"
 	@echo "  pdf         - Compile LaTeX report to PDF"
+	@echo "  aws-verify  - Verify AWS configuration and access"
 	@echo "  clean       - Remove generated files and cache"
 	@echo ""
 	@echo "Environment variables:"
@@ -86,3 +87,6 @@ clean:
 	find . -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
 	find . -type f -name "*.pyc" -delete
 	@echo "Clean complete (results/ preserved)"
+
+aws-verify:
+	@bash ../../scripts/aws-verify/varun-s3.sh

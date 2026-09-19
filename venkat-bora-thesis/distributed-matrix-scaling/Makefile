@@ -1,4 +1,4 @@
-.PHONY: help install test benchmark clean lint format
+.PHONY: help install test benchmark clean lint format aws-verify
 
 PYTHON := python3
 PIP := $(PYTHON) -m pip
@@ -56,5 +56,8 @@ lint:
 	@echo "Code quality check passed"
 
 all: install test benchmark visualize
+
+aws-verify:
+	@bash ../../scripts/aws-verify/venkat-matrix.sh
 
 .DEFAULT_GOAL := help

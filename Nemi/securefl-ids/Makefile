@@ -1,4 +1,4 @@
-.PHONY: help install pilot test experiment stats figures clean
+.PHONY: help install pilot test experiment stats figures clean aws-verify
 
 help:
 	@echo "SecureFL-IDS Makefile"
@@ -52,3 +52,6 @@ clean:
 	rm -rf results/* figures/*
 	find . -type f -name "*.pyc" -delete
 	@echo "Cleaned generated files"
+
+aws-verify:
+	@bash ../../scripts/aws-verify/nemi-securefl.sh

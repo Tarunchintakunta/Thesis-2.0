@@ -4,7 +4,7 @@ STACK  ?= sqs-rr-dev
 export DRY_RUN ?= 1
 
 .PHONY: help setup test lint validate build deploy destroy cost guard pilot baseline arms \
-        campaigns burst experiments stats figures self-check gates clean
+        campaigns burst experiments stats figures self-check gates clean aws-verify
 
 help:
 	@echo "setup | test | lint | validate | pilot | baseline | arms | campaigns | burst"
@@ -72,3 +72,6 @@ gates: test validate self-check
 
 clean:
 	rm -rf .aws-sam .pytest_cache results/raw
+
+aws-verify:
+	@bash ../../scripts/aws-verify/anji-sqs.sh
