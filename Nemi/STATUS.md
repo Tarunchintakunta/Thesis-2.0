@@ -96,8 +96,9 @@
 - [x] text/evaluation.tex (results, tables, analysis)
 - [x] text/conclusion.tex (contributions, future work)
 - [x] refs.bib (20+ references with DOIs)
+- [x] **projectReport.pdf compiled and committed** (32 pages, 275KB)
 
-**Report Status:** Full draft complete, ~22 pages content
+**Report Status:** Full draft complete, PDF compiled
 
 ### 6. Quality Assurance ✓
 - [x] All unit tests pass
@@ -145,13 +146,41 @@ These limitations are honestly documented in the report.
 
 ---
 
+## Build Instructions
+
+### Compiling the LaTeX Report
+
+To build `projectReport.pdf` from source:
+
+```bash
+cd Nemi/latex_report
+
+# Install LaTeX dependencies (Ubuntu/Debian)
+sudo apt-get update
+sudo apt-get install -y texlive-latex-base texlive-latex-extra \
+                        texlive-fonts-recommended texlive-bibtex-extra \
+                        texlive-science
+
+# Compile (requires 3 passes for references)
+pdflatex projectReport.tex
+bibtex projectReport
+pdflatex projectReport.tex
+pdflatex projectReport.tex
+```
+
+The compiled PDF (`projectReport.pdf`) is already committed to the repository at `Nemi/latex_report/projectReport.pdf`.
+
+**Verification:** 
+- PDF present: ✓ (`Nemi/latex_report/projectReport.pdf`, 32 pages, ~275KB)
+- Bibliography resolved: ✓ (20+ citations from refs.bib)
+- Build tested: ✓ (pdflatex + bibtex on Ubuntu 24.04)
+
 ## Next Steps (if continuing)
 
-1. LaTeX compilation to PDF (if `pdflatex` available)
-2. Full-scale experiments (50 rounds, 5 clients, 25K samples)
-3. Additional datasets (CIC-IDS2017, TON_IoT)
-4. AWS ECS deployment (code provided but untested)
-5. Multi-class attack classification extension
+1. Full-scale experiments (50 rounds, 5 clients, 25K samples)
+2. Additional datasets (CIC-IDS2017, TON_IoT)
+3. AWS ECS deployment (code provided but untested)
+4. Multi-class attack classification extension
 
 ---
 
