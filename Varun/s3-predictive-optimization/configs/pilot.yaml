@@ -1,0 +1,46 @@
+experiment:
+  name: "pilot"
+  description: "Quick pilot run with synthetic data"
+  mode: "dry_run"
+  
+workload:
+  num_objects: 100
+  duration_days: 30
+  access_patterns:
+    - hot: 0.2    # 20% frequently accessed
+    - warm: 0.3   # 30% occasionally accessed
+    - cold: 0.5   # 50% rarely accessed
+  size_distribution:
+    mean_mb: 10
+    std_mb: 5
+    min_mb: 0.1
+    max_mb: 100
+
+recommendation:
+  method: "both"  # baseline, ml, both
+  baseline:
+    age_threshold_ia: 30      # days
+    age_threshold_glacier: 90
+    access_threshold_ia: 5    # accesses per month
+  ml:
+    model: "xgboost"
+    train_fraction: 0.7
+
+forecasting:
+  enabled: true
+  method: "prophet"  # prophet, arima
+  horizon_days: 30
+  naive_baseline: true
+
+evaluation:
+  metrics:
+    - allocation_accuracy
+    - forecast_mape
+    - forecast_rmse
+    - cost_savings_usd
+    - cost_savings_percent
+  
+output:
+  results_dir: "results/data"
+  figures_dir: "results/figures"
+  save_raw: true
