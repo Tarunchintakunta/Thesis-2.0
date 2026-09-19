@@ -71,7 +71,7 @@ The following subsections analyze each comparison in detail.
 
 \paragraph{Scaling Events} Stability-Aware PAKS achieves 165.8 $\pm$ 5.3 events compared to Aggressive PAKS's 384.4 $\pm$ 9.1 events, a \textbf{57\% reduction} (218.6 fewer events). The difference is 24× the larger standard deviation, indicating an extremely robust improvement. This directly validates the core hypothesis: smoothing and hysteresis/cooldown dramatically reduce the frequency of scaling actions.
 
-Figure~\ref{fig:scaling_events_timeseries} visualizes this effect over a representative 100-timestep window, showing that Aggressive PAKS scales almost every few steps in response to prediction fluctuations, while Stability-Aware PAKS scales only when sustained trends justify action.
+\input{figures/scaling_events_timeseries}
 
 \paragraph{Pod Volatility} Stability-Aware PAKS achieves 1.95 $\pm$ 0.17 volatility compared to Aggressive PAKS's 2.86 $\pm$ 0.36, a \textbf{32\% reduction}. The difference (0.91) is 2.5× the larger standard deviation. This confirms that not only does Stability-Aware PAKS scale \emph{less often}, but when it does scale, the changes are \emph{smaller on average} (because hysteresis prevents reaction to small differences, so only larger sustained shifts trigger action).
 
