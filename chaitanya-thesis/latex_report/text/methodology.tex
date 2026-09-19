@@ -1,86 +1,263 @@
-\chapter{Methodology}
-We simulate and deploy infrastructure tailored for 'Serverless Function Cold Start Mitigation using Predictive Auto-scaling'.
+\chapter{Research Methodology}
+\label{ch:methodology}
 
-In reference to Robinson (2026), the integration highlights a distinct improvement metric.
+This chapter details the experimental design employed to investigate cold-start latency reduction in AWS Lambda. The study adopts a controlled empirical approach with pre-registered hypotheses, explicit variable isolation, and rigorous statistical analysis following \citet{wen2025variance}'s recommendations for serverless performance characterization.
 
+\section{Research Design}
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+This investigation employs a \textbf{controlled experiment} with a multi-factorial design. The independent variables (runtime, package size, memory allocation, warming strategy) are systematically manipulated while holding the workload constant. The primary dependent variable is \textit{Init Duration} (milliseconds), extracted from AWS CloudWatch REPORT log lines. Secondary metrics include total Duration, Billed Duration, and cost per 1,000 invocations.
 
+\subsection{Experimental Phases}
 
-Moreover, bridging the gap identified in Wang et al. (2025) necessitates this novel perspective: While keeping functions warm statically works, it wastes cost. This research implements predictive provisioning based on temporal access patterns.
+The experiment proceeds through six phases, illustrated in Figure~\ref{fig:experiment_phases}:
 
-As noted in Lewis (2025), scalability remains paramount. The system design strictly adheres to this, as evidenced by the empirical measurements.
+\begin{enumerate}
+    \item \textbf{Phase 0 (Packaging):} Build six deployment variants (3 runtimes × 2 package sizes) with identical SHA-256 computation workload. Verify digest uniformity via CI/CD pipeline.
+    
+    \item \textbf{Phase P (Pilot):} Execute small-sample runs (N=30 per configuration) under idle conditions (10-minute inter-invocation gaps) to estimate effect sizes and variance. Apply power analysis to determine required sample sizes for 80\% power at $\alpha = 0.05$.
+    
+    \item \textbf{Phase A (Baseline):} Collect multi-arm baseline data across all 6 function variants (without warmer) under idle, steady (one invocation per minute), and burst (100 concurrent invocations) traffic patterns.
+    
+    \item \textbf{Phase H1–H4 (Hypothesis Tests):} Execute targeted invocation campaigns for each hypothesis:
+    \begin{itemize}
+        \item H1 (Runtime): Compare minimal-package configurations across runtimes
+        \item H2 (Package Size): Compare bloated vs. minimal within each runtime
+        \item H3 (Warming): Enable EventBridge warmer (5-minute schedule), measure cold-start frequency
+        \item H4 (Memory, Exploratory): Sweep memory allocations (128, 512, 1024, 1769, 3008 MB)
+    \end{itemize}
+    
+    \item \textbf{Phase C (Collection):} Retrieve CloudWatch Logs via Logs Insights API with automatic pagination and retry. Parse REPORT lines to extract Init Duration, Duration, Billed Duration, Memory Used.
+    
+    \item \textbf{Phase S (Statistical Analysis):} Apply pre-registered analysis plan: normality tests (Shapiro-Wilk), hypothesis tests (parametric or non-parametric), multiple comparison correction (Holm-Bonferroni), effect size computation.
+\end{enumerate}
 
-We simulate and deploy infrastructure tailored for 'Serverless Function Cold Start Mitigation using Predictive Auto-scaling'.
+% Placeholder for Figure: Experiment Phase Diagram
+% Figure would show: Phase 0 → Phase P → Phase A → Phases H1-H4 → Phase C → Phase S
 
+\subsection{Controlled Variables}
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+\textbf{Independent Variables (Manipulated):}
 
+\begin{itemize}
+    \item \textbf{Runtime:} Python 3.12, Node.js 20, Java 21 (AWS Lambda production runtimes as of September 2026)
+    \item \textbf{Package Size:} Bloated (includes popular but unused dependencies) vs. Minimal (standard library or zero dependencies)
+    \item \textbf{Memory Allocation:} 128 MB to 3008 MB in logarithmic steps
+    \item \textbf{Warming Strategy:} None (baseline) vs. EventBridge rule (5-minute fixed schedule)
+\end{itemize}
 
-We simulate and deploy infrastructure tailored for 'Serverless Function Cold Start Mitigation using Predictive Auto-scaling'.
+\textbf{Held Constant:}
 
+\begin{itemize}
+    \item \textbf{Workload:} Identical SHA-256 computation (20,000 rounds over fixed payload) across all variants, verified by digest equality
+    \item \textbf{Architecture:} ARM64 Graviton2 (cost-effective per \citet{bluemke2025ijet})
+    \item \textbf{Region:} Single AWS region (to eliminate geographic variance)
+    \item \textbf{Invocation Mode:} Synchronous RequestResponse (AWS SDK invoke with wait)
+    \item \textbf{Payload:} Fixed 1 KB JSON (\texttt{payloads/fixed\_payload.json})
+    \item \textbf{Account:} Student's personal AWS account (ethics Scenario 3)
+\end{itemize}
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+\textbf{Dependent Variables (Measured):}
 
+\begin{itemize}
+    \item \textbf{Init Duration} (ms): Primary outcome, extracted from CloudWatch REPORT lines when present (indicates cold start)
+    \item \textbf{Duration} (ms): Total execution time including initialization and handler
+    \item \textbf{Billed Duration} (ms): Rounded up to nearest 100 ms, used for cost calculation
+    \item \textbf{Cold Start Indicator:} Binary (1 if Init Duration present, 0 otherwise)
+    \item \textbf{Cost per 1,000 Invocations:} Computed via pricing formula (Section~\ref{sec:cost_model})
+\end{itemize}
 
-We simulate and deploy infrastructure tailored for 'Serverless Function Cold Start Mitigation using Predictive Auto-scaling'.
+\section{Measurement Instrumentation}
 
-In reference to Perez (2025), the integration highlights a distinct improvement metric.
+\subsection{Init Duration Extraction}
 
+AWS Lambda logs execution metrics to CloudWatch in REPORT lines with the following format when a cold start occurs:
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+\begin{verbatim}
+REPORT RequestId: abc123 Duration: 450.23 ms 
+Billed Duration: 500 ms Memory Size: 512 MB 
+Max Memory Used: 128 MB Init Duration: 380.12 ms
+\end{verbatim}
 
+When the container is warm (reused from a previous invocation), the Init Duration field is absent:
 
-We simulate and deploy infrastructure tailored for 'Serverless Function Cold Start Mitigation using Predictive Auto-scaling'.
+\begin{verbatim}
+REPORT RequestId: def456 Duration: 8.45 ms 
+Billed Duration: 100 ms Memory Size: 512 MB 
+Max Memory Used: 128 MB
+\end{verbatim}
 
+The log parser (\texttt{scripts/parse\_report\_metrics.py}) uses regular expressions to extract these fields, tagging each invocation as cold (Init Duration present) or warm (absent). This follows AWS's official cold-start definition: \textit{an invocation is cold if and only if its REPORT line includes Init Duration} \citep{bluemke2025ijet}.
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+\subsection{Log Collection Pipeline}
 
+The collection pipeline (Figure~\ref{fig:pipeline_diagram}) operates as follows:
 
-We simulate and deploy infrastructure tailored for 'Serverless Function Cold Start Mitigation using Predictive Auto-scaling'.
+\begin{enumerate}
+    \item \textbf{Invocation:} Python scripts (\texttt{invoke\_idle.py}, \texttt{invoke\_steady.py}, \texttt{invoke\_burst.py}) call Lambda functions via AWS SDK (boto3) with \texttt{InvocationType='RequestResponse'}. Each invocation records: request ID, client-side timestamp, function name, and cold-start intent (idle invocations expect cold, steady invocations expect warm).
+    
+    \item \textbf{Wait Period:} After invocation campaign completes, wait 5 minutes for CloudWatch log ingestion (AWS CloudWatch Logs Insights has 1–3 minute latency).
+    
+    \item \textbf{Query:} \texttt{collect\_logs.py} issues CloudWatch Logs Insights queries per function log group:
+    \begin{verbatim}
+    fields @timestamp, @message | 
+    filter @message like /REPORT RequestId/
+    \end{verbatim}
+    Automatic pagination retrieves all REPORT lines.
+    
+    \item \textbf{Parsing:} \texttt{parse\_report\_metrics.py} extracts metrics into structured CSV with columns: \texttt{request\_id}, \texttt{function\_name}, \texttt{timestamp}, \texttt{duration}, \texttt{billed\_duration}, \texttt{memory\_size}, \texttt{max\_memory\_used}, \texttt{init\_duration} (nullable), \texttt{is\_cold} (boolean), \texttt{data\_mode} (\texttt{live}, \texttt{mock}, or \texttt{proxy}).
+    
+    \item \textbf{Validation:} Intended-cold invocations (10+ minutes since last call) that return warm are flagged and discarded from cold-start analysis. This prevents container recycling anomalies from biasing results.
+\end{enumerate}
 
+% Placeholder for Figure: Data Collection Pipeline Diagram
+% Figure would show: Invoke → Wait → Query CloudWatch → Parse REPORT → Validate → CSV
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+\subsection{Cost Modeling}
+\label{sec:cost_model}
 
+AWS Lambda pricing (as of September 2026, US East region) consists of two components:
 
-Moreover, bridging the gap identified in Wang et al. (2025) necessitates this novel perspective: While keeping functions warm statically works, it wastes cost. This research implements predictive provisioning based on temporal access patterns.
+\begin{enumerate}
+    \item \textbf{Request Charge:} \$0.20 per 1 million requests
+    \item \textbf{Duration Charge:} \$0.0000166667 per GB-second (memory allocated in GB × billed duration in seconds)
+\end{enumerate}
 
-We simulate and deploy infrastructure tailored for 'Serverless Function Cold Start Mitigation using Predictive Auto-scaling'.
+The cost per invocation is computed as:
 
-In reference to Harris (2026), the integration highlights a distinct improvement metric.
+\begin{equation}
+C_{\text{invocation}} = 0.0000002 + \left(\frac{M}{1024} \times \frac{D_{\text{billed}}}{1000}\right) \times 0.0000166667
+\end{equation}
 
+where $M$ is memory in MB and $D_{\text{billed}}$ is billed duration in milliseconds.
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+Cost per 1,000 invocations is:
 
+\begin{equation}
+C_{1000} = 1000 \times C_{\text{invocation}}
+\end{equation}
 
-We simulate and deploy infrastructure tailored for 'Serverless Function Cold Start Mitigation using Predictive Auto-scaling'.
+The decision matrix expresses each optimization as:
 
+\begin{equation}
+\text{ROI} = \frac{\Delta t_{\text{median}}}{\Delta C_{1000}}
+\end{equation}
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+where $\Delta t_{\text{median}}$ is median latency reduction (ms) and $\Delta C_{1000}$ is cost increase per 1,000 invocations (USD).
 
+\section{Statistical Analysis Plan}
 
-As noted in King et al. (2026), scalability remains paramount. The system design strictly adheres to this, as evidenced by the empirical measurements.
+All hypothesis tests are pre-registered in \texttt{docs/ANALYSIS\_PLAN.md} following \citet{wen2025variance}'s variance-aware methodology.
+
+\subsection{Test Selection Criteria}
+
+Figure~\ref{fig:stats_decision_tree} illustrates the statistical decision tree:
+
+\begin{enumerate}
+    \item \textbf{Normality Check:} Apply Shapiro-Wilk test ($\alpha = 0.05$) to each sample (Init Duration distributions per configuration).
+    
+    \item \textbf{Parametric Tests (if normal):}
+    \begin{itemize}
+        \item H1 (multi-group): One-way ANOVA with Tukey HSD post-hoc
+        \item H2 (two-group): Welch t-test (unequal variance assumption)
+        \item H3 (paired): Paired t-test on 20-minute block means
+        \item H4 (multi-group): One-way ANOVA with Tukey HSD post-hoc
+    \end{itemize}
+    
+    \item \textbf{Non-Parametric Tests (if non-normal):}
+    \begin{itemize}
+        \item H1 (multi-group): Kruskal-Wallis H test with Dunn post-hoc
+        \item H2 (two-group): Mann-Whitney U test
+        \item H3 (paired): Wilcoxon signed-rank test on block means
+        \item H4 (multi-group): Kruskal-Wallis H test with Dunn post-hoc
+    \end{itemize}
+\end{enumerate}
+
+% Placeholder for Figure: Statistical Decision Tree
+% Figure would show: Shapiro-Wilk → Normal? → Yes: ANOVA/t-test, No: Kruskal-Wallis/Mann-Whitney
+
+\subsection{Multiple Comparison Correction}
+
+Holm-Bonferroni sequential correction is applied over five primary hypothesis tests:
+
+\begin{enumerate}
+    \item H1 (Runtime comparison)
+    \item H2-Python (Package size, Python)
+    \item H2-Node.js (Package size, Node.js)
+    \item H2-Java (Package size, Java)
+    \item H3 (Warming effect)
+\end{enumerate}
+
+H4 (Memory, exploratory) is not included in the family; its p-values are reported uncorrected with explicit "exploratory" designation.
+
+\subsection{Effect Size Reporting}
+
+All hypothesis tests report standardized effect sizes:
+
+\begin{itemize}
+    \item \textbf{Kruskal-Wallis:} Epsilon-squared ($\epsilon^2$, analogous to eta-squared)
+    \item \textbf{Mann-Whitney U:} Rank-biserial correlation ($r_{\text{rb}}$, range $[-1, 1]$)
+    \item \textbf{Welch t-test:} Cohen's d with Hedges correction for small samples
+    \item \textbf{One-way ANOVA:} Eta-squared ($\eta^2$) or partial eta-squared
+\end{itemize}
+
+Effect sizes are interpreted using Cohen's conventional thresholds: small (0.01–0.06), medium (0.06–0.14), large ($> 0.14$) for epsilon-squared/eta-squared; small (0.1–0.3), medium (0.3–0.5), large ($> 0.5$) for rank-biserial.
+
+\subsection{Power Analysis}
+
+Prior to the main campaign, a pilot study (Phase P) collects $N = 30$ samples per configuration. Power analysis (\texttt{scripts/pilot\_power.py}) computes required sample sizes for 80\% power at $\alpha = 0.05$ given observed effect sizes and variance. Sample sizes are frozen before Phase H1–H4 to prevent data-dependent stopping (p-hacking).
+
+\section{Ethics and Responsible Conduct}
+
+\subsection{Ethics Scenario Classification}
+
+This research falls under \textbf{Scenario 3} (self-owned infrastructure) of the NCI ethics framework:
+
+\begin{itemize}
+    \item No human participants (synthetic workload only)
+    \item No secondary personal datasets
+    \item Target system is the student's personal AWS account
+\end{itemize}
+
+A Declaration of Ethics Consideration is filed with the supervisor and retained for Moodle submission.
+
+\subsection{Cost and Energy Awareness}
+
+\textbf{Budget Guard:} A pre-invocation cost estimator (\texttt{scripts/budget\_guard.py}) halts execution if projected spend exceeds a configured daily cap (\$5 by default). Pilot-driven sample-size determination ensures the campaign remains within free-tier eligibility or low-cost thresholds.
+
+\textbf{Energy Reporting:} While direct energy consumption is not measurable (AWS abstracts physical infrastructure), the study reports total GB-seconds and compute-time, which correlate with energy usage. ARM64 Graviton2 is selected for energy efficiency (20\% lower power consumption than x86\_64 per AWS documentation).
+
+\subsection{Reproducibility and Data Provenance}
+
+\textbf{Data Mode Segregation:} Every data point carries a \texttt{data\_mode} tag (\texttt{live}, \texttt{mock}, \texttt{proxy}). The analysis pipeline (\texttt{scripts/analyse.py}) refuses to mix modes, preventing accidental conflation of real and synthetic results.
+
+\textbf{Proxy Benchmarks:} Local process-start measurements (Section~\ref{sec:proxy}) are always labeled "proxy" or "local init benchmark," never claimed as Lambda Init Duration. They serve to validate hypothesis directions before AWS execution.
+
+\textbf{Mock Pipeline:} Synthetic data generated via \texttt{configs/mock\_model.yaml} validates end-to-end mechanics (invoke → collect → parse → analyze → figures). All mock outputs are watermarked "SYNTHETIC" and excluded from conclusions.
+
+\section{Threats to Validity}
+
+\subsection{Internal Validity}
+
+\begin{itemize}
+    \item \textbf{Container Reuse Anomalies:} AWS may reuse containers non-deterministically. Mitigation: 10-minute idle periods between intended-cold invocations; warm-returning invocations are flagged and discarded.
+    \item \textbf{Platform Variance:} Host machine load, network latency to log collectors, micro-VM placement vary. Mitigation: Large sample sizes (determined by pilot), repeated measurements, non-parametric tests robust to outliers.
+\end{itemize}
+
+\subsection{External Validity}
+
+\begin{itemize}
+    \item \textbf{Workload Generalizability:} Results are specific to CPU-bound SHA-256 computation. I/O-bound workloads (S3 access, database queries) may exhibit different init-cost profiles.
+    \item \textbf{Temporal Generalizability:} AWS Lambda platform evolves. Results reflect September 2026 platform state; future runtime optimizations may change magnitudes.
+\end{itemize}
+
+\subsection{Construct Validity}
+
+\begin{itemize}
+    \item \textbf{Init Duration Definition:} AWS does not publicly document Init Duration composition (micro-VM vs. runtime vs. application). This study treats it as an atomic metric.
+\end{itemize}
+
+\section{Summary}
+
+This chapter detailed the controlled experimental design, measurement instrumentation, statistical analysis plan, and ethics considerations. The methodology emphasizes reproducibility (data provenance tracking, pre-registered hypotheses), rigor (power analysis, effect sizes, multiple comparison correction), and honesty (explicit labeling of proxy and mock data).
+
+The next chapter presents the design specifications of the Lambda functions, Infrastructure-as-Code template, and workload implementation.
