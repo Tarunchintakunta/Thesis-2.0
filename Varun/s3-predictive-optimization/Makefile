@@ -6,7 +6,7 @@ PY ?= .venv/bin/python
 PYTEST ?= .venv/bin/pytest
 export DRY_RUN ?= 1
 
-.PHONY: help setup test lint pilot baseline improved experiments stats figures gates clean
+.PHONY: help setup test lint pilot baseline improved experiments stats figures gates clean pdf
 
 help:
 	@echo "Available targets:"
@@ -20,6 +20,7 @@ help:
 	@echo "  stats       - Generate statistics and hypothesis tests"
 	@echo "  figures     - Generate result visualizations"
 	@echo "  gates       - Run all quality gates (test, results check)"
+	@echo "  pdf         - Compile LaTeX report to PDF"
 	@echo "  clean       - Remove generated files and cache"
 	@echo ""
 	@echo "Environment variables:"
@@ -71,7 +72,13 @@ gates: test
 	@test -f results/figures/forecast_accuracy.png || (echo "ERROR: Missing forecast accuracy figure" && exit 1)
 	@test -f docs/ARCHITECTURE.md || (echo "ERROR: Missing ARCHITECTURE.md" && exit 1)
 	@test -f docs/CONFIGURATION_MANUAL.md || (echo "ERROR: Missing CONFIGURATION_MANUAL.md" && exit 1)
+	@test -f ../latex_report/projectReport.pdf || (echo "ERROR: Missing projectReport.pdf" && exit 1)
 	@echo "✓ All quality gates passed!"
+
+pdf:
+	@echo "Compiling LaTeX report..."
+	cd ../latex_report && pdflatex projectReport.tex
+	@echo "✓ PDF generated at ../latex_report/projectReport.pdf"
 
 clean:
 	@echo "Cleaning up..."
