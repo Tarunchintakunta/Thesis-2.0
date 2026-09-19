@@ -6,16 +6,154 @@
 \label{sec:Design}
 %% ==============================
 
-\subsection{Reactive HPA}
-Scales strictly on the currently-observed workload, with a one-step reaction delay -- the industry-standard reactive baseline NimbusGuard itself compares against.
+This section presents the detailed design specifications for the three scaling policies evaluated in this project. The design deliberately isolates the effect of the scaling policy from the underlying predictor by using the same forecasting model (where applicable) across both proactive policies.
 
-\subsection{Aggressive PAKS (baseline reproduction)}
-A feed-forward neural network (scikit-learn \texttt{MLPRegressor}, 2 hidden layers) is trained to predict the next-step workload from the previous 10 steps. At every step, the predicted load (with a small 5\% safety buffer) is converted directly into a target pod count and applied immediately -- no filtering. This reproduces the core behaviour NimbusGuard's DQN+LSTM agent exhibits: proactive, but reacting to every raw forecast, including noise.
+\subsection{Design Goals}
 
-\subsection{Stability-Aware PAKS (proposed improvement)}
-Built on the exact same predictor as Aggressive PAKS, wrapped in a \texttt{StabilityAwareController} that adds two changes before a scaling action is taken:
+The design aims to achieve three objectives:
+
+\begin{enumerate}
+  \item \textbf{Reproducibility}: Use a simple, fully-specified feed-forward predictor rather than a complex DQN+LSTM+LLM pipeline, enabling exact reproduction without hyperparameter tuning guesswork.
+  \item \textbf{Controlled Comparison}: Ensure that Aggressive PAKS and Stability-Aware PAKS differ \emph{only} in the filtering/control logic applied to predictions, not in the predictions themselves, so any performance difference cleanly attributes to the stability mechanism.
+  \item \textbf{Minimal Intervention}: Implement stability mechanisms (smoothing, hysteresis, cooldown) as simple, interpretable rules with explicit parameters rather than as a second learned model, making the trade-offs transparent.
+\end{enumerate}
+
+\subsection{System Architecture}
+
+All three policies operate in a simulated discrete-time loop with 1-second timesteps. At each timestep $t$:
+\begin{enumerate}
+  \item The true workload $W(t)$ arrives.
+  \item The policy computes a target pod count $\text{pods}(t)$ based on observed/predicted workload.
+  \item Resources are allocated accordingly.
+  \item Metrics (SLA violations, over-provisioning, scaling events, volatility) are recorded.
+\end{enumerate}
+
+The three policies differ only in how they compute $\text{pods}(t)$.
+
+\subsection{Reactive HPA (Baseline 1)}
+
+\paragraph{Design Rationale} This policy mimics the Kubernetes Horizontal Pod Autoscaler's core behavior: it scales strictly on the currently-observed workload with a one-step reaction delay, representing the industry-standard reactive baseline that NimbusGuard itself compares against.
+
+\paragraph{Algorithm} At each timestep $t$:
+\begin{enumerate}
+  \item Observe the workload from the previous timestep $W(t-1)$ (simulating the inherent measurement and propagation delay in a real system).
+  \item Compute the minimum required pod count to serve that workload:
+  \[
+  \text{required}(t-1) = \left\lceil \frac{W(t-1)}{\text{capacity\_per\_pod}} \right\rceil
+  \]
+  where \texttt{capacity\_per\_pod} = 10 requests per second.
+  \item Set $\text{pods}(t) = \text{required}(t-1)$.
+\end{enumerate}
+
+\paragraph{Characteristics} This policy is:
 \begin{itemize}
-  \item \textbf{Exponential smoothing} of the raw predictions ($\alpha=0.4$), so a single noisy forecast cannot on its own trigger a scaling action.
-  \item \textbf{Hysteresis + cooldown}: a scaling action only fires if the smoothed prediction implies a pod count that differs from the current one by more than 1 pod, \emph{and} at least 2 steps have passed since the last scaling action.
+  \item \textbf{Reactive}: It responds only to workload that has already arrived, never anticipating future demand.
+  \item \textbf{Delayed}: The one-step lag means that during a traffic spike, HPA will under-provision on the first step of the spike (causing SLA violations), then over-provision on the first step after the spike ends (wasting resources).
+  \item \textbf{Stable}: Because it tracks the actual workload smoothly (aside from the lag), it does not oscillate unless the workload itself oscillates rapidly.
 \end{itemize}
-This is a direct, minimal implementation of the calmer design NimbusGuard's own future-work section gestures at (``expanding the action space,'' hybridising with more conservative scaling), applied as a simple rule rather than a second learned agent.
+
+\subsection{Aggressive PAKS (Baseline 2 -- Proactive, Unfiltered)}
+
+\paragraph{Design Rationale} This policy reproduces the core behavior of NimbusGuard's DQN+LSTM agent: proactive (forecasting future workload), but acting immediately on every raw forecast without smoothing or cooldown. The goal is to demonstrate the agility-instability trade-off NimbusGuard reports, using a simpler predictor.
+
+\paragraph{Predictor} A scikit-learn \texttt{MLPRegressor} with architecture:
+\begin{itemize}
+  \item Input: 10-step lookback window $[W(t-10), \ldots, W(t-1)]$
+  \item Hidden layer 1: 64 neurons, ReLU activation
+  \item Hidden layer 2: 32 neurons, ReLU activation
+  \item Output: Scalar prediction $\hat{W}(t+1)$ (next-step workload)
+  \item Optimizer: Adam with learning rate 0.001
+  \item Training: 1000 epochs with early stopping (patience 50)
+\end{itemize}
+
+This is a simple feed-forward architecture rather than a recurrent network, chosen for reproducibility and to avoid the complexity of LSTM state management, while still demonstrating time-series forecasting capability.
+
+\paragraph{Algorithm} At each timestep $t \geq 10$:
+\begin{enumerate}
+  \item Construct the lookback window from observed workload: $\mathbf{x}(t) = [W(t-10), \ldots, W(t-1)]$.
+  \item Predict the next-step workload: $\hat{W}(t+1) = f_{\theta}(\mathbf{x}(t))$ where $f_{\theta}$ is the trained MLP.
+  \item Apply a 5\% safety buffer (to guard against under-prediction):
+  \[
+  \text{buffered}(t) = 1.05 \cdot \hat{W}(t+1)
+  \]
+  \item Compute the target pod count:
+  \[
+  \text{pods}(t) = \left\lceil \frac{\text{buffered}(t)}{\text{capacity\_per\_pod}} \right\rceil
+  \]
+  \item Apply immediately with no smoothing or cooldown.
+\end{enumerate}
+
+\paragraph{Characteristics} This policy is:
+\begin{itemize}
+  \item \textbf{Proactive}: It acts on forecasted future demand, potentially scaling up before a spike arrives.
+  \item \textbf{Agile}: It can respond to predicted changes immediately, without waiting for them to materialize.
+  \item \textbf{Unstable}: Because it acts on every raw prediction including noise, it can trigger scaling actions in response to spurious fluctuations that do not represent genuine workload shifts. This reproduces the ``most agile and least stable'' behavior NimbusGuard documents.
+\end{itemize}
+
+\subsection{Stability-Aware PAKS (Proposed Improvement)}
+
+\paragraph{Design Rationale} This policy builds on the exact same predictor as Aggressive PAKS, but wraps it in a \texttt{StabilityAwareController} that applies classical stability mechanisms (exponential smoothing, hysteresis, cooldown) before executing a scaling action. This is the ``calmer design'' NimbusGuard's future-work section names but does not implement.
+
+\paragraph{Stability Mechanisms}
+
+\subparagraph{Exponential Moving Average (EMA)} Instead of acting on the raw prediction $\hat{W}(t+1)$, the controller maintains a smoothed estimate:
+\[
+S(t) = \begin{cases}
+\hat{W}(11) & t = 10 \text{ (initialization)} \\
+\alpha \cdot \hat{W}(t+1) + (1 - \alpha) \cdot S(t-1) & t > 10
+\end{cases}
+\]
+where $\alpha = 0.4$ is the smoothing factor. A smaller $\alpha$ (e.g., 0.2) would smooth more aggressively but respond more slowly; a larger $\alpha$ (e.g., 0.7) would track predictions more closely but filter less noise. The choice of 0.4 balances responsiveness and stability.
+
+The EMA filters high-frequency noise (which averages to zero) while retaining genuine trends (which persist across multiple predictions). This prevents a single noisy forecast from triggering a scaling action.
+
+\subparagraph{Hysteresis} A scaling action is triggered only if the smoothed prediction implies a pod count that differs from the current allocation by more than a threshold:
+\[
+\text{desired}(t) = \left\lceil \frac{1.05 \cdot S(t)}{\text{capacity\_per\_pod}} \right\rceil
+\]
+\[
+|\text{desired}(t) - \text{current\_pods}(t)| > \Delta_{\text{hyst}}
+\]
+where $\Delta_{\text{hyst}} = 1$ pod. This prevents oscillation around a boundary (e.g., repeatedly adding and removing a single pod in response to small fluctuations near a threshold).
+
+\subparagraph{Cooldown} A scaling action is allowed only if a minimum time has elapsed since the last action:
+\[
+t - t_{\text{last\_scale}} \geq \tau_{\text{cool}}
+\]
+where $\tau_{\text{cool}} = 2$ timesteps. This prevents rapid successive scaling actions in response to a sequence of predictions that all suggest changes, giving the system time to stabilize after each reconfiguration.
+
+\paragraph{Algorithm} At each timestep $t \geq 10$:
+\begin{enumerate}
+  \item Predict next-step workload: $\hat{W}(t+1) = f_{\theta}([W(t-10), \ldots, W(t-1)])$.
+  \item Update the smoothed estimate: $S(t) = \alpha \cdot \hat{W}(t+1) + (1 - \alpha) \cdot S(t-1)$.
+  \item Compute the desired pod count from the smoothed prediction:
+  \[
+  \text{desired}(t) = \left\lceil \frac{1.05 \cdot S(t)}{\text{capacity\_per\_pod}} \right\rceil
+  \]
+  \item Check if a scaling action is warranted:
+  \begin{enumerate}
+    \item If $|\text{desired}(t) - \text{current\_pods}(t)| \leq 1$, no action (within hysteresis band).
+    \item Else if $t - t_{\text{last\_scale}} < 2$, no action (cooldown not elapsed).
+    \item Else, execute scaling action: $\text{pods}(t) = \text{desired}(t)$, and record $t_{\text{last\_scale}} = t$.
+  \end{enumerate}
+  \item If no action is taken, $\text{pods}(t) = \text{pods}(t-1)$ (maintain current allocation).
+\end{enumerate}
+
+\paragraph{Characteristics} This policy is:
+\begin{itemize}
+  \item \textbf{Proactive}: Like Aggressive PAKS, it forecasts future workload.
+  \item \textbf{Filtered}: Smoothing and hysteresis prevent reaction to noise and small fluctuations.
+  \item \textbf{Stable}: Cooldown prevents rapid successive actions, reducing scaling-event frequency and pod-count volatility.
+  \item \textbf{Slightly Less Aggressive}: By design, it reacts slightly later to genuine demand shifts (because the smoothed estimate lags the raw prediction, and cooldown delays action), accepting a small SLA cost to achieve stability.
+\end{itemize}
+
+\subsection{Parameter Justification}
+
+The specific parameter values ($\alpha = 0.4$, $\Delta_{\text{hyst}} = 1$ pod, $\tau_{\text{cool}} = 2$ steps, 5\% safety buffer) were chosen based on:
+\begin{itemize}
+  \item \textbf{Literature precedent}: Exponential smoothing with $\alpha \in [0.3, 0.5]$ is standard in control systems for balancing responsiveness and stability \cite{MultipleOperatingLevels18}.
+  \item \textbf{Domain knowledge}: A 1-pod hysteresis threshold avoids oscillation around boundaries without being so large that it makes the system unresponsive. A 2-timestep cooldown is short enough to remain reactive to genuine multi-step trends but long enough to prevent thrashing.
+  \item \textbf{Empirical observation}: Initial experiments on a single seed confirmed that these values achieved a meaningful reduction in scaling events without causing excessive SLA violations. A full parameter sweep is listed as future work (Section~\ref{sec:Conclusion}).
+\end{itemize}
+
+Figure~\ref{fig:controller_comparison} illustrates the conceptual difference between Aggressive and Stability-Aware PAKS in response to a noisy demand spike.

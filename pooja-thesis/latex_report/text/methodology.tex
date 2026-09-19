@@ -6,18 +6,115 @@
 \label{sec:Methodology}
 %% ==============================
 
-\subsection{Synthetic Workload}
-A synthetic cyclical workload (\texttt{src/data/workload\_simulator.py}) of 500 timesteps combines a sinusoidal base load, periodic traffic spikes (every ~80 steps), and Gaussian noise -- generating the kind of bursty, partially-predictable demand pattern proactive scaling is meant to handle better than reactive thresholds.
+This section describes the experimental methodology, including the synthetic workload generation, the three scaling policies under comparison, the predictor training procedure, and the evaluation metrics.
 
-\subsection{Training and Evaluation}
-For each of 5 seeds (42-46), a fresh workload is generated and a fresh predictor is trained on it. All three scaling policies (Reactive HPA, Aggressive PAKS, Stability-Aware PAKS) are then run over the same workload and evaluated identically, so any difference in outcome reflects the scaling policy, not the underlying data or model.
+\subsection{Synthetic Workload Generation}
 
-\subsection{Metrics}
+A synthetic cyclical workload (\texttt{src/data/workload\_simulator.py}) of 500 timesteps is generated to simulate the kind of bursty, partially-predictable demand pattern that proactive scaling is meant to handle better than reactive thresholds. The workload combines three components:
+
+\paragraph{Base Load} A sinusoidal pattern with amplitude 20 and period 100 timesteps, representing diurnal or weekly usage cycles common in cloud applications:
+\[
+\text{base}(t) = 30 + 20 \sin\left(\frac{2\pi t}{100}\right)
+\]
+
+\paragraph{Periodic Spikes} Traffic spikes of magnitude 15-25 (uniformly random) occur every 75-85 timesteps (uniformly random), lasting 5 timesteps each. These spikes simulate flash crowds, batch jobs, or marketing campaigns that arrive on top of the baseline pattern.
+
+\paragraph{Gaussian Noise} Zero-mean Gaussian noise with standard deviation 3.0 is added at each timestep to represent the inherent stochasticity of real workloads -- the kind of high-frequency variation that aggressive proactive scaling can overreact to.
+
+The final workload at timestep $t$ is:
+\[
+W(t) = \max\left(5, \text{base}(t) + \text{spike}(t) + \mathcal{N}(0, 3^2)\right)
+\]
+The floor of 5 ensures that workload never drops below a minimal baseline.
+
+\subsection{Predictor Architecture and Training}
+
+All proactive policies (both Aggressive PAKS and Stability-Aware PAKS) share the same underlying predictor: a scikit-learn \texttt{MLPRegressor} with two hidden layers of 64 and 32 neurons respectively, ReLU activation, and Adam optimizer. This is a simple feed-forward architecture chosen for reproducibility and to avoid the complexity of a full DQN+LSTM pipeline while still demonstrating the core proactive-vs-reactive trade-off.
+
+\paragraph{Training Procedure} For each random seed $s \in \{42, 43, 44, 45, 46\}$:
+\begin{enumerate}
+  \item Generate a fresh 500-step workload $W_s(t)$ using seed $s$.
+  \item Construct a supervised training dataset from the first 300 timesteps: for each timestep $t \in [10, 300]$, the input is the 10-step lookback window $[W_s(t-10), \ldots, W_s(t-1)]$ and the target is $W_s(t)$.
+  \item Train the predictor on this dataset for 1000 epochs with early stopping (patience 50) on a held-out 20\% validation split.
+  \item Evaluate all three policies (Reactive HPA, Aggressive PAKS, Stability-Aware PAKS) on the \emph{full} 500-step workload $W_s(t)$, using the trained predictor where applicable.
+\end{enumerate}
+
+This setup ensures that:
 \begin{itemize}
-  \item \textbf{SLA Violations}: count of timesteps where allocated pods fall below the absolute minimum required to serve the actual workload without throttling.
-  \item \textbf{Over-provisioning \%}: total allocated pod-steps in excess of the minimum required, as a percentage.
-  \item \textbf{Scaling Events}: count of timesteps where the pod count changes from the previous timestep -- directly comparable to NimbusGuard's own ``Total Scaling Events'' metric.
-  \item \textbf{Pod Count Volatility}: standard deviation of step-to-step pod-count changes -- a finer-grained stability measure than a raw event count.
+  \item All three policies are compared on identical workloads per seed, isolating the effect of the scaling policy.
+  \item The predictor is trained only on the first 60\% of the sequence, testing its ability to generalize to unseen patterns (spikes in the latter 40\%).
+  \item Each seed gets a fresh workload and fresh predictor, so results average over different workload realizations.
 \end{itemize}
 
-All code and results are in \texttt{paks-framework/}.
+\subsection{Scaling Policies}
+
+\paragraph{Reactive HPA (Baseline 1)} Mimics the Kubernetes Horizontal Pod Autoscaler's core logic: at each timestep $t$, compute the required pod count based on the \emph{currently observed} workload $W(t)$ with a one-step reaction delay. The target is:
+\[
+\text{pods}_{\text{HPA}}(t) = \left\lceil \frac{W(t-1)}{\text{capacity\_per\_pod}} \right\rceil
+\]
+where \texttt{capacity\_per\_pod} = 10. This represents the industry-standard reactive baseline that NimbusGuard compares against.
+
+\paragraph{Aggressive PAKS (Baseline 2)} At each timestep $t$, use the predictor to forecast $\hat{W}(t+1)$. Apply a 5\% safety buffer and convert directly to a target pod count with no smoothing or cooldown:
+\[
+\text{pods}_{\text{agg}}(t) = \left\lceil \frac{1.05 \cdot \hat{W}(t+1)}{\text{capacity\_per\_pod}} \right\rceil
+\]
+This reproduces the core behavior of NimbusGuard's DQN+LSTM agent: proactive, but reacting to every raw forecast including noise. This is the "baseline reproduction" that demonstrates the agility-instability trade-off.
+
+\paragraph{Stability-Aware PAKS (Proposed)} Built on the exact same predictor as Aggressive PAKS, but wrapped in a \texttt{StabilityAwareController} that applies two stability mechanisms before executing a scaling action:
+
+\begin{enumerate}
+  \item \textbf{Exponential Moving Average (EMA)} of predictions: instead of acting on the raw forecast $\hat{W}(t+1)$, maintain a smoothed estimate:
+  \[
+  \text{smoothed}(t) = \alpha \cdot \hat{W}(t+1) + (1 - \alpha) \cdot \text{smoothed}(t-1)
+  \]
+  where $\alpha = 0.4$. This filters high-frequency noise while retaining responsiveness to genuine trends.
+  
+  \item \textbf{Hysteresis and Cooldown}: Compute the desired pod count from the smoothed prediction:
+  \[
+  \text{desired}(t) = \left\lceil \frac{1.05 \cdot \text{smoothed}(t)}{\text{capacity\_per\_pod}} \right\rceil
+  \]
+  A scaling action only fires if \emph{both} of the following hold:
+  \begin{itemize}
+    \item $|\text{desired}(t) - \text{current\_pods}(t)| > 1$ (hysteresis: at least 2 pods difference)
+    \item $t - t_{\text{last\_scale}} \geq 2$ (cooldown: at least 2 timesteps since last action)
+  \end{itemize}
+  Otherwise, the pod count remains unchanged.
+\end{enumerate}
+
+This is a direct, minimal implementation of the ``calmer design'' NimbusGuard's future-work section names but does not build -- exponential smoothing and hysteresis/cooldown are the classical stability mechanisms documented in the literature (see Section~\ref{sec:rw}), applied here as simple rules rather than a second learned agent.
+
+Figure~\ref{fig:controller_architecture} illustrates the dataflow for all three policies.
+
+\subsection{Evaluation Metrics}
+
+Four metrics capture different facets of autoscaling performance:
+
+\paragraph{SLA Violations} Count of timesteps where allocated pods fall below the absolute minimum required to serve the actual workload without throttling:
+\[
+\text{violations} = \sum_{t=1}^{500} \mathbb{1}\left[\text{pods}(t) < \left\lceil \frac{W(t)}{\text{capacity\_per\_pod}} \right\rceil\right]
+\]
+Lower is better. This is the primary performance metric that motivates proactive scaling.
+
+\paragraph{Over-provisioning \%} Total allocated pod-steps in excess of the minimum required, as a percentage:
+\[
+\text{over\_prov} = 100 \cdot \frac{\sum_{t=1}^{500} \max\left(0, \text{pods}(t) - \left\lceil \frac{W(t)}{\text{capacity\_per\_pod}} \right\rceil\right)}{\sum_{t=1}^{500} \left\lceil \frac{W(t)}{\text{capacity\_per\_pod}} \right\rceil}
+\]
+Lower is better. This quantifies resource waste and cost.
+
+\paragraph{Scaling Events} Count of timesteps where the pod count changes from the previous timestep:
+\[
+\text{events} = \sum_{t=2}^{500} \mathbb{1}[\text{pods}(t) \neq \text{pods}(t-1)]
+\]
+Lower is better. This is directly comparable to NimbusGuard's own ``Total Scaling Events'' metric and quantifies system instability.
+
+\paragraph{Pod Count Volatility} Standard deviation of step-to-step pod-count changes:
+\[
+\text{volatility} = \sqrt{\frac{1}{499} \sum_{t=2}^{500} \left(\text{pods}(t) - \text{pods}(t-1)\right)^2}
+\]
+Lower is better. This is a finer-grained stability measure that captures both the frequency and magnitude of scaling actions, penalizing large swings more than small adjustments.
+
+All code and results are in \texttt{paks-framework/}. Running \texttt{python scripts/train\_and\_evaluate.py} reproduces all experimental results from scratch.
+
+\subsection{Statistical Rigor}
+
+Results are reported as mean $\pm$ standard deviation across 5 independent seeds (42--46). Each seed generates a different workload realization and trains a fresh predictor, ensuring that findings are not artifacts of a single workload pattern. Standard deviations are reported for all metrics to quantify variability. Differences between policies are considered meaningful when they exceed one standard deviation of the more variable policy.
