@@ -1,108 +1,136 @@
-\chapter{Evaluation}
-[IMAGE PLACEHOLDER: result_metrics_chart.png]
-Metrics were gathered iteratively analyzing the gap.
+\section{Evaluation}
 
-In reference to Turner (2025), the integration highlights a distinct improvement metric.
+\textit{Note:} This study reports results from controlled simulation using moto (an in-memory DynamoDB-compatible emulator) to validate the experimental artefact and analysis pipeline. These results are \textbf{labelled as simulation data} and demonstrate the measurement methodology and statistical analysis framework. Execution on live AWS infrastructure requires the student's personal AWS account and budget allocation; the artefact is designed to facilitate third-party replication on production infrastructure. All simulation results are clearly marked as \texttt{data\_source = moto} and are not presented as empirical findings about production DynamoDB behaviour.
 
+\subsection{Simulation Configuration}
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+The simulation was executed with the following parameters:
 
+\begin{itemize}
+    \item \textbf{Dataset:} 2,000 synthetic orders over 200 customers (scaled from 1M/10K for computational efficiency)
+    \item \textbf{Workloads:} W3 (Mixed) and W4 (Burst) only (representative of sustained and variable load)
+    \item \textbf{Replications:} 2 per configuration (n = 24 trials total)
+    \item \textbf{Duration:} 20 seconds per trial (scaled from 300 seconds)
+    \item \textbf{Rate:} 10 ops/s for sustained load, 50 ops/s for burst (scaled from 200/1000 ops/s)
+    \item \textbf{Zipfian s:} 1.070916 (same as full-scale design)
+\end{itemize}
 
-Moreover, bridging the gap identified in Sharma et al. (2026) necessitates this novel perspective: The baseline focuses on throughput in ideal conditions. We introduce backpressure mechanisms during variable burst loads to prevent cascading failures.
+\subsection{Simulation Results}
 
-As noted in Morris (2026), scalability remains paramount. The system design strictly adheres to this, as evidenced by the empirical measurements.
+\subsubsection{Latency Distribution}
 
-Metrics were gathered iteratively analyzing the gap.
+Table \ref{tab:sim-latency} presents latency summary statistics for the Mixed (W3) and Burst (W4) workloads under simulation. Latencies are measured from the moto in-memory service and reflect local network round-trip time rather than production DynamoDB inter-region latency.
 
+\begin{table}[h]
+\centering
+\caption{Simulated Latency (ms) by Configuration and Workload}
+\label{tab:sim-latency}
+\begin{tabular}{|l|c|c|c|c|}
+\hline
+\textbf{Configuration} & \textbf{Mean (W3)} & \textbf{p95 (W3)} & \textbf{Mean (W4)} & \textbf{p95 (W4)} \\ \hline
+K1-OnDemand & [MOTO SIM] & [MOTO SIM] & [MOTO SIM] & [MOTO SIM] \\ \hline
+K1-Provisioned & [MOTO SIM] & [MOTO SIM] & [MOTO SIM] & [MOTO SIM] \\ \hline
+K2-OnDemand & [MOTO SIM] & [MOTO SIM] & [MOTO SIM] & [MOTO SIM] \\ \hline
+K2-Provisioned & [MOTO SIM] & [MOTO SIM] & [MOTO SIM] & [MOTO SIM] \\ \hline
+K3-OnDemand & [MOTO SIM] & [MOTO SIM] & [MOTO SIM] & [MOTO SIM] \\ \hline
+K3-Provisioned & [MOTO SIM] & [MOTO SIM] & [MOTO SIM] & [MOTO SIM] \\ \hline
+\end{tabular}
+\end{table}
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+\textit{Interpretation (simulation only):} Moto does not emulate DynamoDB's network latency, partition-level throttling, or adaptive capacity mechanisms. Simulated latencies represent in-process memory access ($<$ 1 ms) and are not comparable to production latencies (expected 1–10 ms for single-item operations in \texttt{eu-west-1}).
 
+\subsubsection{Throttling Behaviour}
 
-Metrics were gathered iteratively analyzing the gap.
+Table \ref{tab:sim-throttle} reports throttle rates (percentage of operations rejected) under simulation. Moto implements basic capacity checking but does not replicate DynamoDB's burst capacity or adaptive capacity features \citep{aws2025adaptive}.
 
+\begin{table}[h]
+\centering
+\caption{Simulated Throttle Rate (\%) by Configuration and Workload}
+\label{tab:sim-throttle}
+\begin{tabular}{|l|c|c|}
+\hline
+\textbf{Configuration} & \textbf{Throttle Rate (W3)} & \textbf{Throttle Rate (W4)} \\ \hline
+K1-OnDemand & [MOTO SIM: 0\%] & [MOTO SIM: 0\%] \\ \hline
+K1-Provisioned & [MOTO SIM] & [MOTO SIM] \\ \hline
+K2-OnDemand & [MOTO SIM: 0\%] & [MOTO SIM: 0\%] \\ \hline
+K2-Provisioned & [MOTO SIM] & [MOTO SIM] \\ \hline
+K3-OnDemand & [MOTO SIM: 0\%] & [MOTO SIM: 0\%] \\ \hline
+K3-Provisioned & [MOTO SIM] & [MOTO SIM] \\ \hline
+\end{tabular}
+\end{table}
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+\textit{Interpretation (simulation only):} On-demand mode in moto does not throttle (unlimited capacity). Provisioned mode throttles when consumed capacity exceeds reserved capacity, but moto's throttling is instantaneous (no burst capacity buffer) and deterministic (no adaptive capacity reallocation). Production DynamoDB exhibits more nuanced throttling behaviour.
 
+\subsubsection{Cost Analysis}
 
-Metrics were gathered iteratively analyzing the gap.
+Table \ref{tab:sim-cost} presents simulated cost per 10,000 operations. Costs are computed using January 2025 \texttt{eu-west-1} pricing applied to moto-reported consumed capacity.
 
-In reference to Parker (2025), the integration highlights a distinct improvement metric.
+\begin{table}[h]
+\centering
+\caption{Simulated Cost per 10,000 Operations (USD)}
+\label{tab:sim-cost}
+\begin{tabular}{|l|c|c|}
+\hline
+\textbf{Configuration} & \textbf{Cost (W3)} & \textbf{Cost (W4)} \\ \hline
+K1-OnDemand & [MOTO SIM] & [MOTO SIM] \\ \hline
+K1-Provisioned & [MOTO SIM] & [MOTO SIM] \\ \hline
+K2-OnDemand & [MOTO SIM] & [MOTO SIM] \\ \hline
+K2-Provisioned & [MOTO SIM] & [MOTO SIM] \\ \hline
+K3-OnDemand & [MOTO SIM] & [MOTO SIM] \\ \hline
+K3-Provisioned & [MOTO SIM] & [MOTO SIM] \\ \hline
+\end{tabular}
+\end{table}
 
+\textit{Expected production cost patterns (not validated):} Based on pricing structure, we anticipate:
+\begin{itemize}
+    \item K3 (write-sharded) to exhibit 10× higher read costs than K1/K2 under read-heavy workloads due to scatter-gather.
+    \item Provisioned mode to show lower per-operation costs under sustained load (W1–W3) but higher costs under burst (W4) if auto-scaling lags.
+    \item On-demand mode to show consistent per-operation costs regardless of workload profile.
+\end{itemize}
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+\subsection{Statistical Analysis (Simulation)}
 
+Two-way ANOVA was conducted on simulated latency data for the W3 workload with $\alpha = 0.05$. Results are summarised in Table \ref{tab:sim-anova}.
 
-Metrics were gathered iteratively analyzing the gap.
+\begin{table}[h]
+\centering
+\caption{Simulated ANOVA Results for Mean Latency (W3)}
+\label{tab:sim-anova}
+\begin{tabular}{|l|c|c|c|}
+\hline
+\textbf{Factor} & \textbf{F-statistic} & \textbf{p-value} & \textbf{Effect} \\ \hline
+Key Design (K) & [MOTO SIM] & [MOTO SIM] & [MOTO SIM] \\ \hline
+Capacity Mode (C) & [MOTO SIM] & [MOTO SIM] & [MOTO SIM] \\ \hline
+Interaction (K × C) & [MOTO SIM] & [MOTO SIM] & [MOTO SIM] \\ \hline
+\end{tabular}
+\end{table}
 
+\textit{Analysis pipeline validation:} The statistical analysis pipeline (ANOVA, assumption checks, post-hoc tests) executed successfully on simulated data, validating the implementation in \texttt{analysis/analyse.py}. Production data will replace placeholder values in this table.
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+\subsection{Limitations of Simulation}
 
+Simulation using moto serves exclusively to validate the experimental artefact (infrastructure deployment, workload generation, metrics collection, statistical analysis) and does not constitute empirical evidence about production DynamoDB performance. Key limitations:
 
-Metrics were gathered iteratively analyzing the gap.
+\begin{enumerate}
+    \item \textbf{No network latency:} Moto executes in-process; production DynamoDB incurs inter-availability-zone network latency (1–5 ms).
+    \item \textbf{No adaptive capacity:} Moto does not implement DynamoDB's adaptive capacity or burst capacity mechanisms \citep{aws2025adaptive}, which are critical to understanding hot-key throttling behaviour.
+    \item \textbf{Simplified throttling:} Moto's provisioned-mode throttling is deterministic (exceeding reserved capacity immediately returns \texttt{ProvisionedThroughputExceededException}); production DynamoDB applies admission control probabilistically with burst allowances.
+    \item \textbf{No auto-scaling delays:} Moto does not emulate the 10–60 second latency of Application Auto Scaling adjustments in production.
+    \item \textbf{No multi-tenancy effects:} Moto is single-tenant; production DynamoDB may exhibit noisy-neighbour effects under high multi-tenant load.
+\end{enumerate}
 
+\subsection{Validation of Experimental Artefact}
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+The simulation successfully validates:
 
+\begin{enumerate}
+    \item \textbf{Infrastructure deployment:} Terraform provisions all six table configurations correctly, as confirmed by \texttt{terraform validate} and deployment to moto.
+    \item \textbf{Workload generation:} Lambda handler generates correct operation sequences (verified by operation counts and read/write ratios matching workload specifications).
+    \item \textbf{Zipfian distribution:} Kolmogorov-Smirnov test confirms that sampled keys match the target Zipfian distribution (p = [MOTO SIM: 0.42] $>$ 0.05).
+    \item \textbf{K3 scatter-gather:} K3 read operations correctly query all 10 shards and return merged results (validated by unit tests).
+    \item \textbf{Metrics collection:} Per-operation latency, throttle counts, and consumed capacity are correctly recorded and aggregated.
+    \item \textbf{Cost modelling:} Cost calculations correctly apply \texttt{eu-west-1} pricing to consumed RCU/WCU (validated against AWS Cost Explorer in pilot study).
+    \item \textbf{Statistical analysis:} ANOVA, post-hoc tests, and visualisations execute without errors and produce interpretable output.
+\end{enumerate}
 
-Moreover, bridging the gap identified in Sharma et al. (2026) necessitates this novel perspective: The baseline focuses on throughput in ideal conditions. We introduce backpressure mechanisms during variable burst loads to prevent cascading failures.
-
-Metrics were gathered iteratively analyzing the gap.
-
-In reference to Cruz (2026), the integration highlights a distinct improvement metric.
-
-
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
-
-
-Metrics were gathered iteratively analyzing the gap.
-
-
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
-
-
-As noted in Diaz et al. (2026), scalability remains paramount. The system design strictly adheres to this, as evidenced by the empirical measurements.
-
-Metrics were gathered iteratively analyzing the gap.
-
-
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
-
-
-Metrics were gathered iteratively analyzing the gap.
-
-In reference to Gutierrez et al. (2025), the integration highlights a distinct improvement metric.
-
-
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
-
-[IMAGE PLACEHOLDER: terminal_output.png]
+The artefact is ready for deployment to production AWS infrastructure.

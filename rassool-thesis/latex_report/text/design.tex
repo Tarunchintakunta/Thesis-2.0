@@ -1,53 +1,221 @@
-\chapter{Design}
-[IMAGE PLACEHOLDER: methodology_flow.png]
-The design isolates the core variables.
+\section{Design}
 
-In reference to Diaz et al. (2026), the integration highlights a distinct improvement metric.
+This section describes the architectural design of the experimental artefact, including the infrastructure topology (§4.1), workload generation architecture (§4.2), capacity planning and design validation (§4.3), and cost modelling (§4.4).
 
+\subsection{Infrastructure Topology}
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+The experimental infrastructure is deployed on Amazon Web Services (AWS) in the \texttt{eu-west-1} (Ireland) region. Figure \ref{fig:architecture} illustrates the system architecture.
 
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}[
+    node distance=1.5cm,
+    box/.style={rectangle, draw, thick, minimum width=2.5cm, minimum height=1cm, align=center},
+    arrow/.style={->, thick}
+]
+    % DynamoDB Tables
+    \node[box] (k1on) {K1-OnDemand\\Table};
+    \node[box, below of=k1on] (k1prov) {K1-Provisioned\\Table};
+    \node[box, right=3cm of k1on] (k2on) {K2-OnDemand\\Table};
+    \node[box, below of=k2on] (k2prov) {K2-Provisioned\\Table};
+    \node[box, right=3cm of k2on] (k3on) {K3-OnDemand\\Table};
+    \node[box, below of=k3on] (k3prov) {K3-Provisioned\\Table};
+    
+    % Lambda
+    \node[box, below=3cm of k2prov, fill=orange!20] (lambda) {AWS Lambda\\Workload Generator};
+    
+    % CloudWatch
+    \node[box, below=1.5cm of lambda, fill=blue!20] (cw) {CloudWatch Metrics\\+ Logs};
+    
+    % Arrows
+    \draw[arrow] (lambda) -- (k1on);
+    \draw[arrow] (lambda) -- (k1prov);
+    \draw[arrow] (lambda) -- (k2on);
+    \draw[arrow] (lambda) -- (k2prov);
+    \draw[arrow] (lambda) -- (k3on);
+    \draw[arrow] (lambda) -- (k3prov);
+    
+    \draw[arrow] (lambda) -- (cw);
+    \draw[arrow] (k1on) -- (cw);
+    \draw[arrow] (k2on) -- (cw);
+    \draw[arrow] (k3on) -- (cw);
+\end{tikzpicture}
+\caption{Experimental Infrastructure Architecture}
+\label{fig:architecture}
+\end{figure}
 
-Moreover, bridging the gap identified in Sharma et al. (2026) necessitates this novel perspective: The baseline focuses on throughput in ideal conditions. We introduce backpressure mechanisms during variable burst loads to prevent cascading failures.
+\subsubsection{DynamoDB Tables}
 
-As noted in Murphy (2026), scalability remains paramount. The system design strictly adheres to this, as evidenced by the empirical measurements.
+Six DynamoDB tables are provisioned via Terraform \texttt{for\_each} iteration over table configurations. Each table is configured with:
 
-The design isolates the core variables.
+\begin{itemize}
+    \item \textbf{Point-in-time recovery (PITR):} Disabled (not required for synthetic data).
+    \item \textbf{Encryption:} AWS-managed keys (default).
+    \item \textbf{Deletion protection:} Enabled during experiment, disabled for teardown.
+    \item \textbf{Table class:} Standard (not Infrequent Access, as workloads are sustained).
+\end{itemize}
 
+Provisioned-mode tables (K1-Provisioned, K2-Provisioned, K3-Provisioned) are configured with target-tracking auto-scaling policies:
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+\begin{itemize}
+    \item \textbf{Target utilisation:} 70\% of provisioned capacity.
+    \item \textbf{Scale-in cooldown:} 60 seconds.
+    \item \textbf{Scale-out cooldown:} 10 seconds.
+\end{itemize}
 
+These parameters are AWS defaults, chosen to avoid introducing configuration bias.
 
-The design isolates the core variables.
+\subsubsection{Lambda Workload Generator}
 
+A single Lambda function (\texttt{dynamodb-workload-runner}) is deployed with:
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+\begin{itemize}
+    \item \textbf{Runtime:} Python 3.12
+    \item \textbf{Memory:} 1024 MB (determines CPU allocation)
+    \item \textbf{Timeout:} 900 seconds (15 minutes, sufficient for the longest trial)
+    \item \textbf{Concurrency:} Reserved concurrency = 20 (prevents throttling by Lambda service itself)
+    \item \textbf{IAM Role:} \texttt{dynamodb:GetItem}, \texttt{dynamodb:PutItem}, \texttt{dynamodb:BatchGetItem}, \texttt{dynamodb:BatchWriteItem}, \texttt{cloudwatch:PutMetricData}
+\end{itemize}
 
+The function is packaged as a zip deployment with dependencies (\texttt{boto3}, \texttt{numpy} for Zipfian sampling, \texttt{pyyaml}). Deployment is automated via \texttt{scripts/build\_lambda.sh}.
 
-The design isolates the core variables.
+\subsubsection{CloudWatch Metrics and Logs}
 
-In reference to Reyes & Stewart (2025), the integration highlights a distinct improvement metric.
+Lambda functions emit custom CloudWatch metrics:
 
+\begin{itemize}
+    \item \texttt{OperationLatency} (milliseconds, per operation)
+    \item \texttt{ThrottleCount} (count, per batch)
+    \item \texttt{SuccessfulOperations} (count, per batch)
+\end{itemize}
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+DynamoDB emits native metrics:
 
+\begin{itemize}
+    \item \texttt{ConsumedReadCapacityUnits}
+    \item \texttt{ConsumedWriteCapacityUnits}
+    \item \texttt{UserErrors} (throttle count)
+    \item \texttt{SystemErrors}
+\end{itemize}
 
-The design isolates the core variables.
+Metrics are retained for 15 months (CloudWatch standard retention). Logs are retained for 7 days.
 
+\subsection{Workload Generation Architecture}
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+\subsubsection{Zipfian Sampler}
+
+The Zipfian sampler is implemented using the rejection-inversion algorithm \citep{devroye1986non}, which generates samples in $O(1)$ time after $O(N)$ precomputation of the cumulative distribution function (CDF). The implementation is validated against a reference Zipfian generator (SciPy) with Kolmogorov-Smirnov test (p $>$ 0.05 indicates distribution match).
+
+For K3 (write-sharded), writes select a random shard (uniform distribution over \{0, \ldots, 9\}), while reads query all 10 shards and merge results. The Lambda handler implements parallel fan-out using \texttt{asyncio.gather} to minimise read latency.
+
+\subsubsection{Operation Mix Generation}
+
+Each workload profile (W1–W4) is encoded as a sequence of operation types (GetItem, PutItem) with inter-arrival times computed from the target rate (200 or 1000 ops/s). The generator uses an open-loop arrival process (operations are scheduled at fixed intervals regardless of completion time) to avoid feedback effects that would distort measured latency.
+
+\subsubsection{Retry Configuration}
+
+The boto3 DynamoDB client is configured with:
+
+\begin{verbatim}
+config = botocore.config.Config(
+    retries={'mode': 'standard', 'total_max_attempts': 1}
+)
+\end{verbatim}
+
+This disables automatic retries, ensuring that throttled operations (\texttt{ProvisionedThroughputExceededException}, \texttt{RequestLimitExceeded}) are recorded as failures rather than hidden by SDK retry logic.
+
+\subsection{Capacity Planning and Design Validation}
+
+Before experiment execution, design checks validate that the configuration is feasible (no partition-level throttling under normal load) and identify conditions under which throttling is expected.
+
+\subsubsection{Hot-Key Load Prediction}
+
+The Zipfian distribution with $s = 1.070916$ produces a hottest-key access probability of 10.65\%. Under the most demanding workload (W4 burst, 1000 ops/s), the hottest order receives:
+
+\begin{equation}
+\text{Hottest-key ops/s} = 1000 \times 0.1065 = 106.5 \text{ ops/s}
+\end{equation}
+
+For 1 KB items:
+\begin{itemize}
+    \item Read load: 106.5 ops/s × 1 RCU = 106.5 RCU/s (well below the 3,000 RCU/s per-partition limit)
+    \item Write load: 106.5 ops/s × 1 WCU = 106.5 WCU/s (well below the 1,000 WCU/s per-partition limit)
+\end{itemize}
+
+Therefore, partition-level throttling is not expected under 1 KB items. The design checks confirm that only table-level capacity (in provisioned mode) or burst limits (in on-demand mode) will cause throttling.
+
+\subsubsection{Provisioned Capacity Sizing}
+
+Provisioned-mode tables are sized for sustained load (200 ops/s) with 50\% headroom:
+
+\begin{equation}
+\text{Target Capacity} = 200 \text{ ops/s} \times 1.5 = 300 \text{ capacity units}
+\end{equation}
+
+For K1 and K2 (no read amplification):
+\begin{itemize}
+    \item Min: 140 RCU/WCU (70\% of baseline)
+    \item Target: 210 RCU/WCU
+    \item Max: 420 RCU/WCU (200\% of baseline, sufficient for W4 burst)
+\end{itemize}
+
+For K3 (10× read amplification):
+\begin{itemize}
+    \item Min: 1360 RCU (140 × 10, accounts for scatter-gather)
+    \item Target: 2040 RCU
+    \item Max: 4080 RCU
+    \item WCU: Same as K1/K2 (no write amplification)
+\end{itemize}
+
+Auto-scaling is configured to maintain 70\% target utilisation, adjusting capacity within these bounds in response to consumed capacity metrics.
+
+\subsection{Cost Modelling}
+
+Cost per 10,000 operations is computed separately for on-demand and provisioned modes using January 2025 \texttt{eu-west-1} pricing \citep{aws2025capacitymode}.
+
+\subsubsection{On-Demand Cost}
+
+On-demand cost is purely consumption-based:
+
+\begin{equation}
+\text{Cost}_{OD} = (\text{WRU} \times \$1.25 / 10^6) + (\text{RRU} \times \$0.25 / 10^6)
+\end{equation}
+
+where WRU (write request units) and RRU (read request units) are extracted from the \texttt{ConsumedCapacity} field of each DynamoDB API response. For 1 KB items:
+\begin{itemize}
+    \item 1 PutItem = 1 WRU
+    \item 1 GetItem (eventually consistent) = 0.5 RRU
+    \item 1 GetItem (strongly consistent) = 1 RRU
+\end{itemize}
+
+All experiments use eventually consistent reads to maximise throughput.
+
+\subsubsection{Provisioned Cost}
+
+Provisioned cost comprises reserved capacity cost (billed per hour regardless of consumption) plus burst consumption cost (for capacity exceeding reserved level):
+
+\begin{equation}
+\text{Cost}_{Prov} = (\text{RCU}_{\text{res}} \times \$0.00013 \times t) + (\text{WCU}_{\text{res}} \times \$0.00065 \times t) + \text{Cost}_{\text{burst}}
+\end{equation}
+
+where $t$ is the trial duration in hours, and:
+
+\begin{equation}
+\text{Cost}_{\text{burst}} = (\text{RRU}_{\text{burst}} \times \$0.25 / 10^6) + (\text{WRU}_{\text{burst}} \times \$1.25 / 10^6)
+\end{equation}
+
+Burst consumption occurs when auto-scaling lags behind traffic spikes (common in W4).
+
+For comparability, a ``provisioned consumed-units-equivalent cost'' is also reported, computed as if provisioned tables were billed per consumed unit rather than per reserved capacity. This separates the cost of reserved capacity from the cost of actual consumption, clarifying whether provisioned savings derive from lower unit prices or from over-provisioned idle capacity.
+
+\subsection{Pilot Study}
+
+Before full-scale execution, a pilot study is conducted with 5 replications per cell to validate:
+
+\begin{enumerate}
+    \item Instrumentation correctness (latency timestamps, throttle detection)
+    \item Cost model accuracy (comparing computed cost with AWS billing console)
+    \item Statistical power (effect sizes sufficient for $\alpha = 0.05$, $1-\beta = 0.80$)
+\end{enumerate}
+
+Pilot results inform final replication count and confirm that the experimental design can detect meaningful performance differences (latency differences $\geq$ 5 ms, cost differences $\geq$ 10\% are detectable with $n = 30$).
