@@ -6,13 +6,186 @@
 \label{sec:Methodology}
 %% ==============================
 
+This section describes the experimental methodology used to reproduce the baseline paper's ablation finding and evaluate the proposed hybrid detection approach. The methodology comprises five key components: synthetic benchmark generation, detector implementations, training procedures, evaluation protocols, and statistical analysis.
+
+\subsection{Research Questions}
+
+The evaluation is structured around three research questions:
+
+\begin{itemize}
+  \item \textbf{RQ1:} Can we reproduce the precision collapse finding from War et al.~\cite{War25} on a controlled synthetic benchmark where the ``easy'' vs. ``hard'' distinction is explicit by construction?
+  \item \textbf{RQ2:} Does a hybrid rule-based + ML detector restore precision in the code-only setting, and if so, at what cost to recall?
+  \item \textbf{RQ3:} Is the precision/recall trade-off tunable via the ML confidence threshold, or is it a fixed operating point?
+\end{itemize}
+
 \subsection{Synthetic Benchmark Generation}
-For each of 5 seeds (42-46), 1,200 IaC snippets are generated (\texttt{src/data/iac\_dataset.py}), each independently choosing an easy or hard pattern (50/50) and a safe/misconfigured label (50/50), with 2-4 unrelated filler configuration lines added as noise. Two paired renderings are produced from the identical underlying random choices -- with comments and without -- so that any difference in a model's performance between the two is attributable only to the presence or absence of the comment, not to a different underlying sample.
 
-\subsection{Training and Evaluation}
-A 70/30 stratified train/test split is used per seed. The ML detector is trained separately on the rich-context and code-only training sets, then evaluated on the matching test set. The rule-based and hybrid detectors require no training beyond the ML component the hybrid detector wraps (trained on the code-only training set, since that is the setting the improvement targets).
+The synthetic IaC benchmark (\texttt{src/data/iac\_dataset.py}) is designed to partition misconfigurations into two explicit categories based on whether they are detectable from code tokens alone or require natural-language context. This partition is what makes the evaluation honest about what a hybrid detector can and cannot fix.
 
-\subsection{Metrics}
-Precision, Recall, and F1 -- the same three metrics War et al. use -- computed on the held-out test set for each of: ML Detector (rich context), ML Detector (code-only), Rule-Based Only, and Hybrid Detector (code-only). A confidence-threshold sweep (0.5 to 0.9) for the hybrid detector's ML fallback is also reported, to characterise the precision/recall trade-off rather than a single fixed operating point.
+\subsubsection{Pattern Categories}
 
-All code and results are in \texttt{iac-security/}.
+\paragraph{Easy Patterns (4 total):}
+Safe and misconfigured versions use visibly different, enumerable literal values:
+\begin{enumerate}
+  \item \textbf{File Permissions:} \texttt{mode = "0777"} (world-writable, vulnerable) vs. \texttt{mode = "0640"} (restricted, safe)
+  \item \textbf{Protocol:} \texttt{protocol = "http"} (unencrypted, vulnerable) vs. \texttt{protocol = "https"} (encrypted, safe)
+  \item \textbf{Hash Algorithm:} \texttt{hash\_algorithm = "sha1"} or \texttt{"md5"} (deprecated, vulnerable) vs. \texttt{hash\_algorithm = "sha256"} (modern, safe)
+  \item \textbf{Network Access:} \texttt{ingress\_cidr = "0.0.0.0/0"} (world-open, vulnerable) vs. \texttt{ingress\_cidr = "10.0.0.0/16"} (restricted, safe)
+\end{enumerate}
+
+For these patterns, code tokens alone are genuinely sufficient to distinguish safe from misconfigured configurations. This is the class of misconfiguration that traditional rule-based scanners like Checkov already handle well, regardless of comment presence.
+
+\paragraph{Hard Patterns (2 total):}
+The code line is lexically \emph{identical} for both safe and misconfigured variants, using an opaque reference token whose numeric suffix carries no signal:
+\begin{enumerate}
+  \item \textbf{Credential Reference:} Both safe and unsafe configurations use \texttt{password\_ref = "ref\_NNNNN"} where NNNNN is a random 5-digit number. Only the accompanying comment distinguishes them:
+  \begin{itemize}
+    \item Unsafe: ``WARNING: this ref resolves to a hardcoded fallback password used when the vault is unreachable''
+    \item Safe: ``this ref resolves via the managed secrets vault at runtime, never a literal value''
+  \end{itemize}
+  \item \textbf{Key Management:} Similar structure with \texttt{key\_ref = "ref\_NNNNN"}:
+  \begin{itemize}
+    \item Unsafe: ``WARNING: a fallback key embedded for local testing was accidentally left enabled here''
+    \item Safe: ``key rotation and lookup is handled automatically by the KMS integration''
+  \end{itemize}
+\end{enumerate}
+
+These patterns are structurally rule-proof: no regex or code-only classifier can distinguish them by construction. They reproduce War et al.'s ablation finding instead of trivially avoiding it, and make explicit what a hybrid detector structurally cannot recover.
+
+\subsubsection{Dataset Generation Procedure}
+
+For each sample $i$ in $\{1, \ldots, N\}$ where $N = 1200$:
+\begin{enumerate}
+  \item Sample pattern family: $\texttt{is\_hard}_i \sim \text{Bernoulli}(0.5)$
+  \item Sample label: $\texttt{is\_misconfigured}_i \sim \text{Bernoulli}(0.5)$
+  \item Sample 2--4 filler configuration lines from a pool of 6 generic settings (instance type, region, owner, tags, retention period) with randomized values
+  \item If \texttt{is\_hard}_i is true:
+  \begin{itemize}
+    \item Select one of the 2 hard patterns uniformly at random
+    \item Generate reference ID: \texttt{ref\_NNNNN} where NNNNN is a random integer in [10000, 99999]
+    \item Construct configuration line: \texttt{field = "ref\_NNNNN"}
+  \end{itemize}
+  \item Else (easy pattern):
+  \begin{itemize}
+    \item Select one of the 4 easy patterns uniformly at random
+    \item Use the \texttt{unsafe} or \texttt{safe} value depending on \texttt{is\_misconfigured}_i
+  \end{itemize}
+  \item Render two paired versions from these identical underlying choices:
+  \begin{itemize}
+    \item \textbf{With-comments:} Include the corresponding \texttt{comment\_unsafe} or \texttt{comment\_safe} text immediately before the configuration line
+    \item \textbf{Code-only:} Omit the comment entirely, keeping only code tokens
+  \end{itemize}
+\end{enumerate}
+
+The paired rendering is critical: for seed $s$ and index $i$, \texttt{rich\_snippets[i]} and \texttt{plain\_snippets[i]} differ \emph{only} in comment presence, not in the underlying pattern/label/filler choices. This ensures that any difference in a model's performance between the two renderings is attributable solely to the presence or absence of natural-language context, not to different underlying samples.
+
+\subsection{Detector Implementations}
+
+\subsubsection{ML Detector (Baseline Reproduction)}
+
+The ML detector (\texttt{src/models/detectors.py:MLDetector}) uses TF-IDF vectorization followed by logistic regression. While War et al.~\cite{War25} fine-tune CodeBERT and LongFormer (requiring GPUs and model downloads), this project uses a simpler statistical baseline for reproducibility without specialized hardware. The TF-IDF + logistic regression approach is the same feature-based family as the paper's own cited prior-work baseline (TF-IDF/BoW + Random Forest), and is known to achieve competitive performance for text classification tasks \cite{Kovalenko23, Medeiros20}.
+
+\textbf{Training:} The detector is trained separately on rich-context and code-only training sets:
+\begin{enumerate}
+  \item Fit TF-IDF vectorizer on training snippet strings: \texttt{vectorizer.fit\_transform(snippets)}
+  \item Train logistic regression classifier on vectorized features with max 1000 iterations
+  \item Return fitted \texttt{MLDetector} object
+\end{enumerate}
+
+\textbf{Prediction:}
+\begin{enumerate}
+  \item Transform test snippets with fitted vectorizer: \texttt{X = vectorizer.transform(snippets)}
+  \item Predict class probabilities: \texttt{proba = model.predict\_proba(X)[:, 1]}
+  \item Return binary predictions at 0.5 threshold: \texttt{pred = (proba > 0.5).astype(int)}
+\end{enumerate}
+
+\subsubsection{Rule-Based Detector (Reference)}
+
+The rule-based detector (\texttt{src/models/detectors.py:rule\_based\_flag}) uses four regular expressions matching the literal misconfigured value for each easy pattern:
+\begin{enumerate}
+  \item \texttt{mode\textbackslash{}s*=\textbackslash{}s*"0?777"} (world-writable permissions)
+  \item \texttt{protocol\textbackslash{}s*=\textbackslash{}s*"http"} (unencrypted protocol)
+  \item \texttt{hash\_algorithm\textbackslash{}s*=\textbackslash{}s*"(sha1|md5)"} (deprecated hash)
+  \item \texttt{ingress\_cidr\textbackslash{}s*=\textbackslash{}s*"0\textbackslash{}.0\textbackslash{}.0\textbackslash{}.0/0"} (world-open ingress)
+\end{enumerate}
+
+The detector flags a snippet as misconfigured if \emph{any} of these patterns match. Crucially, there is no pattern for the hard category—there is no fixed literal to match when the code line is identical either way.
+
+\textbf{Properties:}
+\begin{itemize}
+  \item \textbf{Perfect precision on easy patterns:} The patterns match only genuine misconfigurations by construction (no false positives)
+  \item \textbf{Limited recall:} Cannot detect hard patterns (structural limitation)
+  \item \textbf{Comment-independent:} Performance is invariant to comment presence/absence
+\end{itemize}
+
+\subsubsection{Hybrid Detector (Proposed Improvement)}
+
+The hybrid detector (\texttt{src/models/detectors.py:HybridDetector}) combines the rule layer with the ML classifier at a stricter confidence threshold. The key design choice is that this is \emph{not} a simple OR of ``rule fires'' and ``ML predicts positive at 0.5'', which would only add false positives on top of an already-low-precision code-only classifier. Instead:
+
+\begin{equation}
+\texttt{pred}_{\text{hybrid}} = \begin{cases}
+1 & \text{if } \texttt{rule\_based\_flag}(\text{snippet}) = 1 \\
+1 & \text{else if } \texttt{ML\_proba}(\text{snippet}) > \tau \\
+0 & \text{otherwise}
+\end{cases}
+\end{equation}
+
+where $\tau$ is the ML confidence threshold (default 0.8). This gating mechanism is what enables precision recovery: unreliable low-confidence ML guesses that drove false positives get filtered out rather than trusted.
+
+\subsection{Training and Evaluation Protocol}
+
+\subsubsection{Experimental Setup}
+
+\textbf{Seeds and Splits:} For each seed $s \in \{42, 43, 44, 45, 46\}$:
+\begin{enumerate}
+  \item Generate $N = 1200$ samples with paired rich/plain renderings
+  \item Perform stratified 70/30 train/test split (maintaining label balance)
+  \item Train detectors on training set, evaluate on held-out test set
+  \item Record precision, recall, and F1 scores
+\end{enumerate}
+
+\textbf{Detector Variants:}
+\begin{enumerate}
+  \item \textbf{ML Detector (rich context):} Trained and tested on with-comments data
+  \item \textbf{ML Detector (code-only):} Trained and tested on code-only data (reproduces baseline gap)
+  \item \textbf{Rule-Based Only:} No training; evaluated on code-only test set
+  \item \textbf{Hybrid Detector:} Wraps ML detector trained on code-only data; evaluated on code-only test set
+\end{enumerate}
+
+\subsubsection{Evaluation Metrics}
+
+Following War et al.~\cite{War25}, we report three standard classification metrics:
+
+\begin{equation}
+\text{Precision} = \frac{TP}{TP + FP}
+\end{equation}
+
+\begin{equation}
+\text{Recall} = \frac{TP}{TP + FN}
+\end{equation}
+
+\begin{equation}
+F1 = 2 \cdot \frac{\text{Precision} \times \text{Recall}}{\text{Precision} + \text{Recall}}
+\end{equation}
+
+where $TP$ = true positives (correctly flagged misconfigurations), $FP$ = false positives (safe configurations incorrectly flagged), $FN$ = false negatives (misconfigurations missed).
+
+All metrics are macro-averaged across the 5 seeds and reported as mean $\pm$ standard deviation.
+
+\subsubsection{Threshold Sweep (RQ3)}
+
+To characterize the precision/recall trade-off, we sweep the hybrid detector's ML confidence threshold $\tau \in \{0.5, 0.6, 0.7, 0.8, 0.9\}$ and report performance at each operating point. This reveals whether the trade-off is tunable (Pareto frontier) or fixed.
+
+\subsection{Reproducibility}
+
+All code is publicly available in the repository. Running \texttt{python3 scripts/train\_and\_evaluate.py} reproduces every number in Section~\ref{sec:Evaluation} from scratch. The script:
+\begin{enumerate}
+  \item Generates all datasets (paired rich/plain for each seed)
+  \item Trains all detector variants
+  \item Evaluates on held-out test sets
+  \item Writes per-seed results to \texttt{results/results\_per\_seed.csv}
+  \item Writes summary statistics to \texttt{results/results\_summary.csv}
+  \item Exports the trained ML detector for deployment
+\end{enumerate}
+
+A comprehensive pytest test suite (\texttt{tests/test\_detectors.py}, \texttt{tests/test\_dataset.py}) validates all components with 34 unit and integration tests. A \texttt{Makefile} provides standardized commands for installation, testing, and training.
