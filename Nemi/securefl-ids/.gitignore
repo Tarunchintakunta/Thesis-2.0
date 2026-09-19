@@ -1,0 +1,54 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+ENV/
+env/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Data
+data/raw/
+data/processed/
+*.csv
+*.pkl
+*.h5
+
+# Experiments
+results/*/
+!results/.gitkeep
+*.log
+
+# Figures
+figures/*.png
+figures/*.pdf
+!figures/.gitkeep
+
+# Models
+models/
+*.pth
+*.pt
+
+# Secrets
+.env
+*.key
+*.pem
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Coverage
+.coverage
+htmlcov/
+
+# Pytest
+.pytest_cache/

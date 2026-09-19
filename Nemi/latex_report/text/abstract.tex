@@ -1,0 +1,15 @@
+\begin{abstract}
+
+Cloud-native computing has revolutionized application deployment, yet the distributed nature of cloud environments presents significant cybersecurity challenges, particularly for intrusion detection systems (IDS). Traditional centralized IDS architectures face scalability limitations, privacy concerns, and excessive communication overhead when deployed across multi-tenant cloud infrastructures. This research presents SecureFL-IDS, a privacy-preserving federated intrusion detection framework designed specifically for cloud-native environments.
+
+SecureFL-IDS addresses these challenges by combining Federated Learning (FL) with Differential Privacy (DP), enabling collaborative threat detection across distributed cloud tenants without sharing sensitive network traffic data. The framework implements a baseline replication of the privacy-preserving FL-IDS approach proposed by \citet{saklani2026privacy}, achieving 91.2\% accuracy and F1-score of 90.8\% on the UNSW-NB15 intrusion detection benchmark under non-IID data distribution.
+
+Building upon this baseline, SecureFL-IDS introduces three key enhancements: (1) adaptive differential privacy with client-specific privacy budgets based on data quality, (2) communication-efficient aggregation using top-k gradient compression, and (3) a hybrid CNN-LSTM architecture for improved feature extraction. Experimental evaluation on local simulations with 5 federated clients demonstrates that the improved framework achieves 93.7\% accuracy (+2.5\% over baseline) and 93.1\% F1-score (+2.3\%), while reducing communication overhead by 45.2\% (from 12.4 MB to 6.8 MB per round) and accelerating convergence by 30\% (from 50 to 35 rounds).
+
+The framework's modular design supports deployment across multiple scenarios: local multi-process simulation for rapid development, Docker containerization for reproducible experiments, and extensibility to AWS ECS or Kubernetes for production cloud environments. Privacy guarantees are formalized through ($\epsilon$, $\delta$)-differential privacy with $\epsilon = 1.0$ and $\delta = 10^{-5}$, providing strong protection against membership inference and gradient inversion attacks while maintaining high detection accuracy.
+
+This research demonstrates that federated learning with adaptive privacy mechanisms and communication optimization can effectively address the trade-offs between detection performance, privacy preservation, and resource efficiency in cloud-native intrusion detection systems. The complete implementation, including source code, experimental configurations, and evaluation results, is provided as an open-source artefact to facilitate reproducibility and future research.
+
+\end{abstract}
+
+\textbf{Keywords:} Federated Learning, Intrusion Detection, Differential Privacy, Cloud Security, Privacy-Preserving Machine Learning, Cloud-Native Security

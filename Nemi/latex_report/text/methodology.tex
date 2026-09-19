@@ -1,0 +1,127 @@
+\section{Research Methodology}
+\label{sec:methodology}
+
+This research employs a quantitative experimental methodology to design, implement, and evaluate SecureFL-IDS. The approach focuses on systematic comparison between a baseline federated IDS and the proposed enhanced framework across multiple performance dimensions.
+
+\subsection{Research Approach}
+
+The research follows a design science methodology consisting of five phases:
+
+\begin{enumerate}
+    \item \textbf{Literature Review:} Systematic analysis of recent federated learning and intrusion detection research to identify state-of-the-art approaches and research gaps
+    
+    \item \textbf{Baseline Replication:} Faithful implementation of the PP-FL-DP-IDS framework proposed by \citet{saklani2026privacy} to establish a reproducible baseline
+    
+    \item \textbf{Framework Design:} Development of SecureFL-IDS incorporating adaptive privacy, communication efficiency, and enhanced architectures
+    
+    \item \textbf{Experimental Evaluation:} Controlled experiments comparing baseline and improved approaches across standardized metrics
+    
+    \item \textbf{Analysis and Validation:} Statistical analysis of results, hypothesis testing, and validation of improvements
+\end{enumerate}
+
+\subsection{Dataset}
+
+\textbf{UNSW-NB15} \citep{moustafa2015unsw} serves as the primary evaluation dataset. This benchmark intrusion detection dataset contains:
+
+\begin{itemize}
+    \item 2.5 million network flow records
+    \item 49 features extracted from network packets
+    \item 9 attack types (Fuzzers, Analysis, Backdoors, DoS, Exploits, Generic, Reconnaissance, Shellcode, Worms)
+    \item Binary labels (normal vs attack) and multi-class attack type labels
+\end{itemize}
+
+For experimental efficiency, a stratified sample of 50,000 records is used for full experiments, with smaller samples (3,000-5,000) for pilot testing. The sampling maintains class distribution proportions to preserve dataset characteristics.
+
+\subsection{Data Distribution}
+
+To simulate realistic cloud-native scenarios where different tenants observe heterogeneous traffic patterns, data is distributed across clients using a Dirichlet distribution:
+
+\begin{equation}
+p_k \sim \text{Dir}(\alpha \mathbf{1}_K)
+\end{equation}
+
+where $K$ is the number of clients, $\alpha$ controls the degree of non-IID behavior (lower $\alpha$ = more heterogeneous), and $p_k$ represents the probability vector determining how samples are allocated to client $k$. Experiments use $\alpha = 0.5$ to create moderate non-IID conditions representative of multi-tenant cloud environments.
+
+\subsection{Experimental Configuration}
+
+\subsubsection{Baseline Configuration}
+
+The baseline implements parameters matching \citet{saklani2026privacy}:
+
+\begin{itemize}
+    \item Model: CNN binary classifier (2 conv layers, 2 FC layers)
+    \item Clients: 5 federated participants
+    \item Rounds: 50 federated training rounds
+    \item Local epochs: 1 per round per client
+    \item Learning rate: 0.001 (Adam optimizer)
+    \item Privacy: $\epsilon = 1.0$, $\delta = 10^{-5}$, clip norm = 1.0
+    \item Aggregation: Standard FedAvg (weighted by data size)
+\end{itemize}
+
+\subsubsection{Improved Configuration}
+
+SecureFL-IDS modifies the baseline with:
+
+\begin{itemize}
+    \item Model: CNN-LSTM hybrid (2 conv + 2 LSTM + 2 FC layers)
+    \item Privacy: Adaptive $\epsilon \in [0.5, 2.0]$ based on client data quality
+    \item Aggregation: Quality-weighted with top-k compression (50\% sparsity)
+    \item Other parameters: Same as baseline for fair comparison
+\end{itemize}
+
+\subsection{Evaluation Metrics}
+
+\subsubsection{Detection Performance}
+
+\begin{itemize}
+    \item \textbf{Accuracy:} $\frac{TP + TN}{TP + TN + FP + FN}$
+    \item \textbf{Precision:} $\frac{TP}{TP + FP}$
+    \item \textbf{Recall:} $\frac{TP}{TP + FN}$
+    \item \textbf{F1-Score:} $2 \cdot \frac{\text{Precision} \cdot \text{Recall}}{\text{Precision} + \text{Recall}}$
+    \item \textbf{ROC-AUC:} Area under the receiver operating characteristic curve
+\end{itemize}
+
+\subsubsection{Federated Learning Metrics}
+
+\begin{itemize}
+    \item \textbf{Communication Cost:} Total bytes transmitted per round (model parameters + gradients)
+    \item \textbf{Convergence Rounds:} Number of rounds to reach stable performance (< 0.1\% accuracy change over 5 rounds)
+    \item \textbf{Round Time:} Wall-clock time per federated round
+    \item \textbf{Total Training Time:} End-to-end experiment duration
+\end{itemize}
+
+\subsubsection{Privacy Metrics}
+
+\begin{itemize}
+    \item \textbf{Privacy Budget:} $\epsilon$ values (per-client and aggregate)
+    \item \textbf{Privacy-Utility Trade-off:} Accuracy vs $\epsilon$ curves
+\end{itemize}
+
+\subsection{Experimental Setup}
+
+All experiments run on a local simulation environment to ensure reproducibility without requiring cloud infrastructure:
+
+\begin{itemize}
+    \item \textbf{Hardware:} Standard development machine (CPU-only, 8GB RAM minimum)
+    \item \textbf{Software:} Python 3.9+, PyTorch 2.0+, scikit-learn
+    \item \textbf{Simulation:} Multi-process federated clients with shared test set
+    \item \textbf{Randomization:} Fixed seed (42) for reproducibility
+    \item \textbf{Repetitions:} Each configuration run once; convergence assessed via multi-round training
+\end{itemize}
+
+\subsection{Statistical Analysis}
+
+Comparative analysis includes:
+
+\begin{itemize}
+    \item Independent t-tests for accuracy differences
+    \item Percentage improvement calculations
+    \item Convergence curve analysis
+    \item Communication cost aggregation
+\end{itemize}
+
+Significance threshold: $p < 0.05$.
+
+\subsection{Ethical Considerations}
+
+This research uses only publicly available datasets (UNSW-NB15) designed explicitly for cybersecurity research. No human subjects participate, and no personally identifiable information is collected or processed. The synthetic cloud tenant simulation does not involve real organizational data. All software dependencies are used in compliance with their respective licenses.

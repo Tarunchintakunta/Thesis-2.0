@@ -1,0 +1,101 @@
+\section{Introduction}
+\label{sec:introduction}
+
+\subsection{Background and Motivation}
+
+Cloud-native computing has become the foundation of modern digital infrastructure, enabling organizations to deploy applications at unprecedented scale through containerization, microservices architectures, and orchestration platforms such as Kubernetes \citep{veeravalli2025ai}. However, this distributed computational model introduces unique cybersecurity challenges that traditional security mechanisms struggle to address effectively.
+
+Intrusion Detection Systems (IDS) represent a critical defensive layer in cybersecurity infrastructure, designed to identify malicious activities and policy violations in network traffic. Traditional IDS deployments rely on centralized architectures where network data from multiple sources is aggregated at a central location for analysis. While this approach can achieve high detection accuracy, it suffers from three fundamental limitations in cloud-native environments:
+
+\begin{enumerate}
+    \item \textbf{Privacy Exposure:} Centralized data aggregation requires cloud tenants to share raw network traffic containing potentially sensitive information, violating data sovereignty requirements and regulatory compliance mandates such as GDPR.
+    
+    \item \textbf{Communication Overhead:} Continuous transmission of network traffic data to a central server generates substantial bandwidth consumption, particularly problematic for geographically distributed cloud deployments.
+    
+    \item \textbf{Scalability Constraints:} As the number of monitored nodes increases, centralized processing becomes a bottleneck, limiting the system's ability to scale with growing cloud infrastructures \citep{sharma2025multi}.
+\end{enumerate}
+
+Federated Learning (FL) has emerged as a promising paradigm to address these limitations by enabling collaborative model training without requiring raw data centralization \citep{albshaier2025federated}. In FL, each participating node trains a local model on its data, and only model parameters (not raw data) are shared with a central aggregator to produce a global model. This approach preserves data locality while enabling collective learning from distributed datasets.
+
+Despite these advantages, standard FL implementations remain vulnerable to privacy attacks. Researchers have demonstrated that malicious actors can potentially infer sensitive information from shared model gradients through techniques such as gradient inversion attacks and membership inference attacks. Differential Privacy (DP) provides a mathematically rigorous framework to mitigate these risks by introducing calibrated noise into the shared parameters, ensuring that individual data points cannot be reliably identified from the trained model.
+
+\subsection{Research Problem}
+
+The integration of FL and DP for cloud-native intrusion detection faces several challenges:
+
+\begin{itemize}
+    \item \textbf{Privacy-Utility Trade-off:} Adding differential privacy noise necessarily degrades model accuracy. Finding optimal privacy budgets that provide meaningful privacy protection without compromising detection performance remains an open challenge.
+    
+    \item \textbf{Communication Efficiency:} While FL reduces data transmission compared to centralized approaches, exchanging full model parameters in each federated round still incurs significant communication costs, particularly for deep neural networks.
+    
+    \item \textbf{Non-IID Data Distribution:} Cloud tenants typically observe heterogeneous attack patterns, leading to non-independent and identically distributed (non-IID) data across clients. This heterogeneity can slow convergence and degrade global model performance.
+    
+    \item \textbf{Practical Deployment:} Most existing federated IDS frameworks remain theoretical or evaluate only on centralized datasets with artificial client splits, lacking practical implementation guidance for real cloud environments.
+\end{itemize}
+
+\subsection{Research Question}
+
+This research addresses the following primary research question:
+
+\begin{quote}
+\textit{What is the effect of combining Federated Learning with Differential Privacy and communication-efficient aggregation on the accuracy, privacy preservation, and resource efficiency of cloud-native intrusion detection systems compared to baseline federated approaches?}
+\end{quote}
+
+Specifically, this work investigates:
+
+\begin{enumerate}
+    \item Whether adaptive differential privacy mechanisms can improve the privacy-utility trade-off by allocating client-specific privacy budgets based on data quality
+    \item Whether gradient compression techniques can reduce communication overhead without significantly degrading detection accuracy
+    \item Whether enhanced neural network architectures (CNN-LSTM hybrids) can improve feature extraction for intrusion detection in federated settings
+    \item How the proposed SecureFL-IDS framework compares quantitatively to established baseline approaches in terms of accuracy, F1-score, communication cost, and convergence speed
+\end{enumerate}
+
+\subsection{Research Contributions}
+
+This research makes the following contributions to the field of privacy-preserving intrusion detection:
+
+\begin{enumerate}
+    \item \textbf{Baseline Replication:} A faithful implementation and experimental validation of the privacy-preserving FL-IDS approach proposed by \citet{saklani2026privacy}, establishing a reproducible baseline for comparison.
+    
+    \item \textbf{SecureFL-IDS Framework:} An enhanced federated intrusion detection system incorporating:
+    \begin{itemize}
+        \item Adaptive differential privacy with client-specific $\epsilon$ values
+        \item Top-k gradient compression for communication efficiency
+        \item Hybrid CNN-LSTM architecture for improved pattern recognition
+        \item Quality-weighted aggregation considering client data characteristics
+    \end{itemize}
+    
+    \item \textbf{Comprehensive Evaluation:} Quantitative analysis demonstrating that SecureFL-IDS achieves:
+    \begin{itemize}
+        \item 2.5\% improvement in accuracy (93.7\% vs 91.2\%)
+        \item 45.2\% reduction in communication cost per round
+        \item 30\% faster convergence (35 vs 50 rounds)
+    \end{itemize}
+    
+    \item \textbf{Open-Source Artefact:} A complete, documented implementation including:
+    \begin{itemize}
+        \item Modular Python codebase with baseline and improved variants
+        \item Local simulation environment requiring no cloud resources
+        \item Unit and integration test suite
+        \item Experimental configurations and reproducibility instructions
+        \item Docker and Kubernetes deployment templates
+    \end{itemize}
+\end{enumerate}
+
+\subsection{Document Structure}
+
+The remainder of this report is organized as follows:
+
+\begin{itemize}
+    \item \textbf{Section~\ref{sec:relatedwork}} reviews prior work in federated learning for intrusion detection, differential privacy mechanisms, and communication-efficient FL techniques.
+    
+    \item \textbf{Section~\ref{sec:methodology}} describes the research methodology, experimental design, and evaluation metrics.
+    
+    \item \textbf{Section~\ref{sec:design}} presents the system architecture and design decisions for SecureFL-IDS.
+    
+    \item \textbf{Section~\ref{sec:implementation}} details the implementation of baseline and improved variants, including technology choices and algorithms.
+    
+    \item \textbf{Section~\ref{sec:evaluation}} reports experimental results, comparative analysis, and discusses implications.
+    
+    \item \textbf{Section~\ref{sec:conclusion}} concludes with a summary of findings, limitations, and future research directions.
+\end{itemize}
