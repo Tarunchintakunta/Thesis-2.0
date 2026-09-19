@@ -1,9 +1,28 @@
-\documentclass{article}
+\documentclass[12pt,a4paper]{report}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{cite}
+\usepackage{url}
+\usepackage{hyperref}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage[margin=2.5cm]{geometry}
+
 \begin{document}
+
 \title{Analyzing Performance of Multi-Threaded and Distributed Matrix Scaling Workloads on Cloud Infrastructure}
-\author{Sri Venkat Bora}
+\author{Sri Venkat Bora\\Student ID: 25164414\\MSc in Cloud Computing\\National College of Ireland}
+\date{September 2026}
+
 \maketitle
+
+\begin{abstract}
 \input{text/abstract.tex}
+\end{abstract}
+
+\tableofcontents
+
 \input{text/introduction.tex}
 \input{text/relatedwork.tex}
 \input{text/methodology.tex}
@@ -11,4 +30,8 @@
 \input{text/implementation.tex}
 \input{text/evaluation.tex}
 \input{text/conclusion.tex}
+
+\bibliographystyle{IEEEtran}
+\bibliography{references}
+
 \end{document}

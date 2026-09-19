@@ -1,86 +1,60 @@
 \chapter{Introduction}
-Cloud computing represents a shift. We investigate 'Analyzing Performance of Multi-Threaded and Distributed Matrix Scaling Workloads on Cloud Infrastructure'.
 
-In reference to Moore (2026), the integration highlights a distinct improvement metric.
+\section{Context and Motivation}
 
+Cloud computing has fundamentally transformed how computational workloads are provisioned and scaled. When a compute-intensive task exceeds the capacity of a single machine, practitioners face a critical architectural decision: scale up by provisioning a larger instance with more cores, or scale out by distributing the workload across multiple smaller instances. This decision directly impacts cost, performance, and system complexity, yet it is often made by convention rather than measurement.
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+The choice between scale-up and scale-out parallelism is particularly relevant for matrix operations, which form the computational backbone of scientific computing, machine learning, and data analytics workloads. Dense matrix multiplication and factorization algorithms are compute-intensive, have well-understood complexity characteristics, and are supported by mature libraries on both shared-memory and distributed platforms. This makes them ideal candidates for systematic comparison of parallelism models.
 
+\section{The Research Gap}
 
-Moreover, bridging the gap identified in Sabir and Alebrahim (2025) necessitates this novel perspective: The baseline studied LU factorisation scaling locally but missed scale-out options on distributed AWS infrastructure. This research simulates and compares multi-threading against distributed scalability.
+Existing literature provides two separate narratives. Sabir and Alebrahim (2025) thoroughly characterize multi-threaded LU factorization on shared memory, demonstrating sub-linear speedup due to synchronization and communication overhead. Their work, however, explicitly does not explore the distributed alternative or compare it to multi-threading at matched core counts. Conversely, distributed computing studies (Kim et al., 2022; Buyukkaya et al., 2024) report on scale-out performance but lack a single-node multi-threaded baseline on equivalent hardware.
 
-As noted in Jackson (2025), scalability remains paramount. The system design strictly adheres to this, as evidenced by the empirical measurements.
+This leaves practitioners without empirical evidence for the crossover point—the workload size and configuration at which one approach begins to outperform the other. The two curves exist separately in the literature but have never been measured on the same workload, with the same total compute resources, under controlled conditions.
 
-Cloud computing represents a shift. We investigate 'Analyzing Performance of Multi-Threaded and Distributed Matrix Scaling Workloads on Cloud Infrastructure'.
+\section{Research Question}
 
+This project addresses the following research question:
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+\textit{How do multi-threaded and distributed parallel processing compare in completion time, memory footprint, and core-distribution efficiency for matrix workloads of increasing size when total core count is held constant?}
 
+\section{Contributions}
 
-Cloud computing represents a shift. We investigate 'Analyzing Performance of Multi-Threaded and Distributed Matrix Scaling Workloads on Cloud Infrastructure'.
+This work makes the following contributions:
 
+\begin{enumerate}
+    \item \textbf{Controlled Comparison}: Direct measurement of threading-based, process-based, and distributed parallelism models on identical matrix workloads with matched total vCPU counts, isolating the parallelism model as the independent variable.
+    
+    \item \textbf{Comprehensive Metrics}: Collection of completion time, peak memory consumption, and CPU utilization efficiency, addressing the gap where prior work often reports only time or omits memory measurements.
+    
+    \item \textbf{Reproducible Framework}: A production-quality benchmarking harness with full test coverage (pytest), automated metric collection, and statistical rigor (multiple iterations, confidence intervals, significance testing).
+    
+    \item \textbf{Practical Guidance}: Empirical evidence for when each parallelism model is appropriate, providing practitioners with data rather than heuristics for cloud infrastructure decisions.
+    
+    \item \textbf{Open Methodology}: Complete source code, test suites, and documentation enabling reproduction and extension to other workload types or cloud platforms.
+\end{enumerate}
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+\section{Approach Overview}
 
+The experimental design implements matrix multiplication and LU factorization using three parallelism models: threading (Python threads), multiprocessing (separate processes), and distributed (Dask workers). Each configuration is tested across matrix sizes from 200×200 to 2000×2000, with worker counts from 1 to 8, ensuring total core count remains constant across comparisons.
 
-Cloud computing represents a shift. We investigate 'Analyzing Performance of Multi-Threaded and Distributed Matrix Scaling Workloads on Cloud Infrastructure'.
+Performance is measured via completion time (wall-clock), peak resident memory (RSS), and CPU utilization (sampled percentage). Multiple iterations per configuration provide statistical confidence. Results are analyzed for crossover points, efficiency trends, and practical implications.
 
-In reference to Torres Mino et al. (2025), the integration highlights a distinct improvement metric.
+While the current implementation executes locally rather than on AWS EC2, the methodology is cloud-ready and designed for deployment on distributed infrastructure. This approach prioritizes reproducibility and eliminates AWS cost barriers while maintaining rigorous experimental control.
 
+\section{Thesis Organization}
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+The remainder of this report is organized as follows:
 
+\begin{itemize}
+    \item \textbf{Chapter 2 (Related Work)}: Critical review of parallel computing literature, identifying the specific gap this work addresses.
+    \item \textbf{Chapter 3 (Methodology)}: Experimental design, workload selection, metric definitions, and statistical treatment.
+    \item \textbf{Chapter 4 (Design)}: System architecture, parallelism model implementations, and benchmarking framework design.
+    \item \textbf{Chapter 5 (Implementation)}: Technical details of the implementation, including code structure, testing strategy, and deployment considerations.
+    \item \textbf{Chapter 6 (Evaluation)}: Experimental results, analysis of performance trends, statistical significance testing, and discussion of findings.
+    \item \textbf{Chapter 7 (Conclusion)}: Summary of contributions, limitations, and future work directions.
+\end{itemize}
 
-Cloud computing represents a shift. We investigate 'Analyzing Performance of Multi-Threaded and Distributed Matrix Scaling Workloads on Cloud Infrastructure'.
+\section{Baseline Reference}
 
-
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
-
-
-Cloud computing represents a shift. We investigate 'Analyzing Performance of Multi-Threaded and Distributed Matrix Scaling Workloads on Cloud Infrastructure'.
-
-
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
-
-
-Moreover, bridging the gap identified in Sabir and Alebrahim (2025) necessitates this novel perspective: The baseline studied LU factorisation scaling locally but missed scale-out options on distributed AWS infrastructure. This research simulates and compares multi-threading against distributed scalability.
-
-Cloud computing represents a shift. We investigate 'Analyzing Performance of Multi-Threaded and Distributed Matrix Scaling Workloads on Cloud Infrastructure'.
-
-In reference to Jackson (2025), the integration highlights a distinct improvement metric.
-
-
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
-
-
-Cloud computing represents a shift. We investigate 'Analyzing Performance of Multi-Threaded and Distributed Matrix Scaling Workloads on Cloud Infrastructure'.
-
-
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
-
-
-As noted in Lopez (2025), scalability remains paramount. The system design strictly adheres to this, as evidenced by the empirical measurements.
+This work explicitly extends and complements the methodology of Sabir and Alebrahim (2025), ``Coarse-grained column agglomeration parallel algorithm for LU factorization using multi-threaded MATLAB'' \cite{sabir2025coarse}. Their finding—that multi-threaded performance exhibits sub-linear scaling due to overhead—forms the single-node baseline. Our contribution is the addition of the distributed comparison they identified as missing, measured under the same experimental conditions.

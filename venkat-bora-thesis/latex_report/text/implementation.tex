@@ -1,75 +1,297 @@
 \chapter{Implementation}
-[IMAGE PLACEHOLDER: aws_dashboard.png]
-AWS Services are used. Code incorporates improvements over Sabir and Alebrahim (2025).
 
-In reference to Davis (2025), the integration highlights a distinct improvement metric.
+This chapter details the technical implementation, development practices, and deployment considerations for the benchmarking system.
 
+\section{Technology Stack}
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+\begin{itemize}
+    \item \textbf{Language}: Python 3.12.3
+    \item \textbf{Numerical Computing}: NumPy 1.26.4, SciPy 1.17.1
+    \item \textbf{Distributed Computing}: Dask 2026.8.0, Distributed 2026.8.0
+    \item \textbf{System Monitoring}: psutil 7.2.2
+    \item \textbf{Visualization}: Matplotlib 3.11.2, Seaborn 0.13.2
+    \item \textbf{Testing}: pytest 9.1.1, pytest-timeout 2.4.0
+    \item \textbf{Build Automation}: Make, Bash scripts
+\end{itemize}
 
+\section{Project Structure}
 
-Moreover, bridging the gap identified in Sabir and Alebrahim (2025) necessitates this novel perspective: The baseline studied LU factorisation scaling locally but missed scale-out options on distributed AWS infrastructure. This research simulates and compares multi-threading against distributed scalability.
+\begin{verbatim}
+distributed-matrix-scaling/
+├── src/
+│   ├── matrix_operations.py    # Core implementations
+│   ├── benchmark.py              # Orchestration
+│   ├── main.py                   # CLI entry point
+│   └── visualize_results.py      # Plot generation
+├── tests/
+│   ├── test_matrix_operations.py
+│   └── test_benchmark.py
+├── results/
+│   ├── data/                     # JSON/CSV output
+│   └── figures/                  # PNG plots
+├── Makefile                      # Build targets
+├── requirements.txt              # Dependencies
+└── README.md                     # Documentation
+\end{verbatim}
 
-As noted in Anderson & Thomas (2026), scalability remains paramount. The system design strictly adheres to this, as evidenced by the empirical measurements.
+\section{Key Implementation Details}
 
-AWS Services are used. Code incorporates improvements over Sabir and Alebrahim (2025).
+\subsection{NumPy Threading Control}
 
+To isolate application-level parallelism from library-level parallelism:
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+\begin{verbatim}
+import os
+os.environ['OMP_NUM_THREADS'] = '1'
+os.environ['OPENBLAS_NUM_THREADS'] = '1'
+os.environ['MKL_NUM_THREADS'] = '1'
+\end{verbatim}
 
+Without this control, NumPy's internal threading would interfere with our threading model measurements, creating nested parallelism that obfuscates results.
 
-AWS Services are used. Code incorporates improvements over Sabir and Alebrahim (2025).
+\subsection{Multiprocessing Pickle Constraint}
 
+Python's multiprocessing requires that worker functions be picklable. Nested functions fail:
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+\begin{verbatim}
+# FAILS: Nested function can't be pickled
+def matrix_multiply_multiprocess(A, B):
+    def compute_block(start, end):  # Not picklable!
+        return A[start:end, :] @ B
+    with ProcessPoolExecutor() as executor:
+        executor.submit(compute_block, ...)  # Error!
+\end{verbatim}
 
+Solution: Define worker functions at module level:
 
-AWS Services are used. Code incorporates improvements over Sabir and Alebrahim (2025).
+\begin{verbatim}
+# Module-level function (picklable)
+def _compute_matmul_block(A, B, start, end):
+    return start, end, A[start:end, :] @ B
 
-In reference to Mochurad et al. (2026), the integration highlights a distinct improvement metric.
+class MultiProcessOperations:
+    def matrix_multiply_multiprocess(self, A, B):
+        with ProcessPoolExecutor() as executor:
+            executor.submit(_compute_matmul_block, A, B, ...)
+\end{verbatim}
 
+\subsection{Dask Cluster Management}
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+Dask clusters must be explicitly shut down to avoid port conflicts:
 
+\begin{verbatim}
+try:
+    cluster = LocalCluster(n_workers=4)
+    client = Client(cluster)
+    # ... benchmark operations ...
+finally:
+    client.close()
+    cluster.close()
+\end{verbatim}
 
-AWS Services are used. Code incorporates improvements over Sabir and Alebrahim (2025).
+Without the \texttt{finally} block, failed runs leave zombie processes holding ports 8786-8787, causing subsequent runs to fail.
 
+\subsection{Error Handling in Benchmark Loop}
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+Distributed operations can fail transiently. The benchmark harness catches exceptions and continues:
 
+\begin{verbatim}
+try:
+    dist_ops.setup_cluster()
+    stats = harness.run_repeated_benchmark(...)
+    summary_stats.append(stats)
+except Exception as e:
+    print(f"Warning: Distributed ops failed: {e}")
+    print("Continuing with remaining benchmarks...")
+finally:
+    dist_ops.shutdown_cluster()
+\end{verbatim}
 
-AWS Services are used. Code incorporates improvements over Sabir and Alebrahim (2025).
+This ensures partial results are saved even if some configurations fail.
 
+\section{Testing Implementation}
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+\subsection{Correctness Tests}
 
+Matrix operations are validated against NumPy's reference implementations:
 
-Moreover, bridging the gap identified in Sabir and Alebrahim (2025) necessitates this novel perspective: The baseline studied LU factorisation scaling locally but missed scale-out options on distributed AWS infrastructure. This research simulates and compares multi-threading against distributed scalability.
+\begin{verbatim}
+def test_matrix_multiply_threaded():
+    ops = MultiThreadedOperations(size=100, n_threads=4)
+    A, B = ops.generate_matrix(), ops.generate_matrix()
+    C_threaded = ops.matrix_multiply_threaded(A, B)
+    C_numpy = A @ B
+    assert np.allclose(C_threaded, C_numpy, rtol=1e-5)
+\end{verbatim}
 
-AWS Services are used. Code incorporates improvements over Sabir and Alebrahim (2025).
+\subsection{Dask Integration Tests}
 
-In reference to Williams et al. (2025), the integration highlights a distinct improvement metric.
+Distributed tests require cluster setup/teardown:
 
+\begin{verbatim}
+@pytest.mark.timeout(60)  # Prevent hangs
+def test_matrix_multiply_distributed():
+    ops = DistributedOperations(size=100, n_workers=2)
+    try:
+        ops.setup_cluster()
+        A, B = ops.generate_matrix(), ops.generate_matrix()
+        C_dask = ops.matrix_multiply_distributed(A, B)
+        C_numpy = A @ B
+        assert np.allclose(C_dask, C_numpy, rtol=1e-5)
+    finally:
+        ops.shutdown_cluster()
+\end{verbatim}
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+The \texttt{@pytest.mark.timeout} decorator prevents indefinite hangs if cluster initialization fails.
+
+\subsection{Test Execution}
+
+\begin{verbatim}
+$ make test
+pytest tests/ -v --timeout=60
+...
+======================== 23 passed in 3.62s =========================
+\end{verbatim}
+
+All 23 tests pass, covering matrix generation, operation correctness, benchmarking infrastructure, and result storage.
+
+\section{Build Automation}
+
+The Makefile provides convenient targets:
+
+\begin{verbatim}
+make install      # Install dependencies
+make test         # Run test suite
+make benchmark    # Full benchmark (30-60 min)
+make quick-test   # Quick subset (5-10 min)
+make visualize    # Generate plots
+make clean        # Remove temp files
+\end{verbatim}
+
+This standardizes execution and documents common workflows.
+
+\section{Result Visualization Pipeline}
+
+The visualization module loads JSON summaries and generates five plots:
+
+\begin{enumerate}
+    \item Completion time vs. size (left: 4 workers, right: scaling)
+    \item Memory usage vs. size
+    \item CPU utilization vs. workers
+    \item Speedup analysis vs. workers
+    \item LU factorization comparison
+\end{enumerate}
+
+Plots use Seaborn for aesthetics and Matplotlib for fine control. All plots are 300 DPI PNG suitable for publication.
+
+\section{Command-Line Interface}
+
+The main entry point supports flexible invocation:
+
+\begin{verbatim}
+# Quick test
+python src/main.py --quick
+
+# Full benchmark
+python src/main.py --full
+
+# Custom configuration
+python src/main.py --sizes 500 1000 2000 \
+                   --workers 1 2 4 8 \
+                   --iterations 5 \
+                   --output /path/to/results
+\end{verbatim}
+
+This enables reproducible runs with documented parameters.
+
+\section{Performance Optimizations}
+
+\subsection{Matrix Generation}
+
+Matrices are generated once per size and reused across iterations, avoiding redundant computation:
+
+\begin{verbatim}
+for size in matrix_sizes:
+    # Generate once
+    A = np.random.rand(size, size)
+    B = np.random.rand(size, size)
+    
+    # Reuse across all configurations
+    for n_workers in worker_counts:
+        for iteration in range(5):
+            ops.matrix_multiply(A, B)  # Same A, B
+\end{verbatim}
+
+\subsection{Monitoring Interval Tuning}
+
+Memory and CPU monitors sample at 50ms and 100ms respectively. Finer intervals (<10ms) introduce measurable overhead; coarser intervals (>500ms) miss transient peaks. Empirical testing established these values as optimal trade-offs.
+
+\section{Documentation}
+
+\subsection{Code Documentation}
+
+\begin{itemize}
+    \item All classes and functions have docstrings
+    \item Type hints on function signatures
+    \item Inline comments for non-obvious logic
+    \item README.md with quick start, usage examples, troubleshooting
+\end{itemize}
+
+\subsection{Result Metadata}
+
+Every benchmark result includes timestamp and configuration details, enabling later reconstruction of experimental conditions:
+
+\begin{verbatim}
+{
+  "timestamp": "2026-09-19T08:11:23",
+  "config_name": "Threaded-MatMul-4",
+  ...
+}
+\end{verbatim}
+
+\section{Deployment Considerations}
+
+\subsection{Local Execution}
+
+\begin{verbatim}
+git clone <repo>
+cd venkat-bora-thesis/distributed-matrix-scaling
+make install
+make test
+make benchmark
+\end{verbatim}
+
+Zero configuration beyond Python 3.12+ and pip.
+
+\subsection{AWS EC2 Deployment (Optional)}
+
+For true cloud execution:
+
+\begin{enumerate}
+    \item Launch EC2 instances (e.g., 3× c5.2xlarge)
+    \item SSH to primary, install dependencies
+    \item Start Dask scheduler: \texttt{dask-scheduler}
+    \item SSH to workers, start workers: \texttt{dask-worker tcp://[scheduler]:8786}
+    \item Run benchmark with scheduler address:
+    \begin{verbatim}
+    python src/main.py --scheduler-address tcp://[ip]:8786
+    \end{verbatim}
+\end{enumerate}
+
+\section{Lessons Learned}
+
+\subsection{Dask Port Conflicts}
+
+Early runs failed due to zombie Dask processes holding port 8787. Solution: always use \texttt{try/finally} for cluster lifecycle management.
+
+\subsection{GIL and Threading}
+
+Initial threading tests showed no speedup. Root cause: NumPy was using internal multithreading, creating nested parallelism and GIL contention. Solution: Disable NumPy threading via environment variables.
+
+\subsection{Multiprocessing Overhead}
+
+Multiprocessing showed 10-15ms startup overhead even for tiny matrices. This is process forking cost. Solution: Document clearly that multiprocessing is only beneficial for larger workloads.
+
+\section{Summary}
+
+The implementation prioritizes correctness, reproducibility, and maintainability. All components are tested, documented, and designed for both local and cloud execution. The codebase provides a template for similar comparative performance studies on other workloads or platforms.
