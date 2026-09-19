@@ -1,86 +1,61 @@
 \chapter{Introduction}
-Cloud computing represents a shift. We investigate 'Evaluating Latency in Multi-Region Cloud Deployments with Eventual Consistency'.
 
-In reference to Peterson et al. (2025), the integration highlights a distinct improvement metric.
+\section{Background and Motivation}
 
+Serverless computing has emerged as a dominant cloud paradigm, abstracting infrastructure management and enabling developers to focus on application logic \citep{Shafiei2022Survey, Wen2023RiseServerless}. Function-as-a-Service (FaaS) platforms such as AWS Lambda execute stateless event-driven functions on ephemeral compute instances, scaling automatically in response to demand. However, distributed systems are inherently subject to transient faults---network partitions, timeouts, and service unavailability---prompting serverless platforms to adopt \textit{at-least-once} invocation semantics to ensure progress \citep{AWSLambdaDocs}.
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+At-least-once invocation guarantees that a function executes successfully at least once per event, but platform retries introduce the risk of \textit{duplicate state mutations}: if a function modifies external state (e.g., writes to a database) and subsequently times out or fails after the state change has committed, a retry will attempt the operation again, potentially yielding inconsistent or corrupted data. The burden of idempotency---ensuring that duplicate executions produce the same result as a single execution---is delegated to the application developer \citep{Shafiei2022Survey, Wen2023RiseServerless}.
 
+\section{The Landscape of Solutions}
 
-Moreover, bridging the gap identified in Nguyen et al. (2025) necessitates this novel perspective: Prior work evaluates latency bounds theoretically. This research empirically injects network partitioning to measure read-stall degradation.
+Recent research has proposed custom serverless runtimes to eliminate duplicate mutations entirely. \citet{Qi2025Halfmoon} present Halfmoon, which employs asymmetric logging on a custom runtime to achieve exactly-once state mutation semantics with minimal logging overhead. Similarly, Boki \citep{Jia2024Boki}, CausalMesh \citep{Zhang2024CausalMesh}, LambdaStore \citep{Mast2026LambdaStore}, Styx \citep{Psarakis2025Styx}, Netherite \citep{Burckhardt2022Netherite}, and $\mu$2sls \citep{Kallas2023Mu2sls} provide strong consistency guarantees by replacing or augmenting the underlying FaaS runtime. While these systems demonstrate significant theoretical and empirical advances, they require platform modification or custom deployments---options unavailable to practitioners on managed services such as AWS Lambda, Google Cloud Functions, or Azure Functions.
 
-As noted in Reed (2025), scalability remains paramount. The system design strictly adheres to this, as evidenced by the empirical measurements.
+For developers constrained to managed platforms, serverless providers expose \textit{application-level primitives} to mitigate duplicate mutations. Amazon DynamoDB, for instance, supports \textit{conditional writes} (PutItem or UpdateItem with ConditionExpression clauses) that atomically check preconditions before applying mutations \citep{Elhemali2022DynamoDB, AWSDynamoDBDocs}. AWS documentation further recommends the \textit{idempotency-key pattern}, wherein a function persists a unique request identifier and response payload, returning the cached result on subsequent deliveries of the same request \citep{AWSPowertoolsDocs}.
 
-Cloud computing represents a shift. We investigate 'Evaluating Latency in Multi-Region Cloud Deployments with Eventual Consistency'.
+Despite widespread industry adoption of these patterns, \textbf{no prior empirical study has measured the duplicate-mutation reduction, end-to-end latency overhead, and consumed capacity costs of conditional writes and idempotency-key patterns on stock AWS Lambda and DynamoDB under a known, controlled retry schedule}. Existing literature either focuses on custom runtime correctness \citep{Qi2025Halfmoon, Jia2024Boki, Zhang2024CausalMesh} or formal verification of idempotence properties \citep{Ding2023Flux} without quantifying the practical trade-offs on managed infrastructure.
 
+\section{Research Question and Objectives}
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+This research addresses the following question:
 
+\begin{quote}
+\textit{By how much do a conditional write (P2) and an idempotency-key write (P3) reduce duplicate state mutation, relative to a plain unconditional write (P1), when an AWS Lambda function is retried under injected timeouts---and what do they cost in end-to-end latency and consumed DynamoDB capacity?}
+\end{quote}
 
-Cloud computing represents a shift. We investigate 'Evaluating Latency in Multi-Region Cloud Deployments with Eventual Consistency'.
+\noindent The study pursues four objectives:
 
+\begin{enumerate}
+    \item Quantify duplicate-mutation rates for P1 (plain put), P2 (conditional put with \texttt{attribute\_not\_exists} or version guard), and P3 (idempotency-key pattern) under known injected retry multiplicities of 1, 2, and 5 deliveries per request.
+    \item Measure mean and 95th-percentile end-to-end latency for each write path, distinguishing warm invocations from cold starts.
+    \item Measure consumed DynamoDB capacity (read and write units) per request, including failed conditional checks (which are billed despite not mutating state).
+    \item Position each write path on the \textit{correctness--cost surface}---plotting duplicate-mutation rate against latency and capacity overhead---and contrast the findings with the baseline idea from \citet{Qi2025Halfmoon} (no duplicate mutation after retry via asymmetric logging on a custom runtime).
+\end{enumerate}
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+\section{Significance and Beneficiaries}
 
+The findings are of practical interest to three constituencies:
 
-Cloud computing represents a shift. We investigate 'Evaluating Latency in Multi-Region Cloud Deployments with Eventual Consistency'.
+\begin{itemize}
+    \item \textbf{Cloud application developers} constrained to managed FaaS platforms, who must choose among application-level idempotency strategies without empirical cost--benefit data.
+    \item \textbf{Serverless platform architects}, who design managed services and set default retry policies, benefit from understanding the trade-offs users face when delegating idempotency to the application layer.
+    \item \textbf{Researchers} in distributed systems and cloud computing, who can use the measured correctness--cost surface to contextualise custom-runtime proposals against the baseline capabilities of existing managed platforms.
+\end{itemize}
 
-In reference to Richardson (2025), the integration highlights a distinct improvement metric.
+\section{Scope and Limitations}
 
+This study evaluates \textit{single-item writes} on \textit{Amazon DynamoDB on-demand capacity mode} from \textit{AWS Lambda Python 3.12 arm64} in a \textit{single AWS region} (eu-west-1). The experiment does not extend to:
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+\begin{itemize}
+    \item Multi-item transactions (DynamoDB \texttt{TransactWriteItems}), which incur higher capacity costs and exhibit different failure modes \citep{Idziorek2023DynamoDBTx}.
+    \item Provisioned capacity mode, which may exhibit different latency characteristics under throttling.
+    \item Alternative managed platforms (Google Cloud Functions, Azure Functions) or alternative NoSQL stores (Amazon S3, Google Cloud Storage).
+    \item Cross-region replication or multi-region consistency models.
+\end{itemize}
 
+The injected timeout mechanism forces a failure \textit{after} the DynamoDB write has committed, simulating the duplicate-generating case. Real-world failures (partial writes, network partitions mid-transaction) may exhibit different behaviour; the study measures post-commit retry correctness only.
 
-Cloud computing represents a shift. We investigate 'Evaluating Latency in Multi-Region Cloud Deployments with Eventual Consistency'.
+\section{Report Structure}
 
+The remainder of this report is organised as follows. Chapter 2 surveys the literature on serverless fault tolerance, custom runtimes, transactional guarantees, and managed platform primitives, identifying the research niche. Chapter 3 details the experimental methodology, including independent and dependent variables, pilot-sizing rule, statistical tests, and ethics considerations. Chapter 4 describes the design and implementation of the Lambda function, driver, analysis pipeline, and infrastructure-as-code. Chapter 5 presents the evaluation results (currently functional validation on moto; live AWS campaign pending), hypothesis testing, and comparison to the Halfmoon baseline idea. Chapter 6 concludes with a discussion of objectives met, practitioner guidance, and future work.
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
-
-
-Cloud computing represents a shift. We investigate 'Evaluating Latency in Multi-Region Cloud Deployments with Eventual Consistency'.
-
-
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
-
-
-Moreover, bridging the gap identified in Nguyen et al. (2025) necessitates this novel perspective: Prior work evaluates latency bounds theoretically. This research empirically injects network partitioning to measure read-stall degradation.
-
-Cloud computing represents a shift. We investigate 'Evaluating Latency in Multi-Region Cloud Deployments with Eventual Consistency'.
-
-In reference to Richardson (2025), the integration highlights a distinct improvement metric.
-
-
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
-
-
-Cloud computing represents a shift. We investigate 'Evaluating Latency in Multi-Region Cloud Deployments with Eventual Consistency'.
-
-
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
-
-
-As noted in Howard (2025), scalability remains paramount. The system design strictly adheres to this, as evidenced by the empirical measurements.
+Vikas Reddy Amanagantti

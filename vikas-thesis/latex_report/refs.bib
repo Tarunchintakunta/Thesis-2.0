@@ -1,52 +1,273 @@
-@ARTICLE{BeloglazovB15,
-  author       = {Anton Beloglazov and
-                  Rajkumar Buyya},
-  title        = {OpenStack Neat: a framework for dynamic and energy-efficient consolidation
-                  of virtual machines in OpenStack clouds},
-  journal      = {Concurrency and Computation: Practice and Experience},
-  volume       = {27},
-  number       = {5},
-  pages        = {1310--1333},
-  year         = {2015},
-  doi          = {10.1002/cpe.3314},
+% References for Vikas Reddy Amanagantti MSc thesis
+% All citations verified from master prompt (section 4)
+% DO NOT add papers not listed in the master prompt
+
+% ============================================================
+% BASELINE (primary comparison)
+% ============================================================
+
+@article{Qi2025Halfmoon,
+  author    = {Sheng Qi and Haoyu Feng and Xuanzhe Liu and Xin Jin},
+  title     = {Efficient fault tolerance for stateful serverless computing with asymmetric logging},
+  journal   = {ACM Transactions on Computer Systems},
+  volume    = {43},
+  number    = {1--2},
+  year      = {2025},
+  doi       = {10.1145/3725985},
+  note      = {Halfmoon journal version --- exactly-once via asymmetric logging on a custom runtime}
 }
 
-@ARTICLE{FengB16,
-  author       = {Guofu Feng and
-                  Rajkumar Buyya},
-  title        = {Maximum revenue-oriented resource allocation in cloud},
-  journal      = {{International Journal of Grid and Utility Computing}},
-  volume       = {7},
-  number       = {1},
-  pages        = {12--21},
-  year         = {2016},
-  doi          = {10.1504/IJGUC.2016.073772},
+@inproceedings{Qi2023HalfmoonSOSP,
+  author    = {Sheng Qi and Xuanzhe Liu and Xin Jin},
+  title     = {Halfmoon: log-optimal fault-tolerant stateful serverless computing},
+  booktitle = {Proceedings of the 29th ACM Symposium on Operating Systems Principles (SOSP '23)},
+  year      = {2023},
+  doi       = {10.1145/3600006.3613154},
+  note      = {Conference precursor of the baseline system}
 }
 
-@ARTICLE{GomesCT15,
-  author       = {Danielo G. Gomes and
-                  Rodrigo N. Calheiros and
-                  Rafael Tolosana{-}Calasanz},
-  title        = {Introduction to the special issue on Cloud Computing: Recent Developments
-                  and Challenging Issues},
-  journal      = {Computers {\&} Electrical Engineering},
-  volume       = {42},
-  pages        = {31--32},
-  year         = {2015},
-  doi          = {10.1016/j.compeleceng.2015.03.008},
+% ============================================================
+% RUNTIME / PLATFORM REPLACEMENTS (contrast: unavailable on managed Lambda)
+% ============================================================
+
+@article{Jia2024Boki,
+  author    = {Zhipeng Jia and Emmett Witchel},
+  title     = {Boki: towards data consistency and fault tolerance with shared logs in stateful serverless computing},
+  journal   = {ACM Transactions on Computer Systems},
+  volume    = {42},
+  number    = {3--4},
+  year      = {2024},
+  doi       = {10.1145/3653072}
 }
 
-@ARTICLE{KuneKARB16,
-  author       = {Raghavendra Kune and
-                  Pramodkumar Konugurthi and
-                  Arun Agarwal and
-                  Chillarige Raghavendra Rao and
-                  Rajkumar Buyya},
-  title        = {The anatomy of big data computing},
-  journal      = {Software: Practice and Experience},
-  volume       = {46},
-  number       = {1},
-  pages        = {79--105},
-  year         = {2016},
-  doi          = {10.1002/spe.2374},
+@article{Zhang2024CausalMesh,
+  author    = {Haoran Zhang and Shujie Mu and Sebastian Angel and Vincent Liu},
+  title     = {{CausalMesh}: a causal cache for stateful serverless computing},
+  journal   = {Proceedings of the VLDB Endowment},
+  volume    = {17},
+  number    = {13},
+  pages     = {4599--4613},
+  year      = {2024},
+  doi       = {10.14778/3704965.3704969}
+}
+
+@article{Mast2026LambdaStore,
+  author    = {Kelly Mast and Shijian Qu and Aakarsh Jain and Andrea Arpaci-Dusseau and Remzi Arpaci-Dusseau},
+  title     = {Data-centric serverless computing with {LambdaStore}},
+  journal   = {Software},
+  volume    = {5},
+  number    = {1},
+  pages     = {5},
+  year      = {2026},
+  doi       = {10.3390/software5010005}
+}
+
+@article{Psarakis2025Styx,
+  author    = {Kyriakos Psarakis and Georgios Christodoulou and George Siachamis and Marios Fragkoulis and Asterios Katsifodimos},
+  title     = {Styx: transactional stateful functions on streaming dataflows},
+  journal   = {Proceedings of the ACM on Management of Data},
+  volume    = {3},
+  number    = {3},
+  articleno = {226},
+  year      = {2025},
+  doi       = {10.1145/3725363}
+}
+
+@article{Burckhardt2022Netherite,
+  author    = {Sebastian Burckhardt and Chris Gillum and David Justo and Konstantinos Kallas and Connor McMahon and Christopher S. Meiklejohn},
+  title     = {Netherite: efficient execution of serverless workflows},
+  journal   = {Proceedings of the VLDB Endowment},
+  volume    = {15},
+  number    = {8},
+  pages     = {1591--1604},
+  year      = {2022},
+  doi       = {10.14778/3529337.3529344}
+}
+
+@article{Kallas2023Mu2sls,
+  author    = {Konstantinos Kallas and Haoran Zhang and Rajeev Alur and Sebastian Angel and Vincent Liu},
+  title     = {Executing microservice applications on serverless, correctly},
+  journal   = {Proceedings of the ACM on Programming Languages},
+  volume    = {7},
+  number    = {POPL},
+  year      = {2023},
+  doi       = {10.1145/3571206}
+}
+
+@inproceedings{Ding2023Flux,
+  author    = {Zhuangbin Ding and Jinping Wu and Carolyn Jane Anderson and Ranjit Jhala and Shan Lu and Tianyin Xu},
+  title     = {Automated verification of idempotence for stateful serverless applications},
+  booktitle = {Proceedings of the 17th USENIX Symposium on Operating Systems Design and Implementation (OSDI '23)},
+  year      = {2023},
+  url       = {https://www.usenix.org/conference/osdi23/presentation/ding}
+}
+
+@inproceedings{Zhuang2023ExoFlow,
+  author    = {Yanlin Zhuang and Sujin Park and Yiying Zhang and Yifan Wang and Andrea C. Arpaci-Dusseau and Remzi H. Arpaci-Dusseau},
+  title     = {{ExoFlow}: a universal workflow system for exactly-once {DAGs}},
+  booktitle = {Proceedings of the 17th USENIX Symposium on Operating Systems Design and Implementation (OSDI '23)},
+  year      = {2023},
+  url       = {https://www.usenix.org/conference/osdi23/presentation/zhuang}
+}
+
+% ============================================================
+% SURVEYS / TRANSACTIONAL GUARANTEES / PLATFORM DELEGATION
+% ============================================================
+
+@article{Shafiei2022Survey,
+  author    = {Hamid Shafiei and Ahmad Khonsari and Payam Mousavi},
+  title     = {Serverless computing: a survey of opportunities, challenges, and applications},
+  journal   = {ACM Computing Surveys},
+  volume    = {54},
+  number    = {11s},
+  year      = {2022},
+  doi       = {10.1145/3510611},
+  note      = {Platforms require idempotent functions --- burden on the application}
+}
+
+@article{Wen2023RiseServerless,
+  author    = {Juan Wen and Zhongxin Chen and Xin Jin and Xuanzhe Liu},
+  title     = {Rise of the planet of serverless computing: a systematic review},
+  journal   = {ACM Transactions on Software Engineering and Methodology},
+  volume    = {32},
+  number    = {5},
+  year      = {2023},
+  doi       = {10.1145/3579643}
+}
+
+@inproceedings{Laigner2025Transactional,
+  author    = {Rodrigo Laigner and Georgios Christodoulou and Kyriakos Psarakis and Asterios Katsifodimos and Yongluan Zhou},
+  title     = {Transactional cloud applications: status quo, challenges, and opportunities},
+  booktitle = {SIGMOD-Companion '25},
+  pages     = {829--836},
+  year      = {2025},
+  doi       = {10.1145/3722212.3725635}
+}
+
+@inproceedings{Li2024SSMS,
+  author    = {Tian Li and Badrish Chandramouli and Sebastian Burckhardt and Samuel Madden},
+  title     = {Serverless state management systems},
+  booktitle = {Proceedings of the Conference on Innovative Data Systems Research (CIDR 2024)},
+  year      = {2024},
+  url       = {https://www.cidrdb.org/cidr2024/papers/p16-li.pdf}
+}
+
+% ============================================================
+% MEASUREMENT VARIANCE, FAULTS, PRODUCTION BEHAVIOUR
+% ============================================================
+
+@article{Wen2025Variance,
+  author    = {Juan Wen and Zhongxin Chen and Federica Sarro and Shengyi Wang},
+  title     = {Unveiling overlooked performance variance in serverless computing},
+  journal   = {Empirical Software Engineering},
+  volume    = {30},
+  number    = {2},
+  year      = {2025},
+  doi       = {10.1007/s10664-025-10615-3},
+  note      = {Up to 338.76\% latency swing; only ~38\% of top-venue papers use multiple runs --- mandates pilot + replication}
+}
+
+@inproceedings{Xie2025Faults,
+  author    = {Chong Xie and Yiling Zhang and Xiaohui Mao and Kai Yang and Tianchi Zhang},
+  title     = {Understanding the faults in serverless computing based applications: an empirical study},
+  booktitle = {Proceedings of the 2025 IEEE International Conference on Software Maintenance and Evolution (ICSME)},
+  pages     = {161--173},
+  year      = {2025},
+  doi       = {10.1109/ICSME64153.2025.00024}
+}
+
+@inproceedings{Joosen2023Production,
+  author    = {Adriaan Joosen and Francesco Barchi and Fabienne Boyer and Olivier Gruber and Vivien Qu{\'e}ma and Maxime Rouill{\'e} and Joel Scheuner},
+  title     = {How does it function? {Characterizing} long-term trends in production serverless workloads},
+  booktitle = {Proceedings of the ACM Symposium on Cloud Computing (SoCC '23)},
+  year      = {2023},
+  doi       = {10.1145/3620678.3624783}
+}
+
+@inproceedings{Scheuner2022CrossFit,
+  author    = {Joel Scheuner and Leitner, Philipp},
+  title     = {{CrossFit}: fine-grained benchmarking of serverless application performance across cloud providers},
+  booktitle = {Proceedings of the 15th IEEE/ACM International Conference on Utility and Cloud Computing (UCC 2022)},
+  year      = {2022},
+  doi       = {10.1109/UCC56403.2022.00016}
+}
+
+@article{Liu2023FaaSLight,
+  author    = {Xinxin Liu and Chenxi Gao and Haoxiang Lin and Mengyao Huang and Yun Ma and Yuedong Xu},
+  title     = {{FaaSLight}: general application-level cold-start latency optimization for {Function-as-a-Service} in serverless computing},
+  journal   = {ACM Transactions on Software Engineering and Methodology},
+  volume    = {32},
+  number    = {5},
+  year      = {2023},
+  doi       = {10.1145/3585007}
+}
+
+% ============================================================
+% DYNAMODB / CONDITIONAL WRITES / TRANSACTIONS (managed primitives)
+% ============================================================
+
+@inproceedings{Elhemali2022DynamoDB,
+  author    = {Mostafa Elhemali and Niall Gallagher and Nick Gordon and Joe Idziorek and Richard Krog and Colin Lazier and Erben Mo and Akhilesh Mritunjai and Somasundaram Perianayagam and Tim Rath and Swami Sivasubramanian and James Christopher Sorenson III and Sroaj Sosothikul and Doug Terry and Akshat Vig},
+  title     = {Amazon {DynamoDB}: a scalable, predictably performant, and fully managed {NoSQL} database service},
+  booktitle = {Proceedings of the 2022 USENIX Annual Technical Conference (ATC '22)},
+  year      = {2022},
+  url       = {https://www.usenix.org/conference/atc22/presentation/elhemali}
+}
+
+@inproceedings{Idziorek2023DynamoDBTx,
+  author    = {Joe Idziorek and Somu Perianayagam and James Christopher Sorenson III and Akshat Vig and Doug Terry},
+  title     = {Distributed transactions at scale in {Amazon DynamoDB}},
+  booktitle = {Proceedings of the 2023 USENIX Annual Technical Conference (ATC '23)},
+  pages     = {705--717},
+  year      = {2023},
+  url       = {https://www.usenix.org/conference/atc23/presentation/idziorek},
+  note      = {Context only --- this study stays on single-item writes; multi-item Tx deferred}
+}
+
+% ============================================================
+% VENDOR DOCUMENTATION (cite as docs, not peer-reviewed papers)
+% ============================================================
+
+@misc{AWSDynamoDBDocs,
+  author       = {{Amazon Web Services}},
+  title        = {Amazon {DynamoDB} Developer Guide --- Working with items and attributes ({PutItem}, {ConditionExpression}, conditional writes)},
+  year         = {2025},
+  howpublished = {\url{https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/WorkingWithItems.html}}
+}
+
+@misc{AWSLambdaDocs,
+  author       = {{Amazon Web Services}},
+  title        = {{AWS Lambda} Developer Guide --- Retry behavior / asynchronous invocation},
+  howpublished = {\url{https://docs.aws.amazon.com/lambda/latest/dg/invocation-retries.html}}
+}
+
+@misc{AWSPowertoolsDocs,
+  author       = {{Amazon Web Services}},
+  title        = {Powertools for {AWS Lambda} --- Idempotency utility},
+  howpublished = {\url{https://docs.aws.amazon.com/powertools/python/latest/utilities/idempotency/}},
+  note         = {Pattern reference for P3, not a runtime replacement}
+}
+
+% ============================================================
+% OPTIONAL OLDER CONTEXTUAL CITATION (allowed; outside 2022-2026 count)
+% ============================================================
+
+@inproceedings{Wang2021Kafka,
+  author    = {Guozhang Wang and Jason Gustafson and Apurva Mehta and Anna Povzner and Stanislav Kozlovski and Xavier L{\'e}aut{\'e} and Colin P. McCabe and Jun Rao and Joel Koshy},
+  title     = {Consistency and completeness: rethinking distributed stream processing in {Apache Kafka}},
+  booktitle = {Proceedings of the 2021 International Conference on Management of Data (SIGMOD '21)},
+  pages     = {2602--2613},
+  year      = {2021},
+  doi       = {10.1145/3448016.3457556},
+  note      = {Exactly-once by owning the path --- contrast to managed FaaS}
+}
+
+@article{Burckhardt2021DurableFunctions,
+  author  = {Sebastian Burckhardt and Chris Gillum and David Justo and Konstantinos Kallas and Connor McMahon and Christopher S. Meiklejohn},
+  title   = {Durable functions: semantics for stateful serverless},
+  journal = {Proceedings of the ACM on Programming Languages},
+  volume  = {5},
+  number  = {OOPSLA},
+  year    = {2021},
+  doi     = {10.1145/3485510}
 }

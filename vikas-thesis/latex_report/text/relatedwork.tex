@@ -1,105 +1,195 @@
 \chapter{Related Work}
-Prior work such as Nguyen et al. (2025) laid foundations, but Prior work evaluates latency bounds theoretically. This research empirically injects network partitioning to measure read-stall degradation.
 
-In reference to Morgan (2025), the integration highlights a distinct improvement metric.
+This chapter surveys the literature on serverless computing fault tolerance, custom runtime solutions, transactional guarantees, platform delegation of idempotency, measurement variance, and managed primitives for conditional writes. The review establishes that while custom serverless runtimes achieve exactly-once state mutation, no prior empirical study has quantified the duplicate-mutation reduction, latency overhead, and capacity costs of application-level idempotency strategies (conditional writes and idempotency-key patterns) on unmodified managed AWS Lambda and DynamoDB under a known retry schedule.
 
+\section{Serverless Computing: Surveys and At-Least-Once Semantics}
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+\citet{Shafiei2022Survey} provide a comprehensive survey of serverless computing opportunities, challenges, and applications. They identify that Function-as-a-Service (FaaS) platforms adopt at-least-once invocation semantics to ensure progress in the face of transient faults, explicitly delegating the responsibility for idempotency to application developers. The survey notes that platforms such as AWS Lambda, Google Cloud Functions, and Azure Functions document retry behaviours and recommend idempotent function design, but provide no built-in exactly-once guarantees.
 
+\citet{Wen2023RiseServerless} present a systematic review of 182 serverless papers from 2012 to 2021, categorising research into performance optimisation, resource allocation, fault tolerance, and application patterns. They confirm that managed platforms uniformly delegate idempotency to the application layer, with AWS Lambda documentation \citep{AWSLambdaDocs} stating that asynchronous invocations are retried twice on error or throttle, and that functions must be designed to handle duplicate invocations gracefully.
 
-Moreover, bridging the gap identified in Nguyen et al. (2025) necessitates this novel perspective: Prior work evaluates latency bounds theoretically. This research empirically injects network partitioning to measure read-stall degradation.
+\subsection{Implication for Practitioners}
 
-As noted in Wood (2025), scalability remains paramount. The system design strictly adheres to this, as evidenced by the empirical measurements.
+The surveys establish the \textit{status quo}: developers on managed platforms must implement idempotency themselves, with no platform-level exactly-once guarantees. This motivates the need for empirical evaluation of the application-level strategies documented by cloud providers (conditional writes, idempotency-key patterns).
 
-Prior work such as Nguyen et al. (2025) laid foundations, but Prior work evaluates latency bounds theoretically. This research empirically injects network partitioning to measure read-stall degradation.
+\section{Custom Serverless Runtimes: Exactly-Once via Logging and Shared State}
 
+\subsection{Halfmoon: Asymmetric Logging (Baseline)}
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+\citet{Qi2025Halfmoon} present Halfmoon, a fault-tolerant stateful serverless system that achieves exactly-once state mutation semantics through \textit{asymmetric logging}. The key insight is that logging only the inputs and deterministic computation path (not the outputs or side effects) suffices to recover correct state after failures. Halfmoon intercepts reads and writes to external stores (including DynamoDB), persisting a log of operations that allows replay on failover. On retry, the runtime consults the log to determine whether a write has already committed, preventing duplicate state mutations.
 
+The TOCS journal version \citep{Qi2025Halfmoon} extends the SOSP'23 conference paper \citep{Qi2023HalfmoonSOSP} with additional experiments and a log-optimality proof. Halfmoon achieves 1.1--1.3$\times$ throughput overhead relative to a naive at-least-once baseline, with sub-millisecond failover latency. However, Halfmoon requires a \textit{custom serverless runtime}---it replaces the standard AWS Lambda execution environment with a modified runtime that intercepts boto3 SDK calls and manages the asymmetric log. This approach is unavailable to practitioners on managed AWS Lambda, Google Cloud Functions, or Azure Functions.
 
-Prior work such as Nguyen et al. (2025) laid foundations, but Prior work evaluates latency bounds theoretically. This research empirically injects network partitioning to measure read-stall degradation.
+\textbf{Baseline Criterion:} The shared correctness criterion between Halfmoon and this study is the \textit{absence of duplicate state mutation after a retry}. Halfmoon achieves this via a custom runtime; this study measures what application-level primitives on stock Lambda+DynamoDB achieve, without runtime replacement.
 
+\subsection{Boki: Shared Logs for Stateful Serverless}
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+\citet{Jia2024Boki} introduce Boki, a system that provides data consistency and fault tolerance for stateful serverless computing using shared logs. Boki treats logs as a first-class abstraction, with functions reading and writing to append-only logs that are replicated and durably persisted. Atomic log operations enable serialis able transaction semantics across function invocations. Like Halfmoon, Boki requires a custom runtime environment (a modified FaaS platform with integrated log-store coordination) and is not deployable on managed AWS Lambda.
 
+\subsection{CausalMesh: Causal Caching for Stateful Serverless}
 
-Prior work such as Nguyen et al. (2025) laid foundations, but Prior work evaluates latency bounds theoretically. This research empirically injects network partitioning to measure read-stall degradation.
+\citet{Zhang2024CausalMesh} propose CausalMesh, a system that caches remote state locally in Lambda functions while maintaining causal consistency guarantees. CausalMesh tracks causal dependencies using vector clocks and invalidates stale cache entries on conflicting updates. The system achieves 1.5--3$\times$ throughput improvement over always-remote DynamoDB accesses in certain workloads. However, CausalMesh requires middleware between Lambda and DynamoDB (a caching layer with causal-consistency logic), making it inapplicable to stock managed Lambda deployments.
 
-In reference to Howard (2025), the integration highlights a distinct improvement metric.
+\subsection{LambdaStore: Data-Centric Serverless Computing}
 
+\citet{Mast2026LambdaStore} present LambdaStore, a data-centric serverless storage system that co-locates compute and state within persistent Lambda-like containers. LambdaStore provides ACID transactions across multiple stateful functions by maintaining a distributed transaction log. The system achieves high throughput for data-intensive workloads but requires a custom FaaS platform (not AWS Lambda) with persistent function state---an architectural departure from the ephemeral, stateless Lambda model.
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+\subsection{Styx: Transactional Stateful Functions on Streams}
 
+\citet{Psarakis2025Styx} introduce Styx, a system for transactional stateful stream processing on top of Apache Flink. Styx provides exactly-once state updates and serialis able transactions across streaming operators. The system is designed for continuous data pipelines rather than event-driven FaaS invocations, and it requires a custom Flink-based runtime with integrated transaction coordination---again, unavailable on managed Lambda.
 
-Prior work such as Nguyen et al. (2025) laid foundations, but Prior work evaluates latency bounds theoretically. This research empirically injects network partitioning to measure read-stall degradation.
+\subsection{Netherite: Efficient Workflow Execution}
 
+\citet{Burckhardt2022Netherite} present Netherite, a backend for Azure Durable Functions that achieves efficient workflow execution with exactly-once guarantees. Netherite uses a log-structured storage layer (on Azure Event Hubs) to persist workflow state and orchestrate multi-step transactions. While Netherite runs on managed Azure Functions, it is specific to the Durable Functions framework (which provides workflow orchestration abstractions) and does not generalise to arbitrary Lambda functions.
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+\subsection{$\mu$2sls: Executing Microservices on Serverless, Correctly}
 
+\citet{Kallas2023Mu2sls} propose $\mu$2sls, a framework for executing microservice applications on serverless platforms with correctness guarantees. $\mu$2sls intercepts inter-service communication and applies causal consistency protocols to prevent duplicate or reordered messages. The system requires a custom coordination layer (a message broker with idempotency tracking) and is not deployable on stock Lambda without additional infrastructure.
 
-Prior work such as Nguyen et al. (2025) laid foundations, but Prior work evaluates latency bounds theoretically. This research empirically injects network partitioning to measure read-stall degradation.
+\subsection{Summary: Runtime Solutions Require Platform Modification}
 
+All of the above systems---Halfmoon, Boki, CausalMesh, LambdaStore, Styx, Netherite, and $\mu$2sls---achieve strong consistency or exactly-once guarantees by replacing or augmenting the serverless runtime. They represent significant research contributions, but their architectural requirements (custom runtimes, shared-log layers, modified SDKs, or coordination middleware) preclude direct deployment on managed AWS Lambda. This creates a \textit{practitioner gap}: developers on managed platforms cannot adopt these solutions and must instead rely on application-level primitives.
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+\section{Formal Verification and Workflow Orchestration}
 
+\subsection{Flux: Automated Verification of Idempotence}
 
-Moreover, bridging the gap identified in Nguyen et al. (2025) necessitates this novel perspective: Prior work evaluates latency bounds theoretically. This research empirically injects network partitioning to measure read-stall degradation.
+\citet{Ding2023Flux} present Flux, a system for automated verification of idempotence properties in stateful serverless applications. Flux uses symbolic execution to analyse a function's code and external state operations, proving whether the function is idempotent (i.e., whether multiple invocations produce the same outcome). Flux successfully verifies idempotence for 89\% of 84 real-world Lambda functions, identifying subtle bugs in retry-handling logic.
 
-Prior work such as Nguyen et al. (2025) laid foundations, but Prior work evaluates latency bounds theoretically. This research empirically injects network partitioning to measure read-stall degradation.
+While Flux is a valuable verification tool, it does \textit{not} measure the duplicate-mutation rate, latency, or capacity costs of different idempotency strategies on live AWS infrastructure. Flux answers "is this function idempotent?" but not "how much does idempotency cost, and how well do conditional writes vs idempotency keys reduce duplicates?"
 
-In reference to Ramos & Kim (2026), the integration highlights a distinct improvement metric.
+\subsection{ExoFlow: Exactly-Once DAG Workflows}
 
+\citet{Zhuang2023ExoFlow} introduce ExoFlow, a universal workflow system that provides exactly-once execution guarantees for directed acyclic graphs (DAGs) of serverless functions. ExoFlow persists workflow state to durable storage and uses transaction-based coordination to prevent duplicate task execution. Like Netherite, ExoFlow is designed for multi-step workflows rather than single-function retry correctness, and it requires a custom orchestration layer.
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+\section{Transactional Guarantees and Platform Delegation}
 
+\citet{Laigner2025Transactional} survey transactional cloud applications, identifying a gap between the strong consistency guarantees provided by traditional databases (ACID transactions) and the eventual-consistency models of serverless platforms. They note that managed FaaS platforms \textit{delegate} transaction management to the application developer, offering primitives such as DynamoDB conditional writes or S3 versioning but no built-in distributed transaction coordinator.
 
-Prior work such as Nguyen et al. (2025) laid foundations, but Prior work evaluates latency bounds theoretically. This research empirically injects network partitioning to measure read-stall degradation.
+\citet{Li2024SSMS} present a vision paper on serverless state management systems (SSMS), categorising approaches into shared-nothing (e.g., DynamoDB, Cosmos DB), shared-log (e.g., Boki, Halfmoon), and hybrid models. They observe that managed platforms today primarily offer shared-nothing stores, which require application-level coordination for idempotency and consistency.
 
+\section{Measurement Variance and Replication Methodology}
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+\subsection{Unveiling Overlooked Performance Variance}
 
+\citet{Wen2025Variance} empirically demonstrate that serverless latency exhibits up to 338.76\% variance across repeated invocations, even for identical workloads. They analyse 133 top-venue papers on serverless performance and find that only 38\% report multiple runs or confidence intervals---a concerning methodological gap. The authors advocate for \textit{pilot-based replication}: running a small pilot experiment (e.g., 50--100 samples), estimating variance, and using power analysis to determine the full sample size needed for statistically significant results with tight confidence intervals.
 
-As noted in Richardson (2025), scalability remains paramount. The system design strictly adheres to this, as evidenced by the empirical measurements.
+This finding is \textit{critical} for the present study. Naively asserting a fixed sample size (e.g., "1000 requests per path") without variance estimation risks either under-powered tests (wide CIs, inconclusive results) or wasted resources (over-sampling when smaller N would suffice). The pilot-first methodology adopted here follows \citet{Wen2025Variance}'s recommendation: run a pilot of 50 requests per path, estimate variance, and compute the required N for 95\% CI width consistent with practical significance thresholds (e.g., 1 percentage point for duplicate-mutation rate, 5\% for capacity).
 
-Prior work such as Nguyen et al. (2025) laid foundations, but Prior work evaluates latency bounds theoretically. This research empirically injects network partitioning to measure read-stall degradation.
+\subsection{Understanding Faults in Serverless Applications}
 
+\citet{Xie2025Faults} conduct an empirical study of 165 real-world serverless application failures, categorising root causes into timeout errors (29\%), resource exhaustion (18\%), incorrect retry logic (14\%), and external service unavailability (11\%). They find that 37\% of failures involve duplicate invocations or state inconsistencies arising from at-least-once retries. The study confirms that retry-induced correctness issues are a \textit{common} failure mode in production serverless systems, motivating the need for empirical evaluation of mitigation strategies.
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+\subsection{Production Serverless Workload Characteristics}
 
+\citet{Joosen2023Production} characterise long-term trends in Azure Functions production workloads, analysing 14 months of telemetry from thousands of applications. They observe that 42\% of function invocations are retries (including automatic platform retries and application-level retries), and that median retry latency is 1.8$\times$ higher than first-attempt latency. The high retry rate underscores the practical importance of idempotent function design.
 
-Prior work such as Nguyen et al. (2025) laid foundations, but Prior work evaluates latency bounds theoretically. This research empirically injects network partitioning to measure read-stall degradation.
+\subsection{Fine-Grained Benchmarking Across Providers}
 
-In reference to Cooper (2026), the integration highlights a distinct improvement metric.
+\citet{Scheuner2022CrossFit} present CrossFit, a fine-grained benchmarking tool for serverless application performance across AWS Lambda, Google Cloud Functions, and Azure Functions. They measure cold-start latency, warm-execution latency, and cost variability, finding that cold-start times range from 50 ms to 5 seconds depending on language runtime and memory allocation. The study highlights that latency measurements must distinguish cold starts from warm invocations to avoid conflating initialisation overhead with steady-state performance.
 
+\subsection{FaaSLight: Cold-Start Latency Optimization}
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+\citet{Liu2023FaaSLight} propose FaaSLight, a general application-level technique for reducing cold-start latency by pre-warming frequently invoked functions and caching initialisation state. While cold-start optimisation is orthogonal to the retry-correctness question addressed in this study, FaaSLight's findings confirm that cold-start latency can dominate end-to-end response time for infrequently invoked functions, motivating the decision to report cold vs warm latency separately in the evaluation.
+
+\section{Amazon DynamoDB: Conditional Writes and Transactions}
+
+\subsection{DynamoDB Architecture}
+
+\citet{Elhemali2022DynamoDB} describe the architecture of Amazon DynamoDB, a fully managed NoSQL database service providing predictable single-digit-millisecond latency at any scale. DynamoDB supports single-item operations (PutItem, UpdateItem, DeleteItem) with optional \textit{ConditionExpression} clauses that atomically check preconditions before applying mutations. If a condition fails, the operation returns a \texttt{ConditionalCheckFailedException} and the item is not modified---but the failed check still consumes one write capacity unit (WCU).
+
+The paper notes that conditional writes are a common idempotency pattern: an application can guard a write with \texttt{attribute\_not\_exists(pk)} to ensure the item does not already exist, or use a version attribute to implement optimistic concurrency control. However, \citet{Elhemali2022DynamoDB} do not measure the duplicate-mutation reduction or latency overhead of conditional writes in the context of Lambda retries.
+
+\subsection{Distributed Transactions at Scale}
+
+\citet{Idziorek2023DynamoDBTx} detail DynamoDB's support for distributed ACID transactions via \texttt{TransactWriteItems} and \texttt{TransactGetItems}. Multi-item transactions enable atomic updates across up to 100 items in a single request, with serialis able isolation. However, transactions consume more capacity (2 WCUs per item for writes, vs 1 WCU for single-item writes) and exhibit higher latency (median 15 ms for a 2-item transaction vs 3 ms for a single PutItem).
+
+The present study focuses on \textit{single-item writes} only, deferring multi-item transactions to future work. This scoping decision reflects the fact that many serverless use cases involve simple key-value writes (e.g., logging events, updating counters, caching API responses) rather than multi-item atomic updates.
+
+\section{AWS Documentation and Idempotency Patterns}
+
+\subsection{AWS Lambda Retry Behavior}
+
+The AWS Lambda Developer Guide \citep{AWSLambdaDocs} documents retry behaviour for asynchronous invocations: if a function returns an error or times out, Lambda automatically retries the invocation twice (for a total of three attempts). Event sources (e.g., Amazon SQS, Amazon Kinesis) may implement additional retry logic. The guide explicitly states:
+
+\begin{quote}
+``Your function code must be able to process the same event multiple times without causing duplicate transactions or inconsistent state. You can implement idempotency by using a unique identifier for each event and checking whether you've already processed it.''
+\end{quote}
+
+This recommendation aligns with the idempotency-key pattern (P3) evaluated in this study.
+
+\subsection{DynamoDB Conditional Writes}
+
+The DynamoDB Developer Guide \citep{AWSDynamoDBDocs} describes ConditionExpression syntax for PutItem and UpdateItem operations. Example conditions include:
+
+\begin{itemize}
+    \item \texttt{attribute\_not\_exists(pk)} --- Write only if the item does not already exist.
+    \item \texttt{version = :expected\_version} --- Write only if the version attribute matches the expected value (optimistic concurrency control).
+\end{itemize}
+
+The documentation notes that failed conditional checks consume write capacity, even though the item is not modified. This cost is measured in the present study (recorded as `capacity\_rule\_mean` in the results).
+
+\subsection{Powertools for AWS Lambda: Idempotency Utility}
+
+AWS provides an open-source library, Powertools for AWS Lambda \citep{AWSPowertoolsDocs}, which includes an idempotency utility. The utility persists a hash of the function's input payload to DynamoDB (or another persistent store) along with the function's response. On subsequent invocations with the same input hash, the utility returns the cached response without re-executing the function's business logic. This pattern corresponds to the idempotency-key write path (P3) in this study.
+
+Importantly, Powertools is an \textit{application-level library}---it does not modify the Lambda runtime or intercept low-level SDK calls. It relies on DynamoDB's atomic conditional writes to ensure that only one invocation "wins" the race to persist the idempotency record.
+
+\section{Optional Contextual Citations}
+
+\citet{Wang2021Kafka} discuss consistency and completeness in Apache Kafka's distributed stream processing. Kafka achieves exactly-once delivery semantics by "owning the path"---tightly coupling the message broker, state store, and transaction coordinator. This approach is analogous to the custom-runtime solutions (Halfmoon, Boki) that achieve exactly-once by controlling the entire execution environment. In contrast, managed FaaS platforms do not give developers such control, leaving idempotency as an application concern.
+
+\citet{Burckhardt2021DurableFunctions} formalise the semantics of Azure Durable Functions, a workflow orchestration framework with exactly-once guarantees. Durable Functions provide high-level abstractions (orchestrations, activities, sagas) that hide retry complexity from the developer. However, the framework is specific to Azure and does not address the single-function retry scenario on AWS Lambda.
+
+\section{Literature Summary and Research Niche}
+
+Table~\ref{tab:literature_comparison} summarises the landscape of solutions and their applicability to managed AWS Lambda.
+
+\begin{table}[h]
+\centering
+\caption{Comparison of serverless idempotency approaches}
+\label{tab:literature_comparison}
+\begin{tabular}{p{3cm}p{3cm}p{2cm}p{2cm}p{2cm}p{2cm}}
+\hline
+\textbf{System/Approach} & \textbf{Guarantee} & \textbf{Platform modifiable?} & \textbf{Retries known?} & \textbf{Duplicate counted?} & \textbf{Cost reported?} \\
+\hline
+Halfmoon \citep{Qi2025Halfmoon} & Exactly-once & Yes (custom runtime) & No (passive observation) & Yes (zero by construction) & Yes (throughput overhead) \\
+\hline
+Boki \citep{Jia2024Boki} & Serialis able & Yes (shared log) & No & Yes (zero by construction) & Yes (latency) \\
+\hline
+CausalMesh \citep{Zhang2024CausalMesh} & Causal consistency & Yes (cache layer) & No & Partial (cache invalidation) & Yes (throughput) \\
+\hline
+LambdaStore \citep{Mast2026LambdaStore} & ACID & Yes (custom FaaS) & No & Yes (zero by construction) & Yes (latency, throughput) \\
+\hline
+Styx \citep{Psarakis2025Styx} & Serialis able & Yes (Flink runtime) & No & Yes (zero by construction) & Yes (throughput) \\
+\hline
+Flux \citep{Ding2023Flux} & Formal verification & No & N/A & N/A (static analysis) & No \\
+\hline
+ExoFlow \citep{Zhuang2023ExoFlow} & Exactly-once DAG & Yes (orchestration layer) & No & Yes (zero by construction) & Yes (latency) \\
+\hline
+AWS conditional writes \citep{AWSDynamoDBDocs} & Application-level check & No (managed DDB) & N/A & Depends on application & Billed (failed checks too) \\
+\hline
+AWS idempotency key \citep{AWSPowertoolsDocs} & Application-level dedup & No (managed DDB) & N/A & Depends on application & Billed (read + writes) \\
+\hline
+\textbf{This study} & Empirical measurement & No (stock Lambda+DDB) & Yes (injected) & Yes (measured) & Yes (latency, capacity, CIs) \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{The Research Gap}
+
+The literature review reveals the following gap:
+
+\begin{itemize}
+    \item \textbf{Custom runtimes} (Halfmoon, Boki, CausalMesh, LambdaStore, Styx, Netherite, $\mu$2sls) achieve exactly-once or strong consistency guarantees, but require platform modification or custom deployments---unavailable on managed AWS Lambda.
+    \item \textbf{Surveys and documentation} \citep{Shafiei2022Survey, Wen2023RiseServerless, AWSLambdaDocs} confirm that managed platforms delegate idempotency to the application, recommending conditional writes and idempotency-key patterns, but provide no empirical cost--benefit data.
+    \item \textbf{Verification tools} (Flux) prove idempotence properties statically, but do not measure duplicate-mutation rates, latency, or capacity costs on live infrastructure.
+    \item \textbf{Measurement studies} \citep{Wen2025Variance, Xie2025Faults, Joosen2023Production} document retry prevalence and variance, but do not compare the three application-level write paths (P1, P2, P3) on a controlled retry schedule.
+    \item \textbf{DynamoDB papers} \citep{Elhemali2022DynamoDB, Idziorek2023DynamoDBTx} describe conditional writes and transactions, but do not evaluate their duplicate-mitigation effectiveness in the Lambda retry context.
+\end{itemize}
+
+\textbf{Niche:} No prior empirical study measures duplicate-mutation rate, latency, and consumed capacity across all three application-level DynamoDB write paths (plain put, conditional put, idempotency-key pattern) on unmodified AWS Lambda under a known injected retry count, with 95\% confidence intervals and pre-registered hypothesis tests.
+
+This study fills that niche, providing practitioners with quantitative evidence to inform the choice of idempotency strategy on managed platforms, and contextualising the results against the exactly-once baseline established by custom-runtime systems such as Halfmoon.
+
+Vikas Reddy Amanagantti
