@@ -1,75 +1,525 @@
 \chapter{Implementation}
-[IMAGE PLACEHOLDER: aws_cloudwatch_dashboard.png]
-AWS SAM is used to deploy. Code incorporates improvements over Wang et al. (2025).
+\label{ch:implementation}
 
-In reference to White et al. (2025), the integration highlights a distinct improvement metric.
+This chapter describes the practical implementation of the Lambda cold-start isolation experiment, including packaging procedures, handler implementations, log parsing mechanisms, and statistical test implementations.
 
+\section{Lambda Function Handlers}
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+Each runtime implements an identical handler interface: receive JSON payload, execute SHA-256 computation, return structured response.
 
+\subsection{Python Handler}
 
-Moreover, bridging the gap identified in Wang et al. (2025) necessitates this novel perspective: While keeping functions warm statically works, it wastes cost. This research implements predictive provisioning based on temporal access patterns.
+\textbf{File:} \texttt{functions/python/default/handler.py} (and \texttt{.../optimised/handler.py}, identical code)
 
-As noted in Sanchez (2025), scalability remains paramount. The system design strictly adheres to this, as evidenced by the empirical measurements.
+\begin{verbatim}
+import json
+import hashlib
 
-AWS SAM is used to deploy. Code incorporates improvements over Wang et al. (2025).
+# Default variant imports (never used):
+# import boto3
+# import requests
+# import sympy
 
+def lambda_handler(event, context):
+    if event.get("warmer"):
+        return {"ok": True, "warmer": True}
+    
+    n = event["n"]
+    items = event["items"]
+    
+    digest = "chaitanya-25171216-nci"
+    for _ in range(20000):
+        digest = hashlib.sha256(digest.encode()).hexdigest()
+    
+    return {
+        "ok": True,
+        "digest": digest,
+        "n": n,
+        "items": items,
+        "items_total": sum(items)
+    }
+\end{verbatim}
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+The \texttt{default} variant includes import statements for boto3, requests, and sympy at the top of the file, but these libraries are never referenced in the code. This simulates a real-world scenario where dependencies accumulate over time but are not removed.
 
+Packaging (\texttt{scripts/package\_all.sh}):
+\begin{verbatim}
+pip install boto3 requests sympy -t functions/python/default/
+zip -r python-default.zip functions/python/default/
+\end{verbatim}
 
-AWS SAM is used to deploy. Code incorporates improvements over Wang et al. (2025).
+The \texttt{optimised} variant has no \texttt{pip install} step, resulting in a 604-byte ZIP containing only the handler script.
 
+\subsection{Node.js Handler}
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+\textbf{File:} \texttt{functions/nodejs/default/index.mjs}
 
+\begin{verbatim}
+import crypto from 'crypto';
 
-AWS SAM is used to deploy. Code incorporates improvements over Wang et al. (2025).
+// Default variant requires (never called):
+// import AWS from 'aws-sdk';
+// import _ from 'lodash';
+// import moment from 'moment';
+// import axios from 'axios';
 
-In reference to Robinson (2026), the integration highlights a distinct improvement metric.
+export const handler = async (event) => {
+    if (event.warmer) {
+        return {ok: true, warmer: true};
+    }
+    
+    const {n, items} = event;
+    
+    let digest = "chaitanya-25171216-nci";
+    for (let i = 0; i < 20000; i++) {
+        digest = crypto.createHash('sha256')
+                       .update(digest)
+                       .digest('hex');
+    }
+    
+    return {
+        ok: true,
+        digest,
+        n,
+        items,
+        items_total: items.reduce((a, b) => a + b, 0)
+    };
+};
+\end{verbatim}
 
+The \texttt{default} variant includes a \texttt{package.json} with dependencies:
+\begin{verbatim}
+{
+  "type": "module",
+  "dependencies": {
+    "aws-sdk": "^2.1691.0",
+    "lodash": "^4.17.21",
+    "moment": "^2.30.1",
+    "axios": "^1.7.9"
+  }
+}
+\end{verbatim}
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+Packaging: \texttt{npm install --production} (16.5 MB ZIP) vs. no npm install for optimised (815-byte ZIP).
 
+\subsection{Java Handler}
 
-AWS SAM is used to deploy. Code incorporates improvements over Wang et al. (2025).
+\textbf{File:} \texttt{functions/java/default/src/main/java/coldstart/Handler.java}
 
+\begin{verbatim}
+package coldstart;
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+import com.amazonaws.services.lambda.runtime.Context;
+import com.amazonaws.services.lambda.runtime.RequestHandler;
+import java.security.MessageDigest;
+import java.util.Map;
+import java.util.List;
 
+// Default variant touches (never meaningfully used):
+// import com.fasterxml.jackson.databind.ObjectMapper;
+// import com.google.common.base.Strings;
+// import org.apache.commons.lang3.StringUtils;
+// static { ObjectMapper om = new ObjectMapper(); }
 
-AWS SAM is used to deploy. Code incorporates improvements over Wang et al. (2025).
+public class Handler implements RequestHandler<Map, Map> {
+    public Map handleRequest(Map event, Context context) {
+        if (event.containsKey("warmer")) {
+            return Map.of("ok", true, "warmer", true);
+        }
+        
+        int n = (int) event.get("n");
+        List<Integer> items = (List<Integer>) event.get("items");
+        
+        String digest = "chaitanya-25171216-nci";
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            for (int i = 0; i < 20000; i++) {
+                digest = bytesToHex(md.digest(digest.getBytes()));
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        
+        int sum = items.stream().mapToInt(Integer::intValue).sum();
+        
+        return Map.of(
+            "ok", true,
+            "digest", digest,
+            "n", n,
+            "items", items,
+            "items_total", sum
+        );
+    }
+    
+    private static String bytesToHex(byte[] bytes) {
+        StringBuilder sb = new StringBuilder();
+        for (byte b : bytes) {
+            sb.append(String.format("%02x", b));
+        }
+        return sb.toString();
+    }
+}
+\end{verbatim}
 
+The \texttt{default} variant includes a \texttt{pom.xml} with shaded dependencies:
+\begin{verbatim}
+<dependencies>
+  <dependency>
+    <groupId>com.fasterxml.jackson.core</groupId>
+    <artifactId>jackson-databind</artifactId>
+    <version>2.18.2</version>
+  </dependency>
+  <dependency>
+    <groupId>com.google.guava</groupId>
+    <artifactId>guava</artifactId>
+    <version>33.4.0-jre</version>
+  </dependency>
+  <dependency>
+    <groupId>org.apache.commons</groupId>
+    <artifactId>commons-lang3</artifactId>
+    <version>3.17.0</version>
+  </dependency>
+</dependencies>
+\end{verbatim}
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+Maven build with \texttt{maven-shade-plugin} produces a 6.3 MB JAR. The \texttt{optimised} variant has no dependencies and produces a 4.9 KB JAR.
 
+\section{Log Parsing Implementation}
 
-Moreover, bridging the gap identified in Wang et al. (2025) necessitates this novel perspective: While keeping functions warm statically works, it wastes cost. This research implements predictive provisioning based on temporal access patterns.
+\subsection{REPORT Line Format}
 
-AWS SAM is used to deploy. Code incorporates improvements over Wang et al. (2025).
+AWS Lambda logs execution metrics in a structured format. Example cold-start REPORT:
 
-In reference to King et al. (2026), the integration highlights a distinct improvement metric.
+\begin{verbatim}
+REPORT RequestId: 12345-abcde-67890
+Duration: 823.45 ms
+Billed Duration: 900 ms
+Memory Size: 512 MB
+Max Memory Used: 187 MB
+Init Duration: 756.12 ms
+\end{verbatim}
 
+Warm (container reused):
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+\begin{verbatim}
+REPORT RequestId: 67890-fghij-12345
+Duration: 9.23 ms
+Billed Duration: 100 ms
+Memory Size: 512 MB
+Max Memory Used: 188 MB
+\end{verbatim}
+
+\subsection{Parser Implementation}
+
+\textbf{File:} \texttt{src/coldstart/report\_parser.py}
+
+The parser uses compiled regex patterns for efficiency:
+
+\begin{verbatim}
+import re
+
+REPORT_PATTERN = re.compile(
+    r'REPORT RequestId: (?P<request_id>[\w-]+).*?'
+    r'Duration: (?P<duration>[\d.]+) ms.*?'
+    r'Billed Duration: (?P<billed>[\d]+) ms.*?'
+    r'Memory Size: (?P<memory>[\d]+) MB.*?'
+    r'Max Memory Used: (?P<max_memory>[\d]+) MB'
+    r'(?:.*?Init Duration: (?P<init>[\d.]+) ms)?',
+    re.DOTALL
+)
+
+def parse_report_line(line):
+    match = REPORT_PATTERN.search(line)
+    if not match:
+        return None
+    
+    d = match.groupdict()
+    init_duration = float(d["init"]) if d["init"] else None
+    
+    return {
+        "request_id": d["request_id"],
+        "duration_ms": float(d["duration"]),
+        "billed_duration_ms": int(d["billed"]),
+        "memory_size_mb": int(d["memory"]),
+        "max_memory_used_mb": int(d["max_memory"]),
+        "init_duration_ms": init_duration,
+        "is_cold": init_duration is not None
+    }
+\end{verbatim}
+
+The \texttt{(?:...)?} non-capturing optional group matches Init Duration only when present. This aligns with AWS's official cold-start definition.
+
+\section{Statistical Test Implementation}
+
+\subsection{Normality Testing}
+
+\textbf{File:} \texttt{src/coldstart/stats.py}
+
+\begin{verbatim}
+from scipy.stats import shapiro
+
+def test_normality(samples, alpha=0.05):
+    """
+    Shapiro-Wilk test.
+    Returns: (is_normal: bool, p_value: float)
+    """
+    if len(samples) < 3:
+        return False, None  # Too few samples
+    
+    stat, p = shapiro(samples)
+    return p > alpha, p
+\end{verbatim}
+
+\subsection{Hypothesis Test Selection}
+
+Based on normality results, the analysis selects parametric or non-parametric tests:
+
+\begin{verbatim}
+from scipy.stats import (
+    kruskal, mannwhitneyu, wilcoxon,
+    f_oneway, ttest_ind, ttest_rel
+)
+
+def compare_groups(groups, paired=False):
+    """
+    Groups: dict of {label: [samples]}
+    Returns: test name, statistic, p-value, effect size
+    """
+    # Check normality for each group
+    all_normal = all(
+        test_normality(samples)[0] 
+        for samples in groups.values()
+    )
+    
+    if len(groups) == 2:
+        labels = list(groups.keys())
+        a, b = groups[labels[0]], groups[labels[1]]
+        
+        if paired:
+            if all_normal:
+                stat, p = ttest_rel(a, b)
+                effect = cohens_d_paired(a, b)
+                return "paired_t", stat, p, effect
+            else:
+                stat, p = wilcoxon(a, b)
+                effect = rank_biserial(a, b)
+                return "wilcoxon", stat, p, effect
+        else:
+            if all_normal:
+                stat, p = ttest_ind(a, b, equal_var=False)
+                effect = cohens_d(a, b)
+                return "welch_t", stat, p, effect
+            else:
+                stat, p = mannwhitneyu(a, b)
+                effect = rank_biserial(a, b)
+                return "mann_whitney_u", stat, p, effect
+    
+    else:  # Multiple groups
+        if all_normal:
+            stat, p = f_oneway(*groups.values())
+            effect = eta_squared(groups)
+            return "anova", stat, p, effect
+        else:
+            stat, p = kruskal(*groups.values())
+            effect = epsilon_squared(groups, stat)
+            return "kruskal_wallis", stat, p, effect
+\end{verbatim}
+
+\subsection{Multiple Comparison Correction}
+
+Holm-Bonferroni sequential correction:
+
+\begin{verbatim}
+def holm_bonferroni(p_values, alpha=0.05):
+    """
+    p_values: list of (label, p_value) tuples
+    Returns: list of (label, p_original, p_corrected, reject)
+    """
+    sorted_p = sorted(p_values, key=lambda x: x[1])
+    m = len(sorted_p)
+    
+    results = []
+    for i, (label, p) in enumerate(sorted_p):
+        corrected_alpha = alpha / (m - i)
+        reject = p <= corrected_alpha
+        results.append((label, p, corrected_alpha, reject))
+    
+    return results
+\end{verbatim}
+
+\section{Cost Model Implementation}
+
+\textbf{File:} \texttt{src/coldstart/cost\_model.py}
+
+AWS Lambda pricing (US East, September 2026):
+
+\begin{itemize}
+    \item Request charge: \$0.20 per 1M requests = \$0.0000002 per request
+    \item Duration charge: \$0.0000166667 per GB-second
+\end{itemize}
+
+\begin{verbatim}
+def compute_invocation_cost(memory_mb, billed_duration_ms):
+    """
+    Returns: cost in USD
+    """
+    request_cost = 0.0000002
+    
+    memory_gb = memory_mb / 1024.0
+    duration_sec = billed_duration_ms / 1000.0
+    gb_sec = memory_gb * duration_sec
+    duration_cost = gb_sec * 0.0000166667
+    
+    return request_cost + duration_cost
+
+def cost_per_1k(memory_mb, billed_duration_ms):
+    """
+    Returns: cost per 1,000 invocations in USD
+    """
+    return 1000 * compute_invocation_cost(
+        memory_mb, billed_duration_ms
+    )
+\end{verbatim}
+
+\subsection{Decision Matrix Construction}
+
+The decision matrix expresses each optimization as milliseconds saved per additional dollar per 1,000 invocations:
+
+\begin{verbatim}
+def decision_matrix_row(
+    baseline_latency_ms, 
+    baseline_cost_1k_usd,
+    optimized_latency_ms, 
+    optimized_cost_1k_usd
+):
+    """
+    Returns: {
+        "latency_reduction_ms": float,
+        "cost_increase_usd": float,
+        "roi_ms_per_dollar": float,
+        "recommendation": str
+    }
+    """
+    delta_latency = baseline_latency_ms - optimized_latency_ms
+    delta_cost = optimized_cost_1k_usd - baseline_cost_1k_usd
+    
+    if delta_cost == 0:
+        roi = float('inf') if delta_latency > 0 else 0
+    else:
+        roi = delta_latency / delta_cost
+    
+    # Recommendation bands
+    if roi > 100:
+        rec = "ADOPT"
+    elif roi > 10:
+        rec = "Consider"
+    elif roi > 0:
+        rec = "Marginal"
+    else:
+        rec = "Avoid"
+    
+    return {
+        "latency_reduction_ms": delta_latency,
+        "cost_increase_usd": delta_cost,
+        "roi_ms_per_dollar": roi,
+        "recommendation": rec
+    }
+\end{verbatim}
+
+\section{Mock Backend Implementation}
+
+The mock backend generates synthetic data for pipeline validation.
+
+\textbf{File:} \texttt{src/coldstart/mock.py}
+
+\begin{verbatim}
+import numpy as np
+
+class MockBackend:
+    def __init__(self, config):
+        self.runtimes = config["runtimes"]
+        self.variance_cv = config["variance_cv"]
+    
+    def generate_init_duration(
+        self, 
+        runtime, 
+        package_variant, 
+        memory_mb
+    ):
+        """
+        Returns: init_duration_ms (float)
+        """
+        base = self.runtimes[runtime]["init_base_ms"]
+        
+        if package_variant == "default":
+            base += self.runtimes[runtime]["package_penalty_ms"]
+        
+        # Memory effect (exploratory H4)
+        if memory_mb >= 1769:
+            base *= 0.85  # vCPU coupling speedup
+        
+        # Add variance
+        std = base * self.variance_cv
+        sample = np.random.normal(base, std)
+        
+        return max(sample, 10.0)  # Clamp to realistic minimum
+\end{verbatim}
+
+Configuration (\texttt{configs/mock\_model.yaml}):
+
+\begin{verbatim}
+runtimes:
+  python:
+    init_base_ms: 800
+    package_penalty_ms: 2000
+  nodejs:
+    init_base_ms: 300
+    package_penalty_ms: 280
+  java:
+    init_base_ms: 250
+    package_penalty_ms: 180
+
+variance_cv: 0.15
+\end{verbatim}
+
+\section{Deployment Automation}
+
+\textbf{File:} \texttt{scripts/deploy.sh}
+
+\begin{verbatim}
+#!/bin/bash
+set -e
+
+echo "Building packages..."
+bash scripts/package_all.sh python nodejs java
+
+echo "Validating digest uniformity..."
+python3 scripts/check_digests.py
+
+echo "SAM build..."
+cd infra
+sam build
+
+echo "SAM deploy..."
+sam deploy --no-confirm-changeset
+
+echo "Deployment complete. Function ARNs:"
+aws cloudformation describe-stacks \
+    --stack-name lambda-coldstart-isolation \
+    --query 'Stacks[0].Outputs' \
+    --output table
+\end{verbatim}
+
+\section{Summary}
+
+This chapter detailed the practical implementation of Lambda handlers, log parsing, statistical tests, cost modeling, and deployment automation. Key implementation decisions include:
+
+\begin{itemize}
+    \item Identical handler logic across runtimes (only packaging differs)
+    \item Regex-based REPORT line parsing with explicit cold-start detection (Init Duration presence)
+    \item Automated test selection based on Shapiro-Wilk normality
+    \item AWS pricing-accurate cost model with decision matrix ROI calculation
+    \item Mock backend for zero-cost pipeline validation
+\end{itemize}
+
+The next chapter presents experimental results, statistical analysis outcomes, and decision matrix construction (contingent on live AWS execution).
