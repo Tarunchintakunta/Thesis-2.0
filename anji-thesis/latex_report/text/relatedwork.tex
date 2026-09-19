@@ -1,105 +1,206 @@
 \chapter{Related Work}
-Prior work such as Kyrychenko et al. (2025b) laid foundations, but The baseline evaluates SQS standard operations under steady load but misses real-world downstream failures such as consumer crash loops, throttling, and API timeouts. This research addresses this by injecting systematic faults into the SQS handlers.
 
-In reference to Hernandez (2026), the integration highlights a distinct improvement metric.
+This chapter surveys the body of knowledge relevant to message queue reliability, fault injection testing, and recovery mechanisms in distributed cloud systems. The review is organized thematically to position this research within the broader context of cloud messaging systems, identify gaps in the current literature, and establish the theoretical and empirical foundation for investigating SQS reliability under injected failures.
 
+\section{Message Queue Systems and Reliability}
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+Message queues serve as the backbone of asynchronous communication in distributed systems, enabling decoupling between producers and consumers while providing reliability guarantees~\citep{DiasDeAssuncao2020MQComparison}. The evolution of message-oriented middleware has produced several mature systems, each with distinct trade-offs in throughput, latency, ordering, and fault tolerance.
 
+\subsection{Comparative Performance and Reliability}
 
-Moreover, bridging the gap identified in Kyrychenko et al. (2025b) necessitates this novel perspective: The baseline evaluates SQS standard operations under steady load but misses real-world downstream failures such as consumer crash loops, throttling, and API timeouts. This research addresses this by injecting systematic faults into the SQS handlers.
+\citet{DiasDeAssuncao2020MQComparison} conducted a comprehensive evaluation of five popular message queuing systems (Apache Kafka, RabbitMQ, RocketMQ, ActiveMQ, and Apache Pulsar), comparing their production features, quality-of-service guarantees, and performance characteristics. Their analysis revealed that Kafka achieves the highest throughput through its log-based architecture and partition model, while RocketMQ demonstrates lower latency for online business applications. Each system implements reliability differently: Kafka uses partition replication and leader election, RabbitMQ offers quorum queues with stronger consistency, and RocketMQ provides a high-availability design paradigm specifically for log-based storage~\citep{Ji2023RocketHA}.
 
-As noted in Lopez (2025), scalability remains paramount. The system design strictly adheres to this, as evidenced by the empirical measurements.
+\citet{Nagaraj2017KafkaVsRabbitMQ} provided an industry-focused comparison between Kafka and RabbitMQ, revealing that RabbitMQ's throughput is primarily constrained by routing complexity, making it suitable for low-latency, low-to-medium throughput scenarios. Kafka, in contrast, scales superiorly with partition count, making it ideal for high-throughput streaming and replay scenarios. However, neither system guarantees exactly-once delivery without additional application-level mechanisms.
 
-Prior work such as Kyrychenko et al. (2025b) laid foundations, but The baseline evaluates SQS standard operations under steady load but misses real-world downstream failures such as consumer crash loops, throttling, and API timeouts. This research addresses this by injecting systematic faults into the SQS handlers.
+\citet{Maharjan2023Benchmarking} extended this comparative analysis to include Redis and ActiveMQ Artemis, demonstrating that Redis achieves the best latency (~1 ms) while Kafka significantly outperforms others in throughput tests (over 1 million messages/second in optimal configurations). These studies collectively establish that no single message queue dominates all dimensions; instead, system selection depends on workload characteristics, consistency requirements, and acceptable trade-offs between throughput, latency, and reliability.
 
+\subsection{Pub-Sub Systems and Geographic Distribution}
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+\citet{Sharma2016Wormhole} described Facebook's Wormhole system, a pub-sub infrastructure designed for geo-replicated datacenters handling over 35 GB/sec (5 trillion messages per day) with bursts up to 200 GB/sec during failure recovery. Wormhole provides multiple-copy reliable delivery by maintaining primary and secondary publishers, and it survives both publisher and subscriber failures without losing updates. The system uses transaction logs as its source of truth and bookmarks the last acknowledged position for each subscriber, enabling recovery after application failures.
 
+\citet{Pongthawornkamol2013ReliabilityPubSub} developed a generic analytical model for predicting quality-of-service metrics (event delivery probability and end-to-end timeliness) in fault-tolerant distributed pub-sub systems. Their model incorporates buffering, retransmission, and bypass routing techniques, and was validated against real-world traces. The analysis showed that proper configuration of broker deployment and retry mechanisms can substantially improve reliability, but at the cost of increased latency and resource consumption.
 
-Prior work such as Kyrychenko et al. (2025b) laid foundations, but The baseline evaluates SQS standard operations under steady load but misses real-world downstream failures such as consumer crash loops, throttling, and API timeouts. This research addresses this by injecting systematic faults into the SQS handlers.
+\citet{Shirolkar2014HDMQ} proposed a hierarchical distributed message queue (HDMQ) architecture targeting in-order and exactly-once delivery, comparing it against Amazon SQS, Windows Azure Service Bus, and IronMQ. Their implementation achieved 2–15× higher throughput and 1.6–39× lower latency than SQS at 13–80\% lower cost. However, the study focused on steady-state performance and did not evaluate behavior under consumer or downstream failures, a gap this research addresses.
 
+\section{Amazon SQS: Baseline and Optimization}
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+Amazon Simple Queue Service (SQS) is a fully managed, serverless message queueing service designed for high availability and at-least-once delivery semantics~\citep{AWSSQSGuide}. As the baseline for this research, understanding prior work on SQS configuration is essential.
 
+\subsection{Kyrychenko et al.: Steady-State Configuration Optimization}
 
-Prior work such as Kyrychenko et al. (2025b) laid foundations, but The baseline evaluates SQS standard operations under steady load but misses real-world downstream failures such as consumer crash loops, throttling, and API timeouts. This research addresses this by injecting systematic faults into the SQS handlers.
+\citet{Kyrychenko2025} investigated the optimization of SQS configurations for efficient batch data processing using a system that generates 500,000 PDF documents. Their research employed classical queuing theory models to evaluate performance under varying load conditions, measuring response time, average queue length, and utilization rate. The study identified batch size and visibility timeout as the key factors affecting system performance, and provided practical recommendations: batch size of 50, visibility timeout of 600 seconds, and delivery delay of 300 seconds for maximizing throughput without loss of reliability.
 
-In reference to Smith (2025), the integration highlights a distinct improvement metric.
+Crucially, Kyrychenko et al.'s study evaluated SQS under \emph{steady-state conditions} with no injected failures. Their baseline establishes what SQS can achieve when all components function correctly, but it does not address how these configurations perform when consumers crash, downstream services reject requests, or transient errors occur. This gap motivates the present research: do the optimal configurations identified for steady-state performance remain optimal under failure, or do different trade-offs emerge?
 
+\subsection{Visibility Timeout and Message Redelivery}
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+The visibility timeout is a core SQS mechanism: when a consumer receives a message, it becomes temporarily invisible to other consumers for a configurable duration (default 30 seconds, maximum 12 hours)~\citep{AWSSQSGuide}. If the consumer does not delete the message before the timeout expires, the message becomes visible again and may be redelivered. AWS documentation recommends setting the visibility timeout to match expected processing time, but provides limited empirical guidance on how to configure it for fault scenarios~\citep{AWSResilience2023}.
 
+SQS Standard queues guarantee at-least-once delivery, meaning messages can be delivered multiple times even without failures, a consequence of the distributed architecture~\citep{AWSSQSGuide}. This necessitates idempotent consumer design. However, the interaction between visibility timeout, receive count tracking, and dead-letter queue (DLQ) redrive under injected failures has not been systematically quantified in the academic literature.
 
-Prior work such as Kyrychenko et al. (2025b) laid foundations, but The baseline evaluates SQS standard operations under steady load but misses real-world downstream failures such as consumer crash loops, throttling, and API timeouts. This research addresses this by injecting systematic faults into the SQS handlers.
+\section{Fault Injection and Chaos Engineering}
 
+Fault injection testing, also known as chaos engineering, has emerged as a critical practice for validating the resilience of distributed systems~\citep{Wu2024Legolas, Gao2023CrashFuzz}. The fundamental challenge is the combinatorial explosion of possible fault scenarios: with multiple nodes, services, and timing points, exhaustive testing is infeasible.
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+\subsection{Coverage-Guided Fault Injection}
 
+\citet{Gao2023CrashFuzz} introduced CrashFuzz, a coverage-guided fault injection tool that tests crash recovery behaviors in cloud systems. CrashFuzz mutates combinations of node crashes and reboots based on runtime feedback (code coverage and I/O information), prioritizing scenarios that increase coverage or are likely to trigger bugs. Evaluated on ZooKeeper, HDFS, and HBase, CrashFuzz detected 5 bugs (4 unknown, 1 known) and achieved higher code coverage than random or brute-force approaches.
 
-Prior work such as Kyrychenko et al. (2025b) laid foundations, but The baseline evaluates SQS standard operations under steady load but misses real-world downstream failures such as consumer crash loops, throttling, and API timeouts. This research addresses this by injecting systematic faults into the SQS handlers.
+\citet{Dou2024FaultFuzz} extended this work to network disconnections and reconnections in addition to crashes and reboots. FaultFuzz similarly uses coverage-guided exploration and found 5 bugs in the same three systems. Both tools demonstrate that intelligent fault injection outperforms random testing, but they focus on infrastructure-level failures (node crashes, network partitions) rather than application-level faults like unhandled exceptions or downstream service rejections.
 
+\subsection{Partial Failure and Subtle Timing}
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+\citet{Wu2024Legolas} addressed the challenge of \emph{partial failure bugs}, where services appear partially broken but still respond to some requests. These bugs are often triggered by subtle conditions such as transient slowness, microburst, or errors affecting only specific operations. Legolas infers abstract system states and uses them to guide fault injection, finding 20 new bugs (4 critical, 14 major) in systems like ZooKeeper and Kafka. The median detection time was 58 minutes, demonstrating the value of state-aware exploration.
 
+\citet{Zhou2024MicroFI} proposed MicroFI, a non-intrusive request-level fault injection framework for microservices that limits the blast radius to specified requests without source code modification. MicroFI uses an enhanced PageRank algorithm to prioritize high-impact faults and parallel techniques to accelerate searching, reducing redundant faults by up to 91\% and injection budgets by 47.3\%. This request-level precision is relevant to SQS consumer scenarios where individual messages may fail while others succeed.
 
-Moreover, bridging the gap identified in Kyrychenko et al. (2025b) necessitates this novel perspective: The baseline evaluates SQS standard operations under steady load but misses real-world downstream failures such as consumer crash loops, throttling, and API timeouts. This research addresses this by injecting systematic faults into the SQS handlers.
+\subsection{Gap: Controlled Application-Level Fault Injection in Queue Consumers}
 
-Prior work such as Kyrychenko et al. (2025b) laid foundations, but The baseline evaluates SQS standard operations under steady load but misses real-world downstream failures such as consumer crash loops, throttling, and API timeouts. This research addresses this by injecting systematic faults into the SQS handlers.
+The fault injection literature primarily targets infrastructure-level failures (crashes, partitions, disk faults) or microservice-level communication failures. There is limited work on \emph{systematic, controlled injection} of application-level faults within queue consumers—such as unhandled exceptions, datastore rejections, or downstream timeouts—and how these interact with queue configuration parameters like visibility timeout and maxReceiveCount. This research fills that gap by implementing an in-process fault switch that deterministically triggers specific fault types at configured times, enabling reproducible measurement of recovery metrics.
 
-In reference to Wilson (2025), the integration highlights a distinct improvement metric.
+\section{Serverless Computing and AWS Lambda Reliability}
 
+Serverless computing, epitomized by AWS Lambda, abstracts infrastructure management and scales automatically~\citep{Qi2023Halfmoon}. However, serverless fault tolerance introduces unique challenges, particularly around state management and retry semantics.
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+\subsection{Retry-Based vs. Replication-Based Fault Tolerance}
 
+\citet{Balla2023FaaSReplication} experimentally compared three fault tolerance mechanisms for Function-as-a-Service (FaaS) platforms: automatic retry (default in AWS Lambda, Google Cloud Functions, Azure Functions), Active-Standby replication, and Request Replication. Their evaluation on Fission showed that:
+\begin{itemize}
+    \item \textbf{Retry} is suitable for transient failures but incurs long recovery delays (potentially minutes) for node crashes.
+    \item \textbf{Active-Standby} improves availability for long-lasting failures but consumes more than 2× the resources.
+    \item \textbf{Request Replication} provides the most stable performance and near-zero recovery time, at the cost of even higher resource consumption.
+\end{itemize}
 
-Prior work such as Kyrychenko et al. (2025b) laid foundations, but The baseline evaluates SQS standard operations under steady load but misses real-world downstream failures such as consumer crash loops, throttling, and API timeouts. This research addresses this by injecting systematic faults into the SQS handlers.
+AWS Lambda retries asynchronous invocations up to two times with exponential backoff. For SQS-triggered Lambda functions, the retry mechanism is controlled by the \texttt{maxReceiveCount} parameter in the SQS redrive policy, not by Lambda itself. This delegation of retry logic to SQS means that the queue configuration directly determines fault tolerance behavior.
 
+\subsection{Exactly-Once Semantics in Stateful Serverless}
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+\citet{Qi2023Halfmoon} addressed the problem of exactly-once semantics in stateful serverless computing. Simple retry-based fault tolerance can corrupt shared state with duplicate updates. Halfmoon proposes asymmetric logging protocols that log either reads or writes (but not both), achieving 20–40\% lower latency and 1.5–4× lower logging overhead compared to prior work (Boki). While Halfmoon targets stateful stream processing, the insight that retry alone is insufficient for correctness applies equally to SQS consumers that update databases or call downstream services.
 
+\section{Idempotency and Exactly-Once Processing}
 
-As noted in Davis (2025), scalability remains paramount. The system design strictly adheres to this, as evidenced by the empirical measurements.
+The at-least-once delivery guarantee of SQS Standard queues means messages can be delivered multiple times, necessitating idempotent consumer design~\citep{Yadav2024Idempotent}. Idempotency ensures that processing a message multiple times produces the same effect as processing it once.
 
-Prior work such as Kyrychenko et al. (2025b) laid foundations, but The baseline evaluates SQS standard operations under steady load but misses real-world downstream failures such as consumer crash loops, throttling, and API timeouts. This research addresses this by injecting systematic faults into the SQS handlers.
+\subsection{Idempotent Consumer Pattern}
 
+\citet{Yadav2024Idempotent} explored the Idempotent Consumer pattern in microservice architectures, demonstrating its application in a payment processing system. The pattern involves:
+\begin{itemize}
+    \item Assigning stable message identifiers (deterministic from business data).
+    \item Storing deduplication keys in a persistent store (e.g., DynamoDB, Redis) with TTL aligned to the retry window.
+    \item Checking the deduplication store before processing; skipping if already processed.
+    \item Using transactional outbox for downstream event publication to ensure atomic state updates.
+\end{itemize}
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+The challenge is that deduplication alone does not prevent partial side effects during crashes. If a consumer updates state A and then fails before updating state B, a subsequent retry may observe inconsistent state.
 
+\subsection{Kafka's Exactly-Once Semantics}
 
-Prior work such as Kyrychenko et al. (2025b) laid foundations, but The baseline evaluates SQS standard operations under steady load but misses real-world downstream failures such as consumer crash loops, throttling, and API timeouts. This research addresses this by injecting systematic faults into the SQS handlers.
+\citet{Wang2021KafkaExactlyOnce} described Apache Kafka's exactly-once semantics, which rely on:
+\begin{itemize}
+    \item \textbf{Idempotent producers:} Each message is assigned a sequence number; the broker deduplicates based on producer ID and sequence.
+    \item \textbf{Transactions:} Producers can atomically write to multiple partitions and commit consumer offsets, ensuring that either all writes are visible or none are.
+    \item \textbf{Read-committed isolation:} Consumers only see committed messages.
+\end{itemize}
 
-In reference to Brown & Miller (2026), the integration highlights a distinct improvement metric.
+Kafka's approach is tightly integrated with its log-based architecture. SQS does not provide built-in transactions; exactlyonce effects must be achieved at the application level through idempotent handlers and transactional outbox patterns. This research assumes idempotent consumers and focuses on how SQS configuration affects \emph{observable failure symptoms} (loss, duplicates, recovery time) rather than guarantees.
 
+\section{Dead Letter Queues and Poison Messages}
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+Dead-letter queues (DLQs) are the holding mechanism for messages that fail processing repeatedly~\citep{AWSSQSGuide}. SQS implements DLQ redrive through the \texttt{maxReceiveCount} parameter: after a message is received \texttt{maxReceiveCount} times without being deleted, it is automatically moved to a configured DLQ.
+
+\subsection{Retry Limits and Backoff Strategies}
+
+The choice of \texttt{maxReceiveCount} involves a trade-off:
+\begin{itemize}
+    \item \textbf{Low values (e.g., 1–2):} Quickly quarantine poison messages, but may also dead-letter messages that would succeed after a brief downstream recovery.
+    \item \textbf{High values (e.g., 10+):} Tolerate longer outages, but risk wasting resources on truly broken messages and delaying detection.
+\end{itemize}
+
+Best practices recommend starting conservatively (2–3 attempts) and adjusting based on observed failure patterns~\citep{AWSResilience2023}. However, this guidance is not grounded in quantitative empirical evidence showing how different \texttt{maxReceiveCount} values affect recovery time and DLQ traffic under specific failure modes. This research provides that evidence.
+
+\subsection{Distinguishing Transient from Deterministic Failures}
+
+A critical design challenge is distinguishing transient failures (downstream timeout, rate limit, temporary unavailability) from deterministic failures (schema mismatch, validation error, missing required field)~\citep{Laigner2024EventChallenges}. Transient failures should be retried with backoff; deterministic failures should be immediately quarantined to prevent retry loops.
+
+In SQS, this distinction must be made at the application level. The queue itself only counts receive attempts; it cannot inspect error types. The fault injection design in this research explicitly models both transient (consumer kill, datastore timeout) and deterministic-like (unhandled error, datastore reject) faults to characterize how they interact with \texttt{maxReceiveCount}.
+
+\section{Recovery Metrics in Distributed Systems}
+
+Recovery time is a critical resilience metric, but its definition varies across studies~\citep{AWSResilience2023, Sreepathy2021ReliableActors}.
+
+\subsection{Mean Time to Recovery (MTTR) and Related Metrics}
+
+\citet{AWSResilience2023} distinguish between:
+\begin{itemize}
+    \item \textbf{Recovery Time Objective (RTO):} A predefined target for a single disruption.
+    \item \textbf{Mean Time to Recovery (MTTR):} The observed mean recovery duration across multiple incidents.
+    \item \textbf{Mean Time to Detection (MTTD):} The interval from failure occurrence to detection.
+\end{itemize}
+
+MTTR includes detection, diagnosis, remediation, and verification phases. In queue systems, detection may be implicit (messages expire from visibility timeout), and diagnosis is often bypassed if automated retry/redrive policies handle recovery.
+
+\subsection{Empirical Recovery Time Measurements}
+
+\citet{Sreepathy2021ReliableActors} measured recovery time in a KAR (Kubernetes Application Runtime) actor system under node failures. They reported:
+\begin{itemize}
+    \item \textbf{Total outage:} Mean 22.1 seconds, range 16.1–31.2 seconds.
+    \item \textbf{Detection:} Mean 9.1 seconds.
+    \item \textbf{Consensus:} Mean 2.4 seconds (leader election).
+    \item \textbf{Reconciliation:} Mean 10.6 seconds (half of total outage).
+\end{itemize}
+
+\citet{Wang2019Dayu} studied data recovery in very-large storage systems, achieving 2.96× faster recovery than baseline while maintaining low interference with foreground traffic. Their timeslot-based scheduling reduced computation overhead and adapted to dynamic traffic patterns.
+
+These studies measure recovery in infrastructure or storage systems. For message queues, recovery time is domain-specific: it is the interval from \emph{failure cessation} (when the fault is no longer active) until \emph{queue depth returns to steady state} (backlog cleared, no messages in flight beyond normal processing). This operational definition is adopted in this research.
+
+\section{Event-Driven Architecture and Asynchronous Messaging}
+
+Event-driven architecture (EDA) has gained prominence in microservices for its decoupling benefits, but it introduces complexity in consistency, ordering, and failure handling~\citep{Thaur2023EventDrivenKafka, Laigner2024EventChallenges}.
+
+\subsection{Patterns and Trade-Offs}
+
+\citet{Thaur2023EventDrivenKafka} surveyed asynchronous patterns with Kafka, including:
+\begin{itemize}
+    \item \textbf{Event sourcing:} Store all state changes as immutable events, enabling replay and audit.
+    \item \textbf{CQRS (Command Query Responsibility Segregation):} Separate write and read models for scalability.
+    \item \textbf{Saga:} Coordinate distributed transactions through a series of local transactions with compensating actions on failure.
+\end{itemize}
+
+These patterns improve resiliency (one service's failure does not block others) and scalability (workloads distributed across instances), but they also introduce eventual consistency and debugging challenges.
+
+\subsection{Challenges in Event Management}
+
+\citet{Laigner2024EventChallenges} conducted an empirical study of Stack Overflow questions related to event management in microservices. They identified recurring challenges:
+\begin{itemize}
+    \item \textbf{Ordering:} Ensuring events are processed in the correct sequence across services.
+    \item \textbf{Idempotency:} Handling duplicate events without corrupting state.
+    \item \textbf{Consistency:} Maintaining cross-service data consistency without distributed transactions.
+    \item \textbf{Observability:} Tracing event flows and diagnosing failures in asynchronous systems.
+\end{itemize}
+
+SQS Standard queues do not guarantee ordering (FIFO queues do, but with lower throughput). The research focus here is on \emph{reliability} (no message loss) and \emph{recovery time}, not ordering or consistency.
+
+\citet{Zuckmantel2022EventConsistency} proposed formal semantics for event-based data management in microservices, addressing transactional guarantees and out-of-order delivery. Their work highlights that specification languages and runtime monitors are needed to verify correctness properties, complementing the quantitative metrics measured in this research.
+
+\section{Research Gap and Contribution}
+
+The literature establishes that:
+\begin{itemize}
+    \item Message queue systems offer varying trade-offs in throughput, latency, and reliability~\citep{DiasDeAssuncao2020MQComparison, Maharjan2023Benchmarking}.
+    \item SQS configuration (batch size, visibility timeout, delivery delay) significantly affects steady-state performance~\citep{Kyrychenko2025}.
+    \item Fault injection is essential for validating resilience, but existing tools focus on infrastructure failures~\citep{Gao2023CrashFuzz, Wu2024Legolas}.
+    \item Serverless fault tolerance often relies on retry, but retry alone is insufficient for exactly-once semantics~\citep{Qi2023Halfmoon, Wang2021KafkaExactlyOnce}.
+    \item Idempotent consumers and DLQs are critical patterns, but configuration guidance is qualitative, not quantitative~\citep{Yadav2024Idempotent, AWSResilience2023}.
+\end{itemize}
+
+\textbf{The gap:} No prior work systematically quantifies how SQS configuration parameters (visibility timeout, \texttt{maxReceiveCount}, batch size) interact with \emph{controlled, reproducible} consumer and downstream failures to affect message loss, duplicate processing, DLQ capture, and recovery time. Kyrychenko et al.'s baseline establishes steady-state optima; this research extends it to failure scenarios, testing whether those optima transfer or whether different trade-offs emerge under failure injection.
+
+This research contributes:
+\begin{enumerate}
+    \item A controlled fault injection harness for SQS consumers with four fault types (consumer kill, unhandled error, datastore reject, datastore timeout).
+    \item Quantitative measurements of loss, duplicates, DLQ traffic, and recovery time across a randomized config matrix.
+    \item Hypothesis tests evaluating whether visibility timeout, \texttt{maxReceiveCount}, and steady-state-optimal configurations affect failure resilience.
+    \item A reproducible simulator enabling free-tier-aware experimentation without AWS costs.
+\end{enumerate}
+
+The findings provide empirical, statistically rigorous evidence to guide practitioners in configuring SQS for both performance \emph{and} fault tolerance, bridging the gap between steady-state optimization and real-world resilience requirements.

@@ -1,52 +1,231 @@
-@ARTICLE{BeloglazovB15,
-  author       = {Anton Beloglazov and
-                  Rajkumar Buyya},
-  title        = {OpenStack Neat: a framework for dynamic and energy-efficient consolidation
-                  of virtual machines in OpenStack clouds},
-  journal      = {Concurrency and Computation: Practice and Experience},
-  volume       = {27},
+% Baseline Paper - SQS Optimization
+@ARTICLE{Kyrychenko2025,
+  author       = {Oleksandr O. Kyrychenko and Sergey E. Ostapov and Oksana L. Kyrychenko},
+  title        = {Optimization of SQS Configurations for Efficient Batch Data Processing},
+  journal      = {WSEAS Transactions on Systems},
+  volume       = {24},
+  pages        = {36--43},
+  year         = {2025},
+  doi          = {10.37394/23202.2025.24.4},
+}
+
+% Fault Injection and Chaos Engineering
+@INPROCEEDINGS{Gao2023CrashFuzz,
+  author       = {Yu Gao and Wensheng Dou and Feng Qin and Chushu Gao and Dong Wang and Jun Wei and Ruirui Huang and Li Zhou and Yingying Wu},
+  title        = {Coverage Guided Fault Injection for Cloud Systems},
+  booktitle    = {2023 IEEE/ACM 45th International Conference on Software Engineering (ICSE)},
+  year         = {2023},
+  pages        = {1770--1782},
+  doi          = {10.1109/icse48619.2023.00186},
+}
+
+@INPROCEEDINGS{Dou2024FaultFuzz,
+  author       = {Wensheng Dou and Yu Gao and Yingying Zheng and Chushu Gao and Jieren Cheng and Jun Wei},
+  title        = {FaultFuzz: A Coverage Guided Fault Injection Tool for Distributed Systems},
+  booktitle    = {Proceedings of the 46th IEEE/ACM International Conference on Software Engineering: Companion Proceedings},
+  year         = {2024},
+  pages        = {117--118},
+  doi          = {10.1145/3639478.3640036},
+}
+
+@INPROCEEDINGS{Wu2024Legolas,
+  author       = {Haoze Wu and Xiapu Luo and Luping Zhang and Angelos Keromytis and Wenchao Zhou},
+  title        = {Efficient Exposure of Partial Failure Bugs in Distributed Systems with Inferred Abstract States},
+  booktitle    = {21st USENIX Symposium on Networked Systems Design and Implementation (NSDI 24)},
+  year         = {2024},
+  pages        = {1393--1418},
+  publisher    = {USENIX Association},
+  url          = {https://www.usenix.org/conference/nsdi24/presentation/wu-haoze},
+}
+
+@ARTICLE{Zhou2024MicroFI,
+  author       = {Xiang Zhou and Haoyang Wen and Xin Peng and Tao Xie and Jun Sun and Wenhai Wang},
+  title        = {MicroFI: A Non-Intrusive and Prioritized Request-Level Fault Injection Framework for Microservice Applications},
+  journal      = {IEEE Transactions on Dependable and Secure Computing},
+  volume       = {21},
   number       = {5},
-  pages        = {1310--1333},
-  year         = {2015},
-  doi          = {10.1002/cpe.3314},
+  pages        = {4654--4671},
+  year         = {2024},
+  doi          = {10.1109/tdsc.2024.3363902},
 }
 
-@ARTICLE{FengB16,
-  author       = {Guofu Feng and
-                  Rajkumar Buyya},
-  title        = {Maximum revenue-oriented resource allocation in cloud},
-  journal      = {{International Journal of Grid and Utility Computing}},
-  volume       = {7},
-  number       = {1},
-  pages        = {12--21},
+% Message Queue Systems and Reliability
+@INPROCEEDINGS{Ji2023RocketHA,
+  author       = {Jiankun Ji and Yang Fu and Rui Jin and Qiang Lin and Lei Li and Leonardo Montecchi and Denys Poshyvanyk and Dongsong Zhang},
+  title        = {RocketHA: A High Availability Design Paradigm for Distributed Log-Based Storage System},
+  booktitle    = {38th IEEE/ACM International Conference on Automated Software Engineering (ASE)},
+  year         = {2023},
+  pages        = {1089--1100},
+  doi          = {10.1109/ASE56229.2023.00123},
+}
+
+@ARTICLE{DiasDeAssuncao2020MQComparison,
+  author       = {Marcos Dias de Assuncao and Alexandre da Silva Veith and Rajkumar Buyya},
+  title        = {A Fair Comparison of Message Queuing Systems},
+  journal      = {IEEE Access},
+  volume       = {8},
+  pages        = {210726--210741},
+  year         = {2020},
+  doi          = {10.1109/access.2020.3046503},
+}
+
+@INPROCEEDINGS{Nagaraj2017KafkaVsRabbitMQ,
+  author       = {Nagaraj, Karthik and Bharadwaj, Vaibhav and Wu, Meng and Arpaci-Dusseau, Andrea C. and Arpaci-Dusseau, Remzi H.},
+  title        = {Industry Paper: Kafka versus RabbitMQ},
+  booktitle    = {Proceedings of the 18th ACM/IFIP/USENIX Middleware Conference: Industrial Track},
+  year         = {2017},
+  pages        = {31--37},
+  doi          = {10.1145/3093742.3093908},
+}
+
+@INPROCEEDINGS{Shirolkar2014HDMQ,
+  author       = {Ranjeet Shirolkar and Michael Voss and Ioan Raicu},
+  title        = {Towards In-Order and Exactly-Once Delivery using Hierarchical Distributed Message Queues},
+  booktitle    = {5th Workshop on Scientific Cloud Computing (ScienceCloud '14)},
+  year         = {2014},
+  pages        = {19--26},
+  doi          = {10.1145/2608029.2608034},
+}
+
+@INPROCEEDINGS{Sharma2016Wormhole,
+  author       = {Yogeshwer Sharma and Philippe Ajoux and Petchean Ang and David Callies and Abhishek Choudhary and Laurent Demailly and Thomas Fersch and Liat Atsmon Guz and Andrzej Kotulski and Sachin Kulkarni and Sanjeev Kumar and Harry Li and Jun Li and Evgeniy Makeev and Kowshik Prakasam and Robbert van Renesse and Sabyasachi Roy and Pratyush Seth and Yee Jiun Song and Benjamin Wester and Kaushik Veeraraghavan and Peter Xie},
+  title        = {Wormhole: Reliable Pub-Sub to Support Geo-replicated Internet Services},
+  booktitle    = {13th USENIX Symposium on Networked Systems Design and Implementation (NSDI 16)},
   year         = {2016},
-  doi          = {10.1504/IJGUC.2016.073772},
+  pages        = {351--366},
+  publisher    = {USENIX Association},
+  url          = {https://www.usenix.org/conference/nsdi16/technical-sessions/presentation/sharma},
 }
 
-@ARTICLE{GomesCT15,
-  author       = {Danielo G. Gomes and
-                  Rodrigo N. Calheiros and
-                  Rafael Tolosana{-}Calasanz},
-  title        = {Introduction to the special issue on Cloud Computing: Recent Developments
-                  and Challenging Issues},
-  journal      = {Computers {\&} Electrical Engineering},
-  volume       = {42},
-  pages        = {31--32},
-  year         = {2015},
-  doi          = {10.1016/j.compeleceng.2015.03.008},
+@INPROCEEDINGS{Pongthawornkamol2013ReliabilityPubSub,
+  author       = {Thadpong Pongthawornkamol and Klara Nahrstedt and Guijun Wang},
+  title        = {Reliability and Timeliness Analysis of Fault-tolerant Distributed Publish/Subscribe Systems},
+  booktitle    = {10th International Conference on Autonomic Computing (ICAC 13)},
+  year         = {2013},
+  pages        = {239--250},
+  publisher    = {USENIX Association},
+  url          = {https://www.usenix.org/conference/icac13/technical-sessions/presentation/pongthawornkamol},
 }
 
-@ARTICLE{KuneKARB16,
-  author       = {Raghavendra Kune and
-                  Pramodkumar Konugurthi and
-                  Arun Agarwal and
-                  Chillarige Raghavendra Rao and
-                  Rajkumar Buyya},
-  title        = {The anatomy of big data computing},
-  journal      = {Software: Practice and Experience},
-  volume       = {46},
+% Serverless Computing and AWS Lambda
+@ARTICLE{Balla2023FaaSReplication,
+  author       = {Dániel Balla and Csaba Simon and Miklós Maliosz},
+  title        = {Integrating request replication into FaaS platforms: an experimental evaluation},
+  journal      = {Journal of Cloud Computing},
+  volume       = {12},
   number       = {1},
-  pages        = {79--105},
-  year         = {2016},
-  doi          = {10.1002/spe.2374},
+  pages        = {58},
+  year         = {2023},
+  doi          = {10.1186/s13677-023-00457-z},
+}
+
+@INPROCEEDINGS{Qi2023Halfmoon,
+  author       = {Sheng Qi and Xuanzhe Liu and Xin Jin},
+  title        = {Halfmoon: Log-Optimal Fault-Tolerant Stateful Serverless Computing},
+  booktitle    = {Proceedings of the 29th Symposium on Operating Systems Principles},
+  series       = {SOSP '23},
+  year         = {2023},
+  pages        = {635--650},
+  doi          = {10.1145/3600006.3613154},
+}
+
+% Idempotency and Exactly-Once Semantics
+@ARTICLE{Yadav2024Idempotent,
+  author       = {Purshotam S. Yadav and Vipul Chudasama},
+  title        = {Mitigating Duplicate Message Processing in Microservice Architectures: An Idempotent Consumer Approach},
+  journal      = {Journal of Artificial Intelligence, Machine Learning and Data Science},
+  volume       = {2},
+  number       = {1},
+  pages        = {408--418},
+  year         = {2024},
+  doi          = {10.51219/jaimld/purshotam-s-yadav/214},
+}
+
+@INPROCEEDINGS{Wang2021KafkaExactlyOnce,
+  author       = {Guozhang Wang and Lei Chen and Ayusman Dikshit and Jason Gustafson and Boyang Chen and Ismael Juma and Jun Rao and Joel Koshy and Dong Lin and Matthias J. Sax and Liquan Pei and Damian Guy and Konstantine Karantasis and Xavier Léauté and Cong Ding},
+  title        = {Consistency and Completeness: Rethinking Distributed Stream Processing in Apache Kafka},
+  booktitle    = {Proceedings of the 2021 International Conference on Management of Data},
+  series       = {SIGMOD '21},
+  year         = {2021},
+  pages        = {2602--2613},
+  doi          = {10.1145/3448016.3457556},
+}
+
+% Recovery Time and Metrics
+@MISC{Sreepathy2021ReliableActors,
+  author       = {Sreepathy Madhavapeddy and David Grove and Olivier Tardieu},
+  title        = {Reliable Actors with Retry Orchestration},
+  year         = {2021},
+  publisher    = {arXiv},
+  doi          = {10.48550/arxiv.2111.11562},
+  note         = {arXiv:2111.11562},
+}
+
+@INPROCEEDINGS{Wang2019Dayu,
+  author       = {Qiang Wang and Anxue Zhang and Xiangkui Wu and Jian Wu and Tianxu Lan},
+  title        = {Dayu: Fast and Low-interference Data Recovery in Very-large Storage Systems},
+  booktitle    = {2019 USENIX Annual Technical Conference (USENIX ATC 19)},
+  year         = {2019},
+  pages        = {993--1005},
+  publisher    = {USENIX Association},
+  url          = {https://www.usenix.org/conference/atc19/presentation/wang-qiang},
+}
+
+% Event-Driven Architecture and Asynchronous Messaging
+@ARTICLE{Thaur2023EventDrivenKafka,
+  author       = {Mira Thaur and Devender K Tayal and Kanika Malik},
+  title        = {Harnessing Asynchronous Patterns with Event Driven Kafka and Microservices Architectures},
+  journal      = {Journal of Artificial Intelligence, Cloud Computing and Communication},
+  volume       = {2},
+  number       = {5},
+  pages        = {316--324},
+  year         = {2023},
+  doi          = {10.47363/jaicc/2023(2)502},
+}
+
+@INPROCEEDINGS{Zuckmantel2022EventConsistency,
+  author       = {Tilman Zuckmantel and Yongluan Zhou and Boris Düdder and Thomas Hildebrandt},
+  title        = {Event-Based Data-Centric Semantics for Consistent Data Management in Microservices},
+  booktitle    = {The 16th ACM International Conference on Distributed and Event-based Systems (DEBS '22)},
+  year         = {2022},
+  pages        = {96--101},
+  doi          = {10.1145/3524860.3539807},
+}
+
+@MISC{Laigner2024EventChallenges,
+  author       = {Rodrigo Laigner and Yongluan Zhou and Marcos Antonio Vaz Salles and Yijian Liu and Marcos Kalinowski},
+  title        = {An Empirical Study on Challenges of Event Management in Microservice Architectures},
+  year         = {2024},
+  publisher    = {arXiv},
+  note         = {arXiv:2408.00440},
+  doi          = {10.48550/arxiv.2408.00440},
+}
+
+% Benchmarking Message Queues
+@ARTICLE{Maharjan2023Benchmarking,
+  author       = {Rokin Maharjan and Md Showkat Chy and Muhammad Ashfakur Arju and Tomas Cerny},
+  title        = {Benchmarking Message Queues},
+  journal      = {Telecom},
+  volume       = {4},
+  number       = {2},
+  pages        = {298--312},
+  year         = {2023},
+  doi          = {10.3390/telecom4020017},
+}
+
+% AWS Documentation and Best Practices (no DOI, authoritative sources)
+@MISC{AWSResilience2023,
+  author       = {{Amazon Web Services}},
+  title        = {Availability and Beyond: Understanding and Improving the Resilience of Distributed Systems on AWS},
+  year         = {2023},
+  howpublished = {AWS Whitepaper},
+  url          = {https://docs.aws.amazon.com/whitepapers/latest/availability-and-beyond-improving-resilience/},
+}
+
+@MISC{AWSSQSGuide,
+  author       = {{Amazon Web Services}},
+  title        = {Amazon Simple Queue Service Developer Guide},
+  year         = {2024},
+  howpublished = {AWS Documentation},
+  url          = {https://docs.aws.amazon.com/sqs/},
 }
