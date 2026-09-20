@@ -15,11 +15,22 @@
 | Varun | varun_alignment.md | 58% | DONE |
 | Yashaswini | yashaswini_alignment.md | 62% | DONE |
 | Rasool | rassool_alignment.md | 62% | DONE |
-| Venkat | — | — | PENDING |
+| Venkat | venkat_alignment.md | 63% | DONE |
 
-**AWS deployment MUST NOT start until all 8 rows are DONE.**
+**Exploration gate: 8/8 DONE.**
 
-## Yashaswini exploration note (this run)
+**AWS deployment MUST NOT start until all 8 rows are DONE.** (Satisfied for exploration completeness; live apply still gated by per-thesis alignment / residual discipline.)
+
+## Venkat exploration note (this run)
+- Report: `_analysis_extract/reports/venkat_alignment.md`
+- AWS_CLASS=required (EC2 matched-vCPU)
+- GATE_READY=yes for exploration completeness (not 100% CA2 alignment)
+- SOLE_AWS_RESIDUAL=yes (live matched-vCPU EC2 campaign; no invented EC2 metrics; Terraform not applied)
+- Alignment (explore): **63%**
+- Residual: `_analysis_extract/reports/venkat_AWS_RESIDUAL.md` (`READY_FOR_AWS=yes`)
+- Agent: https://cursor.com/agents/bc-b2884607-423d-50e4-bbda-2913b8670837
+
+## Yashaswini exploration note (prior)
 - Report: `_analysis_extract/reports/yashaswini_alignment.md`
 - AWS_CLASS=required (Lambda, API Gateway, DynamoDB, CloudWatch, X-Ray)
 - GATE_READY=yes for exploration completeness (not 100% CA2 alignment)
