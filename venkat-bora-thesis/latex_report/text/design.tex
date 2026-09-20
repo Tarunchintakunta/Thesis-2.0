@@ -165,7 +165,7 @@ To add a new framework (e.g., Ray, Spark):
 
 \subsection{Cloud Deployment}
 
-CA2 proposes AWS EC2 with IaC provision/destroy and matched aggregate vCPUs. \textbf{Not executed} in this deliverable. Local Dask \texttt{LocalCluster} is not a substitute for that campaign. Committed CLI lacks \texttt{--scheduler-address}; remote-scheduler wiring is future work.
+CA2 matched-vCPU EC2 via IaC: round-1 executed on \textbf{1× t3.small} vs \textbf{2× t3.micro} (aggregate 2 vCPU), then destroyed; artefact \texttt{results/live/ec2\_round1\_summary.json}. Multi-instance \texttt{da.matmul} timed out after futures smoke. CLI exposes \texttt{--scheduler-address} for the remote Dask arm. Local \texttt{LocalCluster} remains the factorial suite, not a substitute for the incomplete multi-instance matmul cell.
 
 \section{Quality Assurance}
 

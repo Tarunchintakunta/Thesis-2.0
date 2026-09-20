@@ -1,9 +1,9 @@
-% ALIGNMENT FIX 2026-09-20: narrative numbers must match results/data/summary_statistics.json (local Dask only, not EC2).
+% ALIGNMENT FIX 2026-09-20: local numbers match results/data/summary_statistics.json; live round-1 from results/live/ec2_round1_summary.json.
 \chapter{Evaluation}
 
 This chapter presents experimental results, analyzes performance trends, and interprets findings in the context of the research question: how do multi-threaded and distributed parallelism models compare for matrix workloads at matched core counts?
 
-\textbf{Evidence boundary:} All numbers below are taken from committed \texttt{results/data/summary\_statistics.json} (local Dask \texttt{LocalCluster} on one host). No AWS EC2 multi-instance campaign was executed; these results are a local proxy, not matched-vCPU cloud results.
+\textbf{Evidence boundary:} Primary tables and figures below are taken from committed \texttt{results/data/summary\_statistics.json} (local Dask \texttt{LocalCluster} on one host). A separate \textbf{AWS EC2 round-1} artefact exists at \texttt{results/live/ec2\_round1\_summary.json} (matched 2-vCPU topology: 1× \texttt{t3.small} vs 2× \texttt{t3.micro}); those live cells are reported in Section~\ref{sec:live-ec2-round1} and are \textbf{not} mixed into the local suite tables. Multi-instance \texttt{da.matmul} did \textbf{not} complete in round-1 (timed out after a successful futures smoke test).
 
 \section{Dataset Overview}
 
@@ -141,7 +141,7 @@ At 1000×1000 with 4 workers (often cited as the mid-range point):
     \item Ratio: distributed $\approx$5.54× slower (not a 47\% gap)
 \end{itemize}
 
-The absolute gap narrows at some larger sizes relative to tiny matrices, but \textbf{distributed still does not win through 2000×2000} in the local JSON. Any claim that crossover ``typically'' occurs near 1000×1000 is withdrawn for this evidence set. A true multi-node EC2 campaign (CA2 matched aggregate vCPUs) was not run; network latency would likely increase distributed cost further.
+The absolute gap narrows at some larger sizes relative to tiny matrices, but \textbf{distributed still does not win through 2000×2000} in the local JSON. Any claim that crossover ``typically'' occurs near 1000×1000 is withdrawn for this evidence set. Live matched-vCPU EC2 round-1 (Section~\ref{sec:live-ec2-round1}) measured scale-up and on-node scale-out at $n{=}500$ but did not yield a completed multi-instance \texttt{da.matmul} timing.
 
 \subsection{Hypothesis Testing Results}
 
@@ -181,29 +181,52 @@ For matrix workloads \textit{on evidence from this local proxy}:
     
     \item \textbf{Memory Constraints}: If per-node memory is limited, distributing across machines can provide aggregate memory even if slower per-operation.
     
-    \item \textbf{Cost Model}: Threading minimizes coordination overhead and instance count. True cloud scale-out economics require an EC2 campaign that was not executed here.
+    \item \textbf{Cost Model}: Threading minimizes coordination overhead and instance count. Cloud scale-out economics require completed multi-instance matmul cells; round-1 left that cell timed out.
 \end{enumerate}
 
 \subsection{Cloud Infrastructure Recommendations}
 
-Recommendations below are \textbf{methodological guidance}, not measured EC2 results:
+Recommendations below combine local-suite trends with live round-1 topology evidence (not a completed multi-instance matmul campaign):
 
 \begin{itemize}
-    \item For batch matrix jobs that fit on one host: prefer a single large instance and shared-memory parallelism first
-    \item For jobs exceeding single-node capacity: run a matched-vCPU multi-instance EC2 campaign before assuming crossover
+    \item For batch matrix jobs that fit on one host: prefer a single larger instance and shared-memory parallelism first (round-1 scale-up on \texttt{t3.small} was far faster than on-node Dask on each \texttt{t3.micro} at $n{=}500$)
+    \item For jobs exceeding single-node capacity: finish matched-vCPU multi-instance \texttt{da.matmul} before assuming crossover
     \item For sustained workloads: amortize cluster setup overhead across multiple operations
-    \item Local Dask \texttt{LocalCluster} understates multi-node network cost relative to AWS
+    \item Local Dask \texttt{LocalCluster} understates multi-node network cost relative to AWS; round-1 multi-instance matmul remaining residual confirms that gap is not yet quantified
 \end{itemize}
+
+\section{Live EC2 Round-1 (matched vCPU)}
+\label{sec:live-ec2-round1}
+
+Artefact: \texttt{results/live/ec2\_round1\_summary.json} (\texttt{eu-west-1}; instances destroyed after the round). Experiment design: \textbf{1× t3.small} (2 vCPU) scale-up vs \textbf{2× t3.micro} (1+1 vCPU) scale-out.
+
+\begin{table}[ht]
+\centering
+\caption{EC2 round-1 cells at $n{=}500$ (from \texttt{ec2\_round1\_summary.json})}
+\label{tab:ec2-round1}
+\begin{tabular}{lll}
+\toprule
+\textbf{Arm} & \textbf{Mode} & \textbf{Outcome} \\
+\midrule
+1× \texttt{t3.small} & numpy matmul & 0.006709\,s \\
+2× \texttt{t3.micro} (per node) & Dask LocalCluster & 0.5339\,s / 0.5166\,s (mean 0.5252\,s) \\
+Multi-instance & futures smoke & OK (2 workers registered) \\
+Multi-instance & \texttt{da.matmul} & \textbf{timed\_out} (no wall-clock claimed) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+No completed multi-instance matmul timing is invented or inferred from the smoke test.
 
 \section{Limitations}
 
 \subsection{Experimental Scope}
 
 \begin{itemize}
-    \item Full local sweep covers 200--2000; still no AWS multi-node campaign
-    \item Local execution understates true network latency; AWS EC2 would add distributed overhead not present here
+    \item Full local sweep covers 200--2000; live EC2 round-1 covers $n{=}500$ with multi-instance \texttt{da.matmul} incomplete
+    \item Local execution understates true network latency; multi-instance matmul cost on EC2 remains unmeasured
     \item Dense matrices only; sparse workloads have different communication patterns
-    \item Inferential statistical tests described but not coded; $n{=}3$ iterations (not 5)
+    \item Inferential statistical tests described but not coded; local $n{=}3$ iterations (not 5); live round-1 is single-shot
 \end{itemize}
 
 \subsection{Generalizability}
@@ -212,11 +235,11 @@ Recommendations below are \textbf{methodological guidance}, not measured EC2 res
     \item Results are CPU platform-specific (x86-64, OpenBLAS)
     \item Python-specific runtime characteristics (GIL, NumPy kernel behavior)
     \item Dask-specific coordination overhead; other frameworks (Spark, Ray) may differ
-    \item Local matched cores $\neq$ CA2 matched aggregate vCPUs across EC2 instances
+    \item Local matched cores $\neq$ completed multi-instance EC2 matmul; round-1 left \texttt{da.matmul} timed out
 \end{itemize}
 
 \section{Summary}
 
 Experimental results from committed local JSON demonstrate that multi-threaded execution maintains performance advantages over local-Dask distributed execution for matrix workloads from 200×200 through 2000×2000 at matched worker counts. At 1000×1000 / 4 workers, distributed matmul is $\approx$5.54× slower than threading (62.2\,ms vs 344.6\,ms). No crossover appears in the local evidence set.
 
-These findings support preferring scale-up (threading) for workloads that fit on a single host in this local proxy. They do \textbf{not} constitute measured AWS EC2 matched-vCPU results required by the CA2 cloud-instance research design.
+Live EC2 round-1 on the matched 2-vCPU topology (1× \texttt{t3.small} vs 2× \texttt{t3.micro}) measured scale-up numpy and on-node Dask cells at $n{=}500$, and confirmed multi-instance worker registration plus futures smoke, but \textbf{did not} complete multi-instance \texttt{da.matmul}. That incomplete cell—and full eval sync to live evidence—is the remaining residual.

@@ -12,7 +12,7 @@ A controlled experiment isolates the parallelism model as the independent variab
 \begin{itemize}
     \item \textbf{Threading}: Python \texttt{threading} module with shared memory
     \item \textbf{Multiprocessing}: Python \texttt{multiprocessing} module with separate address spaces
-    \item \textbf{Distributed}: Dask distributed scheduler with \texttt{LocalCluster} on one host (local proxy for scale-out; \textbf{not} multi-instance AWS EC2)
+    \item \textbf{Distributed}: Dask distributed scheduler — local campaign uses \texttt{LocalCluster} on one host; live EC2 round-1 additionally exercises multi-instance workers (matched aggregate vCPUs)
 \end{itemize}
 
 \textbf{Matrix Size} (factor with 5 levels): 200×200, 500×500, 1000×1000, 1500×1500, 2000×2000
@@ -169,22 +169,19 @@ In the committed local JSON, this condition is \textbf{never} met for matmul thr
 
 \textbf{CA2 requirement:} matched aggregate vCPU comparison on AWS EC2 (multi-threaded on a single instance vs distributed across instances), with infrastructure provisioned and destroyed via IaC.
 
-\textbf{Practice in this deliverable:} all experiments run on a \textbf{local} development machine with Dask \texttt{LocalCluster}. Local matched cores on one host are \textbf{not} equivalent to matched aggregate vCPUs across EC2 instances. No live EC2 / CloudWatch evidence is claimed.
-
-Rationale for the local proxy:
-
+\textbf{Practice in this deliverable:}
 \begin{itemize}
-    \item \textbf{Reproducibility}: No AWS account or credentials required; anyone can run the benchmarks
-    \item \textbf{Cost}: Zero infrastructure cost during development and validation
-    \item \textbf{Honesty}: Local absolute times must not be presented as cloud results
+    \item \textbf{Local campaign:} full factorial suite on one host with Dask \texttt{LocalCluster} (\texttt{results/data/summary\_statistics.json}).
+    \item \textbf{Live EC2 round-1:} matched 2-vCPU topology — \textbf{1× t3.small} (scale-up) vs \textbf{2× t3.micro} (scale-out) in \texttt{eu-west-1}; artefact \texttt{results/live/ec2\_round1\_summary.json}; fleet destroyed after the round. Terraform defaults match this topology.
 \end{itemize}
 
-The local Dask cluster (multiple workers on same machine) is only a proxy for scale-out:
+Local matched cores on one host are still \textbf{not} a substitute for multi-instance network cost. Live round-1 evidence:
 
 \begin{itemize}
-    \item Distributed overhead is likely \textit{underestimated} relative to multi-node AWS (no real network fabric)
-    \item Any future crossover on EC2 must be measured; it is not evidenced here
-    \item Remote \texttt{--scheduler-address} CLI wiring is not present in committed \texttt{main.py}
+    \item Scale-up numpy matmul ($n{=}500$): $\approx$0.0067\,s on \texttt{t3.small}
+    \item On-node Dask \texttt{LocalCluster} per \texttt{t3.micro} ($n{=}500$): mean $\approx$0.52\,s
+    \item Multi-instance: two workers registered; futures smoke OK; \texttt{da.matmul} \textbf{timed out} (no completed multi-instance matmul cell)
+    \item CLI exposes \texttt{--scheduler-address} for the remote Dask arm
 \end{itemize}
 
 \section{Ethical Considerations}
@@ -227,4 +224,4 @@ All source code, raw data, and analysis scripts are provided for transparency an
 
 \section{Summary}
 
-The experimental methodology controls for hardware, software, and workload factors while systematically varying parallelism model, matrix size, and worker count. Committed evidence is descriptive ($n{=}3$ means/std in JSON). Local execution trades true cloud network characteristics for reproducibility and zero cost; the CA2 AWS EC2 matched-vCPU campaign remains outstanding.
+The experimental methodology controls for hardware, software, and workload factors while systematically varying parallelism model, matrix size, and worker count. Committed local evidence is descriptive ($n{=}3$ means/std in JSON). Live EC2 round-1 adds matched-vCPU scale-up vs scale-out cells at $n{=}500$; the sole outstanding cloud cell is completed multi-instance \texttt{da.matmul} (timed out in round-1).

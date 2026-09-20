@@ -40,7 +40,7 @@ The experimental design implements matrix multiplication and LU factorization us
 
 Performance is measured via completion time (wall-clock), peak resident memory (RSS), and CPU utilization (sampled percentage). Each configuration is repeated three times in the committed campaign; descriptive mean$\pm$std values are reported from \texttt{summary\_statistics.json}.
 
-\textbf{Important:} Experiments use local Dask \texttt{LocalCluster} on one host. This is \textbf{not} the CA2 AWS EC2 matched-vCPU multi-instance campaign. Local results are a proxy only; no live EC2 metrics are claimed.
+\textbf{Important:} The committed factorial suite uses local Dask \texttt{LocalCluster} on one host. A matched-vCPU AWS EC2 round-1 (1× \texttt{t3.small} vs 2× \texttt{t3.micro}) is recorded in \texttt{results/live/ec2\_round1\_summary.json}; multi-instance \texttt{da.matmul} timed out and is not claimed as a completed timing.
 
 \section{Thesis Organization}
 
