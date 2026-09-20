@@ -6,13 +6,13 @@
 \label{sec:Conclusion}
 %% ==================
 
-This project asked whether letting per-metric attention heads exchange information via a cross-head fusion layer reduces the systematic underprediction during high-load transients reported by Thapliyal (2026) for a strict one-head-per-metric SLA monitoring architecture. Reproducing that architecture on synthetic cluster telemetry confirmed the same failure mode (underprediction bias of 0.29 severity levels on transient windows), and the proposed fusion layer moved both targeted metrics in the right direction (recall 0.864$\to$0.884, bias 0.290$\to$0.273) across 5 properly-seeded training runs, at a small cost to overall accuracy (0.873$\to$0.863). Both attention-based models substantially outperformed reactive threshold monitoring at anticipating violations ahead of time (86-88\% vs. 2.5\% recall), confirming the baseline paper's central premise transfers to cluster health telemetry.
+Formal CA2 asks whether MHSA-TDL improves cluster-health / failure prediction on Google Cluster Trace versus hybrid and traditional monitors, under Acc/Prec/Rec/F1/ROC-AUC/latency. This artefact provides an MHSA implementation, a five-seed synthetic harness with that formal metric suite and classical RF/KNN/SVM monitors, and an explicit GCT absence gate (\texttt{DATA\_GAPS.md}, \texttt{gct\_loader.py}). It does \textbf{not} yet answer the formal research question: synthetic scores are development evidence only.
 
-The improvement from fusion is real but modest, and none of the differences exceed one standard deviation across seeds -- an honest limitation rather than a negative result. A first, unseeded version of this experiment showed a much larger apparent effect that turned out to be an artefact of uncontrolled random initialisation rather than the fusion layer itself; this was caught by re-running with torch's RNG properly seeded, which is itself a reminder that small neural-network comparisons need seed control to be trustworthy.
-
-\textbf{Future work:}
+\textbf{Remaining blockers to formal alignment:}
 \begin{itemize}
-  \item Evaluate on real cluster telemetry (e.g. the Google Cluster Trace dataset) rather than synthetic data, to check whether the fusion improvement holds under real, non-stationary failure patterns.
-  \item Replace the generic cross-entropy loss with an asymmetric loss that penalises underprediction more than overprediction, directly targeting the failure mode this project measures.
-  \item Extend the burst-pattern vocabulary in the synthetic generator to a wider range of cross-metric lead/lag relationships, to test whether the fusion benefit scales with how much genuinely cross-metric information the task requires.
+  \item Ingest Google Cluster Trace (2011 and/or 2019) per \texttt{DATA\_GAPS.md} and implement the reviewed usage$\leftrightarrow$event window join.
+  \item Re-run the metric suite with \texttt{--dataset gct}; report confusion-matrix FN/FP analysis on GCT splits.
+  \item Complete Aldomi-style~\cite{Aldomi26} hybrid comparison on the same GCT features (beyond scaffold RF/KNN/SVM).
 \end{itemize}
+
+AWS live deploy is \textbf{not} required for alignment. Optional Colab/EC2 GPU training remains a resource choice after GCT data exists.

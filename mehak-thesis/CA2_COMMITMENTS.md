@@ -27,3 +27,5 @@ Aldomi et al. (2026) and related hybrid/attention failure-prediction literature 
 - Live Kinesis/Lambda inference campaign is **not** the CA2 experiment.
 - Prior proxy “synthetic OK + Thapliyal underprediction” contract is **superseded**.
 - Synthetic-only telemetry **is** a blocker vs this formal CA2 (GCT required).
+- Exact missing files: `DATA_GAPS.md`. Loader: `mhsa-tdl-framework/src/data/gct_loader.py` (fail-closed).
+- Formal metric columns + RF/KNN/SVM scaffold may appear in synthetic CSVs; those rows are **not** GCT evidence.

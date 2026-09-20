@@ -96,16 +96,14 @@ The workflow is written to re-run evaluation and optionally invoke \texttt{sam d
 \subsection{Reproducibility}
 \label{subsec:reproducibility}
 
-Every result reported in Section~\ref{sec:Evaluation} is fully reproducible by running \texttt{python scripts/train\_and\_evaluate.py} from the \texttt{mhsa-tdl-framework/} directory. No external dataset dependency exists: telemetry is synthetically generated with a fixed seed per run.
+Every result reported in Section~\ref{sec:Evaluation} is reproducible by running \texttt{python scripts/train\_and\_evaluate.py} (default \texttt{--dataset synthetic}) from \texttt{mhsa-tdl-framework/}. Formal CA2 reproduction requires \texttt{--dataset gct} after placing files listed in \texttt{DATA\_GAPS.md}; that path fails closed when traces are absent and does not invent windows.
 
-Reproducibility is ensured through rigorous random seed control:
+Reproducibility for the synthetic harness:
 \begin{itemize}
-  \item \textbf{Data generation}: NumPy's random number generator is seeded with the current seed (42--46) at the start of each run, ensuring the same synthetic telemetry is generated per seed.
-  \item \textbf{Model initialization and training}: PyTorch's random number generator is seeded with the current seed immediately before model instantiation, ensuring the same initial weights and DataLoader shuffling order per seed.
-  \item \textbf{Environment}: the \texttt{requirements.txt} file pins exact package versions (e.g., \texttt{torch==1.13.1}, \texttt{numpy==1.23.5}) to prevent version-dependent numerical differences.
+  \item \textbf{Data generation}: NumPy RNG seeded per run (42--46).
+  \item \textbf{Model initialization and training}: PyTorch RNG seeded before model instantiation.
+  \item \textbf{Environment}: \texttt{requirements.txt} lists runtime dependencies.
 \end{itemize}
 
-An earlier, unseeded version of this experiment showed a much larger apparent improvement from fusion ($\sim$20\% bias reduction) that did not replicate once training randomness was properly controlled (see Section~\ref{sec:discussion}). The properly-seeded, 5-seed results reported in this paper are the ones that should be trusted. This experience underscores the importance of rigorous seed control in small-scale neural network experiments: without it, a single lucky random initialization can produce a result that looks like a clean win but is actually an artefact of uncontrolled randomness.
-
-All code, datasets, results, and trained model weights are available in the \texttt{mhsa-tdl-framework/} directory. The LaTeX source for this report is in \texttt{latex\_report/}. The full repository is version-controlled with Git and available at [repository URL redacted for blind review].
+Reported metrics come exclusively from the local five-seed synthetic campaign. Optional SAM/Lambda paths were not executed and are not required by formal CA2.
 

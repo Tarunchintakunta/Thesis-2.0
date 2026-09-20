@@ -1,48 +1,32 @@
-# MHSA-TDL: Cross-Head Fusion for Multi-Head Attention Cluster Telemetry Monitoring
+# MHSA-TDL: Cluster health prediction artefact (Mehak)
 
-Mehak's MSc Cloud Computing thesis codebase. Reproduces the baseline architecture from
-Thapliyal (2026), *"A Multi-Head Attention Approach for SLA Compliance Monitoring in
-Data Centers"* (arXiv:2605.05354, IEEE ICDCS 2026), adapted from data-center SLA rules
-to cluster telemetry (CPU, memory, disk, network), and evaluates a fix for a gap that
-paper reports in its own results.
+MSc Cloud Computing thesis codebase for **formal CA2** (`MAHEK NAAZ.docx`): MHSA-TDL for cloud cluster health / failure prediction on **Google Cluster Trace**, metrics Acc/Prec/Rec/F1/ROC-AUC/latency, vs hybrid + traditional monitors.
 
-## The baseline paper's gap
-Thapliyal's model gives each attention head strict, exclusive ownership of one metric
-(power/temperature/humidity). Their results show the most volatile head (power)
-systematically **underpredicts** severity during high-load transients — the authors
-attribute this to heads never sharing information, even though the underlying metrics
-are correlated.
+## Alignment honesty
+| Formal CA2 | This repo today |
+|------------|-----------------|
+| Google Cluster Trace | **Missing** — see `../DATA_GAPS.md`; `src/data/gct_loader.py` fails closed |
+| Acc/Prec/Rec/F1/ROC-AUC/latency | **Wired** in `scripts/train_and_evaluate.py` |
+| Aldomi / RF·KNN·SVM·GRU | RF/KNN/SVM **scaffold** on synthetic; full Aldomi+GCT **blocked** |
+| Thapliyal underprediction proxy | **Superseded** — related architecture only |
 
-## What this project does
-1. **Reproduces** the strict one-head-per-metric architecture (`MHSAPerHead`) as a baseline, applied to cluster telemetry.
-2. **Confirms the gap** on synthetic telemetry with injected cross-metric burst precursors, where predicting one metric's future violation sometimes requires reading a *different* metric's early signal.
-3. **Fixes it** with a cross-head fusion layer (`MHSAFused`) that lets the per-metric head vectors attend to each other before classification.
-4. Evaluates both, across 5 seeded training runs, against a reactive threshold-monitoring baseline.
+Synthetic 5-seed CSVs under `results/` are **artefact-as-built**, not formal GCT evidence (`results/RESULTS_PROVENANCE.md`).
 
-**Result:** fusion gives a real but modest improvement on the targeted gap (transient
-recall 86.4%→88.4%, underprediction bias 0.29→0.27) at a small accuracy cost — see
-`../final_report.md` for full numbers and an honest discussion of an earlier, unseeded
-run that overstated the effect.
-
-## Project Structure
-- `src/data/telemetry_simulator.py` — synthetic telemetry generator (history window in, future window labelled).
-- `src/models/mhsa_model.py` — shared backbone, `MHSAPerHead` (baseline), `MHSAFused` (improved), `CrossHeadFusion` layer.
-- `src/models/baseline.py` — reactive threshold monitor.
-- `scripts/train_and_evaluate.py` — trains/evaluates all 3 approaches over 5 seeds, saves results + exports the deployable model.
-- `src/lambda_handler/app.py` — real (not mocked) inference over a Kinesis telemetry stream, using the exported model.
-- `template.yaml` — AWS SAM template (Kinesis stream + Lambda).
-- `.github/workflows/deploy.yml` — CI: runs training/eval on every push, deploys the SAM stack to `main`.
+## Layout
+- `src/data/telemetry_simulator.py` — synthetic generator (dev only)
+- `src/data/gct_loader.py` — GCT presence gate (no invented windows)
+- `src/models/mhsa_model.py` — MHSA-PerHead / MHSA-Fused
+- `src/models/baseline.py` — reactive threshold monitor
+- `src/models/classical_baselines.py` — RF / KNN / SVM scaffold
+- `scripts/train_and_evaluate.py` — 5-seed eval; `--dataset synthetic|gct`
+- `template.yaml` / Lambda — **optional; not required by formal CA2**
 
 ## Usage
 ```bash
-pip install -r requirements.txt
-python scripts/train_and_evaluate.py
+python -m venv .venv && .venv/bin/pip install -r requirements.txt
+.venv/bin/python scripts/train_and_evaluate.py              # synthetic harness
+.venv/bin/python scripts/train_and_evaluate.py --dataset gct # requires DATA_GAPS files
 ```
-Results land in `results/results_per_seed.csv` and `results/results_summary.csv`. The
-trained model used for deployment is saved to `src/lambda_handler/model/`.
 
-## Known simplification
-`torch` is a heavy dependency for a Lambda zip package. This repo keeps the code simple
-and correct locally; for a real deployment you would package the Lambda as a container
-image or put `torch` in a Lambda layer. The GitHub Actions workflow assumes you've set
-`AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, and `AWS_REGION` as repository secrets.
+## AWS
+Formal resources list Colab **or** EC2 GPU as training compute alternatives. **Do not deploy** Lambda/SAM for alignment.

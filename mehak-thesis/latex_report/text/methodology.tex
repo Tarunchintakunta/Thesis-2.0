@@ -6,12 +6,12 @@
 \label{sec:Methodology}
 %% ==============================
 
-This section describes the experimental methodology used to evaluate whether cross-head fusion reduces the systematic underprediction reported in the baseline paper. Section~\ref{subsec:synth} specifies the synthetic telemetry generator; Section~\ref{subsec:window} details the forecasting window design; Section~\ref{subsec:transient} describes the transient burst injection mechanism; Section~\ref{subsec:training} presents the training procedure; and Section~\ref{subsec:metrics} defines the evaluation metrics.
+Formal CA2 requires a Google Cluster Trace pipeline with Acc/Prec/Rec/F1/ROC-AUC/latency against hybrid and traditional monitors. That GCT pipeline is \textbf{not} available in this repository yet (\texttt{DATA\_GAPS.md}; loader gate in \texttt{src/data/gct\_loader.py}). The methodology below therefore documents the \textbf{artefact-as-built} synthetic experiment used for development and metric-suite wiring only. Section~\ref{subsec:synth} specifies the synthetic generator; Section~\ref{subsec:window} the forecasting window; Section~\ref{subsec:transient} transient bursts; Section~\ref{subsec:training} training; Section~\ref{subsec:metrics} metrics (formal suite + legacy transient diagnostics).
 
-\subsection{Synthetic Telemetry Generator}
+\subsection{Synthetic Telemetry Generator (artefact-only; GCT gap)}
 \label{subsec:synth}
 
-Real multi-tenant cluster telemetry was not available for this project. While the Google Borg traces~\cite{Tirmazi20,Liu12} and IBM Cloud dataset~\cite{CloudAnomalyIBM24} provide large-scale production workload data, they do not include ground-truth labels for future violations or controlled cross-metric dependencies required to isolate the specific failure mode this project targets. Therefore, a synthetic telemetry generator (\texttt{src/data/telemetry\_simulator.py}) was developed to produce controlled, reproducible multivariate time series with known cross-metric burst precursors.
+Formal CA2 names the Google Cluster Trace~\cite{Tirmazi20,Liu12} as the evaluation dataset. Those files are \textbf{absent} from this artefact, so no GCT-derived labels or windows are used. A synthetic telemetry generator (\texttt{src/data/telemetry\_simulator.py}) remains for local, reproducible development. It is \textbf{not} a formal substitute: synthetic-only evaluation is an open alignment blocker. The generator produces controlled multivariate series with known cross-metric burst precursors so the MHSA code path and metric harness can be exercised before GCT lands.
 
 The generator produces sequences of 15 timesteps for four metrics: CPU utilization, memory utilization, disk I/O throughput, and network throughput. Each metric is represented as a normalized value in the range [0, 1]. The 15-step sequence is partitioned into a 10-step \emph{history window} (timesteps 0--9, the only input the models see) and a 5-step \emph{future window} (timesteps 10--14, used only to compute ground-truth labels, never shown to the models). This design makes the task a genuine forecasting problem: the model must predict future violations (timesteps 10--14) based solely on observed history (timesteps 0--9).
 
@@ -80,19 +80,18 @@ Five random seeds (42, 43, 44, 45, 46) are used to regenerate the dataset and re
 \subsection{Evaluation Metrics}
 \label{subsec:metrics}
 
-Four metrics are computed over the held-out test set to evaluate model performance:
-
+\textbf{Formal CA2 suite} (required on GCT; wired here on synthetic features for harness completeness):
 \begin{itemize}
-  \item \textbf{Accuracy}: Per-metric classification accuracy (fraction of correct None/L1/L2 predictions), averaged across the four metrics. This measures overall prediction correctness but does not distinguish between different types of errors.
-
-  \item \textbf{Macro-F1}: Per-metric macro-averaged F1 score (harmonic mean of precision and recall, averaged across the three classes with equal weight), averaged across the four metrics. This balances precision and recall and is more robust to class imbalance than accuracy alone.
-
-  \item \textbf{Transient Violation Recall}: Of the test samples that are both transient \emph{and} have a true future violation (L1 or L2) on a given metric, the fraction where the model predicts \emph{any} violation (L1 or L2, not necessarily the correct severity). This metric isolates the model's ability to detect that a violation is coming during high-load transients, which is the failure mode the baseline paper reports. A model with high transient recall may still underpredict severity (e.g., predicting L1 when the true label is L2), but it at least flags the violation.
-
-  \item \textbf{Transient Underprediction Bias}: mean$(y_{\text{true}} - y_{\text{pred}})$ over the same subset (transient samples with true violations). Positive values indicate the model systematically underpredicts severity (e.g., predicting L1 when the true label is L2, or None when the true label is L1). This is the metric that directly operationalizes the baseline paper's own stated gap: ``systematic underprediction during high-load transients.'' A bias of 0 means no systematic under- or over-prediction; values close to 1 indicate the model is consistently one severity level too low.
+  \item \textbf{Accuracy}, \textbf{Precision}, \textbf{Recall}, \textbf{Macro-F1}: per-metric macro-averaged classification scores, then averaged across metrics.
+  \item \textbf{ROC-AUC}: one-vs-rest macro AUC from class scores/probabilities when available (NaN for hard threshold rules).
+  \item \textbf{Prediction latency}: mean wall-clock milliseconds per test sample.
 \end{itemize}
 
-All metrics are computed per-metric and then averaged across the four metrics (CPU, memory, disk, network) to produce a single scalar per model. The mean and standard deviation across the five seeds are reported to quantify result variability.
+\textbf{Legacy artefact diagnostics} (proxy-era; not formal CA2 primary endpoints):
+\begin{itemize}
+  \item \textbf{Transient Violation Recall}: among transient samples with a true future L1/L2 violation, fraction predicted as any violation.
+  \item \textbf{Transient Underprediction Bias}: mean$(y_{\text{true}} - y_{\text{pred}})$ on that same subset.
+\end{itemize}
 
-All code, datasets, results, and trained model weights are available in the \texttt{mhsa-tdl-framework/} directory for reproducibility.
+Classical RF/KNN/SVM monitors are fit on flattened history windows as scaffold traditional baselines. A full Aldomi-style~\cite{Aldomi26} SelectKBest+GRU hybrid on GCT feature schemas remains blocked on missing traces. All reported scalars are mean $\pm$ std across seeds 42--46 on synthetic data only.
 

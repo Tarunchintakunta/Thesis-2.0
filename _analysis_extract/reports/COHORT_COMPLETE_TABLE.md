@@ -31,7 +31,7 @@ Rescored 2026-09-20 against formal docx (not proxy `CA2_COMMITMENTS`). **No AWS 
 
 | Thesis | Formal file | Approx alignment | AWS required by formal? | Live AWS | **Status** |
 |--------|-------------|-----------------:|:-----------------------:|:--------:|------------|
-| Mehak | `MAHEK NAAZ.docx` | **~54%** | **no** (Colab/EC2 train optional) | **No** | **NOT COMPLETE** |
+| Mehak | `MAHEK NAAZ.docx` | **~64%** | **no** (Colab/EC2 train optional) | **No** | **NOT COMPLETE** |
 | Pooja | `Pooja_25120921_CA2.docx` | **~48%** | **yes** (EC2/S3/CloudWatch+K8s) | **No** | **NOT COMPLETE** (Gantt missing — note) |
 | Uday | `UdayKiranReddyDodda_X25166484_proposal.docx` | **~18%** | **yes** (IoT Core+Lambda+DDB) | **No** | **NOT COMPLETE** (artefact≠MQTT CA2) |
 | Vishvaksen | `VishvaksenMachana_25173421_proposal.docx` | **~28%** | **no** (do not apply) | **No** | **NOT COMPLETE** (artefact≠scanner CA2) |

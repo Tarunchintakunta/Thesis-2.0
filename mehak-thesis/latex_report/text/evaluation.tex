@@ -6,51 +6,52 @@
 \label{sec:Evaluation}
 %% ==================
 
-Table~\ref{tab:results} reports mean $\pm$ standard deviation across 5 seeds (42-46) on held-out test data, bound to the committed artefact \texttt{mhsa-tdl-framework/results/results\_summary.csv} (per-seed rows in \texttt{results\_per\_seed.csv}). Model weight initialisation and data-loader shuffling are seeded per run (not just the synthetic data generator), so these numbers are reproducible by re-running \texttt{scripts/train\_and\_evaluate.py}.
+\textbf{Scope.} Table~\ref{tab:results} reports mean $\pm$ standard deviation across 5 seeds (42--46) on held-out \textbf{synthetic} telemetry, bound to \texttt{mhsa-tdl-framework/results/results\_summary.csv} (per-seed rows in \texttt{results\_per\_seed.csv}; provenance in \texttt{RESULTS\_PROVENANCE.md}). Formal CA2 requires the same metric suite on Google Cluster Trace; GCT files are absent (\texttt{DATA\_GAPS.md}), so these numbers are \textbf{artefact-as-built only} and are not claimed as formal GCT outcomes.
 
 \begin{table}[htp]
 \centering
-\caption{Results across 5 seeds (mean $\pm$ std)}
+\caption{Synthetic artefact results across 5 seeds (mean $\pm$ std). Formal CA2 metric suite; \textbf{not} GCT.}
 \label{tab:results}
-\begin{tabular}{lcccc}
+\begin{tabular}{lcccccc}
 \hline
-Model & Accuracy & Macro-F1 & Transient Recall & Underprediction Bias \\
+Model & Acc & Prec & Rec & Macro-F1 & ROC-AUC & Lat (ms) \\
 \hline
-Threshold Baseline & 0.847 $\pm$ 0.002 & 0.313 $\pm$ 0.002 & 0.025 $\pm$ 0.002 & 1.715 $\pm$ 0.011 \\
-MHSA-PerHead (baseline) & 0.873 $\pm$ 0.011 & 0.565 $\pm$ 0.008 & 0.864 $\pm$ 0.022 & 0.290 $\pm$ 0.076 \\
-MHSA-Fused (improved) & 0.863 $\pm$ 0.014 & 0.560 $\pm$ 0.010 & 0.884 $\pm$ 0.021 & 0.273 $\pm$ 0.050 \\
+Threshold Baseline & 0.847 $\pm$ 0.002 & 0.301 $\pm$ 0.002 & 0.330 $\pm$ 0.002 & 0.313 $\pm$ 0.002 & --- & 0.0001 \\
+RF (classical) & 0.953 $\pm$ 0.001 & 0.548 $\pm$ 0.003 & 0.507 $\pm$ 0.003 & 0.523 $\pm$ 0.002 & 0.903 $\pm$ 0.013 & 0.383 \\
+KNN (classical) & 0.930 $\pm$ 0.001 & 0.540 $\pm$ 0.003 & 0.452 $\pm$ 0.001 & 0.478 $\pm$ 0.001 & 0.784 $\pm$ 0.010 & 0.064 \\
+SVM (classical) & 0.944 $\pm$ 0.001 & 0.533 $\pm$ 0.004 & 0.490 $\pm$ 0.002 & 0.506 $\pm$ 0.001 & --- & 0.045 \\
+MHSA-PerHead & 0.873 $\pm$ 0.008 & 0.556 $\pm$ 0.011 & 0.719 $\pm$ 0.026 & 0.564 $\pm$ 0.009 & 0.924 $\pm$ 0.008 & 0.006 \\
+MHSA-Fused & 0.857 $\pm$ 0.026 & 0.550 $\pm$ 0.009 & 0.720 $\pm$ 0.018 & 0.557 $\pm$ 0.012 & 0.922 $\pm$ 0.011 & 0.006 \\
 \hline
 \end{tabular}
 \end{table}
 
+ROC-AUC is omitted (---) where class scores are unavailable (hard threshold rules; LinearSVC without calibrated probabilities). Legacy transient-recall / underprediction columns remain in the CSV for continuity with earlier artefact runs; they are not formal CA2 primary endpoints.
+
 %% ===============================
-\subsection{Experiment 1: Reactive vs. Proactive}
+\subsection{Experiment 1: Formal metric suite on synthetic harness}
 \label{sec:evalOne}
 %% ===============================
 
-Both attention models overwhelmingly outperform the reactive threshold baseline at anticipating violations before they occur (Transient Recall 0.86-0.88 vs. 0.025). This is structural, not a modelling artefact: the threshold baseline only ever sees the history window, so unless a violation has already started before the window ends, it cannot know one is coming. This confirms Thapliyal's central claim -- proactive, attention-based prediction meaningfully beats reactive threshold monitoring -- transfers from the SLA/colocation setting to cluster telemetry.
+The evaluation harness emits Accuracy, Precision, Recall, Macro-F1, ROC-AUC and prediction latency for MHSA variants, the reactive threshold monitor, and classical RF/KNN/SVM monitors on the same synthetic feature matrix. This closes the \emph{metric-column} gap in the artefact relative to formal CA2 wording, but \textbf{does not} close the dataset gap: scores are not transferable to GCT without re-running on real traces.
 
 %% ===============================
-\subsection{Experiment 2: Reproducing the Baseline Paper's Gap}
+\subsection{Experiment 2: Classical monitors (scaffold)}
 \label{sec:evalTwo}
 %% ===============================
 
-The reproduced baseline (MHSA-PerHead) shows a Transient Underprediction Bias of 0.29 severity levels -- i.e. when a real L1/L2 violation occurs inside a transient window, the model's prediction is on average 0.29 levels too low. This reproduces, on cluster telemetry, the same failure mode Thapliyal reports for the power-draw head on colocation telemetry: strictly independent per-metric heads underpredict severity during volatile, correlated bursts.
+RF, KNN and linear SVM monitors are fit on flattened history windows as traditional baselines named in the formal proposal. On synthetic data, RF reaches the highest accuracy (0.953) while MHSA variants achieve higher macro recall ($\sim$0.72) and ROC-AUC ($\sim$0.92). These comparisons are scaffold-only. A faithful Aldomi et al.~\cite{Aldomi26} SelectKBest+GRU hybrid on GCT task/usage features remains blocked until \texttt{DATA\_GAPS.md} files are present.
 
 %% ===============================
-\subsection{Experiment 3: Cross-Head Fusion}
+\subsection{Experiment 3: MHSA variants (architecture only)}
 \label{sec:evalThree}
 %% ===============================
 
-Adding the cross-head fusion layer (MHSA-Fused) moves both of the paper's targeted metrics in the right direction: Transient Recall rises from 0.864 to 0.884, and Underprediction Bias falls from 0.290 to 0.273 ($\sim$6\% relative reduction). This comes at a small cost to the metrics the paper does not specifically flag as a gap -- overall Accuracy drops from 0.873 to 0.863 and Macro-F1 from 0.565 to 0.560. None of these four differences exceed one standard deviation across the 5 seeds, so the honest reading is: a real, directionally consistent, but statistically modest improvement on the targeted gap, not a decisive win.
+MHSA-PerHead and MHSA-Fused share the artefact encoder; fusion is an optional architectural refinement. Synthetic differences between them are small relative to seed noise and are \textbf{not} framed as formal CA2 success. Thapliyal~\cite{Thapliyal26} is related architecture context only; the binding baseline family is hybrid/traditional monitors on GCT.
 
 %% ===============================
 \subsection{Discussion}
 \label{sec:discussion}
 %% ===============================
 
-An earlier run of this same experiment (before model-weight initialisation and data-loader shuffling were seeded) showed a much larger apparent improvement ($\sim$20\% bias reduction). That result did not replicate once training randomness was properly controlled -- it was luck in the random seed, not a real effect, which is itself a useful (if uncomfortable) finding: unseeded neural network comparisons in a report this size can easily produce a result that looks like a clean win but isn't. The properly-seeded, 5-seed result reported above is the one that should be trusted.
-
-The remaining effect is real but modest, and is consistent with the underlying mechanism being subtle: the shared backbone already partially mixes cross-metric information before the heads split, so the fusion layer is refining an existing signal rather than introducing information that was completely unavailable before. A cleaner, larger effect would likely need either a longer training budget, an explicit auxiliary loss that penalises underprediction directly (rather than a generic cross-entropy loss), or a larger, more diverse burst-pattern vocabulary in the synthetic generator. These are noted as future work in Section~\ref{sec:Conclusion} rather than pursued further here, given the intentionally small scope of this benchmark.
-
-The threshold baseline's near-zero transient recall should not be read as ``threshold monitoring is bad'' in general -- it is doing exactly what reactive monitoring is designed to do (report current state), and is being evaluated here specifically on a forecasting task it was never meant to solve.
+No GCT Accuracy/ROC-AUC claim is made. AWS Lambda/Kinesis deploy stubs in the repo are unused and \textbf{not required} by formal CA2 (Colab/EC2 are listed only as optional training compute). Next evidence step is ingesting a minimal GCT subset per \texttt{DATA\_GAPS.md} and implementing the usage$\leftrightarrow$event join before \texttt{python scripts/train\_and\_evaluate.py --dataset gct}.

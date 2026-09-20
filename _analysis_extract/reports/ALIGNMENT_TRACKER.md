@@ -17,7 +17,7 @@
 | Rasool | 62% | **~74% moto+DOI+K4** | Fill cells still open | Yes (live DDB) — not sole |
 | Chaitanya | 67% | **Proxy-only eval; ROI not measured** | Soft: DOI notes | **Yes — sole hard (Lambda Init)** — **live python Init round RUNNING** |
 | Vikas | 68% | **Pilot≠campaign; P4 quarantined** | Soft: DOI notes | **Yes — sole hard (full campaign)** — **live campaign RUNNING** |
-| Mehak | 80% | **~54% vs formal `MAHEK NAAZ.docx`** | GCT + formal metrics/baselines (Thapliyal proxy superseded) | **No** |
+| Mehak | 80% | **~64% vs formal `MAHEK NAAZ.docx`** | GCT files + Aldomi-on-GCT (metrics suite wired on synthetic; Thapliyal proxy retired) | **No** |
 | Pooja | 77% | **~48% vs formal `Pooja_25120921_CA2.docx`** | Traces+LSTM+K8s metrics; AWS EC2/S3/CW (NimbusGuard proxy superseded); Gantt missing | **Yes** (not sole) |
 | Uday | 83% | **~18% vs formal MQTT/IoT Core proposal** | Artefact≠CA2 (federated RF); need MQTT disconnect campaign | **Yes** (not sole) |
 | Vishvaksen | 78% | **~28% vs formal Terraform scanner proposal** | Artefact≠CA2 (War hybrid); need labelled TF corpus + Checkov/tfsec/OPA | **No** |
@@ -36,3 +36,4 @@
 11. **2026-09-20 — Anji phase run-count reconcile + packaging-dedup stats** (350 design / 690 on-disk; H3_recovery fail-to-reject after Holm; READY_FOR_AWS=yes, sole=live SQS); **no AWS deploy**.
 12. **2026-09-20 — Varun + Yashaswini non-AWS raise toward sole-AWS:** Varun forecast temporal-holdout fix (all arms `beats_naive=true`); Yashaswini CausalRCA quarantined + final_report hygiene; both `READY_FOR_AWS=yes`. **No terraform apply.**
 13. **2026-09-20 — Mehak/Pooja/Uday/Vishvaksen formal-CA2 rescore.** Formal docx now binding; proxy extras dropped. Scores: Mehak ~54%, Pooja ~48%, Uday ~18%, Vishvaksen ~28%. Synthetic OK for Uday/Vish; GCT required for Mehak/Pooja. AWS required: Pooja+Uday yes (not deployed); Mehak+Vish no. **No AWS deploy; no invented results.**
+19. **2026-09-20 — Mehak non-AWS raise (~54→~64):** `DATA_GAPS.md` + fail-closed `gct_loader`; formal Acc/Prec/Rec/F1/ROC-AUC/latency + RF/KNN/SVM scaffold on synthetic (CSV); claim hygiene (Aldomi formal baseline; Thapliyal retired). **GCT still absent.** No AWS.

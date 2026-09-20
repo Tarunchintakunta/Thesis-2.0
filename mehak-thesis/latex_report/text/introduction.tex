@@ -6,18 +6,18 @@
 \label{sec:Introduction}
 %% ==============================
 
-As cloud clusters scale, operators need to anticipate node-level failures before they happen rather than react to them after the fact. Traditional monitoring applies fixed thresholds to individual metrics (CPU, memory, disk I/O, network) and only raises an alert once a metric has already crossed its limit, giving operators no lead time to intervene.
+As cloud clusters scale, operators need to anticipate infrastructure degradation before service failures rather than react after thresholds are already breached. Formal CA2 for this project asks: \emph{what is the performance of the proposed MHSA-TDL framework in predicting cloud cluster health and detecting potential failures from cloud telemetry, compared with existing hybrid deep learning and traditional monitoring approaches?} The committed dataset is the Google Cluster Trace; the committed metrics are Accuracy, Precision, Recall, F1-Score, ROC-AUC and prediction latency.
 
-Thapliyal \cite{Thapliyal26} recently proposed a proactive alternative for the related problem of data-center SLA compliance monitoring: a per-entity multi-head transformer in which each attention head is dedicated to one telemetry rule, predicting violations up to 30 minutes ahead. The paper reports a specific limitation of this design -- the most volatile metric's head systematically underpredicts severity during high-load transients, which the authors attribute to heads never sharing information with one another despite the underlying metrics being correlated.
+\textbf{Research question (formal CA2):} What is the performance of MHSA-TDL for cluster-health / failure prediction on Google Cluster Trace telemetry versus hybrid DL and traditional monitors?
 
-\textbf{Research question:} does allowing per-metric attention heads to exchange information via a cross-head fusion layer reduce this systematic underprediction during high-load transients, without degrading overall prediction accuracy?
-
-\textbf{Objectives:}
+\textbf{Objectives (formal):}
 \begin{itemize}
-  \item Reproduce Thapliyal's strict one-head-per-metric architecture as a baseline, adapted from SLA rules to cluster telemetry metrics (CPU, memory, disk, network).
-  \item Construct a synthetic telemetry benchmark with a genuine forecasting task (history window in, future window labelled) and cross-metric burst precursors, so that predicting a metric's future violation sometimes requires reading a \emph{different} metric's early signal.
-  \item Confirm the underprediction pattern reported in the baseline paper on this benchmark.
-  \item Design and evaluate a cross-head fusion layer as a targeted fix, iterating on the training setup (class weighting, epochs, burst design) until a measurable, repeatable improvement is observed across multiple random seeds.
+  \item Build MHSA-TDL over multi-metric telemetry (CPU, memory, disk I/O, network, scheduling) for cluster health / early failure detection.
+  \item Train and evaluate on \textbf{Google Cluster Trace} (not synthetic-only).
+  \item Compare against hybrid/traditional baselines named in CA2 (Aldomi-style hybrid; RF/KNN/SVM/GRU-style monitors).
+  \item Report Accuracy, Precision, Recall, F1-Score, ROC-AUC, prediction latency (+ confusion-matrix FN/FP analysis).
 \end{itemize}
 
-The remainder of this report is structured as follows: Section~\ref{sec:rw} reviews the baseline paper and the specific gap it reports; Section~\ref{sec:Design} describes the reproduced baseline and the proposed fusion architecture; Section~\ref{sec:Implementation} describes the synthetic telemetry generator, training pipeline, and deployment; Section~\ref{sec:Evaluation} reports results across five seeds; Section~\ref{sec:Conclusion} discusses limitations and future work.
+\textbf{Honesty about the current artefact.} The codebase implements an MHSA encoder with a cross-head fusion variant and a five-seed evaluation harness, including the formal metric columns and classical RF/KNN/SVM monitors. However, Google Cluster Trace files are \textbf{not present} in the repository (\texttt{DATA\_GAPS.md}); all numerical results in Section~\ref{sec:Evaluation} are therefore from \textbf{synthetic} telemetry and must not be read as formal CA2 GCT outcomes. A superseded proxy narrative framed the work as reproducing Thapliyal's~\cite{Thapliyal26} underprediction gap; that niche is retained only as related architecture context, \textbf{not} as the binding CA2 baseline (formal baseline family: Aldomi et al.~\cite{Aldomi26} and related hybrid/traditional monitors).
+
+The remainder of this report is structured as follows: Section~\ref{sec:rw} reviews related failure-prediction work including the formal baseline family; Section~\ref{sec:Design} describes the MHSA architectures in the artefact; Section~\ref{sec:Implementation} describes the synthetic generator (gap vs GCT), training pipeline, and unused optional deploy stubs; Section~\ref{sec:Evaluation} reports synthetic five-seed results with the formal metric suite; Section~\ref{sec:Conclusion} states remaining blockers to formal alignment.
