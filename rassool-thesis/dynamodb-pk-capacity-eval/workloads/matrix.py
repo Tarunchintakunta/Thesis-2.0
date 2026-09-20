@@ -24,13 +24,16 @@ def stable_seed(text: str) -> int:
     return int(hashlib.sha256(text.encode()).hexdigest()[:8], 16)
 
 
-def schedule(cfg: dict, blocks: int | None = None, workloads: list[str] | None = None) -> list[dict]:
+def schedule(cfg: dict, blocks: int | None = None, workloads: list[str] | None = None,
+             key_designs: list[str] | None = None) -> list[dict]:
     rng = random.Random(cfg["schedule"]["seed"])
     blocks = blocks if blocks is not None else cfg["schedule"]["blocks"]
     workloads = workloads or cfg["factors"]["workload"]
+    designs = set(key_designs or cfg["factors"]["key_design"])
+    configs = [(k, m) for (k, m) in CONFIGS if k in designs]
     out = []
     for b in range(blocks):
-        cells = [(k, m, w) for (k, m) in CONFIGS for w in workloads]
+        cells = [(k, m, w) for (k, m) in configs for w in workloads]
         rng.shuffle(cells)
         for pos, (k, m, w) in enumerate(cells):
             bid = f"b{b:02d}-{k}-{m}-{w}"

@@ -15,14 +15,20 @@ CFG = yaml.safe_load(open("config/experiment.yaml"))
 
 
 def test_schedule_blocks_hold_every_cell_once():
+    # Default uses factors.key_design (K1-K3) → 6 configs × 4 workloads = 24 cells/block
     s = schedule(CFG, blocks=3)
-    assert len(s) == 3 * 32
+    assert len(s) == 3 * 24
     for b in range(3):
         block = [(c["configuration"], c["workload"]) for c in s if c["block"] == b]
-        assert len(set(block)) == 32
+        assert len(set(block)) == 24
     orders = [tuple(c["batch_id"].split("-", 1)[1] for c in s if c["block"] == b) for b in range(3)]
     assert len(set(orders)) == 3  # a new random order in every block
 
+
+def test_schedule_can_include_k4_when_requested():
+    s = schedule(CFG, blocks=1, key_designs=["K1", "K2", "K3", "K4"])
+    assert len(s) == 32
+    assert any(c["key_design"] == "K4" for c in s)
 
 def test_schedule_is_reproducible_and_seeds_are_stable():
     assert schedule(CFG, blocks=2) == schedule(CFG, blocks=2)

@@ -212,9 +212,10 @@ def main(argv=None) -> int:
     ap.add_argument("--results-bucket")
     ap.add_argument("--blocks", type=int)
     ap.add_argument("--workloads", help="comma list, default all four")
+    ap.add_argument("--key-designs", help="comma list, default factors.key_design from config (K1-K3)")
     ap.add_argument("--rate-scale", type=float, default=1.0)
     ap.add_argument("--time-scale", type=float, default=1.0)
-    ap.add_argument("--orders", type=int, help="override dataset size (pilot / smoke only)")
+    ap.add_argument("--orders", type=int, help="override dataset size (pilot / smoke / key-cell)")
     ap.add_argument("--lambdas", type=int)
     ap.add_argument("--pilot", action="store_true", help="1 block at 25%% of the rate")
     ap.add_argument("--dry-run", action="store_true")
@@ -226,7 +227,9 @@ def main(argv=None) -> int:
         cfg["dataset"]["orders"] = args.orders
     if args.pilot:
         args.blocks, args.rate_scale = args.blocks or 1, 0.25
-    cells = schedule(cfg, args.blocks, args.workloads.split(",") if args.workloads else None)
+    key_designs = args.key_designs.split(",") if args.key_designs else None
+    cells = schedule(cfg, args.blocks, args.workloads.split(",") if args.workloads else None,
+                     key_designs=key_designs)
     lambdas = args.lambdas or cfg["driver"]["lambdas_per_batch"]
     est = estimate(cfg, cells, load_prices(), args.rate_scale, args.time_scale)
     print(f"{est['cells']} batches, {est['hours_of_load']} h of load, "
