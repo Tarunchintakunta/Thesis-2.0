@@ -10,9 +10,9 @@ This research presented SecureFL-IDS, a privacy-preserving federated intrusion d
     
     \item \textbf{Enhanced Framework:} SecureFL-IDS adds adaptive differential privacy, top-k compression hooks, and a CNN-LSTM hybrid architecture in code. These enhancements are \emph{implemented}; their benefit is \textbf{not} demonstrated as literature-level 93.7\% accuracy / $-45\%$ communication wins on the committed PoC.
     
-    \item \textbf{Honest PoC Evaluation:} Committed results (\texttt{results/comparison/results.json}): baseline accuracy $0.793$ (F1 $\approx 0.019$) vs improved accuracy $0.800$ (F1 $0.0$); communication $1.83$ vs $3.12$~MB/round on synthetic data.
+    \item \textbf{Honest Evaluation:} Synthetic PoC (\texttt{results/comparison/results.json}): centralised $0.7975$, baseline FL $0.793$, improved $0.800$ (F1 near zero). Real UNSW training-partition sample (\texttt{results/unsw\_real/results.json}): centralised $0.9452$ / F1 $0.9603$; baseline FL $0.8934$ / F1 $0.9262$; improved FL $0.6800$ / F1 $0.8095$.
     
-    \item \textbf{Open-Source Artefact:} Modular codebase, local simulation, tests, and a Terraform scaffold (\texttt{securefl-ids/terraform/}) that has \textbf{not} been applied. No Docker/Kubernetes/live-AWS execution is claimed.
+    \item \textbf{Open-Source Artefact:} Modular codebase (including centralised comparator), local simulation, tests, and a Terraform scaffold (\texttt{securefl-ids/terraform/}) that has \textbf{not} been applied. No Docker/Kubernetes/live-AWS execution is claimed.
 \end{enumerate}
 
 \subsection{Research Question Answered (within PoC scope)}
@@ -23,33 +23,33 @@ The primary research question asked:
 \textit{What is the effect of combining Federated Learning with Differential Privacy and communication-efficient aggregation on the accuracy, privacy preservation, and resource efficiency of cloud-native intrusion detection systems?}
 \end{quote}
 
-Within the committed PoC:
+Within the committed evidence:
 
 \begin{itemize}
-    \item \textbf{Accuracy:} Marginal change ($0.793 \rightarrow 0.800$) on synthetic data; not a validated $+2.5\%$ production claim.
-    \item \textbf{F1:} Near zero for both arms---models fail to separate the minority (attack) class under the synthetic setup.
-    \item \textbf{Communication:} Improved arm used \emph{more} MB/round; the $-45\%$ efficiency claim is unsupported by \texttt{results.json}.
+    \item \textbf{Accuracy (synthetic):} Marginal FL change ($0.793 \rightarrow 0.800$); centralised $0.7975$.
+    \item \textbf{Accuracy (real training-partition sample):} Centralised $0.9452$ leads; baseline FL $0.8934$; improved FL plateaus at $0.6800$ (honest underperformance).
+    \item \textbf{Communication:} Improved arm used \emph{more} MB/round on both campaigns; the $-45\%$ efficiency claim is unsupported.
     \item \textbf{Deployment:} Local simulation only; cloud-native orchestration not evaluated.
 \end{itemize}
 
-###{Implications for Practice}
+\subsection{Implications for Practice}
 
-Practitioners should treat this artefact as a research prototype: FL+DP plumbing exists, but detection quality and communication efficiency must be re-measured on full UNSW-NB15 (or equivalent) before any production integration narrative (including AWS GuardDuty-style services or Kubernetes orchestration).
+Practitioners should treat this artefact as a research prototype with a working centralised comparator and a real training-partition sample campaign. Improved-arm tuning and optional full-corpus runs remain open before any production integration narrative. Live AWS evaluation is the remaining CA2 residual (Terraform scaffold present, not applied).
 
 \subsection{Limitations and Constraints}
 
 \begin{enumerate}
     \item Local simulation only; Terraform present but not applied; no Docker/K8s evidence.
-    \item Synthetic data drives near-zero F1.
-    \item No centralised IDS comparator.
+    \item Synthetic data drives near-zero F1; real sample is not the full $2.5$M-flow corpus.
+    \item Improved FL underperforms baseline FL on the real training-partition sample.
     \item Honest-but-curious threat model only.
     \item No live metered cloud campaign.
 \end{enumerate}
 
 \subsection{Future Work}
 
-Full UNSW-NB15 training, centralised baseline, multi-class detection, Byzantine-robust aggregation, and---only after the alignment-first gate---optional live AWS evaluation using the existing Terraform scaffold.
+Optional full-corpus / 50-round campaigns, improved-arm plateau remediation, multi-class detection, Byzantine-robust aggregation, and---as the sole remaining CA2 residual---live AWS evaluation using the existing Terraform scaffold (only when shared-account concurrency allows).
 
 \subsection{Closing Remarks}
 
-SecureFL-IDS contributes a reproducible FL+DP IDS codebase and an honest PoC. Claimed metrics match committed results; inflated accuracy/F1/communication and Docker/K8s/AWS production claims are deliberately excluded. CA2 alignment remains incomplete pending centralised baseline, full UNSW-NB15 (or equivalent), and---only after those---optional live cloud evaluation.
+SecureFL-IDS contributes a reproducible FL+DP IDS codebase, a centralised comparator, and honest synthetic plus real training-partition results. Claimed metrics match committed JSON; inflated accuracy/F1/communication and Docker/K8s/AWS production claims are deliberately excluded. CA2 alignment remains incomplete pending live cloud-native FL evaluation.

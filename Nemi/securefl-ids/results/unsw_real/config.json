@@ -1,0 +1,24 @@
+{
+  "dataset_kind": "real_unsw_nb15_training_partition",
+  "data_path": "data/UNSW_NB15_training-set.csv",
+  "sample_size": 25000,
+  "num_clients": 5,
+  "num_rounds": 30,
+  "epochs_centralised": 30,
+  "local_epochs": 1,
+  "learning_rate": 0.001,
+  "note": "Stratified sample of the official training-set CSV \u2014 not the full 2.5M-flow corpus and not a 50-round full-feature campaign.",
+  "provenance": {
+    "dataset": "UNSW-NB15 training partition",
+    "kind": "real",
+    "source_url": "https://raw.githubusercontent.com/Nir-J/ML-Projects/master/UNSW-Network_Packet_Classification/UNSW_NB15_training-set.csv",
+    "official_project": "https://research.unsw.edu.au/projects/unsw-nb15-dataset",
+    "downloaded_at_utc": "2026-09-20T12:29:14.296855+00:00",
+    "local_path": "data/UNSW_NB15_training-set.csv",
+    "n_rows": 175341,
+    "n_cols": 45,
+    "note": "Public mirror of the official training-set CSV. Not the full 2.5M-flow corpus; still a real UNSW partition."
+  },
+  "started_at_utc": "2026-09-20T12:30:52.337893+00:00",
+  "finished_at_utc": "2026-09-20T12:34:24.622947+00:00"
+}

@@ -23,7 +23,7 @@
 | Varun | **yes** (full S3 FinOps) | Lite DONE (`live_lite_summary.json`; CE $3.6e-09; GET 187/524 ms; Wilcoxon p≈1e-7; destroyed) | **~90%** | **NOT COMPLETE** (`READY_FOR_AWS=yes`) |
 | Yashaswini | **yes** (Leg3) | No | **~88%** | **NOT COMPLETE** (`READY_FOR_AWS=yes`) |
 | Rasool | **yes** (live DDB) | No | **~78%** | **NOT COMPLETE** (READY_FOR_AWS=yes) |
-| Nemi | no (baseline/UNSW + cloud FL) | No | **~68%** | **NOT COMPLETE** |
+| Nemi | **yes** (live cloud FL) | No | **~78%** | **NOT COMPLETE** (`READY_FOR_AWS=yes`) |
 
 ## Formal-CA2 rescore (4) — was “alignment-only / proxy”
 

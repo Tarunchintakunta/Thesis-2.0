@@ -14,5 +14,14 @@
     "total_communication_cost": 93.45932006835938,
     "convergence_rounds": 30,
     "avg_round_time": 0.31137096087137855
+  },
+  "centralised": {
+    "accuracy": 0.7975,
+    "f1_score": 0.014598540145985401,
+    "avg_communication_cost": 0.0,
+    "total_communication_cost": 0.0,
+    "convergence_rounds": 30,
+    "avg_round_time": 0.5725237290064494,
+    "mode": "centralised"
   }
 }

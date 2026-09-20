@@ -9,7 +9,7 @@
 
 | Thesis | Explore % | After claim hygiene | Blockers to 100% (non-AWS first) | AWS residual? |
 |--------|----------:|--------------------:|----------------------------------|---------------|
-| Nemi | 44% | **~64% PoC+DOI+README** | Centralised baseline; UNSW | Yes (cloud FL) — not sole |
+| Nemi | 44% | **~78% centralised+real UNSW sample** | Soft: optional full 2.5M / improved plateau | **Yes — sole hard (cloud FL)** |
 | Varun | 58% | **~88% holdout beats_naive + READY_FOR_AWS** | Soft: ML alloc 0.178 | **Yes — sole hard (live S3)** |
 | Anji | 58–72% | **~90% run-count+dedup** | Soft: optional DIVE campaign | **Yes — sole hard (live SQS)** |
 | Yashaswini | 62% | **~88% CausalRCA quarantine + READY_FOR_AWS** | Soft: optional CausalRCA 90 / PDF | **Yes — sole hard (Leg3)** |
@@ -36,3 +36,8 @@
 11. **2026-09-20 — Anji phase run-count reconcile + packaging-dedup stats** (350 design / 690 on-disk; H3_recovery fail-to-reject after Holm; READY_FOR_AWS=yes, sole=live SQS); **no AWS deploy**.
 12. **2026-09-20 — Varun + Yashaswini non-AWS raise toward sole-AWS:** Varun forecast temporal-holdout fix (all arms `beats_naive=true`); Yashaswini CausalRCA quarantined + final_report hygiene; both `READY_FOR_AWS=yes`. **No terraform apply.**
 13. **2026-09-20 — Mehak/Pooja/Uday/Vishvaksen formal-CA2 rescore.** Formal docx now binding; proxy extras dropped. Scores: Mehak ~54%, Pooja ~48%, Uday ~18%, Vishvaksen ~28%. Synthetic OK for Uday/Vish; GCT required for Mehak/Pooja. AWS required: Pooja+Uday yes (not deployed); Mehak+Vish no. **No AWS deploy; no invented results.**
+<<<<<<< Updated upstream
+=======
+19. **2026-09-20 — Mehak non-AWS raise (~54→~64):** `DATA_GAPS.md` + fail-closed `gct_loader`; formal Acc/Prec/Rec/F1/ROC-AUC/latency + RF/KNN/SVM scaffold on synthetic (CSV); claim hygiene (Aldomi formal baseline; Thapliyal retired). **GCT still absent.** No AWS.
+20. **2026-09-20 — Nemi non-AWS raise (~68→~78):** centralised IDS comparator + real UNSW training-partition sample (`results/unsw_real/`); SOLE_AWS_RESIDUAL=yes; **no terraform apply / no live AWS FL.**
+>>>>>>> Stashed changes

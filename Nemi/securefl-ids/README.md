@@ -25,18 +25,13 @@ Saklani, S., Chohan, D.K., and Sharma, R. (2026) 'Privacy Preserving Cloud Nativ
 make pilot
 ```
 
-This command:
-- Creates a virtual environment
-- Installs dependencies
-- Downloads and preprocesses a sample of the dataset
-- Runs a pilot experiment (3 clients, 10 rounds)
-- Displays results
-
 ## Full Usage
 
 ```bash
 make test          # Run unit tests
-make experiment    # Run full local experiment (baseline + improved)
+make centralised   # CA2 centralised IDS comparator (synthetic) + merge
+make experiment    # Federated baseline + improved (synthetic)
+make unsw-real     # Real UNSW training-partition sample (central + FL)
 make stats         # Generate statistical analysis
 make figures       # Create evaluation figures
 ```
@@ -46,19 +41,25 @@ make figures       # Create evaluation figures
 ```
 securefl-ids/
 ├── src/
-│   ├── baseline/         # Saklani et al. (2026) implementation
+│   ├── baseline/         # Saklani et al. (2026) FL implementation
+│   ├── centralised/      # CA2 traditional centralised IDS comparator
 │   ├── improved/         # Enhanced SecureFL-IDS
-│   ├── common/           # Shared utilities (data, metrics, FL orchestration)
-│   └── data/             # Dataset download and preprocessing
+│   └── common/           # Shared utilities (data, metrics, FL orchestration)
 ├── tests/                # Unit and integration tests
-├── configs/              # Experiment configurations (pilot, full, ablation)
-├── scripts/              # Setup, data download, experiment runners
+├── scripts/              # Data download, experiment runners
 ├── docs/                 # Configuration manual, architecture
 ├── results/              # Experiment outputs (metrics, logs)
+│   ├── comparison/       # Synthetic PoC (incl. centralised arm)
+│   └── unsw_real/        # Real training-partition sample campaign
+├── terraform/            # AWS scaffold (NOT applied)
 └── figures/              # Evaluation plots
 ```
 
 ## Key Features
+
+### Centralised comparator (CA2 traditional baseline)
+- Pooled CNN training on the same CSV path as FL arms
+- No federated split / no DP; communication cost reported as 0.0 (N/A)
 
 ### Baseline (Saklani et al. 2026)
 - Federated Learning with FedAvg aggregation
@@ -71,54 +72,47 @@ securefl-ids/
 - Communication-efficient aggregation (gradient compression, selective updates)
 - Enhanced CNN-LSTM hybrid model
 - Adaptive aggregation weights based on client data quality
-- Multi-class classification (normal + attack types)
 
 ## Implementation Details
 
-- **Framework:** PyTorch (preferred over TensorFlow Federated for ease of installation)
-- **Dataset:** UNSW-NB15 (subset included; full dataset download script provided)
+- **Framework:** PyTorch (custom FedAvg; no TFF required)
+- **Dataset:** UNSW-NB15 — real training-partition download via `scripts/download_data.py --real`, or `--synthetic` fallback
 - **Local Simulation:** Multi-process simulation of federated clients (no AWS required)
-- **Privacy:** Opacus library for differential privacy
-- **Deployment:** Local multi-process simulation only (no Docker/K8s/AWS executed)
+- **Privacy:** Opacus-compatible DP helpers in code paths
+- **Deployment:** Local simulation only (no Docker/K8s/AWS executed)
 
 ## Experiments
 
-All experiments run locally by default:
-
-1. **Pilot:** 3 clients, 10 rounds, 1000 samples per client
-2. **Baseline Replication:** Reproduce Saklani et al. results
-3. **Improved Evaluation:** SecureFL-IDS vs baseline
-4. **Ablation Studies (future; not committed):** 
-   - Privacy budget impact (ε = 0.5, 1.0, 2.0)
-   - Communication cost (PoC shows improved arm *higher* MB/round — no −45% win)
-   - Client heterogeneity scenarios
+1. **Pilot:** synthetic smoke (quarantined vs PoC)
+2. **Centralised comparator:** `make centralised`
+3. **Federated baseline + improved:** synthetic PoC
+4. **Real UNSW sample:** `make unsw-real` (training-partition stratified sample)
 
 ## Dataset
 
-**Primary:** UNSW-NB15 (Moustafa & Slay, 2015)
-- 9 attack types, 49 features
-- 2.5M records (subset provided: 100K records)
-- Non-IID distribution: clients have different attack type proportions
-
-**Download:** Automated via `scripts/download_data.sh` or manual from [UNSW-NB15](https://research.unsw.edu.au/projects/unsw-nb15-dataset)
+**Primary:** UNSW-NB15 (Moustafa & Slay, 2015)  
+**Download:** `python scripts/download_data.py --real` (public training-set mirror) or `--synthetic`  
+Official project page: [UNSW-NB15](https://research.unsw.edu.au/projects/unsw-nb15-dataset)
 
 ## Results
 
-### Actual Results (Committed in `results/`)
+### Synthetic PoC (`results/comparison/results.json`)
 
-**30-round experiment with synthetic data:**
+| Metric | Centralised | Baseline FL | Improved |
+|--------|-------------|-------------|----------|
+| Accuracy | 0.7975 | 0.793 | 0.800 |
+| F1-Score | ≈0.015 | ≈0.019 | 0.0 |
+| Avg Comm (MB/round) | 0.0 (N/A) | 1.83 | 3.12 |
 
-| Metric | Baseline | Improved |
-|--------|----------|----------|
-| Accuracy | 79.3% | 80.0% |
-| F1-Score | 1.9% | 0.0% |
-| Avg Comm (MB/round) | 1.83 | 3.12 |
+### Real UNSW training-partition sample (`results/unsw_real/results.json`)
 
-⚠️ **Note**: Low F1-scores due to synthetic dataset limitations. See `RESULTS_NOTE.md` for details.
+| Metric | Centralised | Baseline FL | Improved |
+|--------|-------------|-------------|----------|
+| Accuracy | 0.9452 | 0.8934 | 0.6800 |
+| F1-Score | 0.9603 | 0.9262 | 0.8095 |
+| Avg Comm (MB/round) | 0.0 (N/A) | 3.08 | 3.12 |
 
-### Baseline-paper reference only (NOT achieved by this PoC)
-
-Saklani et al. (2026) report ~91–94% accuracy / ~90% F1 on full UNSW-NB15. **This repository has not run that campaign.** Do not cite those figures as SecureFL-IDS results. Committed PoC: accuracy 0.793/0.800, F1 near 0 (table above).
+See `RESULTS_NOTE.md` / `STATUS.md`. Do not cite Saklani 91–94% as this artefact's result. Improved FL underperformance on the real sample is intentional honesty.
 
 ## Testing
 
@@ -128,6 +122,9 @@ make test
 
 Tests include:
 - Data loading and preprocessing
+- Model creation
+- Privacy helpers
+- Centralised comparator smoke
 - Privacy mechanism validation (gradient clipping, noise injection)
 - Federated aggregation correctness
 - Model training convergence

@@ -1,91 +1,104 @@
 \section{Evaluation}
 \label{sec:evaluation}
 
-This section reports \textbf{committed proof-of-concept results only}. All numeric claims below match \texttt{results/comparison/results.json} unless explicitly labelled as baseline-paper reference or future work. No Docker, Kubernetes, or live AWS campaign was executed.
+This section reports \textbf{committed experimental results only}. Numeric claims match either \texttt{results/comparison/results.json} (synthetic PoC) or \texttt{results/unsw\_real/results.json} (real UNSW-NB15 training-partition sample). No Docker, Kubernetes, or live AWS campaign was executed.
 
-\subsection{Experimental Results}
+\subsection{Synthetic PoC (locked FL metrics + centralised comparator)}
 
-\subsubsection{Detection Performance}
-
-Table~\ref{tab:detection_results} presents the actual experimental results from 30-round training on synthetic UNSW-NB15-derived data (5 federated clients, local multi-process simulation).
+Table~\ref{tab:detection_results} presents the synthetic PoC: 30 federated rounds (or 30 centralised epochs), sample size $10{,}000$, 20 synthetic features. Federated baseline/improved figures are unchanged from the prior locked run; the centralised arm was added on the same data path.
 
 \begin{table}[h]
 \centering
-\begin{tabular}{lcc}
+\begin{tabular}{lccc}
 \toprule
-\textbf{Metric} & \textbf{Baseline} & \textbf{SecureFL-IDS} \\
+\textbf{Metric} & \textbf{Centralised} & \textbf{Baseline FL} & \textbf{SecureFL-IDS} \\
 \midrule
-Accuracy & 0.7930 & 0.8000 \\
-F1-Score & 0.0190 & 0.0000 \\
-Avg Comm (MB/round) & 1.83 & 3.12 \\
+Accuracy & 0.7975 & 0.7930 & 0.8000 \\
+F1-Score & 0.0146 & 0.0190 & 0.0000 \\
+Avg Comm (MB/round) & 0.0 (N/A) & 1.83 & 3.12 \\
 \bottomrule
 \end{tabular}
-\caption{Committed PoC results (synthetic data, 30 rounds, 5 clients; source: \texttt{results/comparison/results.json})}
+\caption{Synthetic PoC (\texttt{results/comparison/results.json}); centralised = pooled CNN, no FL}
 \label{tab:detection_results}
 \end{table}
 
-\textbf{Honest interpretation:}
+\textbf{Honest interpretation (synthetic):}
 
 \begin{itemize}
-    \item Accuracy is $\approx 0.793$--$0.800$; the improved variant does \emph{not} demonstrate a large accuracy win on this PoC.
-    \item F1-scores are near zero (baseline $\approx 0.019$, improved $0.0$), consistent with majority-class prediction on a simplified synthetic feature space.
-    \item These figures must not be restated as 91--94\% accuracy or $\sim$90\% F1; those values belong to the Saklani et al.\ baseline paper on full UNSW-NB15, not to this artefact's committed run.
+    \item All three arms sit near $0.79$--$0.80$ accuracy with near-zero F1 (majority-class collapse on the simplified synthetic feature space).
+    \item Centralised does \emph{not} dominate federated arms on this synthetic sample; the comparator exists for CA2 completeness, not as a win claim.
+    \item Literature $91$--$94\%$ figures remain Saklani et al.\ reference points, not this synthetic PoC.
 \end{itemize}
 
-\textbf{Baseline-paper reference (not this PoC):} \citet{saklani2026privacy} report $\approx 91.8\%$ accuracy on full UNSW-NB15. Reaching comparable numbers would require the full feature set, larger samples, longer training, and class balancing---none of which are evidenced by the committed \texttt{results.json}.
-
-\subsubsection{Communication Efficiency}
+\subsubsection{Communication Efficiency (synthetic)}
 
 \begin{table}[h]
 \centering
 \begin{tabular}{lcc}
 \toprule
-\textbf{Metric} & \textbf{Baseline} & \textbf{SecureFL-IDS} \\
+\textbf{Metric} & \textbf{Baseline FL} & \textbf{SecureFL-IDS} \\
 \midrule
 Avg Cost/Round (MB) & 1.83 & 3.12 \\
 Total Cost (30 rounds) & 54.8 & 93.5 \\
 \bottomrule
 \end{tabular}
-\caption{Communication cost from the committed 30-round PoC}
+\caption{Federated communication cost from the committed synthetic PoC}
 \label{tab:communication_results}
 \end{table}
 
-\textbf{Observation:} The improved CNN-LSTM model transmits \emph{more} bytes per round than the baseline CNN in this PoC. A $-45\%$ communication reduction is \textbf{not} achieved in the committed results; compression exists in code but is offset by larger model size. Any $-40$--$50\%$ target is aspirational pending tuning on full data.
+\textbf{Observation:} The improved CNN-LSTM model transmits \emph{more} bytes per round than the baseline CNN in this PoC. A $-45\%$ communication reduction is \textbf{not} achieved.
 
-\subsubsection{Convergence}
+\subsection{Real UNSW-NB15 training-partition sample}
 
-Both arms ran for a fixed $30$ rounds in the PoC. Claims of ``$93\%$ by round 35'' or ``$30\%$ faster convergence'' are \textbf{not} supported by \texttt{results.json} and are omitted.
+A public mirror of the official UNSW-NB15 \emph{training-set} CSV was downloaded (\texttt{results/unsw\_real/DATA\_PROVENANCE.json}: \texttt{kind=real}, $\approx 175{,}341$ rows, $45$ columns). A stratified sample of $25{,}000$ rows (39 numeric features after dropping non-numeric columns) was evaluated for 30 rounds/epochs with 5 federated clients. This is \textbf{not} the full $2.5$M-flow corpus.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lccc}
+\toprule
+\textbf{Metric} & \textbf{Centralised} & \textbf{Baseline FL} & \textbf{SecureFL-IDS} \\
+\midrule
+Accuracy & 0.9452 & 0.8934 & 0.6800 \\
+F1-Score & 0.9603 & 0.9262 & 0.8095 \\
+Avg Comm (MB/round) & 0.0 (N/A) & 3.08 & 3.12 \\
+\bottomrule
+\end{tabular}
+\caption{Real UNSW training-partition sample (\texttt{results/unsw\_real/results.json})}
+\label{tab:unsw_real_results}
+\end{table}
+
+\textbf{Honest interpretation (real sample):}
+
+\begin{itemize}
+    \item Centralised CNN leads detection metrics on this sample (accuracy $0.9452$, F1 $0.9603$).
+    \item Baseline FL remains competitive (accuracy $0.8934$, F1 $0.9262$) while avoiding raw data centralisation.
+    \item Improved SecureFL-IDS \emph{plateaued} at accuracy $0.6800$ / F1 $0.8095$---reported honestly; it does \textbf{not} outperform baseline FL here.
+    \item Communication for improved remains slightly higher than baseline ($3.12$ vs $3.08$~MB/round).
+\end{itemize}
 
 \subsection{What was not evaluated}
 
 \begin{itemize}
-    \item Privacy--utility sweep tables with fabricated $\epsilon$ rows (not in committed results)
-    \item Ablation / scalability tables citing $0.937$ accuracy (not in committed results)
-    \item Statistical significance tests on the PoC (not committed)
-    \item Centralised IDS comparator
+    \item Full $2.5$M-flow UNSW corpus / 50-round campaigns (optional depth)
+    \item Privacy--utility sweep tables with fabricated $\epsilon$ rows
     \item Live AWS, Docker Compose, or Kubernetes deployments (Terraform scaffold present under \texttt{securefl-ids/terraform/} but \textbf{not applied})
 \end{itemize}
-
-\subsection{Comparison with related work (positioning only)}
-
-Related federated IDS papers (including Saklani et al.) report higher accuracy on full benchmarks. This PoC does \textbf{not} claim to outperform them numerically. SecureFL-IDS is positioned as an FL+DP artefact with adaptive privacy and compression \emph{hooks}, evaluated honestly on synthetic local simulation.
 
 \subsection{Limitations}
 
 \begin{itemize}
     \item Local simulation only; no distributed cloud evaluation
-    \item Synthetic dataset (20 features / limited samples) when full UNSW-NB15 unavailable
-    \item Binary classification; near-zero F1 under class imbalance
-    \item Honest-but-curious threat model only
+    \item Improved arm underperforms baseline FL on the real training-partition sample
+    \item Binary classification focus in committed runs
     \item Terraform exists but was not applied; no production AWS claim
 \end{itemize}
 
 \subsection{Threats to validity}
 
 \begin{itemize}
-    \item Single PoC configuration; not multi-seed averaged
-    \item Simulated non-IID may not match real tenant heterogeneity
+    \item Single configuration per campaign; not multi-seed averaged
+    \item Stratified $25$k sample may not match full-corpus behaviour
     \item Local timing does not capture network latency or orchestration overhead
 \end{itemize}
 
-The controlled PoC validates that the implementation runs and emits metrics; it does \textbf{not} establish production-grade detection performance or cloud-native deployment readiness.
+The controlled experiments validate that centralised and federated arms run on both synthetic and real training-partition data and emit metrics; they do \textbf{not} establish cloud-native deployment readiness.
