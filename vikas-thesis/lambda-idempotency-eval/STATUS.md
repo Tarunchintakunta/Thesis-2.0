@@ -10,7 +10,7 @@
 
 This project implements a **controlled retry experiment** to measure duplicate-mutation rates, latency, and consumed capacity across three application-level write paths (P1 plain put, P2 conditional put, P3 idempotency-key pattern) on AWS Lambda + Amazon DynamoDB.
 
-**Current status:** Artefact complete and functionally tested on **moto** (local DynamoDB mock). Live AWS campaign **NOT yet run**.
+**Current status:** Artefact complete. **Live AWS pilot completed** in eu-west-1 (N=1000 chosen); results under `data/runs/live/pilot/` and `results/live/`. Full campaign may still be incomplete/in progress. Moto remains available for functional checks.
 
 ---
 
