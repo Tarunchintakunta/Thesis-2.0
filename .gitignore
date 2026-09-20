@@ -51,8 +51,18 @@ rassool-thesis/dynamodb-pk-capacity-eval/results/*
 !rassool-thesis/dynamodb-pk-capacity-eval/results/SCHEMA.md
 !rassool-thesis/dynamodb-pk-capacity-eval/results/batches.csv
 !rassool-thesis/dynamodb-pk-capacity-eval/results/cloudwatch.csv
+<<<<<<< HEAD
 !rassool-thesis/dynamodb-pk-capacity-eval/results/keycell_*.txt
 !rassool-thesis/dynamodb-pk-capacity-eval/results/keycell_*.log
+=======
+!rassool-thesis/dynamodb-pk-capacity-eval/results/keycell_summary.csv
+!rassool-thesis/dynamodb-pk-capacity-eval/results/keycell_summary.json
+!rassool-thesis/dynamodb-pk-capacity-eval/results/keycell_round_meta.txt
+!rassool-thesis/dynamodb-pk-capacity-eval/results/keycell_round_run.log
+!rassool-thesis/dynamodb-pk-capacity-eval/results/keycell_destroy.log
+!rassool-thesis/dynamodb-pk-capacity-eval/results/keycell_analyse.log
+!rassool-thesis/dynamodb-pk-capacity-eval/results/keycell_collect.log
+>>>>>>> origin/cursor/rasool-keycell-fold-9390
 
 # vikas: lambda zip + local/moto run folders (make functional recreates them)
 vikas-thesis/lambda-idempotency-eval/build/
@@ -76,6 +86,10 @@ yashaswini-thesis/serverless-fault-localisation/data/runs/sim/
 *.fdb_latexmk
 *.fls
 *.log
+!rassool-thesis/dynamodb-pk-capacity-eval/results/keycell_round_run.log
+!rassool-thesis/dynamodb-pk-capacity-eval/results/keycell_destroy.log
+!rassool-thesis/dynamodb-pk-capacity-eval/results/keycell_analyse.log
+!rassool-thesis/dynamodb-pk-capacity-eval/results/keycell_collect.log
 *.out
 *.run.xml
 *.synctex.gz

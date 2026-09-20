@@ -11,3 +11,6 @@ batches=12
 data_source=live
 destroy=after_round
 note=partial key-cell round; W1/W2 and n=30 residual; zipf s calibrated for 1M but seed was 100k
+destroy_complete=yes
+destroy_resources=32
+destroy_exit=0

@@ -1,27 +1,28 @@
 \section{Evaluation}
 
-\textit{Note:} A \textbf{partial live key-cell round} on Amazon DynamoDB (\texttt{eu-west-1}) filled the primary W3/W4 $\times$ K1--K3 $\times$ capacity cells ($n{=}1$ block, 100{,}000 seeded orders). Artefacts: \texttt{results/batches.csv} (\texttt{data\_source=live}), \texttt{report/generated/cell\_summary.md}. W1/W2 cells, full $n{=}30$ replication, and ANOVA remain \textbf{unfilled}. Moto unit tests exercise plumbing only and are not used as cell fills.
+\textit{Note:} Mixed (W3) and Burst (W4) cells below are filled from the live DynamoDB key-cell round (\texttt{results/batches.csv}, $n{=}1$, \texttt{orders}{=}100000, \texttt{eu-west-1}, 2026-09-20). Steady (W1) and Read-heavy (W2) cells remain unfilled. Moto unit tests exercise the pipeline only and are \textbf{not} empirical findings. Live ANOVA/KS were \textbf{not} computed and are not invented. Cost figures are list-price proxies from \texttt{config/prices.yaml} (publication 2026-09-11), not Cost Explorer.
 
 \subsection{Designed Campaign Configuration}
 
-The full design (from \texttt{config/experiment.yaml}) and the executed key-cell round:
+The live key-cell round used the following parameters (from \texttt{config/experiment.yaml} / \texttt{results/keycell\_round\_meta.txt}):
 
 \begin{itemize}
-    \item \textbf{Full design:} 1M synthetic orders / 10K customers; K1--K3 $\times$ on-demand/provisioned $\times$ W1--W4; $n{=}30$
-    \item \textbf{This round (live):} 100{,}000 orders; K1--K3 $\times$ both capacity modes $\times$ W3,W4; $n{=}1$ randomised block; Zipfian $s{=}1.070916$
+    \item \textbf{Dataset:} 100{,}000 synthetic orders (full design allows up to 1M; Zipfian $s$ was calibrated for 1M --- caveat documented in meta)
+    \item \textbf{Measured factorial slice:} K1--K3 $\times$ on-demand/provisioned $\times$ W3/W4 (\textbf{12/12} cells). W1/W2 not run. K4 remains off-factorial.
+    \item \textbf{Zipfian s:} 1.070916 (hottest $\approx$10\% of keys receive $\approx$90\% of operations)
     \item \textbf{Region / pricing:} \texttt{eu-west-1} list prices in \texttt{config/prices.yaml} (not a Cost Explorer cross-check)
-    \item \textbf{Off-factorial:} K4 code paths excluded from CA2 evidence
+    \item \textbf{Teardown:} stack destroyed after the round (32 resources); evidence retained under \texttt{results/}
 \end{itemize}
 
-\subsection{Live Key-Cell Results (W3 / W4)}
+\subsection{Live Key-Cell Results (W3/W4)}
 
 \subsubsection{Latency Distribution}
 
-Table \ref{tab:sim-latency} reports measured mean and p95 latency (ms) from the live key-cell round.
+Table \ref{tab:sim-latency} reports measured mean and p95 latency (ms). Corresponding p99 values are in \texttt{report/generated/cell\_summary.md} / \texttt{results/keycell\_summary.csv}.
 
 \begin{table}[h]
 \centering
-\caption{Latency (ms) by Configuration and Workload --- live key-cell ($n{=}1$)}
+\caption{Latency (ms) by Configuration and Workload --- live W3/W4; W1/W2 not measured}
 \label{tab:sim-latency}
 \begin{tabular}{|l|c|c|c|c|}
 \hline
@@ -35,13 +36,15 @@ K3-Provisioned & 4.895 & 5.787 & 5.356 & 6.223 \\ \hline
 \end{tabular}
 \end{table}
 
-\textit{Interpretation:} All twelve W3/W4 cells completed with zero throttles under the offered load. K3 means are slightly higher than K1/K2 (scatter-gather reads). These are single-replicate measurements; they do not replace the planned $n{=}30$ campaign.
+\textit{Interpretation:} Single-replicate directional evidence only. Observed p99 range on this round: 6.95--11.49\,ms. Throughput was $\approx$200 ops/s (W3) and $\approx$467 ops/s (W4) with zero measured throttles. No confirmatory $n{>}1$ distributional claim is made.
 
 \subsubsection{Throttling Behaviour}
 
+Table \ref{tab:sim-throttle} reports measured throttle rates. All twelve live cells recorded \texttt{throttle\_rate} $= 0$.
+
 \begin{table}[h]
 \centering
-\caption{Throttle Rate (\%) by Configuration and Workload --- live key-cell ($n{=}1$)}
+\caption{Throttle Rate (\%) by Configuration and Workload --- live W3/W4}
 \label{tab:sim-throttle}
 \begin{tabular}{|l|c|c|}
 \hline
@@ -57,40 +60,40 @@ K3-Provisioned & 0.0 & 0.0 \\ \hline
 
 \subsubsection{Cost Analysis}
 
-Table \ref{tab:sim-cost} applies \texttt{prices.yaml} list-price arithmetic to measured RCU/WCU (provisioned uses measured wall time $\times$ configured capacity floor). \textbf{No} Cost Explorer export is claimed.
+Table \ref{tab:sim-cost} uses list-price costing from \texttt{config/prices.yaml} applied to measured RCU/WCU (on-demand) or provisioned capacity $\times$ wall seconds (provisioned). \textbf{No} Cost Explorer export is claimed. Values are USD per 10{,}000 successful operations.
 
 \begin{table}[h]
 \centering
-\caption{Cost per 10,000 Operations (USD) --- live key-cell ($n{=}1$)}
+\caption{Cost per 10,000 Operations (USD) --- live W3/W4 list-price proxy}
 \label{tab:sim-cost}
 \begin{tabular}{|l|c|c|}
 \hline
 \textbf{Configuration} & \textbf{Cost (W3)} & \textbf{Cost (W4)} \\ \hline
-K1-OnDemand & 0.00390 & 0.00389 \\ \hline
-K1-Provisioned & 0.00233 & 0.00100 \\ \hline
-K2-OnDemand & 0.00387 & 0.00390 \\ \hline
-K2-Provisioned & 0.01050 & 0.00100 \\ \hline
-K3-OnDemand & 0.00706 & 0.00706 \\ \hline
-K3-Provisioned & 0.00713 & 0.00557 \\ \hline
+K1-OnDemand & 0.003901 & 0.003886 \\ \hline
+K1-Provisioned & 0.002328 & 0.000998 \\ \hline
+K2-OnDemand & 0.003874 & 0.003899 \\ \hline
+K2-Provisioned & 0.010498 & 0.000998 \\ \hline
+K3-OnDemand & 0.007062 & 0.007063 \\ \hline
+K3-Provisioned & 0.007128 & 0.005567 \\ \hline
 \end{tabular}
 \end{table}
 
-\textit{Observed (this round only):} K3 on-demand cost/10k is higher than K1/K2 on-demand (higher RCU from scatter-gather). Provisioned W4 cost/10k is lower than on-demand for K1/K2 at this short wall duration; K2-provisioned W3 is an outlier at \$0.0105/10k because provisioned floor is charged over the batch wall even when request volume is modest.
+\textit{Directional only (not practitioner guidance):} On this $n{=}1$ round, K3 on-demand showed higher list-price cost per 10k than K1/K2 on-demand under both W3 and W4; provisioned W4 costs were lower than on-demand for K1/K2. These observations are not validated by ANOVA or Cost Explorer.
 
-\subsection{Statistical Analysis (insufficient replication)}
+\subsection{Statistical Analysis (pipeline present; live ANOVA not run)}
 
-Two-way ANOVA requires multiple replicates per cell. This key-cell round has $n{=}1$; Table \ref{tab:sim-anova} therefore remains unfilled. Pipeline code in \texttt{analysis/analyse.py} is covered by fixture unit tests only.
+Two-way ANOVA with interaction is implemented in \texttt{analysis/analyse.py} and covered by unit tests on \emph{synthetic fixtures}. Table \ref{tab:sim-anova} remains unfilled: live campaign ANOVA $F$/$p$ values were \textbf{not} computed ($n{=}1$ key-cell round).
 
 \begin{table}[h]
 \centering
-\caption{ANOVA for Mean Latency (W3) --- awaiting $n{\ge}2$ live replicates}
+\caption{ANOVA for Mean Latency (W3) --- not computed on live key-cells}
 \label{tab:sim-anova}
 \begin{tabular}{|l|c|c|c|}
 \hline
 \textbf{Factor} & \textbf{F-statistic} & \textbf{p-value} & \textbf{Effect} \\ \hline
-Key Design (K) & [TO BE FILLED] & [TO BE FILLED] & [TO BE FILLED] \\ \hline
-Capacity Mode (C) & [TO BE FILLED] & [TO BE FILLED] & [TO BE FILLED] \\ \hline
-Interaction (K $\times$ C) & [TO BE FILLED] & [TO BE FILLED] & [TO BE FILLED] \\ \hline
+Key Design (K) & [NOT COMPUTED] & [NOT COMPUTED] & [NOT COMPUTED] \\ \hline
+Capacity Mode (C) & [NOT COMPUTED] & [NOT COMPUTED] & [NOT COMPUTED] \\ \hline
+Interaction (K $\times$ C) & [NOT COMPUTED] & [NOT COMPUTED] & [NOT COMPUTED] \\ \hline
 \end{tabular}
 \end{table}
 
@@ -104,11 +107,11 @@ Pytest against moto validates artefact plumbing (not CA2 empirical answers):
     \item Lambda handler records latency/throttle/capacity fields and counts throttles without inventing success.
     \item K3 scatter-gather path merges shard reads in unit tests.
     \item Cost helpers apply \texttt{prices.yaml} arithmetic --- \textbf{not} a live Cost Explorer cross-check.
-    \item ANOVA/post-hoc code runs on fixtures; fixture significance is \textbf{not} a DynamoDB finding.
+    \item ANOVA/post-hoc code runs on fixtures labelled \texttt{data\_source = moto-smoke} / synthetic; fixture significance is \textbf{not} a DynamoDB finding.
 \end{enumerate}
 
 Moto does \textbf{not} replicate network latency, adaptive/burst capacity, auto-scaling delay, or multi-tenant effects. Optional K4 code paths are excluded from this evidence narrative.
 
 \subsection{Residual for CA2 evidence}
 
-Live W3/W4 key-cells are filled ($n{=}1$, 100k seed). Remaining for COMPLETE: W1/W2 cells, full 1M seed / $n{=}30$ factorial, and ANOVA on multi-replicate live data. Practitioner guidance remains deferred until those residuals close.
+The first live DynamoDB key-cell campaign (W3/W4, 12/12) is measured and the stack destroyed. Soft residuals remain: W1/W2 live cells, confirmatory repeats, and live ANOVA if required for literal 100\% alignment. Practitioner guidance stays deferred until those soft gaps are closed or explicitly waived.
