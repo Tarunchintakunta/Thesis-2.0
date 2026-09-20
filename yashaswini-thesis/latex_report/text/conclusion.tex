@@ -4,70 +4,53 @@
 
 This research investigated the accuracy-overhead position of rule-based fault detection and localisation relative to deep learning baselines in AWS serverless microservices. The motivation arose from a practical gap: state-of-the-art deep learning RCA methods achieve impressive accuracy (F1 $>$ 93\%) but require large labeled training datasets that newly deployed serverless applications do not possess.
 
-We proposed a lightweight hybrid approach combining:
+We proposed a lightweight \emph{rule-primary} approach combining:
 \begin{itemize}
     \item Rule-based detection using calibration-frozen CloudWatch 3-sigma thresholds
     \item Unsupervised X-Ray trace-based localisation balancing symptom correlation and topological proximity
-    \item Optional Isolation Forest enhancement for complex metric patterns
+    \item Optional Isolation Forest hybrid arm (implemented; beyond CA2 primary scope)
 \end{itemize}
 
 To enable fair comparison between trained and untrained methods, we established a three-leg evaluation protocol:
 \begin{enumerate}
-    \item \textbf{Leg 1 (Ceiling):} Positioned against Xing et al.'s (2025) published deep learning ceiling (F1 = 93.8\%)
-    \item \textbf{Leg 2 (Like-for-Like):} Compared against BARO, CIRCA, TraceRCA, and CausalRCA on the public RCAEval benchmark (90 cases)
-    \item \textbf{Leg 3 (Overhead):} Measured telemetry volume, latency impact, and cost on AWS infrastructure
+    \item \textbf{Leg 1 (Ceiling):} Cite Xing et al.'s (2025) published deep learning ceiling (F1 = 93.8\%) --- citation only, not same-rig
+    \item \textbf{Leg 2 (Like-for-Like):} Compare against BARO, CIRCA, TraceRCA on RCAEval RE2-OB ($n{=}90$); CausalRCA incomplete ($n{=}4$ committed)
+    \item \textbf{Leg 3 (Overhead):} Measure telemetry volume, latency, and cost on live AWS --- \textbf{not executed}; arithmetic estimates only
 \end{enumerate}
 
 \section{Key Findings}
 
 \subsection{Detection Accuracy}
 
-The rule-based approach achieved estimated detection F1 $\sim$0.85 on RCAEval cases, within 8.8 percentage points of Xing et al.'s (2025) ceiling of 0.938. This supports the pre-committed expectation that rule-based detection would concede $\leq$10 pp of F1 vs the strongest reproducible baseline.
+Rule-arm detection on committed RCAEval raw ($n{=}90$): TP$=90$, FP$=204$, FN$=0$ $\Rightarrow$ precision $=0.306$, recall $=1.0$, \textbf{F1 $=0.469$}, delay median $=20.5$\,s. The withdrawn ``F1$\sim$0.85 from Top-3'' shortcut is invalid (baselines are not detectors). F1 $=0.469$ is \textbf{not} within 10\,pp of Xing's citation ceiling $0.938$.
 
-On simulated telemetry, recall was perfect (1.0) and F1 was 0.97, though these results are acknowledged as overly optimistic due to simulation's absence of real-world noise.
+On simulated telemetry, recall was perfect (1.0) and F1 was 0.97; these results are pipeline checks only (NOT AWS data).
 
 \subsection{Localisation Accuracy}
 
-Rule-based Top-3 localisation on RCAEval was 0.822, compared to BARO's 0.911—an 8.9 pp gap. The hypothesis that rule-based methods would concede $>$10 pp in Top-3 was inconclusive (95\% CI straddled the 10 pp threshold).
+Rule-based Top-3 on RCAEval raw $=0.611$ vs BARO/CIRCA $=0.878$ --- gap $26.7$\,pp. Bootstrap 95\% CI for (CIRCA$-$rules) Top-3 $=[0.156,\ 0.378]$; the pre-committed $>$10\,pp concession expectation is \textbf{supported}. Mean ranks: rules $2.98$, BARO $2.32$, CIRCA $2.08$. Hybrid Top-3 $=0.478$ (worse than rules; beyond CA2 primary).
 
-Performance varied by fault type:
-\begin{itemize}
-    \item \textbf{Strong:} CPU spikes (Top-3 = 0.93, matching BARO)
-    \item \textbf{Weak:} Network faults (Top-3 = 0.73-0.80, 10-13 pp below BARO)
-\end{itemize}
-
-Localisation is the primary accuracy penalty relative to Bayesian methods, but the gap is smaller than the deep learning community might expect.
+Per-fault Top-3 (rules vs BARO, $n{=}15$): CPU $0.667$/$0.800$; mem $0.600$/$1.000$; delay $0.600$/$0.800$; loss $0.533$/$0.867$; disk $0.600$/$1.000$; socket $0.667$/$0.800$.
 
 \subsection{Monitoring Overhead}
 
-Policy sampling (5\% X-Ray trace rate, ERROR-only logs) reduced telemetry volume by 87\% and estimated cost by 95\% compared to full tracing—far exceeding the $\geq$50\% target.
-
-For a workload processing 1 million requests per day:
-\begin{itemize}
-    \item \textbf{Full tracing:} \$604.80/month
-    \item \textbf{Policy tracing:} \$31.20/month
-    \item \textbf{Savings:} \$573.60/month
-\end{itemize}
-
-Latency impact was statistically significant but small in absolute terms (+5 ms P50, +13 ms P95, +20 ms P99).
+Policy-sampling arithmetic (synthetic; Leg~3 live AWS absent) estimates $\sim$87\% volume and $\sim$95\% cost reduction vs full tracing. These figures \textbf{cannot} certify the overhead half of the competitiveness rule without live measurement.
 
 \subsection{Competitiveness Decision}
 
-The rule-based approach is \textbf{competitive} according to the pre-committed decision rule (F1 within 10 pp \textit{and} telemetry volume reduced by $\geq$50\%). It occupies a viable position on the accuracy-overhead Pareto frontier: sacrificing 8-11 pp of accuracy for 87\% overhead reduction and sub-20ms inference time.
+Under the pre-committed rule (F1 within 10\,pp \textit{and} volume $\geq$50\% cut), competitiveness is \textbf{not supported}: Leg~2 F1/Top-3 evidence fails the accuracy reading; Leg~3 live overhead is missing.
 
 \section{Contributions to Knowledge}
 
-\subsection{Novel Hybrid Approach}
+\subsection{Novel Rule-Primary Method (Hybrid Optional)}
 
-This work introduces the first published lightweight hybrid method for serverless microservice RCA that:
+This work delivers a deployable rule-based serverless RCA path that:
 \begin{itemize}
     \item Avoids deep learning's training data and compute requirements
-    \item Avoids causal inference's graph construction and multi-minute processing time
-    \item Combines calibration-frozen statistical thresholds with unsupervised trace ranking
-    \item Executes in milliseconds, enabling real-time alerting
+    \item Avoids causal inference's multi-minute processing on the incomplete CausalRCA subset (mean $\sim$217\,s/case on $n{=}4$)
+    \item Combines calibration-frozen statistical thresholds with unsupervised trace ranking (mean $\sim$0.72\,s/case on $n{=}90$)
+    \item Includes an optional IF hybrid arm that underperformed rules on Top-3 ($0.478$ vs $0.611$) and is beyond CA2 primary scope
 \end{itemize}
-
-The approach fills a gap between pure threshold methods (fast but inaccurate on localisation) and supervised deep learning (accurate but data-hungry).
 
 \subsection{Three-Leg Evaluation Protocol}
 
@@ -82,11 +65,11 @@ Future RCA research can adopt this protocol to position new methods on the accur
 
 \subsection{Empirical Accuracy-Overhead Positioning}
 
-Prior work reports either accuracy (deep learning papers) or overhead (sampling papers) but rarely both on the same system. This work demonstrates that:
+Prior work reports either accuracy or overhead but rarely both on the same system. Committed evidence here shows:
 \begin{itemize}
-    \item An (F1 $\sim$0.85, 87\% overhead reduction) position is achievable
-    \item The trade-off is nonlinear: sacrificing 8 pp of F1 buys 87\% cost savings
-    \item Practitioners can make informed decisions about where to operate on the frontier
+    \item Same-rig Top-3 gap rules vs BARO/CIRCA $=26.7$\,pp (not a within-10\,pp win)
+    \item Rule-arm detection F1 $=0.469$ on RCAEval raw (not $\sim$0.85)
+    \item Overhead ``87\% / 95\%'' cuts remain synthetic until Leg~3 is run
 \end{itemize}
 
 \subsection{Production-Ready Artefact}
@@ -105,14 +88,7 @@ Future researchers can extend the artefact to test new detection/localisation al
 
 \subsection{Simulated vs Live AWS Results}
 
-Rig results are from simulated telemetry, not actual CloudWatch/X-Ray data. While simulation validates pipeline correctness, real AWS performance would likely show:
-\begin{itemize}
-    \item Lower F1 (0.88-0.92 instead of 0.97) due to cold-start variance and network jitter
-    \item Lower Top-3 (0.85-0.90 instead of 0.98) due to correlated anomalies
-    \item Higher false-positive rate during load spikes
-\end{itemize}
-
-The RCAEval results (on real telemetry) are more trustworthy for accuracy assessment.
+Rig results are from simulated telemetry, not actual CloudWatch/X-Ray data. RCAEval raw already shows rules Top-3 $=0.611$ (far below sim $0.979$). Live AWS Leg~3 would additionally be needed for overhead; detection F1 under real noise is unknown and must not be assumed from sim ($0.97$).
 
 \subsection{Single Microservice Topology}
 
@@ -157,12 +133,7 @@ Deploy the artefact to a real AWS account, run 24-hour calibration + fault campa
 
 \subsubsection{Hybrid ML Enhancement Evaluation}
 
-The Isolation Forest localiser (implemented in \texttt{baseline\_runner/hybrid\_arm.py}) was not fully evaluated in this work. Future evaluation should:
-\begin{itemize}
-    \item Compare pure trace ranking vs hybrid IF+trace on RCAEval
-    \item Measure IF training time and memory overhead
-    \item Assess whether the ML component justifies its added complexity
-\end{itemize}
+The Isolation Forest localiser (\texttt{baseline\_runner/hybrid\_arm.py}) \emph{was} run on all 90 RCAEval cases: Top-3 $=0.478$ vs rules $=0.611$ (hybrid worse). Future work should assess whether any IF variant recovers accuracy without exceeding CA2 primary scope.
 
 \subsubsection{Adaptive Sampling}
 
@@ -204,7 +175,7 @@ Combine rule-based detection (fast, interpretable) with learned anomaly models (
     \item Ensemble voting determines final detection
 \end{itemize}
 
-This could improve detection F1 from 0.85 to 0.90+ while maintaining sub-second inference.
+This could improve detection F1 above the current RCAEval rule-arm value ($0.469$) while maintaining sub-second inference---an open question, not a claimed result.
 
 \subsection{Long-Term Directions}
 
@@ -250,11 +221,7 @@ The hybrid approach could be packaged as:
 
 \section{Final Remarks}
 
-This research demonstrates that competitive microservice fault detection and localisation \textit{do not require} deep learning's training data and computational resources. For newly deployed serverless applications under tight cost constraints, rule-based detection with X-Ray ranking provides a viable starting point: 85\% detection accuracy, 82\% localisation accuracy, 87\% overhead reduction, and sub-20ms inference.
-
-The three-leg evaluation protocol provides a template for future work to position new methods on the accuracy-overhead Pareto frontier. As microservice systems mature and telemetry accumulates, operators can transition to more sophisticated learned methods—but they need not wait months to begin detecting faults.
-
-The gap between ``training-free but inaccurate'' and ``accurate but data-hungry'' has been narrowed. Lightweight hybrid approaches occupy a practical middle ground that academic research has under-explored. This work establishes that the middle ground is not only viable but often preferable for the serverless deployment context.
+Committed evidence does \textbf{not} support a within-10\,pp competitiveness win: RCAEval rules Top-3 $=0.611$ vs BARO/CIRCA $=0.878$, rule-arm F1 $=0.469$, and Leg~3 live AWS overhead is absent. The three-leg protocol remains useful for positioning future methods once live overhead and complete baselines are in place. Xing et al.\ (2025) stays a Leg~1 citation ceiling only.
 
 \textbf{Student:} Yashaswini Penumarthi \\
 \textbf{Student ID:} 24262404 \\
