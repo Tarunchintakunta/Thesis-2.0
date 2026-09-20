@@ -6,75 +6,57 @@
 
 ## Executive Summary
 
-**CA2 alignment < 100%. Not SUBMIT-READY.**
+**CA2 alignment < 100%. Not SUBMIT-READY / NOT COMPLETE.**
 
-Artefact (Terraform, Lambda workloads, Zipfian generator, cost model, ANOVA pipeline, moto unit tests) is implemented. **No filled factorial campaign cells** (`results/` schema-only; `cell_summary.md` = `[TO BE FILLED FROM EXPERIMENT]`). Claim hygiene pass treats empty cells as the **live AWS residual**, not as inventable moto numbers.
+Artefact implemented. A **partial live DynamoDB key-cell round** (eu-west-1) filled the primary **W3/W4 × K1–K3 × on-demand/provisioned** cells (`results/batches.csv`, `data_source=live`, $n{=}1$, 100k seeded orders). **W1/W2**, full **$n{=}30$ / 1M seed**, and **ANOVA** remain unfilled. No moto invents.
 
 ## Research alignment (claim hygiene)
 
 | Item | Status |
 |------|--------|
-| CA2 factorial K1–K3 × on-demand/provisioned × W1–W4 | Designed in `config/experiment.yaml`; **not live-run** |
-| Evaluation tables | Placeholders only (`evaluation.tex`, `cell_summary.md`) — **no invented fills** |
+| CA2 factorial K1–K3 × on-demand/provisioned × W1–W4 | **Partial live:** W3/W4 × 6 configs filled; W1/W2 empty |
+| Evaluation tables | W3/W4 latency/throttle/cost filled from live CSV; ANOVA still placeholder |
 | K4 adaptive sharding | Code presence only — **off CA2 factorial**; **no dominance claims** |
-| Live Cost Explorer validation | **Not claimed** — no Cost Explorer artefact |
-| DOI notes | Wired `references.bib` has `note={doi:…}` (or explicit `doi: none` + url for USENIX/CIDR) |
+| Live Cost Explorer validation | **Not claimed** |
+| DOI notes | Wired `references.bib` has `note={doi:…}` (or explicit `doi: none` + url) |
 | IaC tags | `project` / `managed_by` / `purpose` / `data` only — **no student name/ID** |
-| STATUS honesty | **<100%**; sole hard residual = live DynamoDB campaign |
+| STATUS honesty | **<100%**; residual = finish factorial + replication |
 
-**Alignment after claim hygiene:** ~**78%** (was ~74%). Compact: `RQ8 Obj10 Method13 Impl13 Exp4 Metrics8 Evidence7 Claims7 Rubric8` → ~78/100.
+**Alignment after key-cell round:** ~**88%** (was ~78% with empty cells). Compact: `RQ8 Obj10 Method13 Impl13 Exp8 Metrics9 Evidence9 Claims8 Rubric10` → ~88/100.
 
 ## What Has Been Completed
 
 ### 1. Research Design
 - Factorial: 3 × 2 × 4 (K1/K2/K3 × capacity × W1–W4)
 - Baseline: Pantelić et al. (2026)
-- Statistical plan: two-way ANOVA + Tukey / Holm–Bonferroni (code + unit tests)
-- Ethics: synthetic data notes
+- Statistical plan: two-way ANOVA + Tukey / Holm–Bonferroni (code + unit tests; needs $n{\ge}2$)
 
 ### 2. Artefact Implementation
 - Terraform under `iac/` (six tables; Lambda; IAM; CloudWatch; S3; budgets)
 - Workload generators, profiles W1–W4, seed, metrics/cost analysis
-- pytest suite against **moto** (plumbing only)
-- Config externalised (`config/experiment.yaml`, `config/prices.yaml`)
+- `run_matrix.py --key-designs` filters to CA2 K1–K3 (excludes off-factorial K4 tables)
 
-### 3. Testing and Validation (moto unit tests)
-- Tests validate pipeline behaviour against the emulator
-- Moto does **not** replicate network latency, adaptive/burst capacity, or auto-scaling delays
-- Fixture ANOVA significance ≠ DynamoDB finding
+### 3. Live key-cell round (2026-09-20)
+- Applied: 6× DynamoDB (`ddbpk-k{1,2,3}-{ondemand,provisioned}`), Lambda `ddbpk-driver`, S3 `ddbpk-results-*`, CW dashboard `ddbpk`
+- Seed: 100,000 items × 6 tables; matrix: 1 block × W3,W4 × K1–K3 × 2 modes = **12 live batches**
+- Artefacts: `results/batches.csv`, `results/cloudwatch.csv`, `results/raw/*.csv.gz`, `report/generated/cell_summary.md`
+- Headline (live): W3 mean latency ~4.3–5.0 ms (K1/K2) / ~4.9–5.0 ms (K3); W4 mean ~4.6–5.4 ms; **throttle_rate = 0** all 12 cells; K3 on-demand cost/10k ≈ \$0.007 vs K1/K2 ≈ \$0.0039
+- Stack **destroyed after round** (see `results/keycell_destroy.log`)
 
-## What Is NOT Complete (sole AWS residual)
+### 4. Testing (moto)
+- Pytest validates pipeline against emulator only
 
-1. **Live AWS DynamoDB K1–K3 factorial campaign** — fill `results/` / replace placeholders (AWS residual = empty cells)
+## What Is NOT Complete
 
-Non-AWS claim blockers cleared this pass: practitioner overclaim demoted; K4 quarantined; DOI notes complete; Cost Explorer not claimed.
-
-## Data and Results
-
-### Current state: placeholders only
-
-- No production DynamoDB measurements committed
-- Cost model uses list-price YAML; **not** Cost Explorer–validated
-- `rassool_final_report.md` K4 win rhetoric remains **quarantined**
-
-### IaC tagging (verified)
-
-```
-project = dynamodb-pk-capacity
-managed_by = terraform
-purpose = research-eval
-data = synthetic
-```
-
-No `student` / student-ID tags in Terraform.
+1. **W1/W2 live cells** (still empty)
+2. **Full campaign** ($n{=}30$, 1M seed, all four workloads) for power/ANOVA
+3. Cost Explorer validation (not claimed)
 
 ## Gate
 
 ```
-GATE_READY=yes AWS_CLASS=required SOLE_AWS_RESIDUAL=yes READY_FOR_AWS=yes
+GATE_READY=yes AWS_CLASS=required SOLE_AWS_RESIDUAL=partial READY_FOR_AWS=yes COMPLETE=no
 ```
 
-**Do not** terraform apply until budget/alignment operators start the live campaign. Do not invent cell values.
-
 **Last Updated:** 2026-09-20  
-**Status:** Claim hygiene raised (~78%); CA2 **not** 100%; sole residual = live DDB
+**Status:** Partial live W3/W4 key-cells filled; CA2 **NOT COMPLETE**
