@@ -15,7 +15,9 @@
     "CKV_AWS_47",
     "CKV_AWS_72",
     "CKV_AWS_163",
-    "CKV_AWS_136"
+    "CKV_AWS_136",
+    "CKV_AWS_163",
+    "CKV2_AWS_28"
   ],
   "overpermissive_access": [
     "CKV_AWS_23",

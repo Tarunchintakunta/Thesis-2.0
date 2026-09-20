@@ -2,39 +2,38 @@
 
 **Last Updated:** 2026-09-20  
 **Branch:** `cursor/vishvaksen-tf-scanner-c8e3`  
-**Research Alignment to CA2:** **~62%** (formal scanner/PaC CA2; was ~28% when only the War proxy existed)  
+**Research Alignment to CA2:** **~62%**  
 **Status:** **NOT COMPLETE** — **&lt;100%** (do **not** treat as SUBMIT-READY)
 
 ## Summary
 
-Formal CA2 is a labelled Terraform corpus evaluated with manual review +
-Checkov/tfsec + OPA/Rego (P/R/F1/FN per category; scan time; remediation
-LOC). This tree implements that programme. The War hybrid is quarantined
-under `../_superseded_proxy/` and is **not** evidence. Ethics: **no
-terraform apply**.
+Labelled Terraform corpus (N=240) evaluated with scripted checklist +
+Checkov/tfsec + OPA/Rego. War hybrid is under `../_superseded_proxy/` and is
+**not** evidence. **No terraform apply.**
 
-## Evidence-bound results
+## Evidence-bound results (this host)
 
-See `results/metrics_per_category.csv` and `results/rq_summary.json` after
-`python3 scripts/run_all.py`. Numbers in those files are the only scanner
-metrics that may be cited. War-hybrid CSV figures must not be cited as
-Checkov/tfsec/OPA recall.
+Source: `results/metrics_per_category.csv`, `results/rq_summary.json`.  
+Pinned: Checkov 3.3.19, tfsec v1.28.14, OPA 1.4.2.
 
-## What is done
+| Stage | Prec | Rec | F1 | FN | Identified % |
+|-------|-----:|----:|---:|---:|-------------:|
+| Scripted checklist | 0.951 | 0.812 | 0.876 | 0.188 | 81.2 |
+| Checkov | 0.771 | 0.562 | 0.651 | 0.438 | 56.2 |
+| tfsec | 0.788 | 0.618 | 0.693 | 0.382 | 61.8 |
+| Checkov ∨ tfsec | 0.729 | 0.708 | 0.718 | 0.292 | 70.8 |
+| OPA/Rego gate | 1.000 | 0.576 | 0.731 | 0.424 | 57.6 |
 
-- Labelled corpus N=240 (60/category, 60% defective, 12 patterns × 5 variants)
-- Checkov, tfsec, OPA, scripted-checklist runners
-- Category-scoped Rego; a priori check-id maps
-- Remediation LOC + scan-time sample + per-category tables
-- War artefact quarantined
+Per-category recall: see `results/METRICS.md`. tfsec public_storage Rec=0.42;
+OPA overpermissive_access Rec=0.39. Mean remediation diff **13.1** LOC.
+
+Checklist is **not** independent human review.
 
 ## Blockers to 100%
 
-1. Independent **human** checklist review (scripted regex is not that)
-2. 20% **second-reviewer** subsample (κ not computed)
-3. Thesis prose / Verdet comparison / Holm–Bonferroni write-up
-4. Optional: extend unmatched check-id maps after first scan (catalog
-   classification only)
+1. Independent human checklist
+2. 20% second-reviewer subsample
+3. Thesis prose vs Verdet (Holm–Bonferroni write-up)
 
 ## AWS
 

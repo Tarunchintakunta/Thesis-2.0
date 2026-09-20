@@ -1,0 +1,6 @@
+category,n_insecure,mean_diff_lines,min_diff_lines,max_diff_lines
+encryption_at_rest,36,10.916666666666666,8,22
+overpermissive_access,36,13.11111111111111,8,23
+public_storage,36,12.972222222222221,8,21
+weak_logging,36,15.38888888888889,8,30
+ALL,144,13.097222222222221,8,30

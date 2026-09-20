@@ -29,18 +29,34 @@ def module_dir(row: dict[str, str]) -> Path:
     return CORPUS / row["category"] / row["module_id"]
 
 
+_META_KEYS = {"__start_line__", "__end_line__"}
+
+
 def flatten_hcl_obj(node: Any) -> Any:
-    """Collapse python-hcl2 list-of-dicts into nested dicts keyed by name."""
+    """Collapse python-hcl2 list-of-dicts into nested dicts keyed by name.
+
+    python-hcl2 wraps scalar attributes as one-element lists (acl = ["public-read"]).
+    Those singletons are unwrapped so Rego can compare the HCL value directly.
+    """
     if isinstance(node, list):
         if node and all(isinstance(x, dict) for x in node):
             merged: dict[str, Any] = {}
             for item in node:
                 for key, val in item.items():
+                    if key in _META_KEYS:
+                        continue
                     merged[key] = _merge(merged.get(key), flatten_hcl_obj(val))
             return merged
-        return [flatten_hcl_obj(x) for x in node]
+        unwrapped = [flatten_hcl_obj(x) for x in node]
+        if len(unwrapped) == 1 and not isinstance(unwrapped[0], (dict, list)):
+            return unwrapped[0]
+        return unwrapped
     if isinstance(node, dict):
-        return {k: flatten_hcl_obj(v) for k, v in node.items()}
+        return {
+            k: flatten_hcl_obj(v)
+            for k, v in node.items()
+            if k not in _META_KEYS
+        }
     return node
 
 

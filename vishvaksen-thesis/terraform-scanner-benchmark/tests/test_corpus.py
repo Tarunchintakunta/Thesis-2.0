@@ -30,6 +30,24 @@ def test_unique_ids():
     assert len(ids) == len(set(ids))
 
 
+def test_hcl_singleton_unwrap():
+    from src.io_util import flatten_hcl_obj
+
+    raw = {
+        "resource": [
+            {
+                "aws_s3_bucket_acl": {
+                    "this": {"acl": ["public-read"], "block_public_acls": [False]}
+                }
+            }
+        ]
+    }
+    out = flatten_hcl_obj(raw)
+    acl = out["resource"]["aws_s3_bucket_acl"]["this"]["acl"]
+    assert acl == "public-read"
+    assert out["resource"]["aws_s3_bucket_acl"]["this"]["block_public_acls"] is False
+
+
 def test_no_student_ids_in_module_ids():
     specs = build_specs()
     banned = ("25173421", "x25173421", "vishvaksen")

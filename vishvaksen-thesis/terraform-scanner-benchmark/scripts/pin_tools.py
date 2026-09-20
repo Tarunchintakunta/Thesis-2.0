@@ -22,7 +22,11 @@ def probe(name: str, args: list[str], extra: str | None = None) -> str:
         out = subprocess.check_output(
             [bin_path, *args], text=True, stderr=subprocess.STDOUT
         )
-        return out.strip().splitlines()[0]
+        lines = [ln.strip() for ln in out.splitlines() if ln.strip()]
+        for ln in lines:
+            if ln[:1].isdigit() or ln.startswith("v") or ln.startswith("Terraform") or ln.startswith("Version"):
+                return ln
+        return lines[-1] if lines else "UNKNOWN"
     except (OSError, subprocess.CalledProcessError) as exc:
         return f"error:{exc}"
 

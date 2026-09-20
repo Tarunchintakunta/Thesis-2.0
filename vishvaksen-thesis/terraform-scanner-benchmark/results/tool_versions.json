@@ -1,0 +1,9 @@
+{
+  "python": "3.14.6",
+  "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "recorded_at": "2026-09-20T14:11:03.152512+00:00",
+  "terraform": "Terraform v1.15.8",
+  "checkov": "3.3.19",
+  "tfsec": "======================================================",
+  "opa": "Version: 1.4.2"
+}

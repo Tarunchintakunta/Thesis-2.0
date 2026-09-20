@@ -14,7 +14,10 @@
     "aws-sns-enable-topic-encryption",
     "aws-ecr-enforce-immutable-repository",
     "aws-opensearch-enforce-https",
-    "aws-elb-alb-not-public"
+    "aws-elb-alb-not-public",
+    "aws-s3-no-public-access-with-acl",
+    "aws-rds-enable-public-access",
+    "aws-ecr-no-public-access"
   ],
   "overpermissive_access": [
     "aws-ec2-no-public-ingress-sgr",
