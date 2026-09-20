@@ -4,11 +4,11 @@ Cloud-native computing has revolutionized application deployment, yet the distri
 
 SecureFL-IDS addresses these challenges by combining Federated Learning (FL) with Differential Privacy (DP), enabling collaborative threat detection across distributed cloud tenants without sharing sensitive network traffic data. The framework implements a baseline replication of the privacy-preserving FL-IDS approach proposed by \citet{saklani2026privacy} and an improved variant with adaptive differential privacy, top-k gradient compression, and a hybrid CNN-LSTM architecture.
 
-\textbf{Committed proof-of-concept results} (local multi-process simulation, synthetic UNSW-NB15-derived data, 30 rounds, 5 clients), recorded in \texttt{results/comparison/results.json}, are: baseline accuracy $0.793$ with F1-score $\approx 0.019$; improved accuracy $0.800$ with F1-score $0.0$; average communication $1.83$~MB/round (baseline) versus $3.12$~MB/round (improved). The near-zero F1 scores reflect majority-class collapse on the synthetic feature space and are reported honestly; they are \emph{not} literature-level detection performance. Saklani et al.\ report $\approx 91.8\%$ accuracy on full UNSW-NB15; such figures are treated here as baseline-paper reference points, not as results of this PoC.
+\textbf{Committed results.} Synthetic PoC (\texttt{results/comparison/results.json}): centralised accuracy $0.7975$; baseline FL $0.793$ (F1 $\approx 0.019$); improved FL $0.800$ (F1 $0.0$); communication $1.83$ vs $3.12$~MB/round. Real UNSW-NB15 training-partition stratified sample (\texttt{results/unsw\_real/results.json}): centralised $0.9452$ / F1 $0.9603$; baseline FL $0.8934$ / F1 $0.9262$; improved FL $0.6800$ / F1 $0.8095$. Synthetic near-zero F1 and improved-arm underperformance on the real sample are reported honestly.
 
-The evaluated artefact runs as a \textbf{local simulation only}. Docker, Kubernetes, and live AWS (e.g.\ ECS) deployments are \emph{not} claimed as executed; a Terraform scaffold under \texttt{securefl-ids/terraform/} exists but has \textbf{not} been applied. Privacy mechanisms follow ($\epsilon$, $\delta$)-differential privacy with target $\epsilon = 1.0$ and $\delta = 10^{-5}$ in the implemented code paths.
+The evaluated artefact runs as a \textbf{local simulation only}. Docker, Kubernetes, and live AWS deployments are \emph{not} claimed as executed; a Terraform scaffold under \texttt{securefl-ids/terraform/} exists but has \textbf{not} been applied.
 
-This work contributes a reproducible FL+DP IDS artefact and an honest PoC evaluation. A centralised IDS comparator, full UNSW-NB15 training, and live cloud-native deployment remain open blockers for CA2 completion (AWS only after non-AWS residuals clear).
+This work contributes a reproducible FL+DP IDS artefact with a centralised comparator and a real training-partition sample campaign. Live cloud-native deployment remains the sole open CA2 residual.
 
 \end{abstract}
 

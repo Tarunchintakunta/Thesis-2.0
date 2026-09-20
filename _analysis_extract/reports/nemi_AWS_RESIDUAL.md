@@ -1,28 +1,27 @@
-# Nemi alignment residual (AWS-goal, not sole-AWS)
+# Nemi alignment residual (AWS-goal — sole live cloud FL)
 
 **Updated:** 2026-09-20  
-**Alignment after claim hygiene:** **~68/100** (was ~64%)
+**Alignment after non-AWS evidence pass:** **~78/100** (was ~68%)
 
 ## Compact
-`RQ6 Obj9 Method10 Impl10 Exp6 Metrics8 Evidence7 Claims7 Rubric5` → **~68/100**
+`RQ6 Obj10 Method11 Impl11 Exp9 Metrics8 Evidence9 Claims7 Rubric7` → **~78/100**
 
-## Hygiene done (this pass)
-- Methodology demoted: committed PoC = synthetic / 30 rounds; full UNSW + 50-round config = future only
-- Pilot (`results/pilot/pilot_results.json`) quarantined vs comparison PoC
-- RESULTS_NOTE: removed false “compression reduces communication” checkmark
-- DOI `note={doi:…}` verified on wired `refs.bib`; STATUS/README metrics locked to `results/comparison/results.json`
-- Terraform present, not applied; no student name/ID tags
+## Closed this pass (evidence only — no invented metrics)
+1. **Centralised IDS comparator** — `src/centralised/`, `scripts/run_centralised.py`, `results/centralised/`, merged into `results/comparison/results.json`  
+   Synthetic (sample 10k / 30 epochs): acc **0.7975**, F1 **≈0.015**, comm **0.0** MB/round (N/A)
+2. **Real UNSW-NB15 training-partition sample** — `scripts/download_data.py --real`, `scripts/run_unsw_real.py`, `results/unsw_real/`  
+   Provenance `kind=real` (~175341×45). Stratified 25k / 39 numeric features / 30 rounds:  
+   centralised **0.9452 / 0.9603**; baseline FL **0.8934 / 0.9262**; improved FL **0.6800 / 0.8095**
+3. Packaging: Makefile `centralised` / `unsw-real`; non-IID empty-client fix; README download path
 
-## Top blockers to 100%
-1. Centralised IDS baseline (CA2 comparator) — **non-AWS**  
-   Evidence of absence: no centralised trainer/results path under `Nemi/securefl-ids/`
-2. Real UNSW-NB15 (full) experiment — **non-AWS**  
-   Evidence: PoC synthetic only; `RESULTS_NOTE.md`; methodology now honest
-3. Live cloud-native FL evaluation — **AWS residual**  
-   Evidence: `securefl-ids/terraform/` scaffold; README “not applied”
+## Sole residual to 100%
+1. **Live cloud-native FL evaluation** — `securefl-ids/terraform/` scaffold present, **not applied**
 
-**AWS residual:** yes (cloud FL) — **not sole** (baseline + UNSW still open)
+**AWS residual:** yes (cloud FL) — **sole**
 
 ```
-GATE_READY=no AWS_CLASS=required SOLE_AWS_RESIDUAL=no READY_FOR_AWS=no
+GATE_READY=yes AWS_CLASS=required SOLE_AWS_RESIDUAL=yes READY_FOR_AWS=yes
 ```
+
+Do **not** `terraform apply` / start live AWS FL while shared-account concurrency is hot (Vikas+Rasool).  
+Optional depth (not sole blockers): full 2.5M-flow corpus; 50-round campaigns; improved-arm plateau fix.

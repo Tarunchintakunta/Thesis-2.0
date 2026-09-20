@@ -21,9 +21,13 @@ The research follows a design science methodology consisting of five phases:
 
 \subsection{Dataset}
 
-\textbf{Dataset actually used in the committed PoC:} a \textbf{synthetic} UNSW-NB15-\emph{derived} feature sample (20 features; limited sample size; binary labels), generated locally when the full CSV is unavailable. Committed metrics are in \texttt{results/comparison/results.json} (30 rounds, 5 clients).
+\textbf{Datasets used in committed evidence:}
+\begin{itemize}
+    \item \textbf{Synthetic PoC:} UNSW-NB15-\emph{derived} 20-feature sample; metrics in \texttt{results/comparison/results.json} (30 rounds/epochs, including a centralised CNN comparator).
+    \item \textbf{Real UNSW-NB15 training partition (sample):} official training-set CSV mirror (\texttt{kind=real} in \texttt{results/unsw\_real/DATA\_PROVENANCE.json}; $\approx 175$k rows), evaluated as a stratified $25$k / 39-numeric-feature campaign in \texttt{results/unsw\_real/results.json}.
+\end{itemize}
 
-\textbf{UNSW-NB15} \citep{moustafa2015unsw} is the \emph{intended} full benchmark (2.5M flows, 49 features, 9 attack types). A full UNSW-NB15 (or stratified 50k) experiment is \textbf{not} committed and must not be described as executed.
+\textbf{UNSW-NB15} \citep{moustafa2015unsw} full $2.5$M-flow corpus remains optional depth and must not be described as executed; the committed real run is the training-partition sample above.
 
 For future full-scale runs (not evidenced here): stratified samples of 50,000 records (or smaller 3,000--5,000 pilots) would preserve class proportions. The short \texttt{results/pilot/pilot\_results.json} run (10 rounds) is a smoke artefact only --- \textbf{do not} cite pilot accuracy $0.4$ as the CA2 PoC; use \texttt{results/comparison/results.json}.
 

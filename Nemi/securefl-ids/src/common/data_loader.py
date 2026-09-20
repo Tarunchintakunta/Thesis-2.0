@@ -104,31 +104,39 @@ class UNSWDataLoader:
         num_classes = len(np.unique(y))
         num_samples = len(y)
         
-        # Dirichlet distribution for non-IID split
+        # Dirichlet non-IID split with a hard floor so no client is empty
+        # (empty clients break DataLoader / RandomSampler).
+        if num_samples < num_clients:
+            raise ValueError(
+                f"Need at least {num_clients} samples for {num_clients} clients; "
+                f"got {num_samples}"
+            )
+
         client_sample_nums = np.random.dirichlet([alpha] * num_clients, 1)[0]
         client_sample_nums = (client_sample_nums * num_samples).astype(int)
-        
-        # Adjust to ensure sum equals total samples
-        diff = num_samples - client_sample_nums.sum()
-        client_sample_nums[0] += diff
-        
-        # Split data by class, then distribute to clients
+        # Guarantee ≥1 sample per client, then redistribute remainder
+        client_sample_nums = np.maximum(client_sample_nums, 1)
+        while client_sample_nums.sum() > num_samples:
+            # Trim from the largest client that still has >1
+            donors = np.where(client_sample_nums > 1)[0]
+            if len(donors) == 0:
+                break
+            client_sample_nums[donors[np.argmax(client_sample_nums[donors])]] -= 1
+        diff = num_samples - int(client_sample_nums.sum())
+        if diff > 0:
+            client_sample_nums[np.argmax(client_sample_nums)] += diff
+
         indices = list(range(num_samples))
         np.random.shuffle(indices)
-        
+
         client_data = []
         start_idx = 0
-        
         for i in range(num_clients):
-            end_idx = start_idx + client_sample_nums[i]
+            end_idx = start_idx + int(client_sample_nums[i])
             client_indices = indices[start_idx:end_idx]
-            
-            X_client = X[client_indices]
-            y_client = y[client_indices]
-            
-            client_data.append((X_client, y_client))
+            client_data.append((X[client_indices], y[client_indices]))
             start_idx = end_idx
-        
+
         return client_data
     
     def get_test_set(self, test_size=0.2, random_state=42):
@@ -152,21 +160,20 @@ def create_federated_data(num_clients: int = 5,
         dict with keys: 'train_clients', 'test_set', 'scaler'
     """
     loader = UNSWDataLoader(data_path)
-    X_train, X_test, y_train, y_test = loader.get_test_set()
-    
-    if sample_size:
-        # Sample for faster experiments
-        sample_train = min(sample_size, len(X_train))
-        indices = np.random.choice(len(X_train), sample_train, replace=False)
-        X_train = X_train[indices]
-        y_train = y_train[indices]
-    
+    # When sample_size is set, subsample the full CSV first so train/test
+    # both come from the same capped pool (avoids 175k test + tiny clients).
+    X, y = loader.load_data(binary=binary, sample_size=sample_size)
+    from sklearn.model_selection import train_test_split
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=0.2, random_state=42, stratify=y
+    )
+
     # Normalize
     X_train, X_test = loader.normalize(X_train, X_test)
-    
+
     # Create non-IID splits
     client_data = loader.create_non_iid_split(X_train, y_train, num_clients, alpha)
-    
+
     return {
         'train_clients': client_data,
         'test_set': (X_test, y_test),

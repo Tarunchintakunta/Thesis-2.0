@@ -1,0 +1,27 @@
+{
+  "centralised": {
+    "accuracy": 0.9452,
+    "f1_score": 0.9603243556327831,
+    "avg_communication_cost": 0.0,
+    "total_communication_cost": 0.0,
+    "convergence_rounds": 30,
+    "avg_round_time": 2.0594793637593587,
+    "mode": "centralised"
+  },
+  "baseline_fl": {
+    "accuracy": 0.8934,
+    "f1_score": 0.9261670591494667,
+    "avg_communication_cost": 3.0762481689453125,
+    "total_communication_cost": 92.28744506835938,
+    "convergence_rounds": 30,
+    "avg_round_time": 2.200793806711833
+  },
+  "improved_fl": {
+    "accuracy": 0.68,
+    "f1_score": 0.8095238095238095,
+    "avg_communication_cost": 3.1153106689453125,
+    "total_communication_cost": 93.45932006835938,
+    "convergence_rounds": 30,
+    "avg_round_time": 2.535900044441223
+  }
+}
