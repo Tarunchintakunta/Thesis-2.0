@@ -1,8 +1,21 @@
-# Live Leg 3 overhead evidence (lite)
+# Live Leg 3 — lite overhead (measured)
 
-**Protocol:** `configs/experiment_lite_overhead.yaml` — 5 min × 3 conditions @ 1 rps.  
-**Stack:** Terraform `faultlab` (eu-west-1); destroyed after round (2026-09-20).  
-**Authoritative summary:** `overhead.json` (this directory).  
-**Raw run:** `../../data/runs/live_lite_overhead/` (per-condition request CSVs, windows, condition JSONs).
+**Date:** 2026-09-20  
+**Config:** `configs/experiment_lite_overhead.yaml` (5 min × 3 conditions @ 1 rps)  
+**Stack:** Terraform `faultlab` in `eu-west-1` — **destroyed after**  
+**Authoritative summary:** `overhead.json` (from `scripts/collect_overhead.py --summarise`)  
+**Raw run:** `data/runs/live_lite_overhead/`
 
-Do not invent numbers. Cite only values in `overhead.json`.
+## Conditions (measured)
+
+| Condition | Requests | bytes / 1000 req | traces | median latency ms | error share |
+|-----------|--------:|-----------------:|-------:|------------------:|------------:|
+| full | 300 | 19 000 061 | 511 | 916.24 | 0.00 |
+| policy | 300 | 3 739 927 | 51 | 875.63 | 0.01 |
+| off | 300 | 1 251 573 | 0 | 917.98 | 0.00 |
+
+- **Reduction policy vs full:** 0.803 (80.3%) — meets ≥50% volume bar on this lite cell  
+- **Cost / 1M req (list-price):** full ≈ \$10.93; policy ≈ \$2.25  
+- Learned lower bound omitted (`data/rcaeval` case files absent) — not invented  
+
+Lite is directional measured evidence, not confirmatory 30-minute cells (`configs/experiment.yaml`).
