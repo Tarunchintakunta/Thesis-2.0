@@ -12,7 +12,7 @@
 | Chaitanya | chaitanya_alignment.md | 67% | DONE |
 | Vikas | vikas_alignment.md | 68% | DONE |
 | Anji | anji_alignment.md | 72% | DONE |
-| Varun | — | — | PENDING |
+| Varun | varun_alignment.md | 58% | DONE |
 | Yashaswini | yashaswini_alignment.md | 62% | DONE |
 | Rasool | rassool_alignment.md | 62% | DONE |
 | Venkat | — | — | PENDING |

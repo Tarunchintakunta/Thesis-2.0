@@ -1,3 +1,4 @@
+| Varun | 58% | AWS-required; synthetic only; LaTeX filler; DOI FAIL | this run |
 # CA2 Alignment Index (excl. kasi — stopped per user)
 
 | Thesis | Alignment % | Notes | Agent |
