@@ -11,7 +11,7 @@
 | Exploration (8) | **COMPLETE** |
 | Terraform (8, no personal IDs) | **READY** |
 | Alignment-first | Open |
-| Live AWS | **IN PROGRESS** — Vikas r5; Yash Leg3 next; concurrency=10 |
+| Live AWS | **IN PROGRESS** — Vikas r5; Yash Leg3 lite **CLOSED**+destroyed; concurrency=10 |
 
 ## AWS-goal (8)
 
@@ -23,7 +23,7 @@
 | Varun | **yes** (fuller FinOps) | Lite done destroyed | **~90%** | **NOT COMPLETE** |
 | Nemi | **yes** (cloud FL) | No | **~78%** | **NOT COMPLETE** |
 | Vikas | **yes** (campaign) | r5 RUNNING (~0.5k+/24k) | **~74%** | **NOT COMPLETE** |
-| Yashaswini | **yes** (Leg3) | Prep only; apply pending | **~88%** | **NOT COMPLETE** |
+| Yashaswini | **no** (Leg3 closed) | Lite 3/3 destroyed | **~96%** | **NOT COMPLETE** |
 | Venkat | **yes** (matmul) | Round-1; matmul timeout | <100% | **NOT COMPLETE** |
 
 ## Formal-CA2 (4)

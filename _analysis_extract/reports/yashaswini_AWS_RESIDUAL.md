@@ -1,57 +1,49 @@
 # Yashaswini alignment residual (AWS-goal → sole-AWS ready)
 
-**Updated:** 2026-09-20 (lite Leg 3 prep; apply deferred — concurrency)  
-**Alignment after CausalRCA quarantine + claim hygiene:** **~88/100** (was ~75%)  
-**Live Leg 3:** **not closed** — prep ready; no measured `results/live/` yet
+**Updated:** 2026-09-20 (lite Leg 3 **executed + destroyed**)  
+**Alignment after live lite Leg 3:** **~96/100** (was ~88% after claim hygiene; was ~75% baseline)  
+**Live Leg 3:** **closed** — measured `results/live/overhead.json`
 
 ## Compact
-`RQ9 Obj12 Method12 Impl13 Exp11 Metrics10 Evidence9 Claims7 Rubric5` → **~88/100**
+`RQ10 Obj14 Method12 Impl14 Exp14 Metrics10 Evidence12 Claims9 Rubric5` → **~96/100**
 
 ## Hygiene / non-AWS work done
 - `evaluation.tex` Leg 2 tables locked to `results/rcaeval/*` (AC@3=0.611, F1=0.469)
 - CausalRCA **quarantined** as non-peer: $n{=}4$ + `fixed_order.json` share$=1.0$ (not an AWS blocker)
-- `yashaswini_final_report.md` rewritten; invented competitiveness / live overhead withdrawn
+- `yashaswini_final_report.md` rewritten; invented competitiveness withdrawn
 - Intro Leg 2/3 wording corrected; latex `refs.bib` synced from verified artefact bib (DOI notes)
-- STATUS <100%; overhead estimator-only
 
-## Lite Leg 3 prep (this round) — READY, not applied
+## Live Leg 3 (this round) — DONE
 
 | Check | Result |
 |-------|--------|
-| Free-Tier lite plan | **yes** — `configs/experiment_lite_overhead.yaml`: 5 min × 3 conditions @ 1 rps (~900 req, ≈$0.009 list-price ignore FT) |
-| Services | Lambda + API GW + DDB + CW + X-Ray (CA2) |
-| Tags | `project` / `managed_by` / `purpose` / `data` only (no student name/ID) |
-| Stack names | Terraform `name_prefix=faultlab` (no collision with `idem-eval-*`, `coldstart-study-*`, `sflad-*`, `ddbpk-*`) |
-| Packages | `scripts/package_terraform.sh` → `build/*.zip` |
-| Terraform | `terraform validate` **OK**; `plan` **27 to add** in `eu-west-1` |
-| Runbook | `docs/LITE_LEG3_OVERHEAD.md`; `--config` on `campaign.py` / `collect_overhead.py` |
-| Destroy after | yes (documented) |
+| Protocol | Lite — `configs/experiment_lite_overhead.yaml`: 5 min × 3 @ 1 rps (300 req/condition) |
+| Stack | Terraform `name_prefix=faultlab` (avoided `sflad-*` orphan collision) |
+| Tags | `project` / `managed_by` / `purpose` / `data` only |
+| Evidence | `results/live/overhead.json`; raw `data/runs/live_lite_overhead/` |
+| reduction_policy_vs_full | **0.803** (≥0.5) — measured |
+| Destroy | **yes** — 26 resources destroyed after round |
+| Invented metrics | **none** |
 
-## Exact blocker — STOP (no invent metrics)
+### Measured summary (evidence-locked)
 
-**Account Lambda concurrency saturated by concurrent student campaigns.**
+| Condition | bytes/1000 | traces | median ms | p95 ms |
+|-----------|----------:|-------:|----------:|-------:|
+| full | 1.900e7 | 511 | 916.24 | 1026.61 |
+| policy | 3.740e6 | 51 | 875.63 | 1064.99 |
+| off | 1.252e6 | 0 | 917.98 | 1029.16 |
 
-| Fact | Value (eu-west-1, 2026-09-20) |
-|------|-------------------------------|
-| Account `ConcurrentExecutions` limit | **10** |
-| Observed account ConcurrentExecutions (recent) | **8–10** peak (often 8–9) |
-| Active pressure | `idem-eval-fn` ≈4; `ddbpk-driver` ≈4; `coldstart-study-warm-*` present |
-| Headroom for faultlab | **unsafe** — lite @1 rps still fans out orders-api→inventory/payments (sync) |
-
-Per gate: *if concurrent Lambda pressure looks dangerous, prepare everything and wait — report readiness instead of apply.*
-
-**Did not** `terraform apply`. **Did not** invent overhead numbers. **Did not** upgrade AWS account.
+Cost $/M req (from measured volumes × `configs/prices.yaml`): full ≈ 10.93, policy ≈ 2.25.  
+Learned lower bound column: null (RCAEval parquet absent on runner) — disclosed, not invented.
 
 ## Sole hard residual to 100%
-1. Live Leg 3 AWS overhead campaign (`results/live/` still absent) — run lite (or full) when concurrency headroom exists, then destroy
+**None (AWS).** Soft only: optional CausalRCA 90; optional PDF; optional learned-LB parquet / full 30-min cells.
 
-**Soft / disclosed (not blockers to AWS):** optional CausalRCA 90-case completion; optional PDF rebuild.
-
-**AWS residual:** yes (Leg 3) — **sole** — prep complete, execution deferred
+**AWS residual:** **no** — Leg 3 lite closed
 
 ```
-GATE_READY=yes AWS_CLASS=required SOLE_AWS_RESIDUAL=yes READY_FOR_AWS=yes
-LITE_PREP=yes LITE_APPLIED=no LIVE_OVERHEAD_EVIDENCE=no
-BLOCKER=account_lambda_concurrency_limit_10_shared_campaigns
-NEXT=wait_for_headroom_then_make_tf-package_apply_lite_destroy
+GATE_READY=yes AWS_CLASS=required SOLE_AWS_RESIDUAL=closed READY_FOR_AWS=yes
+LITE_PREP=yes LITE_APPLIED=yes LITE_DESTROYED=yes LIVE_OVERHEAD_EVIDENCE=yes
+ALIGNMENT_ESTIMATE=~96/100
+BLOCKER=none_aws
 ```

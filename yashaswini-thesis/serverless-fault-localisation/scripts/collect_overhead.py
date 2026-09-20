@@ -68,10 +68,17 @@ def main(argv=None) -> int:
                                                                        run / "requests_overhead-off.csv"),
                   "cost_per_million_requests": {c: overhead.cost_per_million(v, prices) for c, v in conds.items()
                                                 if c != "off"},
-                  "learned_lower_bound_bytes_per_1000_requests":
-                      float(overhead.learned_lower_bound(ROOT / "data/rcaeval")["bytes_per_1000_requests"].median()),
                   "asymmetry": "the learned baselines run offline; their overhead is a lower bound from their inputs, "
                                "not a measurement on this service"}
+        lb = overhead.learned_lower_bound(ROOT / "data/rcaeval")
+        if len(lb) and "bytes_per_1000_requests" in lb.columns and lb["bytes_per_1000_requests"].notna().any():
+            report["learned_lower_bound_bytes_per_1000_requests"] = float(
+                lb["bytes_per_1000_requests"].median())
+        else:
+            report["learned_lower_bound_bytes_per_1000_requests"] = None
+            report["learned_lower_bound_note"] = (
+                "data/rcaeval case files absent; live volume/latency/cost still measured; "
+                "learned lower bound omitted (not invented)")
         print(overhead.write(ROOT / "results/live", report))
         return 0
     import boto3

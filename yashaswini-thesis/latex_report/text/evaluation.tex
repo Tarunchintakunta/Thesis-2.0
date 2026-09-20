@@ -27,7 +27,7 @@ Results in Section~\ref{sec:rcaeval_results} are from the \textbf{public RCAEval
 
 \subsection{Overhead Results}
 
-Overhead results in Section~\ref{sec:overhead_results} would require live AWS deployment. If presented, they must be clearly labeled as \textit{simulated} (estimated from synthetic telemetry volumes) or \textit{live AWS} (measured from actual CloudWatch/X-Ray billing). The STATUS.md document clarifies which applies.
+Overhead results in Section~\ref{sec:overhead_results} are from the \textbf{live AWS} lite Leg~3 campaign (\texttt{results/live/overhead.json}). Earlier estimator-only figures are superseded by these measured values.
 
 \section{Rig Results: Simulated Telemetry}
 \label{sec:rig_results}
@@ -175,30 +175,32 @@ Socket & 15 & 0.667 & 0.800 \\
 \section{Overhead Analysis}
 \label{sec:overhead_results}
 
-\textit{Source: \textbf{Estimator / simulated} volumes only. No live AWS Leg~3 campaign is committed (\texttt{results/live/} absent). Figures below are planning estimates, not measured CloudWatch/X-Ray bills.}
+\textit{Source: \textbf{Live AWS Leg~3 lite} (\texttt{results/live/overhead.json}; raw \texttt{data/runs/live\_lite\_overhead/}). Protocol: \texttt{configs/experiment\_lite\_overhead.yaml} --- 5\,min $\times$ 3 conditions at 1\,rps (300 requests/condition) on the \texttt{faultlab} stack in \texttt{eu-west-1}. Lite is directional measured evidence, not confirmatory 30-minute cells. Stack destroyed after the round.}
 
-\subsection{Telemetry Volume (estimate)}
+\subsection{Telemetry Volume (live lite)}
 
-Table~\ref{tab:overhead_volume} is a list-price / sampling arithmetic estimate for policy vs full tracing. It is \textbf{quarantined} from empirical Leg~3 claims.
+Table~\ref{tab:overhead_volume} reports CloudWatch Logs IncomingBytes plus X-Ray trace bytes per 1000 requests under the three telemetry conditions.
 
 \begin{table}[h]
 \centering
-\caption{Estimated telemetry volume per 1000 requests (not live-measured)}
+\caption{Measured telemetry volume per 1000 requests (lite Leg~3)}
 \label{tab:overhead_volume}
-\begin{tabular}{lcc}
+\begin{tabular}{lrrr}
 \hline
-\textbf{Component} & \textbf{Full (100\%)} & \textbf{Policy (5\%)} \\
+\textbf{Condition} & \textbf{bytes/1000} & \textbf{traces} & \textbf{log bytes} \\
 \hline
-X-Ray spans (est.) & 4000 & 200 \\
-Total telemetry (est.) & 800 KB & 104 KB \\
-\textbf{Est.\ reduction} & -- & 87\% \\
+Full (Active, INFO, sample 1.0) & $1.900\times10^{7}$ & 511 & $1.271\times10^{6}$ \\
+Policy (Active, ERROR, sample 0.05) & $3.740\times10^{6}$ & 51 & $7.370\times10^{5}$ \\
+Off (PassThrough, ERROR) & $1.252\times10^{6}$ & 0 & $3.755\times10^{5}$ \\
+\hline
+\textbf{reduction policy vs full} & \multicolumn{3}{r}{$0.803$ ($\geq 0.5$ expected --- supported)} \\
 \hline
 \end{tabular}
 \end{table}
 
-\subsection{Latency / cost (estimate only)}
+\subsection{Latency / cost (live lite)}
 
-Latency deltas and \$/month figures previously written as measured results are \textbf{withdrawn} as live evidence. They remain design-time estimates pending Leg~3. Do not cite them as AWS campaign outcomes.
+End-to-end load-generator latency (policy vs off): Mann--Whitney $p\approx1.2\times10^{-5}$, median difference $\approx -42$\,ms (policy lower). List-price cost per million requests from measured volumes: full $\approx\$10.93$, policy $\approx\$2.25$. Learned lower-bound column omitted (RCAEval parquet absent on the runner) --- not invented.
 
 \section{Competitiveness Assessment}
 
@@ -207,10 +209,10 @@ Pre-committed rule: competitive if F1 within 10\,pp of the strongest baseline \t
 \begin{itemize}
     \item Rule-arm F1 $=0.469$ vs Xing ceiling $0.938$ --- \textbf{fails} the 10\,pp bar
     \item Rules AC@3 $=0.611$ vs BARO/CIRCA $=0.878$ --- localisation also concedes $>$10\,pp
-    \item Overhead $\geq$50\% reduction is \textbf{unmeasured} (no Leg~3)
+    \item Overhead $\geq$50\% reduction: \textbf{supported on lite} (reduction $=0.803$)
 \end{itemize}
 
-\textbf{Conclusion:} On committed evidence the approach is \textbf{not} competitive under the CA2 decision rule. Sim F1$\approx$0.97 must not be substituted for RCAEval or live AWS.
+\textbf{Conclusion:} Live lite overhead meets the telemetry-reduction limb, but F1/AC@3 still fail the accuracy limb. The approach is therefore \textbf{not} competitive under the joint CA2 decision rule. Sim F1$\approx$0.97 must not be substituted for RCAEval.
 
 \section{Implications for Research and Practice}
 
@@ -223,19 +225,19 @@ Pre-committed rule: competitive if F1 within 10\,pp of the strongest baseline \t
 
 \subsection{For Practitioners}
 \begin{itemize}
-    \item Artefact is deployable via SAM/Terraform scaffolds but \textbf{undeployed} here
-    \item Do not budget ``\$600$\rightarrow$\$30'' savings as measured fact until Leg~3 exists
+    \item Artefact deployed for lite Leg~3 then destroyed; reuse \texttt{docs/LITE\_LEG3\_OVERHEAD.md}
+    \item Budget from measured lite volumes: policy $\approx\$2.25$/M req vs full $\approx\$10.93$/M (list prices)
 \end{itemize}
 
 \section{Negative Results and Limitations}
 
 \begin{itemize}
     \item Simulated rig Top-3 $0.979$ vs RCAEval rules $0.611$ --- sim overstates accuracy
-    \item No live AWS Leg~3 overhead
+    \item Lite Leg~3 only (5\,min cells); full 30-minute protocol not re-run
     \item CausalRCA $n{=}4$ only
     \item Live F1 under real CloudWatch noise is unknown; prior $0.88$--$0.92$ guesses are withdrawn
 \end{itemize}
 
 \section{Summary}
 
-\textbf{RQ answer (evidence-locked):} On RCAEval raw, rule-arm F1 $=0.469$ and AC@3 $=0.611$ (vs BARO/CIRCA $0.878$). Leg~3 live overhead is absent. The approach is therefore \textbf{not} shown competitive on the CA2 decision rule; claim hygiene prefers this negative positioning over invented wins.
+\textbf{RQ answer (evidence-locked):} On RCAEval raw, rule-arm F1 $=0.469$ and AC@3 $=0.611$ (vs BARO/CIRCA $0.878$). Lite Leg~3 live overhead shows policy vs full volume reduction $=0.803$ (\texttt{results/live/overhead.json}). The joint competitiveness rule still fails on accuracy; claim hygiene prefers this negative positioning over invented wins.

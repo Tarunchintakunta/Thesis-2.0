@@ -15,7 +15,7 @@ To enable fair comparison between trained and untrained methods, we established 
 \begin{enumerate}
     \item \textbf{Leg 1 (Ceiling):} Cite Xing et al.'s (2025) published deep learning ceiling (F1 = 93.8\%) --- citation only, not same-rig
     \item \textbf{Leg 2 (Like-for-Like):} Compare against BARO, CIRCA, TraceRCA on RCAEval RE2-OB ($n{=}90$); CausalRCA incomplete ($n{=}4$ committed)
-    \item \textbf{Leg 3 (Overhead):} Measure telemetry volume, latency, and cost on live AWS --- \textbf{not executed}; arithmetic estimates only
+    \item \textbf{Leg 3 (Overhead):} Measure telemetry volume, latency, and cost on live AWS --- \textbf{lite executed} (\texttt{results/live/overhead.json}; reduction policy vs full $=0.803$)
 \end{enumerate}
 
 \section{Key Findings}
@@ -34,11 +34,11 @@ Per-fault Top-3 (rules vs BARO, $n{=}15$): CPU $0.667$/$0.800$; mem $0.600$/$1.0
 
 \subsection{Monitoring Overhead}
 
-Policy-sampling arithmetic (synthetic; Leg~3 live AWS absent) estimates $\sim$87\% volume and $\sim$95\% cost reduction vs full tracing. These figures \textbf{cannot} certify the overhead half of the competitiveness rule without live measurement.
+Lite Leg~3 measured policy vs full volume reduction $=0.803$ (list-price cost/M: full $\approx\$10.93$, policy $\approx\$2.25$). Lite cells are directional (5\,min), not confirmatory 30-minute protocol.
 
 \subsection{Competitiveness Decision}
 
-Under the pre-committed rule (F1 within 10\,pp \textit{and} volume $\geq$50\% cut), competitiveness is \textbf{not supported}: Leg~2 F1/Top-3 evidence fails the accuracy reading; Leg~3 live overhead is missing.
+Under the pre-committed rule (F1 within 10\,pp \textit{and} volume $\geq$50\% cut), competitiveness is \textbf{not supported}: Leg~2 F1/Top-3 evidence fails the accuracy reading; lite Leg~3 meets the volume limb ($0.803$) but cannot rescue the joint rule.
 
 \section{Contributions to Knowledge}
 
@@ -69,7 +69,7 @@ Prior work reports either accuracy or overhead but rarely both on the same syste
 \begin{itemize}
     \item Same-rig Top-3 gap rules vs BARO/CIRCA $=26.7$\,pp (not a within-10\,pp win)
     \item Rule-arm detection F1 $=0.469$ on RCAEval raw (not $\sim$0.85)
-    \item Overhead ``87\% / 95\%'' cuts remain synthetic until Leg~3 is run
+    \item Lite Leg~3 volume reduction $=0.803$ (meets $\geq$50\% limb; accuracy limb still fails)
 \end{itemize}
 
 \subsection{Production-Ready Artefact}
@@ -88,7 +88,7 @@ Future researchers can extend the artefact to test new detection/localisation al
 
 \subsection{Simulated vs Live AWS Results}
 
-Rig results are from simulated telemetry, not actual CloudWatch/X-Ray data. RCAEval raw already shows rules Top-3 $=0.611$ (far below sim $0.979$). Live AWS Leg~3 would additionally be needed for overhead; detection F1 under real noise is unknown and must not be assumed from sim ($0.97$).
+Rig results are from simulated telemetry, not actual CloudWatch/X-Ray data. RCAEval raw already shows rules Top-3 $=0.611$ (far below sim $0.979$). Lite Leg~3 supplies measured overhead; detection F1 under real noise is unknown and must not be assumed from sim ($0.97$).
 
 \subsection{Single Microservice Topology}
 
@@ -221,7 +221,7 @@ The hybrid approach could be packaged as:
 
 \section{Final Remarks}
 
-Committed evidence does \textbf{not} support a within-10\,pp competitiveness win: RCAEval rules Top-3 $=0.611$ vs BARO/CIRCA $=0.878$, rule-arm F1 $=0.469$, and Leg~3 live AWS overhead is absent. The three-leg protocol remains useful for positioning future methods once live overhead and complete baselines are in place. Xing et al.\ (2025) stays a Leg~1 citation ceiling only.
+Committed evidence does \textbf{not} support a within-10\,pp competitiveness win: RCAEval rules Top-3 $=0.611$ vs BARO/CIRCA $=0.878$, rule-arm F1 $=0.469$. Lite Leg~3 meets the volume-reduction limb (policy vs full $=0.803$) but the joint rule still fails on accuracy. Xing et al.\ (2025) stays a Leg~1 citation ceiling only.
 
 \textbf{Student:} Yashaswini Penumarthi \\
 \textbf{Student ID:} 24262404 \\

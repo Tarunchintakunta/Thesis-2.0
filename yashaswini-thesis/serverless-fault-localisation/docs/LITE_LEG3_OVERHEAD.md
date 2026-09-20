@@ -68,3 +68,8 @@ cd terraform && terraform destroy -auto-approve
 If apply is blocked (concurrency, missing packages, budget risk), document the
 blocker in `_analysis_extract/reports/yashaswini_AWS_RESIDUAL.md` and stop.
 Never fabricate overhead numbers.
+
+## Status (2026-09-20)
+
+Lite Leg 3 **executed**: measured `results/live/overhead.json` (reduction_policy_vs_full=0.803);
+`faultlab` stack **destroyed** after round. See STATUS.md / `yashaswini_AWS_RESIDUAL.md`.

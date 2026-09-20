@@ -40,7 +40,7 @@ These two dimensions (accuracy and overhead) are typically studied separately, b
     \begin{itemize}
         \item \textbf{Leg 1 (Ceiling):} Position against Xing et al.'s (2025) published deep learning F1 of 93.8\% as the accuracy ceiling under ideal labeled-data conditions
         \item \textbf{Leg 2 (Like-for-Like):} Direct comparison against reproducible RCAEval baselines (BARO, CIRCA, TraceRCA; $n{=}90$) on identical cases. CausalRCA is attempted but \textbf{quarantined} ($n{=}4$ committed; fixed-order flagged in \texttt{fixed\_order.json}) and is not a full peer
-        \item \textbf{Leg 3 (Overhead):} Measure telemetry volume, latency impact, and estimated cost on live AWS --- \textbf{not executed} in this submission (\texttt{results/live/} absent)
+        \item \textbf{Leg 3 (Overhead):} Measure telemetry volume, latency impact, and estimated cost on live AWS --- \textbf{lite executed} (\texttt{results/live/overhead.json}; 5\,min $\times$ 3 @ 1\,rps; stack destroyed)
     \end{itemize}
     
     \item \textbf{Validate} the following pre-committed, refutable expectations:
@@ -104,4 +104,4 @@ The remainder of this report is organised as follows:
     \item \textbf{Chapter 7 (Conclusions and Future Work):} Summary of findings, confidence assessment, implications for research and practice, and directions for future investigation.
 \end{itemize}
 
-Committed Leg~2 evidence does not yet support a within-10\,pp competitiveness claim; live AWS Leg~3 remains required for the overhead half of the CA2 decision rule.
+Committed Leg~2 evidence does not support a within-10\,pp competitiveness claim. Lite Leg~3 meets the $\geq$50\% volume-reduction limb (policy vs full $=0.803$), but the joint CA2 rule still fails on accuracy.

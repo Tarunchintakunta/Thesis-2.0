@@ -3,23 +3,23 @@
 **Research Title:** Lightweight Fault Detection and Localisation in AWS Serverless Microservices  
 **Last Updated:** 2026-09-20
 
-## Completion Status: NOT COMPLETE (CA2 alignment < 100%; READY_FOR_AWS=yes)
+## Completion Status: NEAR COMPLETE (CA2 alignment ~96%; sole AWS residual closed)
 
-**Research alignment after CausalRCA quarantine + claim hygiene:** ~88% — Leg 2 tables locked to RCAEval raw; invented F1/Top-k/overhead wins withdrawn; CausalRCA $n{=}4$ fixed-order quarantined (non-peer, not an AWS blocker).  
-**Not SUBMIT-READY.** Sole hard residual: live Leg 3 overhead.
+**Research alignment after lite Leg 3 live overhead:** ~96% — Leg 2 tables locked to RCAEval raw; CausalRCA $n{=}4$ fixed-order quarantined (non-peer); **live Leg 3 overhead measured** under `results/live/overhead.json` (lite protocol).  
+**Not 100% SUBMIT-READY** only for soft packaging (optional CausalRCA 90 / PDF / learned lower-bound parquet). **AWS residual: closed.**
 
-Authoritative Leg 2 evidence: `results/rcaeval/{summary.md,localisation.csv,detection.json,fixed_order.json}` (from `eval/leg2.py`).
+Authoritative Leg 2 evidence: `results/rcaeval/{summary.md,localisation.csv,detection.json,fixed_order.json}` (from `eval/leg2.py`).  
+Authoritative Leg 3 evidence: `results/live/overhead.json` + `data/runs/live_lite_overhead/` (from lite campaign).
 
 | Issue | Status |
 |-------|--------|
 | Eval↔raw (rules AC@3 / F1) | Fixed — AC@3=$0.611$, F1=$0.469$ |
 | CausalRCA as full 90-case peer | **Quarantined** — $n{=}4$ + fixed-order flag; not required for AWS |
 | `yashaswini_final_report.md` overclaims | Rewritten to match raw |
-| Overhead $/latency as live | Softened — estimator only; no `results/live/` |
+| Overhead $/latency as live | **Measured (lite)** — `results/live/overhead.json` |
 | latex `refs.bib` | Synced from verified `bib/references.bib` (DOI notes) |
-| STATUS Submit-Ready | **Demoted** |
-| Live Leg 3 AWS | **Sole residual** — lite prep ready; apply deferred |
-| Lite Leg 3 prep (2026-09-20) | Packages + `terraform validate` OK; **not applied** (account ConcurrentExecutions limit 10; shared campaigns at 8–10) |
+| Live Leg 3 AWS | **Done (lite)** — destroyed after round |
+| Soft residuals | Optional CausalRCA 90; optional PDF; RCAEval parquet for learned LB |
 
 ---
 
@@ -28,7 +28,8 @@ Authoritative Leg 2 evidence: `results/rcaeval/{summary.md,localisation.csv,dete
 1. SAM artefact + moto tests (76); sim rig under `results/sim/` (labeled NOT AWS).
 2. RCAEval raw + recomputed Leg 2 summary (rules/BARO/CIRCA/TraceRCA/hybrid $n{=}90$; CausalRCA $n{=}4$ quarantined).
 3. Config manual / analysis plan / bib present.
-4. Terraform scaffold under `terraform/` (**not applied**); lite packaging path `make tf-package` / `docs/LITE_LEG3_OVERHEAD.md`.
+4. Terraform `faultlab` stack applied for lite Leg 3, measured, **destroyed** (2026-09-20).
+5. Lite Leg 3 overhead: 5 min × 3 conditions @ 1 rps → `results/live/overhead.json`.
 
 ## Evidence-locked Leg 2 numbers (do not invent)
 
@@ -44,20 +45,34 @@ Authoritative Leg 2 evidence: `results/rcaeval/{summary.md,localisation.csv,dete
 Rule-arm detection F1 **0.469** (not ~0.85). Not within 10 pp of Xing 0.938.  
 CausalRCA: `fixed_order.json` share$=1.0$ → cannot be strongest baseline.
 
-## What is NOT done
+## Evidence-locked Leg 3 lite numbers (do not invent)
 
-1. Live AWS Leg 3 (`results/live/` absent) — measured overhead (lite or full). Full calibration / fault campaigns remain optional depth beyond the sole residual.
-2. Optional: full CausalRCA 90-case rerun (non-blocking; currently quarantined).
-3. PDF rebuild after claim hygiene (optional packaging).
+Protocol: `configs/experiment_lite_overhead.yaml` (5 min/condition, 1 rps, 300 requests/condition). Stack `faultlab` (eu-west-1). Destroyed after round.
+
+| Condition | bytes/1000 req | traces | lat median ms | lat p95 ms |
+|-----------|---------------:|-------:|--------------:|-----------:|
+| full | 19 000 061 | 511 | 916.24 | 1026.61 |
+| policy | 3 739 927 | 51 | 875.63 | 1064.99 |
+| off | 1 251 573 | 0 | 917.98 | 1029.16 |
+
+- **reduction_policy_vs_full = 0.803** (≥ 0.5 expected) — **supported** on lite window  
+- Cost $/M req (list-price arithmetic on measured volumes): full ≈ $10.93, policy ≈ $2.25  
+- Latency H0 (policy vs off): Mann–Whitney $p\approx1.2\times10^{-5}$; median_diff ≈ −42 ms (policy lower)  
+- Learned lower bound: **omitted** (`data/rcaeval` parquet absent this host) — not invented  
+- Lite is **directional** measured evidence, not confirmatory 30-minute cells
+
+## What is NOT done (soft)
+
+1. Optional: full CausalRCA 90-case rerun (non-blocking; currently quarantined).
+2. Optional: PDF rebuild after claim hygiene.
+3. Optional: re-download RCAEval parquet for learned lower-bound column; full 30-min Leg 3 cells.
 
 ## Blockers to 100%
 
-1. Keep LaTeX/STATUS/MD locked to raw JSON (no invented competitiveness win).
-2. **AWS residual (sole):** Leg 3 live overhead — **prep complete**, execution blocked by shared-account Lambda concurrency (limit 10; Vikas/Chaitanya/Rassool pressure). See `docs/LITE_LEG3_OVERHEAD.md` and `_analysis_extract/reports/yashaswini_AWS_RESIDUAL.md`.
+1. Soft packaging only (CausalRCA / PDF / learned LB parquet). **No AWS blocker.**
 
 ```
-READY_FOR_AWS=yes SOLE_AWS_RESIDUAL=yes AWS_CLASS=required
-LITE_PREP=yes LITE_APPLIED=no BLOCKER=account_lambda_concurrency
+READY_FOR_AWS=yes SOLE_AWS_RESIDUAL=closed AWS_CLASS=required
+LITE_PREP=yes LITE_APPLIED=yes LITE_DESTROYED=yes LIVE_OVERHEAD_EVIDENCE=yes
+ALIGNMENT_ESTIMATE=~96/100
 ```
-
-**Do not** invent overhead metrics. **Do not** apply while ConcurrentExecutions headroom is unsafe.

@@ -12,7 +12,7 @@
 | Nemi | 44% | **~78% centralised+real UNSW** | Soft: full 2.5M / improved plateau | **Yes — sole (cloud FL)** |
 | Varun | 58% | **~90% live S3 lite** | Soft: Inventory/metadata; fuller FinOps | **Yes — sole (fuller FinOps)** |
 | Anji | 58–72% | **~94–98% live SQS lite** | Soft: confirmatory n>1 | **No — hard lite closed** |
-| Yashaswini | 62% | **~88% CausalRCA quarantine + Leg3 prep** | Soft: CausalRCA 90 / PDF | **Yes — sole (Leg3)** |
+| Yashaswini | 62% | **~96% lite Leg3 live overhead** | Soft: CausalRCA 90 / PDF / learned-LB parquet | **No — hard Leg3 closed (lite)** |
 | Venkat | 63% | **DOI + READY_FOR_AWS** | Soft: scheduler wired | **Yes — sole (matmul)** |
 | Rasool | 62% | **~88–92% live DDB 12/12** | Soft: W1/W2 / ANOVA | **No — hard K×W3/W4 closed** |
 | Chaitanya | 67% | **~94–95% live Init+H3+H4 lite** | Soft: confirmatory n + bytecode | **No — hard Init closed (lite)** |
@@ -31,4 +31,5 @@
 18. **2026-09-20 — Mehak non-AWS raise** (~54→~64); GCT still absent.  
 19. **2026-09-20 — Nemi non-AWS raise** (~68→~78); sole=cloud FL; no apply.  
 20. **2026-09-20 — Yashaswini Leg3 lite prep** (validate/plan; apply deferred under concurrency=10).  
-21. **2026-09-20 — Reconverge** agent cursor/* branches onto `feature/aws-ca2-alignment`; Vikas r5 workers=4 continues.
+21. **2026-09-20 — Reconverge** agent cursor/* branches onto `feature/aws-ca2-alignment`; Vikas r5 workers=4 continues.  
+22. **2026-09-20 — Yashaswini Leg3 lite live** apply→3 conditions→`results/live/overhead.json`→destroy (~96%; sole AWS residual closed; reduction=0.803).
