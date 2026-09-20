@@ -17,10 +17,10 @@
 | Rasool | 62% | **~74% moto+DOI+K4** | Fill cells still open | Yes (live DDB) — not sole |
 | Chaitanya | 67% | **Proxy-only eval; ROI not measured** | Soft: DOI notes | **Yes — sole hard (Lambda Init)** — **live python Init round RUNNING** |
 | Vikas | 68% | **Pilot≠campaign; P4 quarantined** | Soft: DOI notes | **Yes — sole hard (full campaign)** — **live campaign RUNNING** |
-| Mehak | 80% | **~88% commitments + DOI + STATUS** | Formal CA2; synthetic traces; VoR PDF | **No** (alignment-only) |
-| Pooja | 77% | **~85% commitments + DOI + STATUS** | Formal CA2; MLP≠DQN; synthetic | **No** |
-| Uday | 83% | **~90% commitments + DOI + STATUS** | Formal CA2; real OneM2M; publisher PDF | **No** |
-| Vishvaksen | 78% | **~86% commitments + DOI + STATUS** | Formal CA2; arXiv venue; Forge corpora | **No** |
+| Mehak | 80% | **~54% vs formal `MAHEK NAAZ.docx`** | GCT + formal metrics/baselines (Thapliyal proxy superseded) | **No** |
+| Pooja | 77% | **~48% vs formal `Pooja_25120921_CA2.docx`** | Traces+LSTM+K8s metrics; AWS EC2/S3/CW (NimbusGuard proxy superseded); Gantt missing | **Yes** (not sole) |
+| Uday | 83% | **~18% vs formal MQTT/IoT Core proposal** | Artefact≠CA2 (federated RF); need MQTT disconnect campaign | **Yes** (not sole) |
+| Vishvaksen | 78% | **~28% vs formal Terraform scanner proposal** | Artefact≠CA2 (War hybrid); need labelled TF corpus + Checkov/tfsec/OPA | **No** |
 
 ## Iteration log
 1. **2026-09-20 — Nemi claims hygiene + DOI notes.** AWS not started.  
@@ -35,3 +35,4 @@
 10. **2026-09-20 — Anji/Varun/Yashaswini/Rasool/Nemi claim hygiene raise** (eval↔JSON, STATUS demote, DOI notes, residual notes); **no AWS deploy**. Still NOT COMPLETE. Residuals: `anji_AWS_RESIDUAL.md`, `varun_AWS_RESIDUAL.md`, `yashaswini_AWS_RESIDUAL.md`, `rasool_AWS_RESIDUAL.md`, `nemi_AWS_RESIDUAL.md`.
 11. **2026-09-20 — Anji phase run-count reconcile + packaging-dedup stats** (350 design / 690 on-disk; H3_recovery fail-to-reject after Holm; READY_FOR_AWS=yes, sole=live SQS); **no AWS deploy**.
 12. **2026-09-20 — Varun + Yashaswini non-AWS raise toward sole-AWS:** Varun forecast temporal-holdout fix (all arms `beats_naive=true`); Yashaswini CausalRCA quarantined + final_report hygiene; both `READY_FOR_AWS=yes`. **No terraform apply.**
+13. **2026-09-20 — Mehak/Pooja/Uday/Vishvaksen formal-CA2 rescore.** Formal docx now binding; proxy extras dropped. Scores: Mehak ~54%, Pooja ~48%, Uday ~18%, Vishvaksen ~28%. Synthetic OK for Uday/Vish; GCT required for Mehak/Pooja. AWS required: Pooja+Uday yes (not deployed); Mehak+Vish no. **No AWS deploy; no invented results.**

@@ -2,14 +2,14 @@
 
 **Last Updated:** 2026-09-20  
 **Branch:** `feature/aws-ca2-alignment`  
-**Research Alignment to CA2:** **~86%** (proxy via `CA2_COMMITMENTS.md`; formal CA2 **NOT FOUND**)  
+**Research Alignment to CA2:** **~28%** (formal `VishvaksenMachana_25173421_proposal.docx`; prior ~86% was vs superseded War proxy)  
 **Status:** **NOT COMPLETE** — **&lt;100%** (do **not** treat as SUBMIT-READY)
 
 ## Summary
 
-Local synthetic IaC ablation reproduces War et al. (2025) comment-removal precision collapse with TF-IDF ML, and evaluates hybrid rule+ML. **Not** a CodeBERT/LongFormer replication. **No live AWS.** Baseline is arXiv-only (venue risk).
+Formal CA2 is a **labelled Terraform corpus** evaluated with **manual review + Checkov/tfsec + OPA/Rego gate** (P/R/F1/FN per category; scan time; remediation effort). Current `iac-security/` still implements **War comment-ablation hybrid** — a **different** programme. Formal ethics: **no live infra apply**. Synthetic corpus: **allowed**.
 
-## Evidence-bound results (seeds 42–46)
+## Evidence-bound results (seeds 42–46) — artefact as-built (War hybrid; not formal scanners)
 
 Source: `iac-security/results/results_summary.csv` (+ `results_per_seed.csv`).
 
@@ -20,18 +20,16 @@ Source: `iac-security/results/results_summary.csv` (+ `results_per_seed.csv`).
 | Rule-Based Only | 1.000 ± 0.000 | 0.483 ± 0.028 | 0.651 ± 0.025 |
 | Hybrid (code-only) | 1.000 ± 0.000 | 0.483 ± 0.028 | 0.651 ± 0.025 |
 
-Hybrid restores precision to 1.000 at default threshold 0.8; recall equals rule floor (~0.483).
+These numbers do **not** answer the formal Checkov/tfsec/OPA CA2.
 
 ## What is done
-- Dataset + detectors + 5-seed driver; pytest; Makefile
-- LaTeX sources expanded (recompile PDF locally if stale)
-- Bib `note={doi:…}` (War via arXiv DOI); `CA2_COMMITMENTS.md` + expanded baseline MD
+- War-hybrid code + seeds (proxy-era); `CA2_COMMITMENTS.md` rewritten from formal Terraform-scanner proposal
 
-## Blockers to 100% (non-AWS)
-1. Formal CA2 missing
-2. arXiv-only baseline venue risk (keep Rahman/GLITCH anchors)
-3. Method gap: TF-IDF hybrid ≠ War CodeBERT/LongFormer
-4. Synthetic easy/hard mix; no real Forge corpora; PDF may need rebuild; Lambda never deployed (**do not deploy**)
+## Blockers to 100% (vs formal)
+1. Labelled 4-category Terraform secure/insecure corpus (+ dual review)
+2. Manual vs Checkov/tfsec vs OPA gate on identical inputs
+3. Per-category metrics + scan time + remediation LOC; pinned tool versions
+4. Soft: retire War-hybrid-as-CA2 claims
 
 ## AWS
-**Not on AWS deploy list.** Residual: `_analysis_extract/reports/vishvaksen_alignment.md`.
+**Not required** (do not apply insecure modules). Residual: `_analysis_extract/reports/vishvaksen_alignment.md`.

@@ -1,29 +1,36 @@
-# CA2 Commitments (proxy) — Uday
+# CA2 Commitments — Uday (formal)
 
-**Status:** Formal CA2 file **NOT FOUND** in-repo. This document is the **binding research contract** until a real CA2 is added.  
-**AWS deploy:** **Not required** for research alignment (local synthetic multi-site QoS campaign). Lambda/SAM is packaging only — **do not deploy AWS**.
+**Source:** Derived from formal CA2 file `uday-thesis/UdayKiranReddyDodda_X25166484_proposal.docx` (*Evaluating MQTT Quality-of-Service Reliability in AWS IoT Core…*).  
+**Status:** Binding research contract = **formal CA2**. Current `iot-reliability/` artefact implements a **different thesis** (federated RF vs Et-Tousy OneM2M) and does **not** satisfy this CA2.  
+**AWS:** **Required.** Formal experiment is a live (account-owned) **AWS IoT Core** campaign with rules → Lambda → DynamoDB matching. Synthetic device telemetry is **explicitly allowed**. This agent pass does **not** deploy.
 
-## Research question
-Can a federated learning alternative — training one model per IoT site on local data only and combining without pooling raw telemetry — recover most of the accuracy of the centralized RF baseline?
+## Research question (formal)
+To what extent does publishing at MQTT QoS level 1 rather than level 0 reduce telemetry message loss in AWS IoT Core when the publishing device undergoes controlled disconnections of varying duration?
 
 ## Objectives (must evidence)
-1. Reproduce centralized Random Forest + SMOTE-style class handling on synthetic non-IID sites.
-2. Build federated ensemble alternative (paper’s named future work).
-3. Quantify single-site local-only lower bound.
-4. Evaluate all three arms on the same held-out pooled test set across seeds.
+1. Quantify message **loss** at QoS 0 vs 1 across controlled disconnection durations (none, 15s, 1m, 5m).
+2. Quantify **duplication** and end-to-end **latency** (mean / p95 / p99) as the price of reliability.
+3. Measure **reconnection** behaviour and backlog survival.
+4. Place each configuration on a **reliability–cost** surface (estimated from published unit prices × counted operations).
 
-## Baseline
-Et-Tousy, Zyane & Sharif (2026), JNSM. DOI `10.1007/s10922-026-10071-4`. Disk PDF may be Research Square preprint of VoR — keep DOI; prefer publisher PDF when available.
+## Method (formal)
+- Simulated devices; device-side ID log before publish; match delivered records in DynamoDB.
+- Factors: QoS ∈ {0,1} × disconnect ∈ {0,15s,1m,5m} × rate ∈ {steady, bursty}; 5 devices × 1000 msgs; 5 replications; α=0.05 Holm–Bonferroni.
+- Provision via IaC; destroy identically; stay free-tier-safe.
 
-## Variables / metrics (eval↔CSV)
-| Metric | Artefact |
-|--------|----------|
-| Accuracy, Macro-F1 | `iot-reliability/results/results_summary.csv` |
-| Critical Recall (class 2) | same |
-| Seeds | 42–46 (`results_per_seed.csv`) |
+## Baseline (formal)
+Shvaika et al. (2025) managed/self-hosted MQTT broker characterisation — contrast under disconnection on a broker the tenant does **not** control.
 
-## Non-goals (honest)
-- Live OneM2M / Azure IoT telemetry
-- Live AWS SAM deploy
-- Cryptographic secure aggregation / DP
-- Absolute accuracy matching paper’s Azure numbers (synthetic labelling is easier)
+## Variables / metrics
+| Metric | Formal commitment |
+|--------|-------------------|
+| Loss rate | Primary DV |
+| Duplicate-delivery rate | Secondary |
+| E2E latency (mean, p95, p99) | Secondary |
+| Reconnection time / backlog / rule-trigger success | Secondary |
+| Estimated service cost | Objective 4 |
+
+## Non-goals / honesty
+- Prior proxy “federated RF recovers centralized Et-Tousy accuracy” is **not** this CA2.
+- Synthetic telemetry is **not** a blocker (formal commits to synthetic).
+- QoS 2, multi-region, physical radios: deferred in formal CA2.

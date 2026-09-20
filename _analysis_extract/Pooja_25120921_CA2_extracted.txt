@@ -1,0 +1,150 @@
+Predictive Adaptive Kubernetes Scaling (PAKS): A Machine Learning-Based Framework for Dynamic Workload Prediction in Cloud
+Pooja
+25120921
+MSc in Cloud Computing
+National College of Ireland
+Abstract
+In an era of growing workload diversity and variability managing resources becomes difficult and time-consuming in Cloud computing. Scaling decisions are delayed so the resources are not allocated properly, operational costs are higher and it can cause Service Level Agreement (SLA) violations. So this research presents a new framework called Predictive Adaptive Kubernetes Scaling (PAKS) which is a machine learning-driven solution to solve these challenges and combine workload prediction with adaptive Kubernetes resource scaling for proactive cloud resource management. The suggested framework will use existing cloud workload information to predict the future CPU and memory requirements so that intelligent scaling decisions can be made before workload changes. This framework will be implemented by Kubernetes, Docker, Python, TensorFlow and Amazon Web Services (AWS) and will be evaluated with quantitative experiments on different workload scenarios. It will be evaluated based on workload prediction accuracy, resource usage, response time, scaling latency, infrastructure cost, and SLA compliance, and will be compared to the traditional Kubernetes HPA. The result should be a scalable and suitable auto-scaling predictive framework which will enable cloud application performance to be improved, optimise resource usage, lower cloud operational costs and increase the reliability of cloud environments based on Kubernetes.
+Keywords: Kubernetes Auto-Scaling, Dynamic Workload Prediction, Machine Learning, Cloud Resource Management, Predictive Resource Scaling.
+Introduction
+This section provided research background, limitations of reactive Kubernetes auto-scaling, research question and the expected contributions and overall structure of the proposal. It also sets the groundwork for building and testing the proposed cloud workload management framework, Predictive Adaptive Kubernetes Scaling (PAKS).
+Introduction to the Research Topic
+Cloud computing has emerged as the backbone of today's digital applications, offering scalable, flexible, and on-demand computing resources for different workloads (Brooks et al., 2025). Kubernetes has become the most popular platform for container orchestration, as it allows for automated deployment, scaling, and management of applications in cloud-native environments (Agrawal and Singh, 2024). But as the number of cloud workloads grows more diverse, the allocation of resources becomes more difficult with a traditional reactive approach to auto-scaling. Cloud systems are now able to predict workload changes with the help of recent developments in predictive analytics and machine learning. This research introduces the PAKS Framework that combines workload prediction with adaptive resource scaling to enhance application performance, resource utilization and infrastructure performance in a Kubernetes-based cloud environment.
+Research Problem
+Kubernetes provides the Horizontal Pod Autoscaler (HPA) to help automatically adjust resource usage, but it mostly relies on existing CPU and memory consumption to decide when to scale, and it scales resources only after the workload has changed (Ahmad et al., 2024). This approach is reactive and can lead to resources being allocated too late, to time to respond to the needs, to poor use of resources, and to unnecessary expenditures of infrastructure in times of abrupt workload changes. Existing predictive scaling approaches predominantly emphasize on the enhancement of workload forecasting accuracy and seldom integrate predictive forecasting and adaptive scaling decisions into a single cloud-native framework. So a proactive Kubernetes resource management solution becomes important that actually forecasts the load demand and intelligently tunes the cloud resources for performance, scalability and operational performance.
+Research Question
+What is the effect of the proposed Predictive Adaptive Kubernetes Scaling (PAKS) Framework on workload prediction accuracy, resource utilisation, response time, scaling latency and infrastructure cost compared with the traditional Kubernetes Horizontal Pod Autoscaler (HPA)?
+This research question aims to answer whether predictive workload forecasting can improve the cloud resource management under dynamic workloads if it is combined with adaptive Kubernetes scaling. The study also evaluates the performance of the proposed framework against the default Kubernetes HPA with the help of some performance metrics in the cloud domain. The results will inform if proactive scaling can be suitable, scalable, and cost-effective way to manage resources in today's cloud-based applications.
+Expected Contributions and Benefits
+The proposed research is expected to make an important effect or change in the field of cloud computing by proposing the PAKS Framework that fuses predictive workload forecasting with adaptive scaling of Kubernetes resources for proactive management of cloud resources. The framework will be expected to increase the accuracy of workload prediction, optimise both the CPU and memory usage, reduce response time, reduce any latency with scaling and minimise the cost of infrastructure. The study will also include a detailed experimental analysis comparing the proposed framework with the traditional HPA of Kubernetes.
+Structure of the Research Proposal
+This research proposal consists of three chapters. Section 1 provides an introduction to the research and consists of the background, research problem, research question, expected contributions to the field and the structure of the proposal. Section 2 examines the latest research to identify gaps and motivate the proposed Predictive Adaptive Kubernetes Scaling (PAKS) Framework by reviewing existing literature on the following topics: Kubernetes auto-scaling, Predictive resource management, Workload prediction using machine learning, and Cloud resource optimisation. The research methodology, materials and implementation, system design, performance evaluation, ethical issues and project timeline are described in Section 3. These chapters form a solid blueprint for the design, implementation and evaluation of the proposed framework for dynamic cloud workload management.
+Literature Review
+The section provided an important analysis of the latest research work on Kubernetes auto-scaling, predictive autoscaling frameworks and machine learning for workload prediction by showing their advantages and disadvantages. The identified gaps in research need to be addressed by the proposed PAKS Framework to support more proactive, powerful and intelligent cloud resource management.
+Kubernetes Auto-Scaling for Cloud Resource Management
+Kubernetes' automated resource management and scalability make it the top container orchestration platform for deploying and managing cloud-native applications (Yekollu et al., 2024). Kubernetes has a built-in auto-scaling mechanism called Horizontal Pod Autoscaler (HPA), which scales the number of application pods according to real-time utilisation of the application's CPU or memory (Pozdniakova et al., 2024). While reactive scaling is the approach that HPA takes to resource management, it is quite easy. The impact of this delayed response may include longer response time, scaling latency, over-provision or under-provision of resources and possible violations of Service Level Agreements (SLA) during abrupt workload peaks. More recently, researchers have been investigating predictive auto-scaling, using machine learning models to predict, in advance, the resource demands of the tests and allocate resources accordingly. Predictive approaches help utilize cloud resources and enhance application performance by predicting the fluctuations of workloads before they happen (Kirchoff et al., 2024). Many current solutions, however, are mostly concerned with workload prediction, with few offering much support for integrating adaptive scaling strategies into Kubernetes environments, underscoring the need for a more holistic predictive auto-scaling solution for cloud resource management.
+Predictive and Intelligent Kubernetes Autoscaling Using Hybrid Forecasting and AI-Driven Workload Analysis
+Recent studies have shifted Kubernetes autoscaling away from the reactive model of provisioning resources to the intelligent and predictive model by incorporating more sophisticated forecasting and artificial intelligence (AI) methods. In Study (Guruge and Priyadarshana, 2025), a hybrid Facebook Prophet–LSTM model was introduced in the MAPE loop to predict the workload of HTTP and to provide a proactive prediction of the number of required pods for the workload, which significantly enhanced the prediction accuracy and reduced the wastage of resources. On this basis, (Duman and Eken, 2026) proposed a Predictive Horizontal Pod Autoscaling (PHPA) framework that integrates time-series forecasting, hyperparameter optimization and LLM based workload pattern recognition to select the right model for prediction, and resulting in high prediction accuracy and highly accurate automated workload classification. PAHPA, described in (Xiao et al., 2026) further improved the predictive scaling by adding a self-updating SLMD-LightGBM prediction model, the queueing theory and real time feedback from monitoring, resulting in continuous updating of the scaling decisions under dynamic cloud workloads. When combined, these studies clearly show how hybrid forecasting models, AI-powered workload characterization and real-time feedback mechanisms significantly outperform traditional reactive Kubernetes Horizontal Pod Autoscalers, yielding improved forecast accuracy, decreased latency and SLA violations, better use of resources, lower operational costs, and better application availability in cloud-native environments.
+Machine Learning and Deep Learning-Based Workload Prediction for Intelligent Cloud Resource Management
+Cloud workload prediction for intelligent resource allocation, energy efficient and Service Level Agreement (SLA) compliant has been thoroughly studied using machine learning and deep learning techniques recently. In order to tackle the above challenge, (Sabyasachi et al., 2024) proposed a DCNN-LSTM model that incorporates the spatial feature extraction, temporal learning, and minimizes the Energy SLA Violations while predicting the CPU utilization. In (Ali et al., 2024) the deep neural networks were combined with a cluster-based differential evolution algorithm in order to escape from local optima and obtain very accurate predictions of CPU, RAM and bandwidth usage. To make workload prediction more robust, (Naveen Kumar et al., 2025) added Kalman filtering, CNN, attention mechanisms and recurrent networks (LSTM, BiLSTM and GRU) for workload prediction in cloud and edge computing. Also, (Kashyap et al., 2025) introduced the Variable-Size Sliding Window (VSSW) and Model Selector Decision Support System (MSDSS) to remove irrelevant data and to increase the accuracy of the prediction in dynamic environments. This research is based on the baseline study (Kumar et al., 2024) that introduced a proactive auto-scaling framework based on Kubernetes that incorporates predictive model and custom resources for intelligent cloud resources allocation. In (Kumar et al., 2024) the Kubernetes resource management is improved by employing proactive autoscaling with ARIMA, LSTM, Bi-LSTM and Transformer models, and Explainable AI (XAI) models. (Aravind Nuthalapati, 2024) continued to tackle energy-aware resource optimization with workload forecasting using GRU, gradient boosting scheduling and VM clustering. In the long-term forecasting, (Zhao et al., 2025) proposed MSCNet, which is based on multi-scale convolutions and Transformer encoders to better capture the periodic workload pattern than the previous methods as presented in Table 1. Lastly, (Bi et al., 2024) used Wavelet Decomposition, Savitzky–Golay filter and ARIMA to get better forecasting performance to provision cloud resources. All of these studies show that the field of workload prediction has been making great strides using hybrid deep learning architectures, optimization algorithms, signal processing techniques and intelligent scheduling mechanisms, leading to better forecasting, optimization of resources utilization, reduction of energy consumption, reduction of SLA violations, and improved cloud data center performance.
+Table 1: Critical Analysis of ML and DL Based Workload Prediction Techniques for Cloud Resource Management
+Studies
+Proposed Approach
+Strengths
+Limitations / Research Gap
+(Sabyasachi et al., 2024)
+DCNN-LSTM for workload prediction and SLA-aware resource management
+Captures spatial and temporal workload patterns, improves SLA compliance, reduces energy-SLA violations
+Focuses mainly on CPU prediction and does not consider model interpretability or adaptive feature selection for changing workloads.
+(Ali et al., 2024)
+Cluster-Based Differential Evolution Neural Network (CB-DENN)
+Evolutionary optimization enhances prediction accuracy and avoids local optima with very low prediction error
+Computational complexity is high due to evolutionary optimization, making real-time deployment challenging for large-scale cloud environments.
+(Naveen Kumar et al., 2025)
+Kalman Filter + CNN + Attention + LSTM/BiLSTM/GRU
+Effectively removes noise, improves prediction accuracy across multiple cloud datasets, suitable for cloud-edge environments
+Increased architectural complexity and computational overhead may limit scalability in resource-constrained deployments.
+(Kashyap et al., 2025)
+Variable-Size Sliding Window (VSSW) with Model Selector Decision Support System (MSDSS)
+Eliminates irrelevant data, improves prediction accuracy, automatically selects suitable prediction model
+Primarily focuses on data preprocessing and model selection without addressing energy-aware scheduling or proactive autoscaling.
+(Kumar et al., 2024)
+Predictive Kubernetes Autoscaling using ARIMA, LSTM, Bi-LSTM and Transformer with XAI
+Enables proactive autoscaling, improves resource utilization, enhances transparency through Explainable AI
+Limited evaluation on Kubernetes-based environments and does not optimize energy consumption alongside workload prediction.
+(Aravind Nuthalapati, 2024)
+GRU-based workload forecasting with Gradient Boosting scheduling and VM clustering
+Jointly optimizes workload prediction, scheduling, energy efficiency, and SLA compliance
+Framework complexity increases implementation cost, and performance under highly dynamic workloads requires further validation.
+(Zhao et al., 2025)
+MSCNet using Multi-Scale Convolutions and Transformer Encoder
+Excellent long-term workload prediction by capturing multi-scale temporal dependencies and periodic patterns
+Focuses primarily on forecasting accuracy without integrating intelligent resource scheduling or autoscaling mechanisms.
+(Bi et al., 2024)
+ARIMA integrated with Wavelet Decomposition and Savitzky–Golay Filter
+Effectively handles noisy time-series data and improves prediction accuracy using statistical preprocessing
+Traditional statistical forecasting struggles with highly nonlinear workload patterns compared to modern deep learning approaches.
+Research Gaps
+Recent research makes great improvements in prediction of cloud workloads and predictive auto-scaling for Kubernetes, but there are still some challenges to address. The baseline study conducted by (Kumar et al., 2024) proposed a proactive auto-scaling framework for Kubernetes based on AI-based workload prediction and resource provisioning that employs ARIMA, LSTM, Bi-LSTM, and Transformer models and Explainable AI (XAI). But it had its focus on the prediction of autoscaling and forecast of performance and little treatment was given to taking adaptive decisions for autoscaling and comprehensive cloud performance optimisation. Besides baseline study, the proposed Predictive Adaptive Kubernetes Scaling (PAKS) Framework introduces artificial intelligence and machine learning methods to accurately predict the dynamic workloads and helps adaptive Kubernetes resource scaling. The proposed framework is designed to use AI workload prediction and make proactive decisions about scaling resources to optimise resource utilisation, response time, scaling latency, infrastructure cost and SLA compliance in cloud-native framework.
+Research Method & Specification
+This section presented the proposed research methodology, implementation resources, system architecture, performance evaluation framework, ethical considerations and timeline of the project for the PAKS Framework. It also provides a systematic roadmap for implementing, evaluating and validating the proposed framework to improve predictive Kubernetes auto-scaling and cloud resource management.
+Proposed Research Methodology
+In this research, the methodology used will be quantitative experimental research in order to design, implement and evaluate the design of the proposed dynamic cloud workload management framework called Predictive Adaptive Kubernetes Scaling (PAKS). The approach focuses on creating a proactive auto-scaling solution that uses machine learning algorithms for workload prediction and adaptive Kubernetes resource scaling to optimize application responsiveness in cloud. The public cloud workload datasets will be preprocessed and analysed using historical workload data to detect workload patterns as illustrated in figure 1. A predictive machine learning model will then be trained to predict future CPU and memory requirements, prior to workload changes. The adaptive scaling module will automatically take decisions on scaling actions based on these predictions rather than just following Kubernetes' own Horizontal Pod Autoscaler (HPA) default scaling behavior. The proposed architecture will be implemented on a Kubernetes cluster in which the forecasting, monitoring and scaling resources will be deployed, running in real time with each other. The effectiveness of the framework to tackle the changing application requirements will be tested through controlled experiments with different workloads. The research is carried out in a systematic implementation process starting from preparing the dataset, developing the model, integrating the model into the framework, deployment, and experimental validation of the model. This methodology shows a framework to study if predictive resource management can improve the performance of cloud applications, avoid unnecessary resource allocation and support good Kubernetes based resource management.
+Figure 1: System Architecture Diagram
+Research Resources
+The proposed PAKS Framework will need the application of cloud-native technologies, machine learning libraries and workload datasets that are freely available. Python will be the main language because of its machines learning, cloud automation, and data analysis libraries. The TensorFlow, Scikit-learn, Pandas and NumPy libraries will assist with workload prediction model building, data pre-processing, and performance testing. As described in Table 2, application components will be containerised using Docker and the orchestration platform responsible for deployment and management of containerised services, will be Kubernetes. The experimental cloud environment will run on Amazon Web Services (AWS), with Amazon EC2 instances used to deliver the computing power, Amazon S3 used to store workloads datasets, and Amazon CloudWatch used to gather monitoring metrics needed to make forecasting (Teja Thallam, 2025) and scaling decisions. Realistic workload behaviours will be simulated from public cloud workload datasets (Google Cluster Trace and Alibaba Cluster Trace) to validate the proposed framework. Prometheus and Grafana can also be combined to collect detailed metrics of resource utilisation and visualising system performance during experimentation. These resources are designed to give a practical cloud environment for implementing, testing and evaluating predictive Kubernetes auto-scaling across different scenarios of workload.
+Table 2: Components of the Proposed PAKS Framework
+Component
+Function
+Technologies Used
+Workload Dataset
+Stores historical workload information for training
+Google Cluster Trace, Alibaba Cluster Trace
+Data Preprocessing Module
+Cleans and prepares workload data
+Python, Pandas, NumPy
+Workload Prediction Model
+Predicts future CPU and memory demands
+LSTM, TensorFlow
+Monitoring Module
+Collects real-time resource metrics
+Prometheus, Grafana, CloudWatch
+Adaptive Scaling Engine
+Determines scale-up and scale-down actions
+Kubernetes API
+Kubernetes Cluster
+Executes container orchestration and scaling
+Kubernetes, Docker
+Cloud Infrastructure
+Hosts cloud resources and services
+AWS EC2, Amazon S3
+Performance Evaluation Module
+Measures framework performance
+Python, Scikit-learn
+Performance Evaluation Framework
+The proposed PAKS Framework will be tested by quantitative experiments, where its performance is compared with the traditional Kubernetes Horizontal Pod Autoscaler (HPA). Various workload conditions such as low, moderate, high and burst traffic will be created to evaluate the performance of the framework under the changing requirements of the applications. The accuracy of prediction will be first compared by using Mean Absolute Error (MAE) and Root Mean Square Error (RMSE) in the workload forecasting model. Resource utilisation, CPU efficiency, memory efficiency, response time, throughput and scaling latency (Bliedy et al., 2025) will then be measured to evaluate the performance of cloud resource management. Additionally infrastructure cost will be compared to see if predictive scaling can save from extra resource usage when compared to reactive auto-scaling. Moreover, the compliance to Service Level Agreement (SLA) and the availability of the applications will be monitored to determine the framework's ability to maintain stable cloud services under varying workloads. The experiments results will be analyzed statistically and compared with the default Kubernetes HPA to see the overall effectiveness of the predictive adaptive scaling. This evaluation framework gives measurable evidence to respond to the research question and shows whether the proposed approach improves the performance of the cloud, performance of the resources and reliability of the operations on the cloud in Kubernetes-based cloud environments.
+Ethical and Responsible Research Considerations
+The research proposed includes minimal ethical risk because it does not require human participants, interviews, surveys, or the collection of personal information. The following publicly available cloud workload datasets which do not include any personally identifiable or sensitive type of data will be used to conduct all experiments. The research will follow responsible research practices which includes transparency in the design, implementation and evaluation of the proposed PAKS Framework. During the research, all software libraries, cloud services, datasets and open-source tools used will follow to their respective licenses and usage policies. Experimental methods, implementation details, system set-up and evaluation procedures will be documented in detail to maintain the possibility of re-producing the work and the scientific integrity of the research. The predictive scaling model will be closely watched to ensure that the scaling decisions are made fairly and consistently, and that there is no unnecessary allocation of resources, or excessive usage of cloud resources. All limitations found in experimentation will be reported truthfully to promote academic honesty.
+Project Plan and Timeline
+Activities
+W1
+W2
+W3
+W4
+W5
+W6
+W7
+W8
+W9
+W10
+W11
+W12
+Literature Review and PAKS Framework Design
+Cloud Workload Dataset Collection and Preprocessing
+Machine Learning-Based Workload Prediction Model Development
+Adaptive Kubernetes Auto-Scaling Module Development
+Kubernetes Cluster and AWS Cloud Environment Configuration
+PAKS Framework Integration and Deployment
+Performance Evaluation and Comparative Analysis with Kubernetes HPA
+Results Analysis, Documentation, and Final Proposal Submission
+References
+Agrawal, S., Singh, D., 2024. Study Containerization Technologies like Docker and Kubernetes and their Role in Modern Cloud Deployments, in: 2024 IEEE 9th International Conference for Convergence in Technology (I2CT). Presented at the 2024 IEEE 9th International Conference for Convergence in Technology (I2CT), IEEE, Pune, India, pp. 1–5. https://doi.org/10.1109/I2CT61223.2024.10543986
+Google Scholar citation:29
+Ahmad, H., Treude, C., Wagner, M., Szabo, C., 2024. Smart HPA: A Resource-Efficient Horizontal Pod Auto-Scaler for Microservice Architectures, in: 2024 IEEE 21st International Conference on Software Architecture (ICSA). Presented at the 2024 IEEE 21st International Conference on Software Architecture (ICSA), IEEE, Hyderabad, India, pp. 46–57. https://doi.org/10.1109/ICSA59870.2024.00013 CORE Rank: A
+Ali, T., Khan, H.U., Alarfaj, F.K., AlReshoodi, M., 2024. Hybrid deep learning and evolutionary algorithms for accurate cloud workload prediction. Computing 106, 3905–3944. https://doi.org/10.1007/s00607-024-01340-8 JCR Impact factor: 3.0
+Aravind Nuthalapati, 2024. Cloud data center performance optimization through machine learning-based workload forecasting and energy efficiency. Int. J. Sci. Res. Arch. 13, 2353–2361. https://doi.org/10.30574/ijsra.2024.13.2.2435  Google scholar Citation : 14
+Bi, J., Yuan, H., Li, S., Zhang, K., Zhang, J., Zhou, M., 2024. ARIMA-Based and Multiapplication Workload Prediction With Wavelet Decomposition and Savitzky–Golay Filter in Clouds. IEEE Trans. Syst. Man Cybern. Syst. 54, 2495–2506. https://doi.org/10.1109/TSMC.2023.3343925 JCR Impact factor: 13.5
+Bliedy, D., Khafagy, M.H., Badry, R.M., 2025. Resource Utilization Prediction Model for Cloud Datacentre: Survey. Int. J. Adv. Comput. Sci. Appl. 16. https://doi.org/10.14569/IJACSA.2025.0160380 Google scholar Citation : 5
+Brooks, N., Vance, C., Ames, D., 2025. Cloud Computing: A Review of Evolution, Challenges, and Emerging Trends. https://doi.org/10.5281/ZENODO.15165068 Google scholar Citation : 6
+Duman, C., Eken, S., 2026. From reactive to predictive: A pattern-Aware framework for kubernetes autoscaling with large language model integration. J. Syst. Softw. 237, 112861. https://doi.org/10.1016/j.jss.2026.112861 JCR Impact factor: 4.2
+Guruge, P.B., Priyadarshana, Y.H.P.P., 2025. Time series forecasting-based Kubernetes autoscaling using Facebook Prophet and Long Short-Term Memory. Front. Comput. Sci. 7, 1509165. https://doi.org/10.3389/fcomp.2025.1509165 Google scholar Citation : 45
+Kashyap, S., Singh, A., Gill, S.S., 2025. Machine learning-centric prediction and decision based resource management in cloud computing environments. Clust. Comput. 28, 130. https://doi.org/10.1007/s10586-024-04787-8 Google Scholar Citation : 45
+Kirchoff, D.F., Meyer, V., Calheiros, R.N., De Rose, C.A.F., 2024. Evaluating machine learning prediction techniques and their impact on proactive resource provisioning for cloud environments. J. Supercomput. 80, 21920–21951. https://doi.org/10.1007/s11227-024-06303-6 JCR Impact factor: 4.3
+Kumar, B., Verma, A., Verma, P., 2024. Optimizing resource allocation using proactive scaling with predictive models and custom resources. Comput. Electr. Eng. 118, 109419. https://doi.org/10.1016/j.compeleceng.2024.109419 JCR Impact factor: 2.6
+Naveen Kumar, M.R., Annappa, B., Yadav, V., 2025. Efficient Kalman filter based deep learning approaches for workload prediction in cloud and edge environments. Computing 107, 10. https://doi.org/10.1007/s00607-024-01373-z JCR Impact factor: 4.0
+Pozdniakova, O., Mažeika, D., Cholomskis, A., 2024. SLA-Adaptive Threshold Adjustment for a Kubernetes Horizontal Pod Autoscaler. Electronics 13, 1242. https://doi.org/10.3390/electronics13071242 JCR Impact factor: 2.9
+Sabyasachi, A.S., Sahoo, B.M., Ranganath, A., 2024. Deep CNN and LSTM Approaches for Efficient Workload Prediction in Cloud Environment. Procedia Comput. Sci. 235, 2651–2661. https://doi.org/10.1016/j.procs.2024.04.250 Google Scholar citation : 40
+Teja Thallam, N.S., 2025. AI-Powered Monitoring and Predictive Maintenance for Cloud Infrastructure: Leveraging AWS Cloud Watch and ML. Int. J. Artif. Intell. Data Sci. Mach. Learn. 6, 55–61. https://doi.org/10.63282/3050-9262.IJAIDSML-V6I1P107 Google Scholar citation : 0
+Xiao, J., Yang, F., Ai, W., Meng, T., Xie, G., 2026. PAHPA: Revolutionizing Kubernetes Autoscaling With Integrated Predictive Analytics and Real-Time Monitoring. IEEE Trans. Serv. Comput. 19, 2343–2355. https://doi.org/10.1109/TSC.2026.3685325 JCR Impact factor: 8.1
+Yekollu, R.K., Haldikar, S.V., Ghuge, T.B., Abdul Kader, O.F.M., Biradar, S.S., 2024. Resource Management and Scalability in Container Orchestration Platforms: A Comparative Study, in: 2024 IEEE 16th International Conference on Computational Intelligence and Communication Networks (CICN). Presented at the 2024 IEEE 16th International Conference on Computational Intelligence and Communication Networks (CICN), IEEE, Indore, India, pp. 1146–1151. https://doi.org/10.1109/CICN63059.2024.10847490 Google Scholar citation : 8
+Zhao, F., Lin, W., Lin, S., Tang, S., Li, K., 2025. MSCNet: Multi-Scale Network With Convolutions for Long-Term Cloud Workload Prediction. IEEE Trans. Serv. Comput. 18, 969–982. https://doi.org/10.1109/TSC.2025.3536313 JCR Impact factor: 8.1

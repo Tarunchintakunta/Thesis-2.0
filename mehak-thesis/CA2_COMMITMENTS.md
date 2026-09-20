@@ -1,29 +1,29 @@
-# CA2 Commitments (proxy) — Mehak
+# CA2 Commitments — Mehak (formal)
 
-**Status:** Formal CA2 file **NOT FOUND** in-repo. This document is the **binding research contract** until a real CA2 is added.  
-**AWS deploy:** **Not required** for research alignment (local synthetic campaign is the experiment). Lambda/SAM is packaging only — **do not deploy AWS** for this thesis under the alignment-only policy.
+**Source:** Derived from formal CA2 file `mehak-thesis/MAHEK NAAZ.docx` (MHSA-TDL proposal; Gantt/timeline figures present in docx media).  
+**Status:** Binding research contract = **formal CA2**, not the prior proxy. Current artefact answers a **Thapliyal cross-head-fusion** niche that is **not** the formal RQ — treat proxy-era claims as non-binding.  
+**AWS deploy:** **Not required** for research alignment. Formal resources list *Google Colab, AWS EC2 (GPU)* as **training compute alternatives**. Experiment is offline model eval on traces — **do not deploy** Lambda/SAM under alignment policy.
 
-## Research question
-Does allowing per-metric attention heads to exchange information via a cross-head fusion layer reduce systematic underprediction during high-load transients, without degrading overall prediction accuracy?
+## Research question (formal)
+What is the performance of the proposed MHSA-TDL framework in predicting cloud cluster health and detecting potential failures from cloud telemetry, compared with existing hybrid deep learning and traditional monitoring approaches?
 
 ## Objectives (must evidence)
-1. Reproduce Thapliyal’s strict one-head-per-metric MHSA as baseline, adapted to cluster telemetry (CPU, memory, disk, network).
-2. Synthetic telemetry with genuine forecasting task + cross-metric burst precursors.
-3. Confirm underprediction pattern on that benchmark.
-4. Evaluate cross-head fusion across multiple seeds; report targeted metrics honestly (including non-wins).
+1. Build MHSA-TDL: Multi-Head Self-Attention over multi-metric telemetry (CPU, memory, disk I/O, network, scheduling) for cluster health / early failure detection.
+2. Train/evaluate on **Google Cluster Trace** (not proxy synthetic-only).
+3. Compare against hybrid/traditional baselines named in CA2 (e.g. Aldomi et al. 2026 GRU+feature-selection hybrid; RF/KNN/SVM/GRU-style monitors).
+4. Report Accuracy, Precision, Recall, F1-Score, ROC-AUC, prediction latency (+ confusion-matrix FN/FP analysis).
 
-## Baseline
-Thapliyal (2026), arXiv:2605.05354 (ICDCS 2026 acceptance claim). DOI note: `doi: 10.48550/arXiv.2605.05354`. PDF under `baseline_papers/`.
+## Baseline (formal)
+Aldomi et al. (2026) and related hybrid/attention failure-prediction literature cited in the proposal — **not** Thapliyal ICDCS as the CA2 baseline.
 
-## Variables / metrics (eval↔CSV)
-| Metric | Artefact |
-|--------|----------|
-| Accuracy, Macro-F1 | `mhsa-tdl-framework/results/results_summary.csv` |
-| Transient Violation Recall | same |
-| Transient Underprediction Bias | same |
-| Seeds | 42–46 (`results_per_seed.csv`) |
+## Variables / metrics
+| Metric | Formal commitment |
+|--------|-------------------|
+| Accuracy, Precision, Recall, F1, ROC-AUC | Required |
+| Prediction latency | Required |
+| Dataset | Google Cluster Trace |
 
-## Non-goals (honest)
-- Live AWS / Kinesis / Lambda inference campaign
-- Real Borg/IBM cluster traces
-- Claiming statistical significance when Δ < 1σ across seeds
+## Non-goals / honesty
+- Live Kinesis/Lambda inference campaign is **not** the CA2 experiment.
+- Prior proxy “synthetic OK + Thapliyal underprediction” contract is **superseded**.
+- Synthetic-only telemetry **is** a blocker vs this formal CA2 (GCT required).

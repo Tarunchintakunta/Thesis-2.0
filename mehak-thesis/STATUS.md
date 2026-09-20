@@ -2,14 +2,14 @@
 
 **Last Updated:** 2026-09-20  
 **Branch:** `feature/aws-ca2-alignment`  
-**Research Alignment to CA2:** **~88%** (proxy via `CA2_COMMITMENTS.md`; formal CA2 **NOT FOUND**)  
+**Research Alignment to CA2:** **~54%** (formal `MAHEK NAAZ.docx`; prior ~88% was vs superseded Thapliyal proxy)  
 **Status:** **NOT COMPLETE** — **&lt;100%** (do **not** treat as SUBMIT-READY)
 
 ## Summary
 
-Local synthetic campaign reproduces Thapliyal (2026) MHSA-PerHead underprediction on cluster telemetry and evaluates MHSA-Fused. **No live AWS.** Lambda/SAM/GitHub Actions are scaffolds only.
+Formal CA2 commits to **MHSA-TDL on Google Cluster Trace** vs hybrid/traditional monitors (Acc/Prec/Rec/F1/ROC-AUC/latency). Current artefact still implements **Thapliyal cross-head fusion on synthetic telemetry**. Gantt present in formal docx. **No live AWS** (EC2 listed only as optional training compute beside Colab).
 
-## Evidence-bound results (seeds 42–46)
+## Evidence-bound results (seeds 42–46) — artefact as-built (not formal GCT)
 
 Source: `mhsa-tdl-framework/results/results_summary.csv` (+ `results_per_seed.csv`).
 
@@ -19,18 +19,15 @@ Source: `mhsa-tdl-framework/results/results_summary.csv` (+ `results_per_seed.cs
 | MHSA-PerHead (baseline) | 0.873 ± 0.011 | 0.565 ± 0.008 | 0.864 ± 0.022 | 0.290 ± 0.076 |
 | MHSA-Fused (improved) | 0.863 ± 0.014 | 0.560 ± 0.010 | 0.884 ± 0.021 | 0.273 ± 0.050 |
 
-Fusion Δ is directionally consistent but **within ~1σ** across seeds — report as modest, not decisive.
+These numbers answer the **proxy** experiment, not formal GCT/Aldomi evaluation.
 
 ## What is done
-- Code + 5-seed train/eval pipeline; pytest suite present
-- LaTeX report; bib entries carry WhatsApp `note={doi:…}` where DOI known
-- `CA2_COMMITMENTS.md` + expanded `baseline_papers/BASELINE_PAPER.md`
+- Code + 5-seed train/eval; pytest; LaTeX; `CA2_COMMITMENTS.md` rewritten from formal docx
 
-## Blockers to 100% (non-AWS)
-1. Formal CA2 still missing (proxy commitments only)
-2. Synthetic telemetry only (no Borg/IBM traces)
-3. Prefer ICDCS VoR PDF over arXiv acceptance claim
-4. Soft: diagram placeholders; Lambda packaging never applied (and **must not** be deployed under alignment-only policy)
+## Blockers to 100% (vs formal)
+1. Google Cluster Trace data + eval (synthetic-only is a blocker)
+2. Formal metrics/baselines (Prec/Rec/ROC-AUC; hybrid comparison)
+3. Soft: report/claims rewrite off Thapliyal-as-CA2
 
 ## AWS
-**Not on AWS deploy list.** Residual note: `_analysis_extract/reports/mehak_alignment.md`.
+**Not required.** Residual: `_analysis_extract/reports/mehak_alignment.md`. **Do not deploy.**

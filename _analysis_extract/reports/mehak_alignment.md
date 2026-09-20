@@ -1,20 +1,28 @@
-# Mehak alignment residual (proxy CA2)
+# Mehak alignment residual (formal CA2)
 
 **Updated:** 2026-09-20  
-**Alignment after claim hygiene:** **~88/100** (was ~80 explore / proxy commitments)
+**Formal file:** `mehak-thesis/MAHEK NAAZ.docx`  
+**Alignment to formal CA2:** **~54/100** (was ~88 vs superseded Thapliyal proxy)
 
 ## Compact
-`RQ9 Obj12 Method12 Impl12 Exp12 Metrics9 Evidence8 Claims7 Rubric5` → **~88/100**
+`RQ5 Obj6 Method5 Impl10 Exp8 Metrics5 Evidence7 Claims4 Rubric4` → **~54/100**
 
-## Hygiene done
-- `CA2_COMMITMENTS.md` binding; STATUS demoted from SUBMIT-READY
-- Eval↔`results_summary.csv`; intro “three seeds” → five
-- Bib `note={doi:…}`; deploy language softened (never applied)
-- Baseline MD mapped Problem/Gap/Metrics
+## Formal extract (binding)
+| Field | Formal CA2 |
+|-------|------------|
+| RQ | MHSA-TDL cluster-health / failure prediction vs hybrid DL + traditional monitors |
+| Data | **Google Cluster Trace** |
+| Metrics | Acc, Prec, Rec, F1, ROC-AUC, prediction latency |
+| Baseline | Aldomi-style hybrid / RF·KNN·SVM·GRU — **not** Thapliyal |
+| AWS | Colab **or** EC2 GPU for training — **not** required for alignment |
+| Gantt | Present (docx media + timeline) |
 
-## Top blockers to 100%
-1. Formal CA2 file still missing  
-2. Synthetic-only telemetry  
-3. Prefer ICDCS VoR over arXiv acceptance claim  
+## Artefact vs formal
+MHSA-TDL **name/domain** match; code+5-seed eval exist. Artefact RQ is Thapliyal cross-head fusion on **synthetic** telemetry with underprediction metrics — **not** formal GCT + Aldomi comparison + ROC-AUC suite.
 
-**AWS residual:** no (alignment-only; do not deploy)
+## True blockers to 100% (vs formal)
+1. Google Cluster Trace pipeline + labels (synthetic-only **is** a blocker here)
+2. Baselines/metrics per formal (Prec/Rec/ROC-AUC; Aldomi/hybrid comparison) — retire Thapliyal-as-CA2-baseline claims
+3. Soft: claims/STATUS/report rewrite to formal RQ
+
+**AWS required:** **no** (do not deploy Lambda/SAM)

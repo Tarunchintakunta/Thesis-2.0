@@ -1,29 +1,32 @@
-# CA2 Commitments (proxy) — Pooja
+# CA2 Commitments — Pooja (formal)
 
-**Status:** Formal CA2 file **NOT FOUND** in-repo. This document is the **binding research contract** until a real CA2 is added.  
-**AWS deploy:** **Not required** for research alignment (local synthetic K8s-policy simulation). Lambda/SAM is packaging only — **do not deploy AWS**.
+**Source:** Derived from formal CA2 file `pooja-thesis/Pooja_25120921_CA2.docx` (PAKS proposal).  
+**Note:** Week-grid timeline table is present; **Gantt chart figure is MISSING** (note only — not a primary alignment blocker).  
+**Status:** Binding research contract = **formal CA2**, not the prior NimbusGuard-proxy. Current artefact is a **stability-aware simulator** framed on NimbusGuard — only partially overlaps formal PAKS.  
+**AWS:** Formal method places the experimental environment on **AWS EC2 + S3 + CloudWatch** with a real Kubernetes cluster. AWS is **required for full CA2 method fidelity**. This agent pass does **not** deploy.
 
-## Research question
-Can a proactive autoscaler keep most of its SLA-violation advantage over reactive HPA while substantially reducing instability (scaling-event frequency, pod-count volatility) that an unfiltered proactive policy exhibits?
+## Research question (formal)
+Can predictive workload forecasting combined with adaptive Kubernetes scaling (PAKS) improve cloud resource management under dynamic workloads versus traditional reactive Kubernetes HPA?
 
 ## Objectives (must evidence)
-1. Reproduce NimbusGuard’s agility–instability trade-off with a simpler feed-forward predictor (not identical DQN+LSTM+LLM agent).
-2. Build stability fix (EMA + hysteresis/cooldown) named as future work in NimbusGuard.
-3. Quantify trade-offs across SLA / over-provisioning / scaling events / volatility over multiple seeds.
+1. Preprocess public cloud workload data (Google Cluster Trace / Alibaba Cluster Trace) and train a **workload prediction** model (LSTM / TensorFlow per resources table).
+2. Build an adaptive scaling engine that acts on predictions via the Kubernetes API (not HPA-default alone).
+3. Implement/evaluate on a **Kubernetes cluster** hosted on **AWS** (EC2 compute, S3 datasets, CloudWatch metrics; Prometheus/Grafana optional).
+4. Compare PAKS vs reactive HPA across varied workload intensities (low/moderate/high/burst).
 
-## Baseline
-Wanigasooriya & Ekanayake (2026), NimbusGuard, IEEE ICOIN 2026. DOI `10.1109/ICOIN68469.2026.11480646` / arXiv:2604.11017. PDF under `baseline_papers/`.
+## Baseline (formal)
+Traditional Kubernetes Horizontal Pod Autoscaler (HPA); literature baselines in CA2 (not NimbusGuard as the binding CA2 baseline).
 
-## Variables / metrics (eval↔CSV)
-| Metric | Artefact |
-|--------|----------|
-| SLA Violations | `paks-framework/results/results_summary.csv` |
-| Over-provisioning % | same |
-| Scaling Events | same |
-| Pod Count Volatility | same |
-| Seeds | 42–46 (`results_per_seed.csv`) |
+## Variables / metrics
+| Metric | Formal commitment |
+|--------|-------------------|
+| Prediction MAE, RMSE | Required |
+| Resource utilisation / CPU & memory efficiency | Required |
+| Response time, throughput, scaling latency | Required |
+| Infrastructure cost | Required |
+| SLA compliance / availability | Required |
 
-## Non-goals (honest)
-- Live Kubernetes / HPA / KEDA testbed (NimbusGuard method not fully replicated)
-- Live AWS Lambda/Kinesis deploy
-- Claiming identical agent to NimbusGuard DQN
+## Non-goals / honesty
+- Prior proxy “NimbusGuard EMA/hysteresis on synthetic cyclical loads only” is **superseded**.
+- Local MLP simulator ≠ formal LSTM + live/controlled K8s-on-AWS testbed.
+- Synthetic cyclical workloads **without** GCT/Alibaba-derived behaviour remain a gap vs formal datasets.

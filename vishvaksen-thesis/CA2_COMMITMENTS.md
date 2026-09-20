@@ -1,28 +1,30 @@
-# CA2 Commitments (proxy) — Vishvaksen
+# CA2 Commitments — Vishvaksen (formal)
 
-**Status:** Formal CA2 file **NOT FOUND** in-repo. This document is the **binding research contract** until a real CA2 is added.  
-**AWS deploy:** **Not required** for research alignment (local synthetic IaC ablation). Lambda/SAM is packaging only — **do not deploy AWS**.
+**Source:** Derived from formal CA2 file `vishvaksen-thesis/VishvaksenMachana_25173421_proposal.docx` (*Evaluation of Terraform Security Scanners and Policy-as-Code Gates…*).  
+**Status:** Binding research contract = **formal CA2**. Current `iac-security/` artefact implements a **different thesis** (War et al. comment-ablation hybrid) and does **not** satisfy this CA2.  
+**AWS deploy / apply:** **Not required.** Formal ethics: corpus is evaluation-only; **“No live infrastructure is applied.”** Free-tier AWS may be used only for optional parse/validate. **Do not terraform-apply** insecure modules.
 
-## Research question
-Can a hybrid detector — rule layer + conservatively gated ML — recover precision lost when natural-language context (comments) is unavailable, and at what recall cost?
+## Research question (formal)
+What percentage of the labelled AWS misconfigurations will be identified by Terraform security scanners and an enforced policy-as-code gate?
 
 ## Objectives (must evidence)
-1. Reproduce War et al. comment-ablation precision collapse on a controlled synthetic benchmark.
-2. Design easy (code-alone) vs hard (comment-required) patterns so the ablation is non-trivial.
-3. Build hybrid rule+ML detector; report precision/recall/F1 trade-offs and threshold sweep honestly.
+1. Build a **labelled** set of secure/insecure Terraform modules in **four** AWS misconfiguration categories (~60 modules/category; ~60% defective; second-reviewer subsample).
+2. Measure detection accuracy of **manual checklist review**, **static scanning (Checkov + tfsec)**, and an **OPA/Rego CI gate** on identical inputs.
+3. Record **scan time** and **remediation effort** (LOC diff secure↔insecure) per stage.
+4. Report precision / recall / F1 / false-negative rate **per category** (not only macro averages).
 
-## Baseline
-War et al. (2025), arXiv:2509.18790 (preprint; peer-review not confirmed). Operational baseline for gap. Cite Rahman/GLITCH as published anchors without replacing War.
+## Baseline (formal)
+Verdet et al. (2025) Terraform security-policy adoption study — gap is missing labelled recall/F1 on known defects; Rahman/GLITCH cited as oracle methodology anchors.
 
-## Variables / metrics (eval↔CSV)
-| Metric | Artefact |
-|--------|----------|
-| Precision, Recall, F1 | `iac-security/results/results_summary.csv` |
-| Threshold sweep | evaluation table + `results_per_seed.csv` |
-| Seeds | 42–46 |
+## Variables / metrics
+| Metric | Formal commitment |
+|--------|-------------------|
+| Precision, Recall, F1, FN rate | Per stage × category |
+| Severity coverage | Required |
+| Scan time / module | Required |
+| Remediation effort (diff LOC) | Required |
 
-## Non-goals (honest)
-- Fine-tuned CodeBERT/LongFormer replication of War’s full stack
-- Real Ansible Galaxy / Puppet Forge corpora
-- Live AWS Lambda deploy
-- Claiming peer-reviewed venue for War until VoR exists
+## Non-goals / honesty
+- Prior proxy “War comment-ablation + TF-IDF hybrid” is **not** this CA2.
+- Synthetic labelled modules are **not** a blocker (formal corpus is purpose-built synthetic).
+- Fine-tuned CodeBERT / Ansible-Puppet smell detection is out of scope for this formal CA2.
