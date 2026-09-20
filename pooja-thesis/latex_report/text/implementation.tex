@@ -201,7 +201,7 @@ A \texttt{Makefile} provides convenient workflow commands:
 
 \subsection{Deployment Infrastructure (Optional)}
 
-While the core experiments run locally, the project includes optional AWS deployment infrastructure for applying the stability-aware controller to real-time workload streams.
+While the core experiments run locally, the project includes optional AWS deployment scaffolding for applying the stability-aware controller to real-time workload streams. \textbf{That scaffolding was never applied}; all reported metrics are from the local five-seed simulator.
 
 \subsubsection{\texttt{src/lambda\_handler/app.py}}
 
@@ -248,7 +248,7 @@ A GitHub Actions CI/CD pipeline (located at the repository root, not within \tex
   \item Deploy to AWS using \texttt{sam build \&\& sam deploy} with credentials from repository secrets (\texttt{AWS\_ACCESS\_KEY\_ID}, \texttt{AWS\_SECRET\_ACCESS\_KEY}, \texttt{AWS\_REGION}).
 \end{enumerate}
 
-This ensures that the deployed Lambda always uses the most recent model trained on the latest code.
+If credentials and a target account were configured, this would refresh a deployed Lambda; \textbf{no such deploy was run} for this thesis.
 
 \subsection{Code Quality and Reproducibility}
 

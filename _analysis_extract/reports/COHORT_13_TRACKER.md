@@ -19,10 +19,10 @@
 | 6 | Vikas | 68% | proposal.docx | Yes |
 | 7 | Venkat | 63% | venkat_ca2.txt | Yes |
 | 8 | Nemi | ~55% | CA2.txt | Yes |
-| 9 | Mehak | 80% | **NOT FOUND** (align to report RQ until CA2 added) | Yes |
-| 10 | Pooja | 77% | **NOT FOUND** | Yes |
-| 11 | Uday | 83% | **NOT FOUND** | Yes |
-| 12 | Vishvaksen | 78% | **NOT FOUND** | Yes |
+| 9 | Mehak | **~88%** | **NOT FOUND** → `CA2_COMMITMENTS.md` | Yes |
+| 10 | Pooja | **~85%** | **NOT FOUND** → `CA2_COMMITMENTS.md` | Yes |
+| 11 | Uday | **~90%** | **NOT FOUND** → `CA2_COMMITMENTS.md` | Yes |
+| 12 | Vishvaksen | **~86%** | **NOT FOUND** → `CA2_COMMITMENTS.md` | Yes |
 | 13 | Kasi | — | — | **EXCLUDED** |
 
 **None at 100% yet.**
@@ -43,3 +43,4 @@
 - 2026-09-20b: Chaitanya abstract — ADOPT band proxy-only
 - 2026-09-20b: Vikas eval — acknowledge live pilot path + empty campaign
 - 2026-09-20b: Added `CA2_COMMITMENTS.md` for Mehak/Pooja/Uday/Vishvaksen (binding until real CA2 exists)
+- 2026-09-20c: Mehak/Pooja/Uday/Vishvaksen claim hygiene — STATUS &lt;100%, eval↔CSV, bib `note={doi:}`, residual notes; still NOT COMPLETE; no AWS

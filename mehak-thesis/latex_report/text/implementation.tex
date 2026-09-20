@@ -67,9 +67,9 @@ The deployment architecture follows a serverless event-driven pattern using AWS 
   \item \textbf{SNS Topic}: prediction events are published to an SNS topic, which fans out to downstream subscribers (e.g., an alerting service, a CloudWatch dashboard, an S3 archive for audit logs).
 \end{itemize}
 
-Infrastructure is defined in \texttt{template.yaml}, an AWS Serverless Application Model (SAM) template. The template provisions the Kinesis stream, Lambda function, SNS topic, and necessary IAM roles with least-privilege permissions. The SAM CLI compiles the template into CloudFormation and deploys the stack to the configured AWS region.
+Infrastructure is defined in \texttt{template.yaml}, an AWS Serverless Application Model (SAM) template. The template provisions the Kinesis stream, Lambda function, SNS topic, and necessary IAM roles with least-privilege permissions. The SAM CLI \emph{can} compile the template into CloudFormation; \textbf{this stack was never applied} in the reported experiments (local train/eval only). Live AWS deployment is out of scope for the alignment-only campaign.
 
-\textbf{Known Simplification:} PyTorch is a heavy dependency for a Lambda zip package (~1GB uncompressed). In a production deployment, the Lambda would be packaged as a container image (allowing larger packages) or PyTorch would be placed in a Lambda Layer (shared across functions). The current implementation keeps the code simple and correct locally, deferring packaging optimizations to future work.
+\textbf{Known Simplification:} PyTorch is a heavy dependency for a Lambda zip package (~1GB uncompressed). In a production deployment, the Lambda would be packaged as a container image (allowing larger packages) or PyTorch would be placed in a Lambda Layer (shared across functions). The current implementation keeps the code simple and correct locally; packaging and deploy remain unexecuted scaffolds.
 
 \subsection{CI/CD Pipeline}
 \label{subsec:cicd}
@@ -91,7 +91,7 @@ Continuous integration and deployment are automated via \texttt{.github/workflow
   \end{itemize}
 \end{enumerate}
 
-This pipeline ensures that every commit is validated by re-running the full experimental evaluation, and that the latest trained model is automatically deployed to the staging environment on merge to \texttt{main}. Production deployment requires manual approval via a separate workflow (not included in this repository).
+The workflow is written to re-run evaluation and optionally invoke \texttt{sam deploy}, but \textbf{no staging or production AWS deploy was executed} for the results in Section~\ref{sec:Evaluation}. Reported metrics come exclusively from the local five-seed campaign.
 
 \subsection{Reproducibility}
 \label{subsec:reproducibility}

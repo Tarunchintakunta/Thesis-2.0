@@ -92,7 +92,7 @@ The script uses \texttt{sklearn.metrics.precision\_score}, \texttt{recall\_score
 
 \subsection{Deployment Architecture}
 
-The system is designed for real-time IaC misconfiguration detection in a production environment. The deployment architecture uses AWS serverless components:
+The system includes optional serverless packaging for IaC misconfiguration scoring. The deployment architecture \emph{describes} AWS components; \textbf{those resources were not provisioned} for the reported experiments (local train/eval only):
 
 \subsubsection{Lambda Handler (\texttt{src/lambda\_handler/app.py})}
 
@@ -130,21 +130,21 @@ AWS SAM template defining the deployment stack:
 
 \subsubsection{CI/CD Pipeline (\texttt{.github/workflows/deploy.yml})}
 
-GitHub Actions workflow automating the build, test, and deployment pipeline:
+GitHub Actions workflow scaffold for build/test (and optional deploy). \textbf{The Deploy steps were not executed} for results in Section~\ref{sec:Evaluation}:
 
 \begin{enumerate}
-  \item \textbf{Trigger:} On push to \texttt{main} branch
+  \item \textbf{Trigger:} On push to \texttt{main} branch (intended)
   \item \textbf{Build:}
   \begin{itemize}
     \item Install Python dependencies
     \item Run training script to generate model artifacts
     \item Run pytest test suite (all 34 tests must pass)
   \end{itemize}
-  \item \textbf{Deploy:}
+  \item \textbf{Deploy (scaffold only; not applied):}
   \begin{itemize}
     \item Configure AWS credentials from repository secrets
     \item Build SAM application
-    \item Deploy to configured AWS region (us-east-1 by default)
+    \item Deploy to a configured AWS region
     \item Tail Lambda logs for verification
   \end{itemize}
 \end{enumerate}
