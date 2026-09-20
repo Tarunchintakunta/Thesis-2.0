@@ -1,238 +1,250 @@
-# Baseline Papers Audit — 12 Theses (excl. kasi-thesis)
+# Baseline Papers Audit (CA2-aligned) — 12 Theses
 
-**Date:** 2026-09-20  
-**Scope:** `BASELINE_PAPER.md` for each listed thesis + PDF first-page verification where present + STATUS / intro / bib for topic & gap  
-**Method note:** Every `BASELINE_PAPER.md` is a thin citation stub (no Problem / Solution / Gap / Metrics sections). Gap and metrics judgements below are reconstructed from STATUS, LaTeX intros, and PDF abstracts—not from the MD files themselves.
+**Date:** 2026-09-20 (rev 2 — CA2 alignment emphasis)  
+**Exclude:** kasi-thesis  
+**Primary criterion (user clarification):** baselines must **maximize alignment % with CA2 proposal scope, variables, methodology, and evaluation criteria** — not “recent” alone.  
+**Secondary:** year PASS if 2024–2026; WEAK 2022–2023; FAIL older.
 
----
+### How Baseline→CA2 alignment % is scored
 
-## Executive summary
+| Component | Weight | What counts |
+|-----------|--------|-------------|
+| Scope / domain | 30% | Same service/problem class as CA2 RQ |
+| Variables (IVs/DVs) | 25% | Same knobs / outcomes CA2 manipulates or retains |
+| Methodology | 20% | Same experiment style CA2 inherits or extends |
+| Metrics / eval criteria | 25% | Can thesis compare on CA2-listed metrics |
 
-| # | Thesis | Year | Relevance | Metrics | Gap→Problem | MD quality | Flag |
-|---|--------|------|-----------|---------|-------------|------------|------|
-| 1 | anji | PASS (2025) | HIGH | PARTIAL | clear | thin | WSEAS venue |
-| 2 | Varun | PASS (2025) | **LOW** | PARTIAL | weak | thin | **TierBase = KV store, not S3** |
-| 3 | yashaswini | PASS (2025) | MEDIUM | PARTIAL | clear | thin | Xing = ceiling-only / Sensors |
-| 4 | rassool | PASS (2026) | MEDIUM | PARTIAL | clear | thin | Pantelić self-hosted SQL/NoSQL |
-| 5 | chaitanya | PASS (2025) | HIGH | PARTIAL | clear | thin | — |
-| 6 | vikas | PASS (2025 TOCS) | HIGH | PARTIAL | clear | thin | **Wrong PDF attached** + bad arXiv ID |
-| 7 | venkat-bora | PASS (2025) | MEDIUM | YES | weak | thin | MATLAB LU vs cloud Dask |
-| 8 | Nemi | PASS (2026) | HIGH | YES | clear | thin | PDF missing; ICISS venue |
-| 9 | mehak | PASS (2026) | HIGH | YES | clear | thin | arXiv preprint (ICDCS-accepted claim) |
-| 10 | pooja | PASS (2026) | HIGH | PARTIAL | clear | thin | ICOIN + arXiv OA |
-| 11 | uday | PASS (2026) | HIGH | PARTIAL | clear | thin | PDF is Research Square preprint of JNSM |
-| 12 | vishvaksen | PASS (2025) | HIGH | YES | clear | thin | **arXiv-only preprint** |
-
-**Universal MD finding:** All 12 `BASELINE_PAPER.md` files lack Problem/Solution/Gap/Metrics structure → content quality = **thin** everywhere.
+**Note:** This is **baseline↔CA2 fit**, not artefact completion %. Every `BASELINE_PAPER.md` still lacks Problem/Solution/Gap/Metrics → MD quality = **thin** for all 12.
 
 ---
 
-## 1. anji-thesis
+## Executive table
 
-1. **Topic:** Reliability and recovery of Amazon SQS under injected consumer/downstream failures (localsim).  
-2. **Baseline:** Kyrychenko, Ostapov & Kyrychenko — *Optimization of SQS Configurations for Efficient Batch Data Processing* — WSEAS Transactions on Systems, Vol. 24, pp. 36–43, **2025**. DOI `10.37394/23202.2025.24.4`. PDF present and matches.  
-3. **Year / recency:** **PASS**  
-4. **Relevance:** **HIGH** — same service (SQS), same config knobs (batch size, visibility timeout); thesis extends steady-state optimization into fault injection.  
-5. **Metrics overlap:** **PARTIAL** — baseline: throughput, response time, queue length, utilization; thesis: loss, duplicates, DLQ, recovery time (+ throughput/latency for replication). Steady-state comparison possible; fault metrics are new.  
-6. **Gap→Problem:** **clear** — intro states Kyrychenko optima assume healthy components; thesis asks whether those optima transfer under failure.  
-7. **Issues / replacement:** Keep. Venue is WSEAS (weaker than IEEE/ACM); optional secondary baseline from stronger SQS/queueing venue if examiners push venue quality.  
-8. **MD quality:** **thin**
-
----
-
-## 2. Varun *(special scrutiny: TierBase / S3 FinOps)*
-
-1. **Topic:** Predictive S3 storage-class recommendation, forecasting, and savings estimation (FinOps).  
-2. **Baseline (as cited in `BASELINE_PAPER.md`):** Shen et al. — *TierBase: A Workload-Driven Cost-Optimized Key-Value Store* — **ICDE 2025**. DOI `10.1109/ICDE65448.2025.00049`; open PDF arXiv:2505.06556. PDF present.  
-   - **PDF-verified title/authors:** Zhitao Shen et al. (Ant Group / Guangzhou Univ / SJTU) — distributed **key-value store** cost model (cache↔storage tiers; Redis/Memcached/Cassandra/HBase class).  
-   - **Bib error:** `Varun/latex_report/refs.bib` retitles it as “Cloud Object Storage” — that title is **not** on the PDF.  
-3. **Year / recency:** **PASS**  
-4. **Relevance:** **LOW** — TierBase optimizes Ant Group KV-store space/performance cost, not Amazon S3 storage classes, Lifecycle, or Intelligent-Tiering. Shared theme (“tiering / cost”) is analogy only; domain mismatch confirmed by PDF abstract.  
-5. **Metrics overlap:** **PARTIAL** — both discuss cost reduction / allocation; TierBase reports production cost % and space-performance model; thesis uses allocation accuracy, MAPE, USD savings vs Lifecycle/IT — not the same constructs.  
-6. **Gap→Problem:** **weak** — intro filler claims “bridging the gap identified in Shen et al.” with a “temporal recency buffer,” which does not map to TierBase’s KV cost-model gap.  
-7. **Issues / replacement:** **Replace or demote TierBase.** Prefer S3/object-storage FinOps baselines already named in STATUS (e.g. SkyStore / Liu et al. 2025, Yang et al. 2025 MLSys, Beck et al. 2025 naive forecast). Fix bib title to match PDF. Do not claim TierBase as an S3 baseline.  
-8. **MD quality:** **thin**
+| Thesis | CA2 baseline named? | Year | Relevance | Metrics overlap | Gap→Problem | **Baseline→CA2 %** | MD | Critical flag |
+|--------|---------------------|------|-----------|-----------------|-------------|--------------------|----|---------------|
+| anji | Yes — Kyrychenko | PASS | HIGH | PARTIAL | clear | **88%** | thin | — |
+| Varun | Yes — TierBase (+SkyStore/Yang in lit) | PASS | **LOW** | PARTIAL | weak | **38%** | thin | KV≠S3; prefer SkyStore/Yang for scope |
+| yashaswini | Yes — Xing (ceiling) | PASS | MEDIUM | PARTIAL | clear | **72%** | thin | Ceiling-only by CA2 design |
+| rassool | Yes — Pantelić | PASS | MEDIUM | PARTIAL | clear | **78%** | thin | Self-hosted; metering gap intentional |
+| chaitanya | Yes — Bluemke | PASS | HIGH | PARTIAL | clear | **92%** | thin | — |
+| vikas | Yes — Halfmoon/Qi TOCS | PASS | HIGH | PARTIAL | clear | **86%** | thin | **Wrong PDF** / bad arXiv ID |
+| venkat-bora | Yes — Sabir | PASS | MEDIUM | YES | weak→clear in CA2 | **74%** | thin | Threaded path only; need distributed peer |
+| Nemi | Yes — Saklani | PASS | HIGH | YES | clear | **90%** | thin | PDF missing |
+| mehak | Proxy CA2 — Thapliyal | PASS | HIGH | YES | clear | **91%** | thin | arXiv / ICDCS claim |
+| pooja | Proxy CA2 — NimbusGuard | PASS | HIGH | PARTIAL | clear | **87%** | thin | ICOIN mid-tier |
+| uday | Proxy CA2 — Et-Tousy | PASS | HIGH | PARTIAL | clear | **90%** | thin | Preprint PDF of VoR |
+| vishvaksen | Proxy CA2 — War | PASS | HIGH | YES | clear | **89%** | thin | arXiv-only |
 
 ---
 
-## 3. yashaswini-thesis *(special scrutiny: Xing ceiling)*
+## 1. anji-thesis — Baseline→CA2 **88%**
 
-1. **Topic:** Lightweight (rule-based) fault detection/localisation in AWS serverless microservices vs deep-learning accuracy, plus monitoring overhead.  
-2. **Baseline:** Xing, Wang & Liu — *Multi-Dimensional Anomaly Detection and Fault Localization in Microservice Architectures: A Dual-Channel Deep Learning Approach with Causal Inference for Intelligent Sensing* — **Sensors** 25(11):3396, **2025**. DOI `10.3390/s25113396`. PDF present and matches. Reported F1 **93.8%**, localisation precision 87.6%.  
-3. **Year / recency:** **PASS**  
-4. **Relevance:** **MEDIUM** — same *problem family* (microservice anomaly detection + localisation) but **not** AWS serverless/CloudWatch/X-Ray; dual-channel DL + causal inference on general microservice KPIs. Thesis correctly uses it as Leg-1 **accuracy ceiling**, not same-rig peer.  
-5. **Metrics overlap:** **PARTIAL** — F1 / localisation precision conceptually comparable; overhead ($) and Top-k on RCAEval are thesis-side; Xing does not share the AWS overhead or RCAEval protocol.  
-6. **Gap→Problem:** **clear** (in proposal/STATUS) — Xing’s accuracy presupposes labelled training corpus unavailable to new cost-constrained serverless services; thesis measures untrained rule-based retention of accuracy + overhead.  
-7. **Issues / replacement:** Keep Xing as **ceiling citation only** (already framed). Strengthen like-for-like with RCAEval published methods (BARO, CIRCA, TraceRCA). Do not treat Xing F1=0.938 as defeated on the same rig. MDPI *Sensors* is published OA but not a systems venue.  
-8. **MD quality:** **thin**
-
----
-
-## 4. rassool-thesis *(Pantelić concern)*
-
-1. **Topic:** DynamoDB partition-key design × capacity mode performance–cost under serverless workloads.  
-2. **Baseline:** Pantelić et al. — *Benchmarking SQL and NoSQL Persistence in Microservices Under Variable Workloads* — **Future Internet** 18:53, **2026**. DOI `10.3390/fi18010053`. PDF present and matches. Single-node containerized SQL/NoSQL (not AWS DynamoDB).  
-3. **Year / recency:** **PASS**  
-4. **Relevance:** **MEDIUM** — workload profiles (read/write/mixed, concurrency) transfer; engine is self-hosted SQL/NoSQL, **not** DynamoDB partition keys or on-demand/provisioned metering.  
-5. **Metrics overlap:** **PARTIAL** — shared: latency (p95), throughput, CPU/memory; thesis adds throttle rate, RCU/WCU, $/10k ops (absent from baseline by design).  
-6. **Gap→Problem:** **clear** — intro explicitly: Pantelić omits metered cost, throttling, consumed capacity; thesis adds those on DynamoDB.  
-7. **Issues / replacement:** Acceptable as **methodological** baseline if gap is stated honestly. Stronger DynamoDB-native alternatives (adaptive capacity / hot-key / serverless DB papers) would raise relevance. MDPI *Future Internet* venue is mid-tier.  
-8. **MD quality:** **thin**
+1. **Topic:** SQS reliability/recovery under injected consumer & downstream failures (+ DIVE in CA2 narrative).  
+2. **Baseline:** Kyrychenko, Ostapov & Kyrychenko — *Optimization of SQS Configurations for Efficient Batch Data Processing* — WSEAS Transactions on Systems, 24, 36–43, **2025**. DOI `10.37394/23202.2025.24.4`. PDF verified.  
+3. **Year:** **PASS**  
+4. **Relevance:** **HIGH** — CA2 (`anji_ca2_related_articles.html`) names this as the **direct baseline**; same SQS service and config ranges.  
+5. **Metrics overlap:** **PARTIAL** — CA2 retains throughput/latency for steady-state replication; adds loss, duplicates, DLQ, recovery under faults.  
+6. **Gap→Problem:** **clear** — steady-state optima under healthy consumers → failure-regime behaviour.  
+7. **CA2 alignment breakdown:** Scope 28/30 · Vars 23/25 (VT, batch, delay; MRC/DLQ added) · Method 18/20 (config sweep + Boto3/queueing) · Metrics 19/25 → **88%**.  
+8. **Issues:** Keep. Venue weaker than systems conferences; optional second baseline for chaos/fault injection (methodology peer), not replacement.  
+9. **MD quality:** **thin** (no P/S/G/M structure)
 
 ---
 
-## 5. chaitanya-thesis
+## 2. Varun — Baseline→CA2 **38%** *(special scrutiny)*
 
-1. **Topic:** Isolate Lambda Init Duration (cold start) across runtimes, package size, memory, warming.  
-2. **Baseline:** Bluemke & Zdanowski — *Evaluation of configurations of AWS Lambda functions* — **Intl. Journal of Electronics and Telecommunications**, 71(3), **2025**. DOI `10.24425/ijet.2025.153619`. PDF present and matches.  
-3. **Year / recency:** **PASS**  
-4. **Relevance:** **HIGH** — same platform (AWS Lambda), configuration/cost-performance evaluation; thesis isolates Init Duration and expands runtimes/package/warming.  
-5. **Metrics overlap:** **PARTIAL** — baseline: duration/cost by memory & arch; thesis: Init Duration, Duration, billed duration, cost — comparable family, finer cold-start split.  
-6. **Gap→Problem:** **clear** — STATUS/abstract: prior configs report aggregate duration; this work isolates initialization.  
-7. **Issues / replacement:** Keep. Venue is specialist (PAS/IJET), not top systems, but domain fit is strong.  
-8. **MD quality:** **thin**
-
----
-
-## 6. vikas-thesis *(PDF / arXiv integrity)*
-
-1. **Topic:** Application-level idempotency on Lambda+DynamoDB (plain put / conditional / idempotency key) vs retry duplicates.  
-2. **Baseline (intended, from bib/STATUS):** Qi, Feng, Liu & Jin — *Efficient fault tolerance for stateful serverless computing with asymmetric logging* (Halfmoon journal) — **ACM TOCS** 43(1–2), **2025**. DOI `10.1145/3725985`. Precursor: SOSP’23 Halfmoon DOI `10.1145/3600006.3613154`.  
-3. **Year / recency:** **PASS** (TOCS 2025; SOSP precursor 2023 is WEAK if used alone—journal version saves recency).  
-4. **Relevance:** **HIGH** — shared correctness criterion (no duplicate state mutation after retry); gap is custom runtime vs managed application-level primitives.  
-5. **Metrics overlap:** **PARTIAL** — both care about duplicates / overhead; Halfmoon reports latency & logging overhead on custom runtime; thesis: duplicate-mutation rate, latency, consumed WCU on stock Lambda+DynamoDB.  
-6. **Gap→Problem:** **clear** — custom-runtime exactly-once unavailable on managed FaaS; measure app-level paths.  
-7. **Issues / replacement:**  
-   - **Critical:** File `Qi_et_al_2025_Halfmoon_TOCS_baseline.pdf` is **not Halfmoon**. First page is Nahum et al., *Decongestion by Representation…*, ICLR 2024, **arXiv:2306.10606** (marketplace ML).  
-   - `BASELINE_PAPER.md` wrongly pairs Halfmoon with `arXiv:2306.10606`. Halfmoon has **no** that arXiv ID; use TOCS DOI / author PDF.  
-   - **Action:** Replace PDF with TOCS Halfmoon (or SOSP’23 PDF); delete wrong arXiv ID from MD. Citation text in bib is fine.  
-8. **MD quality:** **thin** (+ factual error on arXiv)
+1. **Topic (CA2):** Predictive S3 storage-class recommendation + forecasting + savings vs Lifecycle / Intelligent-Tiering (live AWS).  
+2. **Baseline on disk:** Shen et al. — *TierBase: A Workload-Driven Cost-Optimized **Key-Value Store*** — ICDE **2025**. DOI `10.1109/ICDE65448.2025.00049` / arXiv:2505.06556. PDF verified as **KV store** (Ant Group).  
+3. **Year:** **PASS**  
+4. **Relevance:** **LOW** for S3 FinOps — PDF is Redis/HBase-class KV tiering, not S3 classes.  
+5. **Metrics overlap:** **PARTIAL** — CA2 Table 2: allocation accuracy, MAPE/RMSE vs naive, realised USD/% vs **AWS-native** baselines, overhead. TierBase reports production KV cost % — not those constructs.  
+6. **Gap→Problem:** **weak** — CA2 itself says TierBase/SkyStore show workload-aware > static but **lack forecasting**; thesis gap should be integrated recommend+forecast+savings on S3, not “KV cost model.”  
+7. **CA2 alignment breakdown:** Scope **8/30** (named in CA2 lit but wrong storage class) · Vars **8/25** (tiering analogy only) · Method **10/20** (workload-driven cost) · Metrics **12/25** → **38%**.  
+   - **Better CA2-aligned replacements already in CA2 refs:**  
+     - **SkyStore** (Liu et al. 2025, PVLDB) — object storage across regions/clouds (**scope ↑**)  
+     - **Yang et al. 2025 MLSys** — ML-driven storage placement (**variables/method ↑**)  
+     - **Beck et al. 2025** — naive forecast baseline (**eval criteria exact match**)  
+8. **Issues:** Demote TierBase to related work; make SkyStore or Yang the operational baseline for BASELINE_PAPER.md; fix bib title (do not call TierBase “Cloud Object Storage”).  
+9. **MD quality:** **thin**
 
 ---
 
-## 7. venkat-bora-thesis
+## 3. yashaswini-thesis — Baseline→CA2 **72%** *(Xing ceiling)*
 
-1. **Topic:** Multi-threaded vs distributed matrix scaling (multiply / LU) on cloud infrastructure (local Dask in practice).  
-2. **Baseline:** Sabir & Alebrahim — *Coarse-Grained Column Agglomeration Parallel Algorithm for LU Factorization Using Multi-Threaded MATLAB* — **Mathematics** 13:298, **2025**. DOI `10.3390/math13020298`. PDF present and matches. Four-core Xeon, MATLAB R2020b.  
-3. **Year / recency:** **PASS**  
-4. **Relevance:** **MEDIUM** — shared LU / multi-thread matrix theme; baseline is MATLAB on a workstation, not cloud EC2/Dask or distributed network costs.  
-5. **Metrics overlap:** **YES** — time, speedup, accuracy; thesis also memory/CPU — compatible core set.  
-6. **Gap→Problem:** **weak** — “extend multi-threaded LU with Dask comparison” is incremental; cloud-network gap underspecified given local-only execution.  
-7. **Issues / replacement:** Prefer a 2024–2026 cloud/HPC distributed linear-algebra or Dask/Ray scaling paper if claiming cloud infrastructure. Keep Sabir only as local multi-thread reference.  
-8. **MD quality:** **thin**
-
----
-
-## 8. Nemi
-
-1. **Topic:** SecureFL-IDS — privacy-preserving federated intrusion detection (FL + DP) for cloud-native settings.  
-2. **Baseline:** Saklani, Chohan & Sharma — *Privacy Preserving Cloud Native Intrusion Detection Using Federated Learning and Differential Privacy* — **2026 8th ICISS**, pp. 387–392. DOI `10.1109/iciss67859.2026.11454085`. **PDF not present** (paywall noted in MD).  
-3. **Year / recency:** **PASS**  
-4. **Relevance:** **HIGH** — same problem (PP FL-DP IDS, cloud-native); thesis reproduces then adds adaptive DP, compression, hybrid model.  
-5. **Metrics overlap:** **YES** — accuracy, F1, communication (MB/round) aligned with STATUS replication targets.  
-6. **Gap→Problem:** **clear** — related work lists fixed-ε DP, comm overhead, architecture limits; SecureFL-IDS targets those.  
-7. **Issues / replacement:** Keep domain. Obtain IEEE PDF. Venue is ICISS (specialist conference)—acceptable but not top-tier security. Without PDF, claims about baseline numbers (~91.8%) are second-hand.  
-8. **MD quality:** **thin**
+1. **Topic (CA2):** Accuracy–overhead position of **untrained** CloudWatch/X-Ray rules vs learned detectors in AWS serverless microservices.  
+2. **Baseline:** Xing, Wang & Liu — *Multi-Dimensional Anomaly Detection and Fault Localization…* — **Sensors** 25(11):3396, **2025**. DOI `10.3390/s25113396`. F1 93.8%. PDF verified.  
+3. **Year:** **PASS**  
+4. **Relevance:** **MEDIUM** — CA2 **names Xing as the baseline** but as **accuracy ceiling under labelled data**, not same-rig AWS peer. Domain = general microservice sensing, not CW/X-Ray.  
+5. **Metrics overlap:** **PARTIAL** — CA2 retains F1 / top-k; adds telemetry volume, latency, $. Like-for-like arm is Pham/RCAEval baselines, not Xing.  
+6. **Gap→Problem:** **clear** — labelled-corpus precondition vs no-history serverless.  
+7. **CA2 alignment breakdown:** Scope 18/30 · Vars 18/25 · Method 14/20 (ceiling + three-leg is CA2 method; Xing alone ≠ full protocol) · Metrics 22/25 → **72%**.  
+8. **Issues:** Keep Xing as Leg-1. Do **not** replace with a “more recent” paper that breaks the CA2 ceiling narrative. Strengthen Leg-2 (RCAEval/BARO/CIRCA) for method/metrics %. Optional: Zhang J. & Yang 2026 as secondary ceiling if CA2 allows.  
+9. **MD quality:** **thin**
 
 ---
 
-## 9. mehak-thesis
+## 4. rassool-thesis — Baseline→CA2 **78%** *(Pantelić)*
 
-1. **Topic:** Cross-head fusion for MHSA cluster telemetry / SLA monitoring (fix underprediction gap).  
-2. **Baseline:** Thapliyal — *A Multi-Head Attention Approach for SLA Compliance Monitoring in Data Centers* — **arXiv:2605.05354** (PDF states accepted **IEEE ICDCS 2026**). PDF present and matches.  
-3. **Year / recency:** **PASS**  
-4. **Relevance:** **HIGH** — thesis reproduces one-head-per-metric MHSA and targets the paper’s underprediction behaviour with fusion.  
-5. **Metrics overlap:** **YES** — accuracy, macro-F1, transient recall, underprediction bias used as reproduction targets.  
-6. **Gap→Problem:** **clear** — STATUS: confirm systematic underprediction; fusion as targeted fix.  
-7. **Issues / replacement:** Keep. **Preprint caveat:** currently arXiv; ICDCS acceptance claimed on PDF—prefer citing ICDCS proceedings when available. Domain (colo power/temp/humidity SLA) ≠ generic cloud cluster metrics; synthetic telemetry narrows external validity but mapping is intentional.  
-8. **MD quality:** **thin**
-
----
-
-## 10. pooja-thesis
-
-1. **Topic:** Stability-aware predictive Kubernetes autoscaling (vs aggressive proactive / reactive HPA).  
-2. **Baseline:** Wanigasooriya & Ekanayake — *NimbusGuard: A Novel Framework for Proactive Kubernetes Autoscaling Using Deep Q-Networks* — **IEEE ICOIN 2026**, pp. 726–731. DOI `10.1109/ICOIN68469.2026.11480646`; OA arXiv:2604.11017. PDF present (arXiv OA) and matches.  
-3. **Year / recency:** **PASS**  
-4. **Relevance:** **HIGH** — same domain (proactive K8s autoscaling vs HPA); thesis addresses agility–instability / scaling-event volatility.  
-5. **Metrics overlap:** **PARTIAL** — both: SLA/performance vs cost/efficiency; thesis emphasises scaling events & pod volatility (stability), not DQN reward identically.  
-6. **Gap→Problem:** **clear** — STATUS: reproduce agility–instability trade-off; stability-aware controller cuts events/volatility.  
-7. **Issues / replacement:** Keep. ICOIN is a mid-tier networking conference; arXiv OA copy is fine if DOI cited. Prefer published IEEE PDF when accessible.  
-8. **MD quality:** **thin**
+1. **Topic (CA2):** DynamoDB partition-key × capacity mode → latency, throttling, RCU/WCU, $/10k ops under Lambda workloads.  
+2. **Baseline:** Pantelić et al. — *Benchmarking SQL and NoSQL Persistence in Microservices Under Variable Workloads* — Future Internet 18:53, **2026**. DOI `10.3390/fi18010053`. Self-hosted container SQL/NoSQL. PDF verified.  
+3. **Year:** **PASS**  
+4. **Relevance:** **MEDIUM** — CA2 **explicitly chooses** Pantelić because it has workload profiles but **no meter**; that absence *is* the CA2 problem.  
+5. **Metrics overlap:** **PARTIAL** — CA2 retains latency/throughput for comparability; adds throttle, capacity units, cost.  
+6. **Gap→Problem:** **clear** (CA2 § niche).  
+7. **CA2 alignment breakdown:** Scope 20/30 (persistence benchmarking, not DynamoDB-native) · Vars 20/25 (workloads yes; key/capacity are thesis IVs) · Method 18/20 · Metrics 20/25 → **78%**.  
+8. **Issues:** Keep as CA2-named baseline. Raising % further would mean a DynamoDB hot-key / adaptive-capacity paper **as secondary**, not replacing Pantelić’s role. Bodner 2025 is complementary (prices services, not keys) per CA2.  
+9. **MD quality:** **thin**
 
 ---
 
-## 11. uday-thesis
+## 5. chaitanya-thesis — Baseline→CA2 **92%**
 
-1. **Topic:** Federated QoS offload decisions for OneM2M IoT middleware (vs centralized RF).  
-2. **Baseline:** Et-Tousy, Zyane & Sharif — *Adaptive QoS Management in OneM2M Standard: Machine Learning and Deep Learning for IoT Network Optimization* — **Journal of Network and Systems Management**, **2026**. DOI `10.1007/s10922-026-10071-4`. PDF on disk is **Research Square preprint** (`10.21203/rs.3.rs-7987618/v1`, posted Nov 2025); VoR note on PDF confirms JNSM publication 6 May 2026.  
-3. **Year / recency:** **PASS**  
-4. **Relevance:** **HIGH** — same OneM2M QoS / offload problem; thesis implements federated alternative the paper flags as future work.  
-5. **Metrics overlap:** **PARTIAL** — baseline: accuracy, RTT, success rate, CPU/RAM; thesis: accuracy / macro-F1 of offload classifier (centralized vs federated vs single-site)—classifier metrics overlap; full QoS loop metrics less so.  
-6. **Gap→Problem:** **clear** — STATUS: reproduce centralized RF; build federated alternative proposed as future work.  
-7. **Issues / replacement:** Keep. Prefer publisher JNSM PDF over Research Square when possible; citation DOI is the published version (good).  
-8. **MD quality:** **thin**
-
----
-
-## 12. vishvaksen-thesis
-
-1. **Topic:** Hybrid rule+ML IaC misconfiguration detection addressing comment-ablation precision collapse.  
-2. **Baseline:** War, Rawass, Kabore, Samhi, Klein & Bissyandé — *Detection of Security Smells in IaC Scripts through Semantics-Aware Code and Language Processing* — **arXiv:2509.18790**, 23 Sep **2025** (University of Luxembourg). PDF present; **preprint only** (STATUS/bib: peer-review not confirmed).  
-3. **Year / recency:** **PASS**  
-4. **Relevance:** **HIGH** — thesis reproduces comment-removal ablation and builds hybrid detector for enumerable patterns.  
-5. **Metrics overlap:** **YES** — Precision, Recall, F1 (same family; thesis uses simpler TF-IDF vs CodeBERT/LongFormer by design).  
-6. **Gap→Problem:** **clear** — precision collapses without NL context; hybrid rules recover precision for easy patterns.  
-7. **Issues / replacement:** Keep for gap mapping. **Venue risk:** arXiv-only—monitor for peer-reviewed version; optionally add Rahman ICSE/TOSEM or GLITCH as published anchors.  
-8. **MD quality:** **thin**
+1. **Topic (CA2):** How much Lambda cold-start latency free controls remove, at what cost (Init isolated).  
+2. **Baseline:** Bluemke & Zdanowski — *Evaluation of configurations of AWS Lambda functions* — IJET 71(3), **2025**. DOI `10.24425/ijet.2025.153619`. PDF verified.  
+3. **Year:** **PASS**  
+4. **Relevance:** **HIGH** — CA2 designed as extension: same Lambda config space; isolate Init; add runtime/package/warming.  
+5. **Metrics overlap:** **PARTIAL→near YES** — CA2 **retains** duration & cost from Bluemke; adds Init Duration, cold frequency, tail percentiles.  
+6. **Gap→Problem:** **clear**.  
+7. **CA2 alignment breakdown:** Scope 29/30 · Vars 24/25 · Method 18/20 · Metrics 21/25 → **92%**.  
+8. **Issues:** Keep. Joosen et al. 2025 is observational peer, not replacement.  
+9. **MD quality:** **thin**
 
 ---
 
-## Special-scrutiny verdicts
+## 6. vikas-thesis — Baseline→CA2 **86%** *(PDF integrity)*
+
+1. **Topic (CA2):** Duplicate-mutation rate of plain / conditional / idempotency-key writes on stock Lambda+DynamoDB under injected retries.  
+2. **Baseline (CA2-named):** Qi, Feng, Liu & Jin — *Efficient fault tolerance… asymmetric logging* — **ACM TOCS** 43(1–2), **2025**. DOI `10.1145/3725985` (Halfmoon journal). Shared criterion: no duplicate mutation after retry.  
+3. **Year:** **PASS**  
+4. **Relevance:** **HIGH** — CA2 inverts custom-runtime exactly-once → measure managed app-level paths.  
+5. **Metrics overlap:** **PARTIAL** — shared correctness; CA2 adds duplicate rate vs known retries, latency, WCU on stock platform.  
+6. **Gap→Problem:** **clear**.  
+7. **CA2 alignment breakdown:** Scope 28/30 · Vars 22/25 · Method 16/20 (injected retries vs runtime logging) · Metrics 20/25 → **86%**.  
+8. **Issues:** Citation choice is CA2-correct. **File `Qi_et_al_2025_Halfmoon_TOCS_baseline.pdf` is wrong** (ICLR 2024 decongestion / arXiv:2306.10606). `BASELINE_PAPER.md` wrongly lists that arXiv for Halfmoon. Replace PDF; fix identifier. Does not change % of *chosen* baseline vs CA2.  
+9. **MD quality:** **thin** (+ factual error)
+
+---
+
+## 7. venkat-bora-thesis — Baseline→CA2 **74%**
+
+1. **Topic (CA2):** Threaded vs distributed matrix workloads on **matched-vCPU cloud** — crossover by matrix order; time + peak memory.  
+2. **Baseline:** Sabir & Alebrahim — *Coarse-Grained… LU… Multi-Threaded MATLAB* — Mathematics 13:298, **2025**. DOI `10.3390/math13020298`. PDF verified (local Xeon MATLAB).  
+3. **Year:** **PASS**  
+4. **Relevance:** **MEDIUM** — CA2 names Sabir as the **shared-memory curve**; CA2 also requires a distributed/cloud curve Sabir does not provide.  
+5. **Metrics overlap:** **YES** — completion time / scaling vs cores; CA2 adds peak memory + matched aggregate vCPU on EC2.  
+6. **Gap→Problem:** **clear in CA2** (two disjoint curves; neither reports the other) / **weak in STATUS** (local Dask only).  
+7. **CA2 alignment breakdown:** Scope 18/30 · Vars 20/25 · Method 14/20 · Metrics 22/25 → **74%**.  
+8. **Issues:** Keep Sabir for threaded arm. To maximize CA2 %, add/pair **Kim/Son/Lee 2022** or **Dugré et al. 2023 (Dask)** as distributed baseline — CA2 already cites them.  
+9. **MD quality:** **thin**
+
+---
+
+## 8. Nemi — Baseline→CA2 **90%**
+
+1. **Topic (CA2):** SecureFL-IDS — FL + DP for cloud-native IDS vs centralized / prior FL (accuracy, privacy, comm, scalability).  
+2. **Baseline:** Saklani, Chohan & Sharma — *Privacy Preserving Cloud Native Intrusion Detection Using Federated Learning and Differential Privacy* — ICISS **2026**, pp. 387–392. DOI `10.1109/iciss67859.2026.11454085`. **PDF missing**.  
+3. **Year:** **PASS**  
+4. **Relevance:** **HIGH** — CA2 names Saklani as primary PP-FL-DP-IDS baseline (~91.8% acc / F1>90%).  
+5. **Metrics overlap:** **YES** — accuracy, F1, communication; CA2 also wants training time, CPU/mem, K8s deployment.  
+6. **Gap→Problem:** **clear** — adaptive detection, comm optimisation, thorough cloud-native eval.  
+7. **CA2 alignment breakdown:** Scope 28/30 · Vars 23/25 · Method 17/20 · Metrics 22/25 → **90%**.  
+8. **Issues:** Keep. Obtain IEEE PDF. Li et al. 2026 HierFedDP is CA2’s second baseline (comm −49%) — optional dual baseline. Venue ICISS mid-tier.  
+9. **MD quality:** **thin**
+
+---
+
+## 9. mehak-thesis — Baseline→CA2 **91%** *(proxy CA2)*
+
+1. **Topic (CA2_COMMITMENTS):** Cross-head fusion vs strict one-head-per-metric MHSA underprediction on cluster telemetry.  
+2. **Baseline:** Thapliyal — *A Multi-Head Attention Approach for SLA Compliance Monitoring in Data Centers* — arXiv:2605.05354 (PDF: accepted ICDCS 2026). PDF verified.  
+3. **Year:** **PASS**  
+4. **Relevance:** **HIGH** — commitments require reproducing Thapliyal architecture and confirming underprediction gap.  
+5. **Metrics overlap:** **YES** — accuracy, macro-F1, transient recall, underprediction bias.  
+6. **Gap→Problem:** **clear**.  
+7. **CA2 alignment breakdown:** Scope 27/30 (colo SLA → cluster metrics adaptation) · Vars 24/25 · Method 18/20 · Metrics 22/25 → **91%**.  
+8. **Issues:** Keep. Preprint until ICDCS VoR; domain shift colo→cluster is intentional and documented.  
+9. **MD quality:** **thin**
+
+---
+
+## 10. pooja-thesis — Baseline→CA2 **87%** *(proxy CA2)*
+
+1. **Topic:** Stability-aware proactive K8s autoscaling vs aggressive proactive vs reactive HPA.  
+2. **Baseline:** Wanigasooriya & Ekanayake — *NimbusGuard… DQN* — ICOIN **2026**. DOI `10.1109/ICOIN68469.2026.11480646` / arXiv:2604.11017. PDF verified.  
+3. **Year:** **PASS**  
+4. **Relevance:** **HIGH** — commitments reproduce NimbusGuard agility–instability trade-off; build stability fix named as future work.  
+5. **Metrics overlap:** **PARTIAL** — SLA / over-provisioning shared; scaling events & pod volatility are the stability emphasis.  
+6. **Gap→Problem:** **clear**.  
+7. **CA2 alignment breakdown:** Scope 28/30 · Vars 22/25 · Method 16/20 (MLP simulator vs DQN+LSTM+LLM testbed) · Metrics 21/25 → **87%**.  
+8. **Issues:** Keep. Method simplification is intentional for reproducibility; cite NimbusGuard metrics honestly as reproduced trade-off, not identical agent.  
+9. **MD quality:** **thin**
+
+---
+
+## 11. uday-thesis — Baseline→CA2 **90%** *(proxy CA2)*
+
+1. **Topic:** Federated QoS offload for OneM2M recovering centralized RF accuracy without pooling telemetry.  
+2. **Baseline:** Et-Tousy, Zyane & Sharif — *Adaptive QoS Management in OneM2M…* — JNSM **2026**. DOI `10.1007/s10922-026-10071-4`. Disk PDF = Research Square preprint with VoR note.  
+3. **Year:** **PASS**  
+4. **Relevance:** **HIGH** — commitments reproduce centralized RF; FL is paper’s own future work.  
+5. **Metrics overlap:** **PARTIAL** — accuracy/F1 of offload class; paper also RTT/success/CPU/RAM.  
+6. **Gap→Problem:** **clear**.  
+7. **CA2 alignment breakdown:** Scope 28/30 · Vars 23/25 · Method 18/20 · Metrics 21/25 → **90%**.  
+8. **Issues:** Keep. Prefer publisher PDF.  
+9. **MD quality:** **thin**
+
+---
+
+## 12. vishvaksen-thesis — Baseline→CA2 **89%** *(proxy CA2)*
+
+1. **Topic:** Hybrid rule+ML detector restoring precision when IaC comments removed.  
+2. **Baseline:** War et al. — *Detection of Security Smells in IaC… Semantics-Aware…* — arXiv:2509.18790, Sep **2025**. PDF verified. Preprint.  
+3. **Year:** **PASS**  
+4. **Relevance:** **HIGH** — commitments reproduce comment-ablation precision collapse.  
+5. **Metrics overlap:** **YES** — Precision/Recall/F1.  
+6. **Gap→Problem:** **clear**.  
+7. **CA2 alignment breakdown:** Scope 28/30 · Vars 23/25 · Method 16/20 (TF-IDF hybrid vs CodeBERT/LongFormer) · Metrics 22/25 → **89%**.  
+8. **Issues:** Keep for CA2 gap. Venue risk: arXiv-only — add Rahman/GLITCH as published anchors without replacing War as operational baseline.  
+9. **MD quality:** **thin**
+
+---
+
+## Special scrutiny (CA2 lens)
 
 ### Varun + TierBase
-**Confirmed concern.** PDF abstract: “Space-Performance Cost Model for **key-value store**… TierBase, a distributed key-value store developed by Ant Group.” Not S3 object storage. Relevance **LOW** for an S3 FinOps thesis. Bib currently mislabels title as object storage—do not rely on that. Replace with SkyStore / S3-class recommenders already listed in STATUS.
+CA2 **does cite** TierBase, but also SkyStore/Yang, and evaluates against **S3 Lifecycle / Intelligent-Tiering + MAPE vs naive**. PDF proves KV-store scope. **Baseline→CA2 = 38%** — lowest of cohort. Maximizing CA2 alignment means **SkyStore or Yang as BASELINE_PAPER**, TierBase demoted.
 
 ### Yashaswini + Xing
-**Confirmed ceiling concern.** Xing is a strong published accuracy reference (Sensors 2025, F1 93.8%) but is Leg-1 citation-only, different telemetry stack, not AWS serverless. Gap mapping is clear; same-rig comparison must stay on RCAEval baselines. Do not over-claim “within 10 pp of Xing” without same-rig data.
+CA2 **intentionally** uses Xing as ceiling (not same-rig). **72%** is correct for that role; replacing Xing with a “closer AWS paper” would **break** CA2’s three-leg design unless that paper is Leg-2 substrate (Pham/RCAEval).
 
 ### Rassool + Pantelić
-**Partially confirmed.** Pantelić is recent and methodologically useful (workload profiles) but self-hosted SQL/NoSQL—not DynamoDB. Gap→metering mapping is **clear** in the intro; relevance stays **MEDIUM**, not HIGH.
+CA2 alignment is **good by design** (retain latency/throughput; add meter). Medium relevance ≠ wrong baseline. **78%**.
 
-### Preprint vs published
-| Thesis | Status |
-|--------|--------|
-| mehak / Thapliyal | arXiv; PDF claims ICDCS 2026 acceptance |
-| pooja / NimbusGuard | ICOIN 2026 DOI + arXiv OA PDF |
-| uday / Et-Tousy | JNSM published DOI; disk PDF = Research Square preprint |
-| vishvaksen / War | **arXiv only** — highest venue risk |
-| vikas | Citation = strong TOCS; **attached PDF wrong** |
-| Nemi | IEEE ICISS — PDF missing |
-
----
-
-## Cross-cutting recommendations
-
-1. **Enrich every `BASELINE_PAPER.md`** with Problem / Solution / Gap / Metrics / Comparable-metrics / Venue notes (currently universal **thin**).  
-2. **Immediate fixes:** Varun (replace TierBase or demote); Vikas (replace wrong PDF + fix arXiv ID).  
-3. **Prefer published VoR PDFs** for mehak, uday, pooja, Nemi when obtainable.  
-4. **Do not invent** Problem/Solution/Gap inside MD without grounding in the PDF + thesis intro.
+### Preprint / venue / PDF integrity
+| Thesis | Issue | Effect on CA2 % |
+|--------|--------|-----------------|
+| vikas | Wrong PDF attached | Integrity fail; citation choice still ~86% |
+| Nemi | PDF absent | Claims second-hand |
+| mehak | arXiv + ICDCS acceptance claim | Keep; prefer VoR |
+| uday | Research Square PDF of JNSM VoR | Keep DOI |
+| vishvaksen | arXiv-only | Highest venue risk; gap fit strong |
+| pooja | ICOIN + arXiv OA | Acceptable |
 
 ---
 
-## Evidence sources (per thesis)
+## Actions that raise Baseline→CA2 % (priority)
 
-| Thesis | BASELINE_PAPER.md | PDF | Topic/gap sources |
-|--------|-------------------|-----|-------------------|
-| anji | yes | Kyrychenko…pdf | STATUS; introduction.tex |
-| Varun | yes | Shen…TierBase.pdf | STATUS; PDF abstract; refs.bib |
-| yashaswini | yes | Xing…Sensors.pdf | STATUS; proposal extract; evaluation.tex |
-| rassool | yes | Pantelic…pdf | STATUS; introduction.tex |
-| chaitanya | yes | Bluemke…pdf | STATUS |
-| vikas | yes | **mismatch** | STATUS; refs.bib; PDF first page |
-| venkat-bora | yes | Sabir…pdf | STATUS |
-| Nemi | yes | **absent** | STATUS; README; refs.bib |
-| mehak | yes | Thapliyal…pdf | STATUS |
-| pooja | yes | NimbusGuard…pdf | STATUS; refs.bib |
-| uday | yes | EtTousy…preprint.pdf | STATUS; refs.bib; PDF VoR note |
-| vishvaksen | yes | War…arXiv.pdf | STATUS; refs.bib |
+1. **Varun:** Swap operational baseline to **SkyStore (Liu 2025)** or **Yang MLSys 2025**; keep Beck as forecast eval baseline.  
+2. **vikas:** Replace Halfmoon PDF; delete arXiv:2306.10606 from MD.  
+3. **venkat:** Document Sabir + distributed peer (Kim or Dugré) as paired baselines.  
+4. **Nemi:** Add Saklani PDF; optionally dual-cite Li HierFedDP.  
+5. **All 12:** Expand `BASELINE_PAPER.md` with Problem/Solution/Gap/Metrics mapped to **CA2 variables and eval table**.
+
+---
+
+## Evidence sources
+
+CA2/proposal texts used:  
+`Varun/VarunGampa_RIC_CA2.txt`, `Nemi/NemiIshwarlalVikani_24303046_CA2.txt`, `_handoff/venkat_ca2.txt`, `_analysis_extract/{chaitanya,yashaswini,rassool,vikas}_*proposal.txt`, `anji-thesis/anji_ca2_related_articles.html`, `{mehak,pooja,uday,vishvaksen}/CA2_COMMITMENTS.md` + intros.  
+
+PDFs first-page verified for all except Nemi (absent) and Vikas (mismatch).
