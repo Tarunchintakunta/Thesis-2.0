@@ -2,7 +2,7 @@
 
 \subsection{Summary of Contributions}
 
-This study presents a controlled empirical framework for evaluating performance–cost trade-offs in Amazon DynamoDB under serverless workloads, operationalised through a complete Infrastructure-as-Code artefact and validated through simulation. The research makes three principal contributions:
+This study presents a controlled experimental \emph{framework} for evaluating performance–cost trade-offs in Amazon DynamoDB under serverless workloads, operationalised through a complete Infrastructure-as-Code artefact. Pipeline unit tests exercise moto; \textbf{no filled campaign cells} are claimed. The research makes three principal contributions:
 
 \begin{enumerate}
     \item \textbf{Factorial experimental design:} A $3 \times 2 \times 4$ factorial structure simultaneously varying partition-key design (simple, composite, write-sharded), capacity mode (on-demand, provisioned), and workload profile (read-heavy, write-heavy, mixed, burst), with explicit measurement of throttling rate, consumed capacity, and cost per 10,000 operations—dependent variables absent from self-hosted benchmarks \citep{pantelic2026benchmarking}.
@@ -14,7 +14,7 @@ This study presents a controlled empirical framework for evaluating performance�
 
 \subsection{Anticipated Findings (Production Validation Required)}
 
-While this report presents simulation results using moto to validate the experimental artefact, execution on production AWS infrastructure is expected to reveal the following performance–cost trade-offs:
+This report does \textbf{not} present filled empirical campaign results. The following are design hypotheses for a future live AWS run:
 
 \begin{enumerate}
     \item \textbf{Partition-key design effects:}
@@ -38,15 +38,14 @@ While this report presents simulation results using moto to validate the experim
 
 These hypotheses remain to be tested on production infrastructure; simulation results do not constitute empirical evidence.
 
-\subsection{Practical Implications}
+\subsection{Practical Implications (deferred)}
 
-Upon validation with production data, findings are expected to provide actionable guidance for cloud architects:
+No practitioner configuration advice is asserted from this report's empty cells. After a live K1--K3 campaign fills latency/throttle/cost tables, architects may revisit trade-offs such as provisioned vs on-demand under burst and write-sharding read amplification. Until then, the lists below are \textbf{out of scope as evidence}:
 
 \begin{itemize}
-    \item \textbf{Read-heavy applications with uniform access (e.g., session stores):} K1 or K2 with provisioned mode for cost efficiency.
-    \item \textbf{Write-heavy applications with hot keys (e.g., trending content, high-volume customers):} K3 with provisioned mode to distribute write load and leverage lower per-WCU costs.
-    \item \textbf{Unpredictable burst traffic (e.g., event-driven systems):} On-demand mode to avoid provisioning for peak capacity.
-    \item \textbf{Cost-constrained applications with predictable load:} Provisioned mode with conservative auto-scaling bounds.
+    \item Any claim that K1/K2/K3 or a capacity mode is empirically best for a named workload class.
+    \item Any Cost Explorer--validated bill comparison (none committed).
+    \item Any K4 adaptive-sharding ``dominance'' narrative (off-factorial; quarantined).
 \end{itemize}
 
 \subsection{Limitations}
@@ -64,7 +63,7 @@ This study has several limitations that constrain the generalisability of findin
     
     \item \textbf{Eventually consistent reads:} All reads use eventual consistency; applications requiring strong consistency (\texttt{ConsistentRead=true}) consume 2× RCU per read, doubling read costs.
     
-    \item \textbf{Simulation validation:} Core experimental results in this report derive from moto simulation, which does not replicate production DynamoDB's adaptive capacity, burst capacity, or auto-scaling latency. Production validation is required before applying findings to operational systems.
+    \item \textbf{Empty empirical cells:} Core factorial tables remain placeholders; moto unit tests do not replace a live DynamoDB campaign. Production validation is required before applying any performance--cost guidance.
 \end{enumerate}
 
 \subsection{Future Work}
@@ -89,6 +88,6 @@ Several research directions extend this study:
 
 \subsection{Final Remarks}
 
-Cloud-native databases such as Amazon DynamoDB have abstracted operational complexity (server provisioning, replication, scaling) but have introduced new configuration complexity: partition-key design and capacity mode decisions that fundamentally determine performance and cost. This study contributes a rigorous experimental \emph{framework} for evaluating these configuration-level trade-offs, validated through moto simulation and designed for third-party replication on production infrastructure. Extending Panteli\'{c} et al.\ latency/throughput measures to metered dimensions (throttling, consumed capacity, cost) is the intended CA2 contribution; \textbf{filled live campaign cells are still required} before practitioner guidance can be treated as empirical DynamoDB evidence.
+Cloud-native databases such as Amazon DynamoDB have abstracted operational complexity (server provisioning, replication, scaling) but have introduced new configuration complexity: partition-key design and capacity mode decisions that fundamentally determine performance and cost. This study contributes a rigorous experimental \emph{framework} for evaluating these configuration-level trade-offs, with artefact plumbing covered by moto unit tests and designed for third-party replication on production infrastructure. Extending Panteli\'{c} et al.\ latency/throughput measures to metered dimensions (throttling, consumed capacity, cost) is the intended CA2 contribution; \textbf{filled live campaign cells are the sole remaining empirical residual}.
 
-The complete artefact (Infrastructure-as-Code, workload generators, analysis scripts) is provided to enable reproducibility and extension by the research community and industry practitioners. Production validation of the anticipated findings remains the next critical step, pending AWS account budget allocation and approval.
+The complete artefact (Infrastructure-as-Code, workload generators, analysis scripts) is provided to enable reproducibility. Live DynamoDB execution under the alignment-first gate is the next step.

@@ -22,8 +22,8 @@
 | Anji | no (localsim + live SQS) | No | **~78%** | **NOT COMPLETE** |
 | Varun | no (beats_naive + live S3) | No | **~70%** | **NOT COMPLETE** |
 | Yashaswini | no (CausalRCA n=4 + Leg3) | No | **~75%** | **NOT COMPLETE** |
-| Rasool | no (fill cells + live DDB) | No | **~74%** | **NOT COMPLETE** |
-| Nemi | no (baseline/UNSW + cloud FL) | No | **~64%** | **NOT COMPLETE** |
+| Rasool | **yes** (live DDB = fill cells) | No (READY_FOR_AWS) | **~78%** | **NOT COMPLETE** |
+| Nemi | no (baseline/UNSW + cloud FL) | No | **~68%** | **NOT COMPLETE** |
 
 ## Alignment-only (4)
 

@@ -21,16 +21,12 @@ The research follows a design science methodology consisting of five phases:
 
 \subsection{Dataset}
 
-\textbf{UNSW-NB15} \citep{moustafa2015unsw} serves as the primary evaluation dataset. This benchmark intrusion detection dataset contains:
+\textbf{Dataset actually used in the committed PoC:} a \textbf{synthetic} UNSW-NB15-\emph{derived} feature sample (20 features; limited sample size; binary labels), generated locally when the full CSV is unavailable. Committed metrics are in \texttt{results/comparison/results.json} (30 rounds, 5 clients).
 
-\begin{itemize}
-    \item 2.5 million network flow records
-    \item 49 features extracted from network packets
-    \item 9 attack types (Fuzzers, Analysis, Backdoors, DoS, Exploits, Generic, Reconnaissance, Shellcode, Worms)
-    \item Binary labels (normal vs attack) and multi-class attack type labels
-\end{itemize}
+\textbf{UNSW-NB15} \citep{moustafa2015unsw} is the \emph{intended} full benchmark (2.5M flows, 49 features, 9 attack types). A full UNSW-NB15 (or stratified 50k) experiment is \textbf{not} committed and must not be described as executed.
 
-For experimental efficiency, a stratified sample of 50,000 records is used for full experiments, with smaller samples (3,000-5,000) for pilot testing. The sampling maintains class distribution proportions to preserve dataset characteristics.
+For future full-scale runs (not evidenced here): stratified samples of 50,000 records (or smaller 3,000--5,000 pilots) would preserve class proportions. The short \texttt{results/pilot/pilot\_results.json} run (10 rounds) is a smoke artefact only --- \textbf{do not} cite pilot accuracy $0.4$ as the CA2 PoC; use \texttt{results/comparison/results.json}.
+
 
 \subsection{Data Distribution}
 
@@ -46,17 +42,20 @@ where $K$ is the number of clients, $\alpha$ controls the degree of non-IID beha
 
 \subsubsection{Baseline Configuration}
 
-The baseline implements parameters matching \citet{saklani2026privacy}:
+The baseline \emph{code} targets parameters matching \citet{saklani2026privacy}. The \textbf{committed PoC} used:
 
 \begin{itemize}
     \item Model: CNN binary classifier (2 conv layers, 2 FC layers)
     \item Clients: 5 federated participants
-    \item Rounds: 50 federated training rounds
+    \item Rounds: \textbf{30} (not 50) --- see \texttt{results/comparison/results.json}
     \item Local epochs: 1 per round per client
     \item Learning rate: 0.001 (Adam optimizer)
     \item Privacy: $\epsilon = 1.0$, $\delta = 10^{-5}$, clip norm = 1.0
     \item Aggregation: Standard FedAvg (weighted by data size)
 \end{itemize}
+
+A 50-round / full-UNSW configuration remains future work; it is not evidenced by committed results.
+
 
 \subsubsection{Improved Configuration}
 
@@ -111,17 +110,8 @@ All experiments run on a local simulation environment to ensure reproducibility 
 
 \subsection{Statistical Analysis}
 
-Comparative analysis includes:
-
-\begin{itemize}
-    \item Independent t-tests for accuracy differences
-    \item Percentage improvement calculations
-    \item Convergence curve analysis
-    \item Communication cost aggregation
-\end{itemize}
-
-Significance threshold: $p < 0.05$.
+Comparative analysis \emph{planned} for full experiments includes t-tests and multi-seed averaging. The committed PoC does \textbf{not} include significance tests; Evaluation reports descriptive metrics from a single configuration only.
 
 \subsection{Ethical Considerations}
 
-This research uses only publicly available datasets (UNSW-NB15) designed explicitly for cybersecurity research. No human subjects participate, and no personally identifiable information is collected or processed. The synthetic cloud tenant simulation does not involve real organizational data. All software dependencies are used in compliance with their respective licenses.
+This research uses publicly available cybersecurity datasets (UNSW-NB15 when obtained) or synthetic derivatives thereof. No human subjects participate, and no personally identifiable information is collected or processed. The synthetic cloud tenant simulation does not involve real organizational data. All software dependencies are used in compliance with their respective licenses.

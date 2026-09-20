@@ -88,9 +88,9 @@ All experiments run locally by default:
 1. **Pilot:** 3 clients, 10 rounds, 1000 samples per client
 2. **Baseline Replication:** Reproduce Saklani et al. results
 3. **Improved Evaluation:** SecureFL-IDS vs baseline
-4. **Ablation Studies:** 
+4. **Ablation Studies (future; not committed):** 
    - Privacy budget impact (ε = 0.5, 1.0, 2.0)
-   - Communication efficiency gains
+   - Communication cost (PoC shows improved arm *higher* MB/round — no −45% win)
    - Client heterogeneity scenarios
 
 ## Dataset
