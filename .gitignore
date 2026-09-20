@@ -49,6 +49,15 @@ chaitanya-thesis/lambda-coldstart-isolation/data/pilot/*/raw/
 rassool-thesis/dynamodb-pk-capacity-eval/iac/build/
 rassool-thesis/dynamodb-pk-capacity-eval/results/*
 !rassool-thesis/dynamodb-pk-capacity-eval/results/SCHEMA.md
+!rassool-thesis/dynamodb-pk-capacity-eval/results/batches.csv
+!rassool-thesis/dynamodb-pk-capacity-eval/results/cloudwatch.csv
+!rassool-thesis/dynamodb-pk-capacity-eval/results/keycell_summary.csv
+!rassool-thesis/dynamodb-pk-capacity-eval/results/keycell_summary.json
+!rassool-thesis/dynamodb-pk-capacity-eval/results/keycell_round_meta.txt
+!rassool-thesis/dynamodb-pk-capacity-eval/results/keycell_round_run.log
+!rassool-thesis/dynamodb-pk-capacity-eval/results/keycell_destroy.log
+!rassool-thesis/dynamodb-pk-capacity-eval/results/keycell_analyse.log
+!rassool-thesis/dynamodb-pk-capacity-eval/results/keycell_collect.log
 
 # vikas: lambda zip + local/moto run folders (make functional recreates them)
 vikas-thesis/lambda-idempotency-eval/build/

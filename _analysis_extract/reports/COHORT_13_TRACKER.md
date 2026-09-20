@@ -14,7 +14,7 @@
 | 1 | Anji | **~90%** | proposal.docx | Yes (sole hard) |
 | 2 | Varun | **~88%** | RIC_CA2.txt | Yes |
 | 3 | Yashaswini | **~88%** | proposal.docx | Yes |
-| 4 | Rasool | **~74%** | proposal.docx | Yes |
+| 4 | Rasool | **~92%** | proposal.docx | Yes |
 | 5 | Chaitanya | 67% | proposal.docx | Yes |
 | 6 | Vikas | 68% | proposal.docx | Yes |
 | 7 | Venkat | 63% | venkat_ca2.txt | Yes |
@@ -47,3 +47,4 @@
 - 2026-09-20d: Anji/Varun/Yashaswini/Rasool/Nemi claim hygiene raise — eval↔JSON, STATUS demote, DOI notes, residual notes; still NOT COMPLETE; no AWS
 - 2026-09-20e: Anji packaging-dedup + phase run-count reconcile → ~90%; READY_FOR_AWS=yes (sole=live SQS); no AWS
 - 2026-09-20e: Varun temporal-holdout forecast fix; Yashaswini CausalRCA quarantine; both READY_FOR_AWS=yes; still NOT COMPLETE; no AWS apply
+- 2026-09-20f: Rasool live DynamoDB key-cell round **12/12** (K1–K3 × capacity × W3/W4); STATUS/eval/cell_summary folded; stack destroyed; `SOLE_AWS_RESIDUAL=no`; alignment ~92%; soft W1/W2 + ANOVA remain

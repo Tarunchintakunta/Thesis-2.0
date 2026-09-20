@@ -1,24 +1,26 @@
-# Rassool Thesis Traceability Report (rassool-thesis ONLY) — claim hygiene update
+# Rassool Thesis Traceability Report (rassool-thesis ONLY) — live key-cell fold
 
 **Scope:** `rassool-thesis/` only.  
-**Alignment after claim hygiene (2026-09-20):** **~78/100** (was 62% → 68% → 74%)
+**Alignment after live W3/W4 key-cell fold (2026-09-20):** **~92/100** (was 62% → 68% → 74% → 78%)
 
 ## Compact line
-`RQ8 Obj10 Method13 Impl13 Exp4 Metrics8 Evidence7 Claims7 Rubric8` → **~78/100**
+`RQ8 Obj10 Method13 Impl13 Exp11 Metrics9 Evidence11 Claims8 Rubric8` → **~92/100**
 
-## Claim hygiene done
-- STATUS rewritten: **<100%**, not SUBMIT-READY; empty cells = live AWS residual
-- LaTeX evaluation/conclusion: no filled-moto overclaim; no practitioner advice from empty cells; no Cost-Explorer claim
+## Claim hygiene + live evidence
+- STATUS rewritten: **≈92% < 100%**; hard sole residual closed after 12/12 key-cells + destroy
+- LaTeX evaluation: W3/W4 tables filled from `results/batches.csv`; W1/W2 + ANOVA still unfilled; no Cost-Explorer claim
 - `rassool_final_report.md`: K4 dominance narrative **quarantined**
 - IaC `default_tags`: project/managed_by/purpose/data only — **no student tags**
-- Bib `note={doi:…}` (or explicit `doi: none` + url) on wired references
+- Bib `note={doi:…}` on wired references
+- Live round: K1–K3 × on_demand/provisioned × W3/W4, `orders=100000`, `blocks=1`, eu-west-1; stack destroyed (32 resources)
 
-## Critical gap remaining (sole)
-1. **Live AWS DynamoDB factorial campaign** — `results/` schema-only; tables `[TO BE FILLED]`
+## Critical gaps remaining (soft)
+1. **W1/W2 live cells** — not in key-cell round
+2. **Confirmatory $n>1$ / live ANOVA** — not computed (do not invent)
 
 ## AWS residual?
-**Yes — sole** (live DynamoDB = fill cells). READY_FOR_AWS.
+**No hard sole residual** — first live key-cell campaign done. Soft W1/W2 + confirmatory remain.
 
 ```
-GATE_READY=yes AWS_CLASS=required SOLE_AWS_RESIDUAL=yes READY_FOR_AWS=yes
+GATE_READY=yes AWS_CLASS=required SOLE_AWS_RESIDUAL=no READY_FOR_AWS=done_keycell_round
 ```

@@ -14,7 +14,7 @@
 | Anji | 58–72% | **~90% run-count+dedup** | Soft: optional DIVE campaign | **Yes — sole hard (live SQS)** |
 | Yashaswini | 62% | **~88% CausalRCA quarantine + READY_FOR_AWS** | Soft: optional CausalRCA 90 / PDF | **Yes — sole hard (Leg3)** |
 | Venkat | 63% | **DOI + READY_FOR_AWS=yes** | Soft: scheduler CLI **wired** (`--scheduler-address`) | **Yes — sole hard (EC2)** |
-| Rasool | 62% | **~74% moto+DOI+K4** | Fill cells still open | Yes (live DDB) — not sole |
+| Rasool | 62% | **~92% live W3/W4 key-cells 12/12** | Soft: W1/W2 + live ANOVA | **No hard** (`SOLE_AWS_RESIDUAL=no`) |
 | Chaitanya | 67% | **Proxy-only eval; ROI not measured** | Soft: DOI notes | **Yes — sole hard (Lambda Init)** — **live python Init round RUNNING** |
 | Vikas | 68% | **Pilot≠campaign; P4 quarantined** | Soft: DOI notes | **Yes — sole hard (full campaign)** — **live campaign RUNNING** |
 | Mehak | 80% | **~54% vs formal `MAHEK NAAZ.docx`** | GCT + formal metrics/baselines (Thapliyal proxy superseded) | **No** |
@@ -36,3 +36,4 @@
 11. **2026-09-20 — Anji phase run-count reconcile + packaging-dedup stats** (350 design / 690 on-disk; H3_recovery fail-to-reject after Holm; READY_FOR_AWS=yes, sole=live SQS); **no AWS deploy**.
 12. **2026-09-20 — Varun + Yashaswini non-AWS raise toward sole-AWS:** Varun forecast temporal-holdout fix (all arms `beats_naive=true`); Yashaswini CausalRCA quarantined + final_report hygiene; both `READY_FOR_AWS=yes`. **No terraform apply.**
 13. **2026-09-20 — Mehak/Pooja/Uday/Vishvaksen formal-CA2 rescore.** Formal docx now binding; proxy extras dropped. Scores: Mehak ~54%, Pooja ~48%, Uday ~18%, Vishvaksen ~28%. Synthetic OK for Uday/Vish; GCT required for Mehak/Pooja. AWS required: Pooja+Uday yes (not deployed); Mehak+Vish no. **No AWS deploy; no invented results.**
+14. **2026-09-20 — Rasool live DDB key-cell fold:** 12/12 W3/W4 cells from `batches.csv`; eval/STATUS/cell_summary updated; terraform destroy 32 resources; `SOLE_AWS_RESIDUAL=no`; ~92%. Soft: W1/W2 + ANOVA. Still NOT COMPLETE.

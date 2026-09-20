@@ -10,7 +10,7 @@
 | Exploration (8) | **COMPLETE** |
 | Terraform (8, no personal IDs) | **READY** — see `TERRAFORM_POLICY.md` / `GENUINE_AWS_GOAL_LIST.md` |
 | Alignment-first | Open — AWS allowed only where sole residual = live CA2 AWS |
-| Live AWS campaigns | **IN PROGRESS** (Anji lite 4/4 done; Vikas/Chaitanya/Venkat as listed) |
+| Live AWS campaigns | **IN PROGRESS** (Anji lite 4/4; Rasool key-cell 12/12 destroyed; Vikas/Chaitanya/Venkat as listed) |
 
 ## AWS-goal (8)
 
@@ -22,7 +22,7 @@
 | Anji | **partial** (confirmatory/deeper live still open) | Lite **4/4 done** (`results/live/key_cells/`; n=1; ≈$0.00144) | **~94%** | **NOT COMPLETE** |
 | Varun | **yes** (full S3 FinOps) | Lite DONE (`live_lite_summary.json`; CE $3.6e-09; GET 187/524 ms; Wilcoxon p≈1e-7; destroyed) | **~90%** | **NOT COMPLETE** (`READY_FOR_AWS=yes`) |
 | Yashaswini | **yes** (Leg3) | No | **~88%** | **NOT COMPLETE** (`READY_FOR_AWS=yes`) |
-| Rasool | **yes** (live DDB) | No | **~78%** | **NOT COMPLETE** (READY_FOR_AWS=yes) |
+| Rasool | **no** (soft: W1/W2 + ANOVA) | Key-cell **12/12** W3/W4 (`results/batches.csv`; destroyed) | **~92%** | **NOT COMPLETE** (`SOLE_AWS_RESIDUAL=no`) |
 | Nemi | no (baseline/UNSW + cloud FL) | No | **~68%** | **NOT COMPLETE** |
 
 ## Formal-CA2 rescore (4) — was “alignment-only / proxy”
