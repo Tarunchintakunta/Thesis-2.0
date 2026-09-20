@@ -7,9 +7,9 @@
 
 ---
 
-## Overall Status: LOCAL + PROXY COMPLETE — RESIDUAL = LIVE LAMBDA INIT
+## Overall Status: LIVE LITE COLLECTED — SOFT RESIDUAL = CONFIRMATORY FULL-n
 
-**Sole residual to answer the CA2 RQ on AWS:** live CloudWatch REPORT *Init Duration* (plus H3 warming frequency and H4 memory cells). Proxy ≠ Init Duration. ROI / ADOPT bands are **not** measured on AWS.
+**Hard Init residual closed (lite):** CloudWatch REPORT *Init Duration* collected for Python/Node/Java package cells, H4 Python memory sweep, and H3-lite EventBridge warming (30m sparse). Evidence: `data/processed/live/` (`live_summary.json`, `init_summary_by_cell.csv`, `h3_warming_summary.csv`/`.json`, `adopt_lite_matrix.csv`). Proxy ≠ Init Duration. ROI/ADOPT rows are **lite point estimates** (not Holm-confirmatory).
 
 This project investigates cold-start latency reduction in AWS Lambda across runtime languages (Python 3.12, Node.js 20, Java 21), deployment package sizes, memory allocations, and low-frequency EventBridge warming strategies.
 
@@ -124,22 +124,16 @@ The literature review clearly distinguishes:
 
 ## 4. AWS Execution Status
 
-### 4.1 Live Lambda Deployment: **NOT YET RUN**
+### 4.1 Live Lambda Deployment: **LITE ROUND COMPLETE (2026-09-20)**
 
-**Reason:** Requires student's personal AWS account (ethics Scenario 3: self-owned infrastructure)
+**Stack:** Terraform `coldstart-study` in `eu-west-1` (arm64). Tags: `project` / `managed_by` / `purpose` / `data` only (no personal name/ID).
 
-**Prerequisites (documented in `reports/configuration_manual.md`):**
-1. AWS CLI configured with credentials (IAM user with Lambda/CloudWatch/EventBridge/S3 permissions)
-2. AWS SAM CLI installed
-3. Budget guard: `scripts/budget_guard.py` caps spend at configured daily limit
-4. Estimated cost: ~$2–5 for pilot + campaign (free tier eligible, actual cost depends on sample sizes)
-
-**Deployment steps ready:**
-```bash
-bash scripts/deploy.sh                     # SAM build + deploy
-make MODE=live pilot                        # run pilot, freeze sample sizes
-make MODE=live campaign pipeline            # run full experiment, analyze
-```
+**Measured (lite, disclose $n$):**
+- Init H2: Py default/opt p50 **3356 / 88 ms**; Node **1001 / 140 ms**; Java **687 / 333 ms** (`n=12` colds/cell)
+- H4 Python opt memory: mean Init **~81.5 ms** (60 colds across 128–3008 MB)
+- H3-lite 30m sparse: cold fraction **on=0.0** (0/10) vs **off=0.2** (2/10)
+- ROI/ADOPT lite: package-prune + warming → `ADOPT_CANDIDATE_lite`; memory raise → `HOLD_lite`
+- Σ cost proxy Init/H4 ≈ **$0.0013**; Python bytecode excluded (errors, no Init)
 
 ### 4.2 Current Dataset Status
 
@@ -148,13 +142,13 @@ make MODE=live campaign pipeline            # run full experiment, analyze
 | **Proxy benchmark (GitHub CI)** | ✓ REAL | `proxy` | Validate package-size hypothesis direction | `data/proxy/github/` |
 | **Proxy benchmark (macOS)** | ✓ REAL | `proxy` | Supplementary cross-platform check | `data/proxy/dev_macbook/` |
 | **Mock pipeline run** | ✓ SYNTHETIC | `mock` | Pipeline validation only | `data/*/mock/` |
-| **Live Lambda pilot** | ⧗ NOT RUN | `live` | Power analysis, freeze N | `data/pilot/live/` (empty) |
-| **Live Lambda campaign** | ⧗ NOT RUN | `live` | H1–H4 hypothesis tests | `data/*/live/` (empty) |
+| **Live Init / H4 lite** | ✓ REAL | `live` | REPORT Init Duration (lite $n$) | `data/raw/live*/`, `data/processed/live/` |
+| **Live H3-lite warming** | ✓ REAL | `live` | Cold fraction on vs off | `data/raw/live_h3/` |
 
 **Key distinction:**
-- **Proxy benchmarks** = REAL measurements of package-loading time in isolated processes (valid for relative comparisons, NOT Lambda Init Duration)
-- **Mock data** = SYNTHETIC placeholders to test pipeline mechanics (explicitly labeled, never claimed as results)
-- **Live Lambda data** = AWAITING student AWS account (target for final submission)
+- **Proxy benchmarks** = REAL process-start times (NOT Lambda Init Duration)
+- **Mock data** = SYNTHETIC pipeline placeholders
+- **Live Lambda lite** = REAL REPORT-line Init / H3 / H4; confirmatory full-$n$ still soft residual
 
 ---
 
@@ -198,15 +192,15 @@ make MODE=live campaign pipeline            # run full experiment, analyze
 3. **Literature Survey** ✓ (3–4 pages, 15–20 DOIs cited, gap analysis)
 4. **Research Methodology** ✓ (controlled experiment design, variables, statistical plan)
 5. **Design and Implementation Specifications** ✓ (architecture, IaC, workload, instrumentation)
-6. **Evaluation** ✓ REWRITTEN (proxy tables only; explicitly no live Init Duration / ROI / ADOPT claims; residual = live Lambda)
-7. **Conclusions and Discussion** ✓ QUARANTINED (decision-matrix framework pending live cost cells; proxy ≠ Lambda)
+6. **Evaluation** ✓ UPDATED (live Init / H3 / H4 / ROI-lite tables; lite n disclosed; proxy retained as directional)
+7. **Conclusions and Discussion** ⧗ Soft residual (confirmatory n / Holm family; decision matrix has lite point estimates only)
 8. **References** ✓ (26 verified entries in `bib/references.bib`)
 
 **Figures/Tables:**
 - Methodology diagrams ✓ (experiment phases, statistical decision tree, cost model formula)
 - Proxy benchmark results ✓ (tables/figures in `reports/paper/tables/proxy/`, `figures/proxy/`)
 - Mock pipeline outputs ✓ (watermarked, `reports/paper/tables/mock/`, `figures/mock/`)
-- Live results ⧗ (awaiting AWS run)
+- Live results ✓ lite (`data/processed/live/`; confirmatory n soft residual)
 
 **Compilation:** PDF generation via `pdflatex` (requires LaTeX distribution)
 
@@ -258,11 +252,12 @@ make MODE=live campaign pipeline            # run full experiment, analyze
 
 ### 7.1 Current Limitations
 
-1. **No live Lambda data yet:** All conclusions about Lambda Init Duration are hypotheses awaiting validation
-2. **Proxy benchmarks ≠ Lambda Init Duration:** Local process-start measurements validate *direction* of package-size effect, not exact Lambda magnitudes
+1. **Lite n only:** Live Init / H4 use `n=12` colds/cell; H3 uses `n=10`/arm — below power-plan confirmatory size
+2. **Proxy benchmarks ≠ Lambda Init Duration:** Local process-start measurements validate *direction* only; live magnitudes are in §4
 3. **Mock data for pipeline testing only:** Synthetic outputs prove mechanics, not results
-4. **Node.js 20 runtime choice:** Documented assumption (latest LTS at project start); supervisor confirmation pending (`docs/ASSUMPTIONS.md` A3)
-5. **No Java testing on development macOS:** JDK 21 + Maven not installed locally; CI runner handles Java builds
+4. **python-bytecode broken on live:** `Unhandled` on all invocations; excluded from Init tables
+5. **Node.js 20 runtime choice:** Documented assumption; supervisor confirmation pending (`docs/ASSUMPTIONS.md` A3)
+6. **Holm confirmatory family not yet run** on live lite samples (point-estimate ADOPT-lite ≠ confirmatory ADOPT)
 
 ### 7.2 Extensions for Future Work (documented in report)
 
@@ -332,20 +327,21 @@ make MODE=live campaign pipeline            # run full experiment, analyze
 - [x] Ethics compliant (Scenario 3 self-owned infrastructure, declaration ready)
 - [x] Reproducibility ensured (digest validation, package checksums, data mode tagging, budget guard)
 
-### Awaiting Student Action (Requires AWS Account)
+### Live AWS (lite) — done
 
-- [ ] Deploy to personal AWS account (`bash scripts/deploy.sh`)
-- [ ] Run pilot study (`make MODE=live pilot`)
-- [ ] Freeze sample sizes based on pilot power analysis
-- [ ] Execute full campaign (`make MODE=live campaign pipeline`)
-- [ ] Collect live Lambda Init Duration data
-- [ ] Populate Evaluation section with live results
-- [ ] Generate final decision matrix with live cost-benefit data
-- [ ] Finalize Conclusions with Lambda-validated findings
-- [ ] Compile final report PDF (`pdflatex projectReport.tex` or similar)
-- [ ] Complete weekly progress reports for Moodle
-- [ ] Record presentation and demo videos
-- [ ] Submit all deliverables via Moodle
+- [x] Deploy Terraform stack `coldstart-study-*`
+- [x] Collect live Init Duration (Python, Node.js, Java) — lite `n=12`
+- [x] H4-lite Python memory sweep
+- [x] H3-lite 30 m sparse warming
+- [x] Parse + cost_model → `data/processed/live/`
+- [x] Evaluation chapter updated with evidence-locked numbers
+
+### Soft residual / submission polish
+
+- [ ] Confirmatory `n≥30` (optional for literal 100%) + Holm family
+- [ ] Fix or formally drop `python-bytecode` cell
+- [ ] Destroy stack after shared-account campaigns finish
+- [ ] Compile final report PDF; weekly/viva Moodle items
 
 ---
 
@@ -373,12 +369,15 @@ make MODE=live campaign pipeline            # run full experiment, analyze
 |------|--------|
 | Proxy package-size evidence | Present (REAL); labeled not Lambda |
 | Mock pipeline | Present (SYNTHETIC); not RQ answer |
-| Live Lambda Init Duration (H1 primary) | **NOT RUN** — sole hard residual |
-| H3 warming frequency / H4 memory | **NOT RUN** (live) |
-| Measured ROI / ADOPT decision matrix | **NOT MEASURED** (framework only) |
-| Evaluation chapter predictive-provisioning filler | Removed / quarantined |
+| Live Lambda Init Duration (H1/H2 lite) | **DONE** — see `data/processed/live/init_summary_by_cell.csv` |
+| H3 warming frequency (lite) | **DONE** — on 0.00 / off 0.20 (`n=10`/arm) |
+| H4 memory (Python lite) | **DONE** — mean ≈81.5 ms (`n=60`) |
+| Measured ROI / ADOPT-lite | **DONE** (point estimates; not Holm-confirmed) |
+| Confirmatory n + Holm family | **SOFT residual** |
+| python-bytecode cell | **SOFT residual** (Unhandled) |
+| Evaluation predictive-provisioning filler | Removed / quarantined |
 
-Non-AWS claim hygiene for evaluation / STATUS / abstract ROI wording is complete. Remaining blocker to a full RQ answer is live AWS Lambda data collection (no deploy in this pass).
+Hard live-Init residual closed at lite depth. Soft confirmatory / bytecode / destroy remain (~95% alignment; see `_analysis_extract/reports/chaitanya_AWS_RESIDUAL.md`).
 
 ## 11. Honesty and Integrity Statement
 
@@ -388,19 +387,19 @@ This project adheres to strict honesty rules:
 2. **Explicit labeling:**
    - Proxy benchmarks: clearly labeled as "local init benchmark" or "proxy", never claimed as Lambda Init Duration
    - Mock data: watermarked "SYNTHETIC" on all figures, "MOCK DATA ONLY" in all tables
-   - Live data: awaiting execution; no fabricated results
+   - Live lite: REPORT-line Init / H3 / H4 under `data/processed/live/`; disclose lite $n$
 3. **Intended-cold validation:** Cold-start invocations that return warm are logged and excluded from cold-start analysis
 4. **No invented metrics:** All measurements trace to CloudWatch REPORT lines (Init Duration, Duration, Billed Duration) or instrumented client timestamps
 5. **Reproducibility:** Package digests, statistical tests, and analysis decisions are auditable via code and logs
 
-**No results have been fabricated. The proxy benchmarks are real measurements of process-start time (labeled as such). The mock data is explicitly synthetic for pipeline testing only. Live Lambda data awaits student AWS execution.**
+**No results have been fabricated.** Proxy = process-start. Mock = synthetic. Live lite Init/H3/H4 = real REPORT metrics at disclosed $n$.
 
 ---
 
-**Status Summary:** Local artefact, proxy evidence, and claim hygiene are in place. Evaluation no longer claims live Init Duration or measured ROI. **Sole residual:** live Lambda Init Duration (+ H3/H4) on the researcher's AWS account. No AWS deploy in this alignment pass.
+**Status Summary:** Live lite Init (H2), H3 warming, H4 memory, and cost-model ROI/ADOPT point estimates are collected and folded into evaluation. **Soft residual:** confirmatory full-$n$ Holm family (and optional bytecode fix). Hard Init residual closed at lite scope (~94–95%).
 
 **Last Updated:** September 20, 2026  
-**Document Version:** 1.1 (claim hygiene)  
+**Document Version:** 1.2 (live lite fold)  
 **Prepared by:** Project build system (autonomous research assistant)
 
 ---

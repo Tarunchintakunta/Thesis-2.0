@@ -1,10 +1,11 @@
 \chapter{Evaluation}
 \label{ch:evaluation}
 
-This chapter reports \textbf{only} evidence present in the artefact. No live AWS Lambda
-\textit{Init Duration}, warming-frequency (H3), memory-sweep (H4), or measured ROI /
-decision-matrix ADOPT band is claimed here. The sole residual measurement required to
-answer the research question on the target platform is a live Lambda campaign.
+This chapter reports \textbf{only} evidence present in the artefact. Live AWS Lambda
+\textit{Init Duration} cells were collected under a Free-Tier \textbf{lite} sample
+($n{=}12$ intended-cold measure calls per cell unless noted). Proxy benchmarks remain
+directional only. Point-estimate ROI / ADOPT-candidate bands use the measured cost model
+on live REPORT billed milliseconds; they are \textbf{not} Holm-confirmed decision bands.
 
 \section{Evidence Classes and What They May Answer}
 \label{sec:eval_provenance}
@@ -21,15 +22,120 @@ Proxy (REAL) & \texttt{data/proxy/github/} & Directional package-size / runtime
   loading costs on one CI host; \textbf{not} Lambda Init Duration \\
 Proxy (supp.) & \texttt{data/proxy/dev\_macbook/} & Cross-platform check (Py/Node only) \\
 Mock (SYNTHETIC) & \texttt{data/*/mock/} & Pipeline mechanics only; never RQ results \\
-Live Lambda & \texttt{data/*/live/} (empty) & Init Duration, H3, H4, cost/ROI ---
-  \textbf{not yet run} \\
+Live Lambda (lite) & \texttt{data/raw/live*/}, \texttt{data/processed/live/} &
+  Init Duration (H1/H2), H4 memory (Python), H3 warming (30\,m sparse), measured cost \\
 \hline
 \end{tabular}
 \end{table}
 
-\textbf{Residual:} Live CloudWatch REPORT \textit{Init Duration} (plus H3 warming frequency
-and H4 memory cells) under \texttt{data\_mode=live}. Until that exists, any practitioner
-ROI or ADOPT-band claim is a \textit{framework} illustration, not a measured Lambda result.
+\textbf{Residual (soft):} Confirmatory sample sizes ($n{\ge}30$ per cell per the power plan),
+a working \texttt{python-bytecode} cell, and Holm--Bonferroni tests over the confirmatory
+family. The hard gate of ``no live Init Duration'' is closed for the lite campaign.
+
+\section{Live Lambda Init Duration (lite, measured)}
+\label{sec:eval_live_init}
+
+\textit{Source:} Terraform stack \texttt{coldstart-study}, region \texttt{eu-west-1},
+\texttt{arm64}. Force-cold via configuration update. REPORT lines joined from CloudWatch
+Logs Insights (\texttt{report\_source=logs}). Processed under
+\texttt{data/processed/live/}. \textbf{Disclose:} $n{=}12$ colds per runtime$\times$variant
+cell (lite).
+
+\begin{table}[h]
+\centering
+\caption{Live Init Duration by runtime and package @1024\,MB (lite $n{=}12$ colds/cell)}
+\label{tab:eval_live_init}
+\begin{tabular}{llrrrrr}
+\hline
+\textbf{Runtime} & \textbf{Package} & \textbf{$n$} & \textbf{mean} & \textbf{p50} & \textbf{p95} & \textbf{mean billed} \\
+\hline
+Python 3.12 & default & 12 & 3177.9 & 3356.0 & 3527.1 & 3202.6 \\
+Python 3.12 & optimised & 12 & 88.9 & 88.3 & 121.9 & 110.8 \\
+Node.js 20 & default & 12 & 991.7 & 1000.8 & 1146.0 & 1185.1 \\
+Node.js 20 & optimised & 12 & 135.1 & 140.5 & 146.4 & 314.7 \\
+Java 21 & default & 12 & 688.6 & 687.3 & 771.9 & 800.9 \\
+Java 21 & optimised & 12 & 360.9 & 333.4 & 427.8 & 470.4 \\
+\hline
+\end{tabular}
+\end{table}
+
+\textbf{Package-size median $\Delta$ Init (default $\rightarrow$ optimised), lite:}
+Python $3267.6$\,ms; Node.js $860.3$\,ms; Java $353.9$\,ms.
+
+\textbf{Excluded cell:} \texttt{python-bytecode} --- all 24 invocations returned
+\texttt{function\_error=Unhandled} (HTTP 200) with no Init Duration; excluded from Init
+tables.
+
+\subsection{H4-lite (Python optimised memory sweep)}
+
+$n{=}12$ colds per memory; mean Init across 60 colds $\approx 81.5$\,ms.
+
+\begin{table}[h]
+\centering
+\caption{Live Init Duration vs memory (Python optimised; lite $n{=}12$/cell)}
+\label{tab:eval_live_h4}
+\begin{tabular}{rrrrr}
+\hline
+\textbf{MB} & \textbf{$n$} & \textbf{mean} & \textbf{p50} & \textbf{warm dur.\ p50} \\
+\hline
+128 & 12 & 81.1 & 85.0 & 195.7 \\
+512 & 12 & 83.4 & 86.5 & 39.1 \\
+1024 & 12 & 73.2 & 70.2 & 18.3 \\
+1769 & 12 & 84.3 & 88.0 & 16.2 \\
+3008 & 12 & 85.2 & 86.6 & 16.1 \\
+\hline
+\end{tabular}
+\end{table}
+
+Raising memory $128{\rightarrow}1024$\,MB changes median Init by only $+14.8$\,ms on this
+lite sample (HOLD on practical Init threshold of $50$\,ms); warm handler duration falls
+sharply as memory rises.
+
+\subsection{H3-lite (EventBridge warming, 30\,m sparse)}
+
+\textit{Config:} \texttt{configs/live_h3_warming.yaml} --- \texttt{mean\_gap\_s}${}={}180$,
+\texttt{warmer\_rate\_min}${}={}5$, \texttt{duration\_h}${}={}0.5$, \texttt{block\_min}${}={}10$.
+Raw: \texttt{data/raw/live\_h3/}; summary: \texttt{data/processed/live/h3\_warming\_summary.csv}.
+
+\begin{table}[h]
+\centering
+\caption{H3-lite cold rates (measure arm; $n{=}10$ per arm)}
+\label{tab:eval_live_h3}
+\begin{tabular}{lrrr}
+\hline
+\textbf{Arm} & \textbf{$n$} & \textbf{colds} & \textbf{cold rate} \\
+\hline
+warm-target (on) & 10 & 0 & 0.00 \\
+warm-control (off) & 10 & 2 & 0.20 \\
+\hline
+\end{tabular}
+\end{table}
+
+Directional only: absolute cold-fraction drop $0.20$ (meets the $0.10$ practical drop
+threshold on the point estimate). Control cold Init median among the two colds:
+$84.7$\,ms. Not a confirmatory H3 test.
+
+\subsection{ROI / ADOPT point estimates (measured billed ms)}
+
+Costs from \texttt{scripts/cost\_model.py} on live REPORT billed duration (arch
+\texttt{arm64}, prices in \texttt{configs/pricing.yaml}). All-cold cost per 1{,}000 for
+package prune (lite $n{=}12$):
+
+\begin{itemize}
+    \item Python default $\rightarrow$ optimised: median Init saving $3267.6$\,ms;
+      $\Delta$cost/1k $\approx -\$0.041$ (ADOPT-candidate \emph{lite point estimate}).
+    \item Node.js default $\rightarrow$ optimised: $860.3$\,ms; $\Delta$cost/1k
+      $\approx -\$0.012$ (ADOPT-candidate lite).
+    \item Java default $\rightarrow$ optimised: $353.9$\,ms; $\Delta$cost/1k
+      $\approx -\$0.004$ (ADOPT-candidate lite).
+    \item Memory $128{\rightarrow}1024$\,MB (Python optimised): Init median $\Delta$
+      $14.8$\,ms; HOLD-lite.
+    \item H3 warming: cold-fraction drop $0.20$; $\Delta$cost/1k $\approx +\$4{\times}10^{-5}$
+      (ADOPT-candidate lite on thresholds; $n{=}10$/arm).
+\end{itemize}
+
+These bands apply practical thresholds from \texttt{configs/analysis\_plan.yaml} only.
+They are \textbf{not} substitutes for the pre-registered Holm family.
 
 \section{Proxy Benchmark Results (Not Lambda Init Duration)}
 \label{sec:eval_proxy}
@@ -76,18 +182,8 @@ H2\_proxy Java & Mann--Whitney U & $4.3\times10^{-14}$ & $r_{rb}=1.00$ & 185.9 \
 
 \textbf{Interpretation (proxy only):} On this host, dependency bloat dominates language
 choice for process-start cost. Optimised packages cluster within $\approx$16\,ms of each
-other (Python 20.9, Node.js 30.4, Java 37.2). These magnitudes do \textbf{not} transfer to
-AWS Lambda: the proxy has no Firecracker micro-VM, no S3 code download, and no Lambda
-runtime API handshake.
-
-\subsection{What proxy cannot answer}
-
-\begin{itemize}
-    \item Lambda \textit{Init Duration} magnitudes (primary DV of the RQ).
-    \item H3: cold-start \textit{frequency} under EventBridge warming.
-    \item H4: memory allocation effects on Init Duration (exploratory).
-    \item Measured ms-saved / $\Delta$cost per 1{,}000 invocations (ROI / ADOPT band).
-\end{itemize}
+other (Python 20.9, Node.js 30.4, Java 37.2). Proxy magnitudes do \textbf{not} replace the
+live Init table above.
 
 \section{Mock Pipeline (Synthetic --- Not Results)}
 
@@ -95,20 +191,18 @@ The mock backend (\texttt{make mock-all}, \texttt{data\_mode=mock}) exercises in
 $\rightarrow$ collect $\rightarrow$ parse $\rightarrow$ cost $\rightarrow$ analyse. All mock
 figures are watermarked SYNTHETIC. Mock outputs are excluded from research conclusions.
 
-\section{Live Lambda Campaign Status}
+\section{Live Campaign Status}
 \label{sec:eval_live_residual}
 
 \begin{itemize}
-    \item \textbf{Pilot:} not run (\texttt{data/pilot/live/} empty).
-    \item \textbf{Campaign:} not run (\texttt{data/*/live/} empty).
-    \item \textbf{IaC ready:} SAM template and/or Terraform under
-      \texttt{infra/} / \texttt{terraform/} (no student-ID tags required).
+    \item \textbf{Init (H1/H2) lite:} complete --- Python, Node.js, Java @1024\,MB
+      ($n{=}12$/cell; bytecode excluded).
+    \item \textbf{H4-lite:} complete --- Python optimised memory sweep.
+    \item \textbf{H3-lite:} complete --- 30\,m sparse warmer on vs off ($n{=}10$/arm).
+    \item \textbf{Measured cost / ROI-lite:} present in \texttt{data/processed/live/}.
+    \item \textbf{Stack:} \texttt{coldstart-study-*} still deployed (do not destroy while
+      shared-account work continues).
 \end{itemize}
-
-\textbf{Sole residual to answer the CA2 RQ on AWS:} deploy to the researcher's own account
-and collect live REPORT-line Init Duration for H1--H4 under the pre-registered analysis
-plan. Decision-matrix ADOPT / ROI cells must be filled from that live cost model, not from
-proxy process-start deltas.
 
 \section{Out-of-Scope Narrative Quarantine}
 
@@ -118,9 +212,9 @@ runtime, package size, memory, low-frequency warming). No such results are repor
 
 \section{Summary}
 
-Proxy evidence supports a directional package-size hypothesis on a CI host. Mock evidence
-validates plumbing. Live Lambda Init Duration, warming frequency, memory effects, and
-measured ROI remain \textbf{uncollected}. Those live measurements are the residual blocker
-to a complete evaluation chapter.
+Live lite Init Duration, H3 cold-rate, H4 memory, and measured cost cells are in
+\texttt{data/processed/live/}. Package prune shows large Init reductions and lower
+all-cold cost per 1{,}000 on the point estimates. Soft residuals remain: confirmatory $n$,
+Holm family tests, and a fixed bytecode variant.
 
 Kondragunta Lakshmi Chaitanya

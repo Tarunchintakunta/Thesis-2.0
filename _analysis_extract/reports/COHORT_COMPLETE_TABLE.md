@@ -17,7 +17,7 @@
 | Thesis | Sole AWS residual? | Live AWS | Alignment | **Status** |
 |--------|:------------------:|:--------:|-----------|------------|
 | Venkat | **yes** (multi-instance matmul + eval sync) | Round-1 saved (`ec2_round1_summary.json`); `da.matmul` timed out | <100% | **NOT COMPLETE** |
-| Chaitanya | **yes** (Init Duration) | Py+Node+H4+ROI-lite done; H3-lite + **Java Init RUNNING** (JDK 21) | <100% | **NOT COMPLETE** |
+| Chaitanya | **soft** (confirmatory $n$ / Holm / bytecode) | Init+H3+H4+ROI-lite **DONE** (`data/processed/live/`; n=12; H3 on0/off0.2) | **~95%** | **NOT COMPLETE** |
 | Vikas | **yes** (full campaign) | Campaign_r2 daemon seed=20260929 workers=4 | <100% | **NOT COMPLETE** |
 | Anji | **partial** (confirmatory/deeper live still open) | Lite **4/4 done** (`results/live/key_cells/`; n=1; ≈$0.00144) | **~94%** | **NOT COMPLETE** |
 | Varun | **yes** (full S3 FinOps) | Lite DONE (`live_lite_summary.json`; CE $3.6e-09; GET 187/524 ms; Wilcoxon p≈1e-7; destroyed) | **~90%** | **NOT COMPLETE** (`READY_FOR_AWS=yes`) |

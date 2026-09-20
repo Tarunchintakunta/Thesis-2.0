@@ -1,0 +1,26 @@
+# Live H3-lite: EventBridge warming on (warm-target) vs off (warm-control).
+# Recreated to match the completed run at data/raw/live_h3/warming/run_info.json.
+# CLI: DATA_MODE=live python scripts/invoke_steady.py \
+#   --config configs/live_h3_warming.yaml --phase warming --duration 30m \
+#   --out data/raw/live_h3/
+# Tags policy: project/managed_by/purpose/data only (no personal name/ID).
+stack_name: coldstart-study
+region: eu-west-1
+arch: arm64
+payload: payloads/fixed_payload.json
+seed: 20260101
+force_cold: update_env
+
+budget:
+  daily_usd: 2.00
+  spend_log: data/spend_log.csv
+
+phases:
+  warming:
+    kind: warming
+    target: warm-target
+    control: warm-control
+    warmer_rate_min: 5
+    mean_gap_s: 180
+    duration_h: 0.5
+    block_min: 10

@@ -1,0 +1,6 @@
+control,scope,init_median_delta_ms,delta_cost_per_1k_usd,band_lite_point_estimate,n_per_arm,note
+Prune package,python default->optimised,3267.63,-0.041224,ADOPT_CANDIDATE_lite,12,lite n=12/arm; no Holm confirmatory test
+Prune package,nodejs default->optimised,860.34,-0.011606,ADOPT_CANDIDATE_lite,12,lite n=12/arm; no Holm confirmatory test
+Prune package,java default->optimised,353.86,-0.004407,ADOPT_CANDIDATE_lite,12,lite n=12/arm; no Holm confirmatory test
+Raise memory (exploratory),python optimised 128->1024 MB,14.82,0.000813,HOLD_lite,12,lite n=12/arm; exploratory H4; no Holm confirmatory test
+Low-frequency warming,EventBridge rate(5 min),,4.3e-05,ADOPT_CANDIDATE_lite,10,lite H3; cold_rate on=0.0 off=0.2 drop=0.20; no Holm

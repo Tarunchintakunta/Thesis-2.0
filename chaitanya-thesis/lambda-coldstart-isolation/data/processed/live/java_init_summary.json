@@ -1,0 +1,24 @@
+{
+  "source": "data/raw/live_java/live_java_init/invocations.jsonl",
+  "arms": [
+    {
+      "variant": "default",
+      "memory_mb": 1024,
+      "n": 12,
+      "init_ms_mean": 688.6441666666667,
+      "init_ms_median": 687.26,
+      "init_ms_min": 598.68,
+      "init_ms_max": 774.38
+    },
+    {
+      "variant": "optimised",
+      "memory_mb": 1024,
+      "n": 12,
+      "init_ms_mean": 360.90250000000003,
+      "init_ms_median": 333.4,
+      "init_ms_min": 295.82,
+      "init_ms_max": 438.34
+    }
+  ],
+  "n_with_init": 24
+}

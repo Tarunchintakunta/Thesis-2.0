@@ -1,0 +1,25 @@
+{
+  "phase": "warming",
+  "data_mode": "live",
+  "n_total": 20,
+  "arms": {
+    "on": {
+      "n": 10,
+      "cold_count": 0,
+      "cold_fraction": 0.0,
+      "init_ms_n": 0,
+      "init_ms_mean": null,
+      "init_ms_median": null,
+      "duration_ms_median": 22.200000000000003
+    },
+    "off": {
+      "n": 10,
+      "cold_count": 2,
+      "cold_fraction": 0.2,
+      "init_ms_n": 2,
+      "init_ms_mean": 84.66,
+      "init_ms_median": 84.66,
+      "duration_ms_median": 21.305
+    }
+  }
+}
