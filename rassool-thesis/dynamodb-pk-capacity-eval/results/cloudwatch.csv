@@ -1,0 +1,13 @@
+batch_id,table,cw_ConsumedReadCapacityUnits,cw_ConsumedWriteCapacityUnits,cw_ReadThrottleEvents,cw_WriteThrottleEvents,cw_ProvisionedReadCapacityUnits,cw_ProvisionedWriteCapacityUnits
+b00-K2-provisioned-W3,ddbpk-k2-provisioned,6538.5,12980.0,0.0,0.0,140.0,1000.0
+b00-K3-on_demand-W4,ddbpk-k3-ondemand,216815.0,43233.0,0.0,0.0,,
+b00-K3-provisioned-W4,ddbpk-k3-provisioned,221940.0,44117.0,0.0,0.0,1360.0,1000.0
+b00-K2-on_demand-W4,ddbpk-k2-ondemand,22241.0,44981.0,0.0,0.0,,
+b00-K3-provisioned-W3,ddbpk-k3-provisioned,61640.0,12337.0,0.0,0.0,1360.0,426.0
+b00-K1-on_demand-W3,ddbpk-k1-ondemand,4785.0,9670.0,0.0,0.0,,
+b00-K3-on_demand-W3,ddbpk-k3-ondemand,64660.0,12851.0,0.0,0.0,,
+b00-K2-on_demand-W3,ddbpk-k2-ondemand,5087.5,10131.0,0.0,0.0,,
+b00-K1-provisioned-W3,ddbpk-k1-provisioned,6743.0,13341.0,0.0,0.0,,
+b00-K1-on_demand-W4,ddbpk-k1-ondemand,21820.0,43724.0,0.0,0.0,,
+b00-K1-provisioned-W4,ddbpk-k1-provisioned,22142.0,44435.0,0.0,0.0,140.0,200.0
+b00-K2-provisioned-W4,ddbpk-k2-provisioned,19689.0,43673.0,0.0,0.0,140.0,200.0

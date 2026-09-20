@@ -1,0 +1,13 @@
+workload,configuration,on_front
+W3,K1-on_demand,True
+W3,K1-provisioned,True
+W3,K2-on_demand,False
+W3,K2-provisioned,False
+W3,K3-on_demand,False
+W3,K3-provisioned,False
+W4,K1-on_demand,True
+W4,K1-provisioned,False
+W4,K2-on_demand,False
+W4,K2-provisioned,True
+W4,K3-on_demand,False
+W4,K3-provisioned,False

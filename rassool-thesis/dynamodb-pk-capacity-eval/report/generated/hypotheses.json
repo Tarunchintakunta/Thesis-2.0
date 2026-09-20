@@ -1,0 +1,13 @@
+{
+  "label": "measured on Amazon DynamoDB (eu-west-1)",
+  "data_source": "live",
+  "batches": 12,
+  "cold_contaminated_excluded": 0,
+  "tests": {},
+  "figures": [
+    "latency_by_configuration.png",
+    "throttle_rate.png",
+    "cost_per_10k.png",
+    "tradeoff_surface.png"
+  ]
+}
