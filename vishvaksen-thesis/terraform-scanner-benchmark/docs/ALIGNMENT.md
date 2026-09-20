@@ -8,8 +8,11 @@
 
 `RQ6 Obj7 Method6 Impl7 Exp6 Metrics7 Evidence6 Claims5 Rubric5` → **~62/100**
 
-This is not 100. Dual review, human checklist, statistical write-up, and
-the thesis prose (LaTeX vs Verdet) remain.
+Measured on this pass (N=240 insecure=144): Checkov identified **56.2%**,
+tfsec **61.8%**, union **70.8%**, OPA **57.6%** of labelled defects.
+Scripted checklist **81.2%** (not a human rater). Per-category tables:
+`../results/METRICS.md`.
+
 
 ## Objectives vs this tree
 
