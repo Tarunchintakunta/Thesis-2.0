@@ -1,6 +1,9 @@
+% ALIGNMENT FIX 2026-09-20: narrative numbers must match results/data/summary_statistics.json (local Dask only, not EC2).
 \chapter{Evaluation}
 
 This chapter presents experimental results, analyzes performance trends, and interprets findings in the context of the research question: how do multi-threaded and distributed parallelism models compare for matrix workloads at matched core counts?
+
+\textbf{Evidence boundary:} All numbers below are taken from committed \texttt{results/data/summary\_statistics.json} (local Dask \texttt{LocalCluster} on one host). No AWS EC2 multi-instance campaign was executed; these results are a local proxy, not matched-vCPU cloud results.
 
 \section{Dataset Overview}
 
@@ -8,9 +11,9 @@ The benchmark suite executed successfully, generating:
 
 \begin{itemize}
     \item \textbf{Total configurations tested}: 90 unique (parallelism model, matrix size, worker count) combinations
-    \item \textbf{Total runs}: 270 (90 configurations × 3 iterations)
-    \item \textbf{Matrix sizes}: 200×200, 500×500, 1000×1000
-    \item \textbf{Worker counts}: 1, 2, 4 (distributed requires ≥2 workers)
+    \item \textbf{Total runs}: 270 (90 configurations × 3 iterations; \texttt{n\_iterations: 3} in JSON)
+    \item \textbf{Matrix sizes}: 200×200, 500×500, 1000×1000, 1500×1500, 2000×2000
+    \item \textbf{Worker counts}: 1, 2, 4, 8 (distributed requires ≥2 workers)
     \item \textbf{Operations}: Matrix multiplication and LU factorization
 \end{itemize}
 
@@ -29,14 +32,14 @@ Figure~\ref{fig:completion_time} shows completion time versus matrix size for di
 \label{fig:completion_time}
 \end{figure}
 
-\textbf{Key Observations}:
+\textbf{Key Observations} (matmul means from JSON):
 
 \begin{enumerate}
-    \item \textbf{Small Matrices (200×200)}: Threading completes in ~1ms; multiprocessing ~11ms; distributed ~40ms. The distributed overhead is 40× higher due to cluster setup and serialization.
+    \item \textbf{Small Matrices (200×200, 4 workers)}: Threading $\approx$1.09\,ms; multiprocessing $\approx$32.9\,ms; distributed $\approx$181\,ms. Local-Dask distributed is about two orders of magnitude slower than threading at this size (cluster setup and serialization dominate).
     
-    \item \textbf{Medium Matrices (1000×1000)}: Threading ~150ms; multiprocessing ~180ms; distributed ~220ms. The gap narrows as computation begins to amortize overhead.
+    \item \textbf{Medium Matrices (1000×1000)}: Threading $\approx$67.2\,ms (1 worker) / $\approx$62.2\,ms (4 workers); multiprocess $\approx$208--453\,ms; local-Dask distributed $\approx$206--345\,ms (2--4 workers). Distributed remains slower than threading at matched worker counts.
     
-    \item \textbf{Worker Scaling}: At 1000×1000, doubling workers from 1 to 2 improves threading by ~1.6× (sub-linear). Further scaling to 4 workers yields diminishing returns (~2.1× total speedup), consistent with Sabir \& Alebrahim (2025) findings.
+    \item \textbf{Worker Scaling (1000×1000 vs 1-worker threaded baseline)}: Doubling workers from 1 to 2 improves threading by $\approx$1.32× (sub-linear). At 4 workers, threaded speedup is only $\approx$1.08× (not $\sim$2.1×). Distributed speedups vs the same baseline are below 1.0 (0.33× at 2 workers, 0.20× at 4 workers).
 \end{enumerate}
 
 \subsection{LU Factorization Performance}
@@ -50,7 +53,7 @@ Figure~\ref{fig:lu_comparison} compares LU factorization performance.
 \label{fig:lu_comparison}
 \end{figure}
 
-LU factorization shows less parallel speedup than matrix multiplication due to its inherently sequential column-elimination structure. Threading provides marginal improvement (1.2-1.4× with 4 workers), while distributed adds coordination overhead with minimal computational benefit at these scales.
+LU factorization shows less parallel speedup than matrix multiplication due to its inherently sequential column-elimination structure. At 1000×1000, threaded LU speedup vs 1-worker threaded LU is $\approx$1.60× at 2 workers and $\approx$1.40× at 4 workers (JSON). Distributed LU remains slower than threaded LU at matched worker counts in the committed suite.
 
 \section{Speedup and Efficiency Analysis}
 
@@ -69,23 +72,26 @@ Figure~\ref{fig:speedup} plots speedup relative to single-threaded baseline.
 
 \begin{table}[ht]
 \centering
-\caption{Speedup Relative to Single-Threaded Baseline}
+\caption{Speedup Relative to Single-Threaded Baseline (from \texttt{summary\_statistics.json})}
 \label{tab:speedup}
 \begin{tabular}{lccc}
 \toprule
 \textbf{Workers} & \textbf{Threading} & \textbf{Multiprocessing} & \textbf{Distributed} \\
 \midrule
-1 & 1.00 & 0.92 & N/A \\
-2 & 1.61 & 1.48 & 1.18 \\
-4 & 2.14 & 1.92 & 1.45 \\
+1 & 1.00 & 0.32 & N/A \\
+2 & 1.32 & 0.30 & 0.33 \\
+4 & 1.08 & 0.15 & 0.20 \\
+8 & 1.02 & 0.08 & 0.13 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
+\noindent\textit{Note:} Speedup $= \mathrm{mean\_time}(\mathrm{threaded},w{=}1)/\mathrm{mean\_time}(\mathrm{model},w)$ using committed local-Dask JSON. Older draft cells (e.g.\ 2.14$\times$ at 4 workers) are withdrawn.
+
 Parallel efficiency (speedup/workers) decreases with worker count:
 \begin{itemize}
-    \item Threading: 80\% efficient at 2 workers, 54\% at 4 workers
-    \item Distributed: 59\% efficient at 2 workers, 36\% at 4 workers
+    \item Threading: $\approx$66\% efficient at 2 workers, $\approx$27\% at 4 workers
+    \item Distributed: $\approx$16\% efficient at 2 workers, $\approx$5\% at 4 workers
 \end{itemize}
 
 \subsection{CPU Utilization Efficiency}
@@ -99,7 +105,7 @@ Figure~\ref{fig:cpu_util} shows CPU utilization as a fraction of available capac
 \label{fig:cpu_util}
 \end{figure}
 
-Threading achieves 75-85\% utilization at 2-4 workers. Multiprocessing achieves 65-75\%. Distributed achieves only 45-60\%, indicating significant idle time during coordination and data transfer phases.
+At 1000×1000 matmul (JSON \texttt{mean\_cpu}): threading $\approx$79.6--84.3\% (1--4 workers); multiprocessing $\approx$57.2--72.2\%; distributed $\approx$42.9--52.7\% (2--4 workers). Distributed leaves more idle capacity during coordination.
 
 \section{Memory Consumption Analysis}
 
@@ -108,81 +114,85 @@ Figure~\ref{fig:memory} compares peak memory usage.
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.8\textwidth]{figures/memory_usage_comparison.png}
-\caption{Peak memory consumption across matrix sizes. Distributed requires 1.5-2× more memory than threading due to data serialization and per-worker copies.}
+\caption{Peak memory consumption across matrix sizes. Distributed requires additional memory relative to threading due to data serialization and per-worker copies.}
 \label{fig:memory}
 \end{figure}
 
-\textbf{Memory Observations}:
+\textbf{Memory Observations} (1000×1000 matmul, JSON \texttt{mean\_memory}):
 
 \begin{enumerate}
-    \item \textbf{Threading}: ~180MB for 1000×1000 (single copy of matrices in shared memory)
-    \item \textbf{Multiprocessing}: ~240MB (per-process copies plus IPC buffers)
-    \item \textbf{Distributed}: ~320MB (serialization overhead, scheduler metadata, per-worker buffers)
+    \item \textbf{Threading}: $\approx$227\,MB (1 worker) / $\approx$347\,MB (4 workers)
+    \item \textbf{Multiprocessing}: $\approx$289\,MB (1 worker) / $\approx$417\,MB (4 workers)
+    \item \textbf{Distributed}: $\approx$340\,MB (2 workers) / $\approx$395\,MB (4 workers)
 \end{enumerate}
 
-Memory overhead grows with matrix size but remains proportional. For 1000×1000 double-precision matrices, theoretical minimum is 3×8×10⁶ = 24MB. Observed overhead (160MB) includes Python runtime, NumPy structures, and framework bookkeeping.
+Memory overhead grows with matrix size. For 1000×1000 double-precision matrices, theoretical minimum for three matrices is $3\times8\times10^6 = 24$\,MB. Observed RSS includes Python runtime, NumPy structures, and framework bookkeeping.
 
 \section{Crossover Analysis}
 
 \subsection{Does a Crossover Exist?}
 
-Within the tested range (200-1000, 1-4 workers), no crossover point was observed where distributed execution becomes faster than multi-threaded for the same worker count. 
+Within the full committed local suite (200--2000, workers 1--8), \textbf{no crossover} was observed for matmul: distributed mean time never beats threaded mean time at the same worker count. At 2000×2000 with 4 workers, threading is still faster ($\approx$651\,ms vs $\approx$1099\,ms; ratio $\approx$1.69×).
 
-\textbf{Extrapolation}: The gap narrows as matrix size increases, suggesting a crossover might exist beyond 1000×1000. At 1000×1000 with 4 workers:
+At 1000×1000 with 4 workers (often cited as the mid-range point):
 \begin{itemize}
-    \item Threading: 150ms
-    \item Distributed: 220ms
-    \item Gap: 47\% slower for distributed
+    \item Threading: $\approx$62.2\,ms
+    \item Distributed: $\approx$344.6\,ms
+    \item Ratio: distributed $\approx$5.54× slower (not a 47\% gap)
 \end{itemize}
 
-If the trend continues, crossover likely occurs around 2000-3000 matrix dimensions or when worker count exceeds single-machine core availability.
+The absolute gap narrows at some larger sizes relative to tiny matrices, but \textbf{distributed still does not win through 2000×2000} in the local JSON. Any claim that crossover ``typically'' occurs near 1000×1000 is withdrawn for this evidence set. A true multi-node EC2 campaign (CA2 matched aggregate vCPUs) was not run; network latency would likely increase distributed cost further.
 
 \subsection{Hypothesis Testing Results}
 
-\textbf{Hypothesis 1 (Crossover Existence)}: \textit{Not supported} within tested range. Distributed does not outperform threading at any (size, worker) combination tested.
+Committed analysis reports descriptive statistics (mean $\pm$ std over $n{=}3$ iterations). Inferential procedures (Shapiro--Wilk, $t$-tests / Mann--Whitney, Holm--Bonferroni) are described in the methodology chapter but \textbf{are not implemented} as artefacts under \texttt{distributed-matrix-scaling/}; no $p$-values are claimed here.
 
-\textbf{Hypothesis 2 (Utilization Inefficiency)}: \textit{Supported}. Distributed shows 30-40\% lower CPU utilization, indicating idle capacity.
+\textbf{Hypothesis 1 (Crossover Existence)}: \textit{Not supported} within the tested local range. Distributed does not outperform threading at any (size, worker) matmul combination in JSON.
 
-\textbf{Hypothesis 3 (Memory Limiting Factor)}: \textit{Partially supported}. Memory overhead is 1.5-2× higher for distributed, but absolute values remain small (<500MB even at 1000×1000). Memory is not the bottleneck; coordination overhead dominates.
+\textbf{Hypothesis 2 (Utilization Inefficiency)}: \textit{Directionally supported} by descriptive CPU means (distributed lower than threading at matched mid-range configs).
+
+\textbf{Hypothesis 3 (Memory Limiting Factor)}: \textit{Partially supported} descriptively. Distributed RSS is higher than threading at several points, but absolute values remain modest relative to modern instance memory; coordination overhead dominates the time difference.
 
 \section{Comparison with Baseline Literature}
 
 \subsection{Sabir \& Alebrahim (2025) Replication}
 
-Our threading results replicate their findings:
+Our threading results align directionally with their sub-linear shared-memory findings:
 \begin{itemize}
-    \item Sub-linear speedup (2.1× for 4 workers vs. ideal 4×)
+    \item Sub-linear speedup (1.08× for 4 workers vs ideal 4× on this local suite)
     \item Efficiency decreases with worker count
     \item LU factorization parallelizes less effectively than matrix multiplication
 \end{itemize}
 
 \subsection{Distributed Literature}
 
-Our distributed overhead aligns with Kim et al. (2022) who report 2.5× speedup with 5 workers (50\% efficiency), comparable to our 36\% efficiency at 4 workers. The difference likely reflects workload characteristics and true network latency.
+Our local-Dask overhead pattern is consistent with the general finding that coordination can dominate at modest problem sizes. Kim et al. (2022) report higher multi-worker speedups on different workloads/hardware; our local efficiency at 4 workers ($\approx$5\% for distributed matmul speedup/workers) is lower, reflecting this workload and single-host LocalCluster overhead rather than a replicated multi-node campaign.
 
 \section{Practical Implications}
 
 \subsection{Decision Framework}
 
-For matrix workloads, the choice between scale-up (threading) and scale-out (distributed) depends on:
+For matrix workloads \textit{on evidence from this local proxy}:
 
 \begin{enumerate}
-    \item \textbf{Matrix Size}: Below 1000×1000, threading dominates. Above 2000×2000, distributed may become competitive.
+    \item \textbf{Matrix Size}: Through 2000×2000 in the committed suite, threading remains faster than local distributed at matched worker counts.
     
-    \item \textbf{Single-Machine Capacity}: If workload fits on one machine's cores, threading is more efficient. Distribute only when exceeding single-node capacity.
+    \item \textbf{Single-Machine Capacity}: If the workload fits on one machine's cores, threading is more efficient in these data. Distribute only when exceeding single-node capacity—and validate on real multi-node infrastructure.
     
-    \item \textbf{Memory Constraints}: If per-node memory is limited, distributing across machines provides aggregate memory even if slower per-operation.
+    \item \textbf{Memory Constraints}: If per-node memory is limited, distributing across machines can provide aggregate memory even if slower per-operation.
     
-    \item \textbf{Cost Model}: Threading minimizes coordination overhead and instance count. Distribute when parallelism exceeds largest available instance type.
+    \item \textbf{Cost Model}: Threading minimizes coordination overhead and instance count. True cloud scale-out economics require an EC2 campaign that was not executed here.
 \end{enumerate}
 
 \subsection{Cloud Infrastructure Recommendations}
 
+Recommendations below are \textbf{methodological guidance}, not measured EC2 results:
+
 \begin{itemize}
-    \item For batch matrix jobs <1000×1000: Use single large instance (e.g., c5.4xlarge with 16 vCPUs)
-    \item For batch jobs >2000×2000: Test distributed; crossover may be reached
-    \item For sustained workloads: Amortize cluster setup overhead across multiple operations
-    \item For mixed workloads: Use Dask's adaptive scaling to adjust worker count dynamically
+    \item For batch matrix jobs that fit on one host: prefer a single large instance and shared-memory parallelism first
+    \item For jobs exceeding single-node capacity: run a matched-vCPU multi-instance EC2 campaign before assuming crossover
+    \item For sustained workloads: amortize cluster setup overhead across multiple operations
+    \item Local Dask \texttt{LocalCluster} understates multi-node network cost relative to AWS
 \end{itemize}
 
 \section{Limitations}
@@ -190,9 +200,10 @@ For matrix workloads, the choice between scale-up (threading) and scale-out (dis
 \subsection{Experimental Scope}
 
 \begin{itemize}
-    \item Tested only to 1000×1000; larger matrices may show different crossover behavior
-    \item Local execution understates true network latency; AWS deployment would amplify distributed overhead
+    \item Full local sweep covers 200--2000; still no AWS multi-node campaign
+    \item Local execution understates true network latency; AWS EC2 would add distributed overhead not present here
     \item Dense matrices only; sparse workloads have different communication patterns
+    \item Inferential statistical tests described but not coded; $n{=}3$ iterations (not 5)
 \end{itemize}
 
 \subsection{Generalizability}
@@ -201,10 +212,11 @@ For matrix workloads, the choice between scale-up (threading) and scale-out (dis
     \item Results are CPU platform-specific (x86-64, OpenBLAS)
     \item Python-specific runtime characteristics (GIL, NumPy kernel behavior)
     \item Dask-specific coordination overhead; other frameworks (Spark, Ray) may differ
+    \item Local matched cores $\neq$ CA2 matched aggregate vCPUs across EC2 instances
 \end{itemize}
 
 \section{Summary}
 
-Experimental results demonstrate that multi-threaded execution maintains performance advantages over distributed execution for small to medium matrix workloads (200-1000) at matched core counts. The distributed model incurs 40-50\% overhead due to serialization, coordination, and worker management. This overhead only amortizes for sufficiently large workloads or when scaling beyond single-machine capacity.
+Experimental results from committed local JSON demonstrate that multi-threaded execution maintains performance advantages over local-Dask distributed execution for matrix workloads from 200×200 through 2000×2000 at matched worker counts. At 1000×1000 / 4 workers, distributed matmul is $\approx$5.54× slower than threading (62.2\,ms vs 344.6\,ms). No crossover appears in the local evidence set.
 
-The findings provide empirical evidence supporting the scale-up (threading) approach for workloads fitting on a single large instance, with scale-out (distributed) reserved for cases exceeding that capacity. No crossover was observed within tested ranges, suggesting practitioners should prefer threading unless constrained by single-node memory or core limits.
+These findings support preferring scale-up (threading) for workloads that fit on a single host in this local proxy. They do \textbf{not} constitute measured AWS EC2 matched-vCPU results required by the CA2 cloud-instance research design.

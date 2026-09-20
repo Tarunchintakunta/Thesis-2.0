@@ -165,17 +165,7 @@ To add a new framework (e.g., Ray, Spark):
 
 \subsection{Cloud Deployment}
 
-For AWS EC2 deployment:
-
-\begin{enumerate}
-    \item Launch instances via Terraform/CloudFormation
-    \item Install dependencies with Ansible/user-data scripts
-    \item Start Dask scheduler on primary instance
-    \item Start Dask workers on all instances
-    \item Run benchmark with \texttt{--scheduler-address tcp://[primary-ip]:8786}
-\end{enumerate}
-
-The code requires no changes; only the scheduler address parameter differs.
+CA2 proposes AWS EC2 with IaC provision/destroy and matched aggregate vCPUs. \textbf{Not executed} in this deliverable. Local Dask \texttt{LocalCluster} is not a substitute for that campaign. Committed CLI lacks \texttt{--scheduler-address}; remote-scheduler wiring is future work.
 
 \section{Quality Assurance}
 
@@ -187,7 +177,7 @@ The code requires no changes; only the scheduler address parameter differs.
     \item \textbf{Regression Tests}: Performance bounds ensure no accidental slowdowns
 \end{itemize}
 
-Total test coverage: 23 tests covering 85\%+ of code paths.
+Total test coverage: \textbf{20} \texttt{test\_*} functions in the repository tree.
 
 \subsection{Validation Approach}
 

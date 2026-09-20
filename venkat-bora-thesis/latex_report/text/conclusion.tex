@@ -11,9 +11,9 @@ Key contributions include:
     
     \item \textbf{Comprehensive Metrics}: Collection of completion time, peak memory consumption, and CPU utilization efficiency—addressing the literature gap where studies often report only time or omit memory.
     
-    \item \textbf{Statistical Rigor}: Multiple iterations per configuration, significance testing with Holm-Bonferroni correction, and confidence intervals for all reported values.
+    \item \textbf{Descriptive reporting}: Three iterations per configuration in committed JSON (mean$\pm$std). Inferential significance testing with Holm-Bonferroni was planned in methodology but is \textbf{not} implemented in the artefact tree.
     
-    \item \textbf{Production-Quality Tooling}: A fully-tested benchmarking framework (23 tests, 85\%+ coverage) with automated metric collection, result storage, and visualization generation.
+    \item \textbf{Production-Quality Tooling}: A tested benchmarking framework (\textbf{20} pytest functions in tree) with automated metric collection, result storage, and visualization generation.
     
     \item \textbf{Reproducibility}: Complete source code, test suites, and documentation enabling independent verification and extension to other workloads or cloud platforms.
 \end{enumerate}
@@ -22,29 +22,28 @@ Key contributions include:
 
 \subsection{Performance Comparison}
 
-Within the tested range (200-1000 matrix dimensions, 1-4 workers):
+Within the committed local suite (200--2000 matrix dimensions, workers 1--8; \texttt{n\_iterations: 3}):
 
 \begin{itemize}
-    \item \textbf{Threading dominates}: Multi-threaded execution completed 1.5-2× faster than distributed for all configurations tested
-    \item \textbf{Overhead scales}: Distributed overhead is 40× higher at small scales (200×200) but narrows to 1.5× at 1000×1000
-    \item \textbf{No crossover observed}: Distributed did not outperform threading at any (size, worker) combination within test range
+    \item \textbf{Threading dominates}: At 1000×1000 / 4 workers matmul, threading $\approx$62.2\,ms vs distributed $\approx$344.6\,ms ($\approx$5.54× slower for local Dask)
+    \item \textbf{Overhead remains large}: At 200×200 / 4 workers, distributed $\approx$181\,ms vs threading $\approx$1.09\,ms; at 2000×2000 / 4 workers, distributed is still $\approx$1.69× slower
+    \item \textbf{No crossover observed}: Distributed did not outperform threading at any (size, worker) matmul combination in JSON
 \end{itemize}
 
 \subsection{Efficiency Analysis}
 
 \begin{itemize}
-    \item \textbf{Sub-linear scaling}: All models exhibit sub-linear speedup, replicating Sabir \& Alebrahim's findings
-    \item \textbf{Threading efficiency}: 80\% at 2 workers, 54\% at 4 workers (1000×1000 matrices)
-    \item \textbf{Distributed efficiency}: 59\% at 2 workers, 36\% at 4 workers
-    \item \textbf{CPU utilization}: Threading achieves 75-85\% utilization; distributed only 45-60\%, indicating significant coordination overhead
+    \item \textbf{Sub-linear scaling}: Threading speedups vs 1-worker threaded baseline at 1000×1000: 1.32× (2 workers), 1.08× (4), 1.02× (8)
+    \item \textbf{Threading efficiency}: $\approx$66\% at 2 workers, $\approx$27\% at 4 workers (speedup/workers)
+    \item \textbf{Distributed efficiency}: $\approx$16\% at 2 workers, $\approx$5\% at 4 workers (speedups below 1.0 vs threaded baseline)
+    \item \textbf{CPU utilization (1000×1000 matmul JSON)}: Threading $\approx$80--84\%; distributed $\approx$43--53\% at 2--4 workers
 \end{itemize}
 
 \subsection{Memory Overhead}
 
 \begin{itemize}
-    \item Distributed requires 1.5-2× more memory than threading due to serialization and per-worker buffers
-    \item Absolute values remain modest (<500MB even at 1000×1000), so memory is not the limiting factor
-    \item Coordination overhead, not memory provisioning, drives the performance difference
+    \item At 1000×1000 / 4 workers matmul: threading $\approx$347\,MB; distributed $\approx$395\,MB (JSON)
+    \item Absolute values remain modest relative to modern instance RAM; coordination overhead, not memory, drives the time difference
 \end{itemize}
 
 \section{Practical Recommendations}
@@ -55,7 +54,7 @@ For practitioners deploying matrix workloads on cloud infrastructure:
 
 \begin{itemize}
     \item Workload fits on a single large instance's cores and memory
-    \item Matrix dimensions <1000×1000 (based on observed trends)
+    \item Matrix dimensions within the local suite through 2000×2000 (JSON: threading still faster)
     \item Minimizing coordination overhead is critical
     \item Cost sensitivity requires minimizing instance count
 \end{itemize}
@@ -64,17 +63,19 @@ For practitioners deploying matrix workloads on cloud infrastructure:
 
 \begin{itemize}
     \item Workload exceeds single-node capacity (cores or memory)
-    \item Matrix dimensions >2000×2000 (extrapolating trends suggests crossover)
+    \item Matrix dimensions beyond the local evidence set, \textbf{after} a true multi-node EC2 campaign confirms crossover
     \item Need for fault tolerance and job elasticity outweighs overhead
     \item Running sustained workloads that amortize cluster setup cost
 \end{itemize}
 
 \subsection{Cloud Instance Selection}
 
+Guidance only (no measured EC2 timings in this deliverable):
+
 \begin{itemize}
-    \item For batch matrix jobs <1000: Single c5.4xlarge (16 vCPUs) or similar
-    \item For larger jobs: Test distributed; may reach crossover at 2000-3000 dimensions
-    \item For mixed workloads: Use Dask's adaptive scaling to adjust capacity dynamically
+    \item Prefer validating scale-up on one large instance before assuming multi-instance benefit
+    \item Do not treat local Dask times as AWS EC2 results
+    \item Matched aggregate vCPU EC2 runs remain required to answer the CA2 cloud-instance RQ
 \end{itemize}
 
 \section{Limitations}
@@ -82,8 +83,8 @@ For practitioners deploying matrix workloads on cloud infrastructure:
 \subsection{Scope Constraints}
 
 \begin{itemize}
-    \item \textbf{Matrix size range}: Tested only to 1000×1000; crossover may exist at larger sizes
-    \item \textbf{Local execution}: True multi-node network latency not captured; AWS deployment would amplify distributed overhead
+    \item \textbf{Matrix size range}: Local suite covers 200--2000; \textbf{no crossover} in that range; AWS multi-node still missing
+    \item \textbf{Local execution}: True multi-node network latency not captured; local Dask $\neq$ matched-vCPU EC2
     \item \textbf{Dense matrices}: Sparse workloads have different communication-to-computation ratios
     \item \textbf{CPU-only}: GPU acceleration not considered; would shift cost-benefit analysis
 \end{itemize}
@@ -110,7 +111,7 @@ For practitioners deploying matrix workloads on cloud infrastructure:
 \subsection{Immediate Extensions}
 
 \begin{enumerate}
-    \item \textbf{Larger Matrices}: Extend tests to 2000-5000 dimensions to locate crossover point
+    \item \textbf{Larger Matrices / Cloud}: Run matched-vCPU AWS EC2 campaign (CA2 residual); do not extrapolate local crossover
     \item \textbf{AWS Deployment}: Execute on true multi-node EC2 cluster to quantify network overhead
     \item \textbf{GPU Comparison}: Add cuBLAS/cuDNN implementations to explore accelerator impact
     \item \textbf{Sparse Matrices}: Test scipy.sparse operations where communication patterns differ
@@ -136,7 +137,7 @@ For practitioners deploying matrix workloads on cloud infrastructure:
 
 \section{Research Impact}
 
-This work provides empirical evidence for a decision that cloud practitioners face routinely but make without data. By demonstrating that the crossover between scale-up and scale-out depends on workload characteristics (size, operation type) and by providing a reproducible methodology, this study:
+This work provides local-proxy evidence for a decision that cloud practitioners face routinely. It does \textbf{not} claim a measured AWS crossover. By documenting that local distributed never beats threading through 2000×2000 in committed JSON, and by separating CA2 EC2 requirements from LocalCluster practice, this study:
 
 \begin{itemize}
     \item Enables informed infrastructure decisions based on measurement rather than convention
@@ -151,4 +152,4 @@ The choice between multi-threaded and distributed parallelism is not binary but 
 
 This project demonstrates that rigorous performance comparison requires controlling for resources, measuring multiple metrics, and testing across a range of configurations. The methodology is sound, the results are reproducible, and the tooling is extensible. While executed locally rather than on AWS, the findings provide actionable guidance for cloud infrastructure decisions and establish a foundation for future research.
 
-The research question—how do multi-threaded and distributed models compare at matched core counts—has been answered empirically: threading maintains advantage for small to medium workloads, with distributed only becoming competitive at larger scales or when constrained by single-node limits. This conclusion is supported by comprehensive data, statistical analysis, and alignment with existing literature on parallel computing scalability.
+The research question—how do multi-threaded and distributed models compare at matched core counts—has been answered for the \textbf{local Dask proxy}: threading maintains advantage through 2000×2000 in committed JSON, with no crossover. The CA2 cloud-instance half (matched-vCPU AWS EC2) remains unanswered by evidence in this folder.

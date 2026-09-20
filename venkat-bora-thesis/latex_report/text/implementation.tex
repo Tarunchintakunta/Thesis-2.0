@@ -150,10 +150,10 @@ The \texttt{@pytest.mark.timeout} decorator prevents indefinite hangs if cluster
 $ make test
 pytest tests/ -v --timeout=60
 ...
-======================== 23 passed in 3.62s =========================
+======================== 20 passed =========================
 \end{verbatim}
 
-All 23 tests pass, covering matrix generation, operation correctness, benchmarking infrastructure, and result storage.
+All \textbf{20} tests in the tree pass (\texttt{test\_matrix\_operations.py}: 11; \texttt{test\_benchmark.py}: 9), covering matrix generation, operation correctness, benchmarking infrastructure, and result storage.
 
 \section{Build Automation}
 
@@ -263,20 +263,9 @@ make benchmark
 
 Zero configuration beyond Python 3.12+ and pip.
 
-\subsection{AWS EC2 Deployment (Optional)}
+\subsection{AWS EC2 Deployment (Not Executed)}
 
-For true cloud execution:
-
-\begin{enumerate}
-    \item Launch EC2 instances (e.g., 3× c5.2xlarge)
-    \item SSH to primary, install dependencies
-    \item Start Dask scheduler: \texttt{dask-scheduler}
-    \item SSH to workers, start workers: \texttt{dask-worker tcp://[scheduler]:8786}
-    \item Run benchmark with scheduler address:
-    \begin{verbatim}
-    python src/main.py --scheduler-address tcp://[ip]:8786
-    \end{verbatim}
-\end{enumerate}
+CA2 requires matched-vCPU multi-instance EC2 execution. That campaign was \textbf{not} run. A future path would need IaC provisioning plus CLI support for a remote Dask scheduler. Committed \texttt{src/main.py} does \textbf{not} expose \texttt{--scheduler-address}; older prose claiming that flag is incorrect for this tree. Local \texttt{LocalCluster} results must not be labelled as EC2 results.
 
 \section{Lessons Learned}
 

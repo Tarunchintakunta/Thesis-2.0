@@ -202,9 +202,9 @@ Their work demonstrated that multi-threaded LU factorization on shared memory ex
 
 - **Matrix sizes:** 200, 500, 1000, 1500, 2000 (n×n)
 - **Worker counts:** 1, 2, 4, 8
-- **Iterations:** 5 per configuration (configurable)
+- **Iterations:** 3 per configuration in committed `summary_statistics.json` (`n_iterations: 3`; older “5” plan text is not the delivered campaign)
 - **Seed:** Fixed (42) for reproducibility
-- **Total configurations:** ~120 for full suite
+- **Total configurations (committed):** 90 (270 runs)
 
 ## Results
 
@@ -229,26 +229,19 @@ Results are saved in three formats:
 
 **Important:** These results are from **local Dask clusters** (same machine), not actual multi-node EC2 deployment.
 
-- Multi-threaded shows good speedup up to 4 cores for matrix multiplication
-- Local "distributed" overhead dominates for small matrices (<500)
-- Crossover point typically around 1000×1000 matrices
+- Multi-threaded shows limited sub-linear speedup (e.g. ≈1.08× at 4 workers for 1000×1000 matmul vs 1-worker threaded)
+- Local "distributed" overhead dominates; at 1000×1000 / 4 workers, distributed ≈344.6 ms vs threaded ≈62.2 ms
+- **No crossover** through 2000×2000 in committed JSON (distributed never beats threading at matched workers)
 - Memory overhead higher for Dask due to data serialization
 - CPU efficiency decreases with worker count due to coordination overhead
 
-**Note:** Real AWS EC2 multi-instance results would show additional network latency and different scaling characteristics.
+**Note:** Real AWS EC2 multi-instance results were **not collected**. Local Dask ≠ matched-vCPU EC2. See `../STATUS.md` and `../CONFIGURATION_MANUAL.md`.
 
 ## AWS Deployment (Not Executed)
 
-This implementation is **cloud-ready** but was **not deployed to AWS EC2**. See `../STATUS.md` for detailed deployment instructions.
+This implementation was **not deployed to AWS EC2**. CA2’s matched-vCPU cloud campaign remains outstanding.
 
-**Brief overview:**
-1. Launch 2-3 EC2 instances (e.g., t3.xlarge) in same VPC
-2. Install dependencies on each instance
-3. Start Dask scheduler on one instance, workers on others
-4. Run: `python src/main.py --mode distributed --scheduler-address tcp://[scheduler-ip]:8786`
-5. Results would show true cloud network overhead
-
-**Cost estimate:** ~$1-2 for full benchmark suite on 3×t3.xlarge instances.
+**Important:** `src/main.py` does **not** expose `--scheduler-address`. Docs that previously claimed that CLI flag were incorrect for this tree.
 
 ## Development
 
