@@ -151,53 +151,13 @@ Outputs to `figures/`:
 - `communication_cost.png`: Communication overhead
 - `comparison_bar.png`: Baseline vs improved comparison
 
-## AWS Deployment (Optional)
+## Cloud / container deployment (not executed)
 
-**Note:** Current implementation focuses on local simulation. AWS deployment code is provided but not tested on live infrastructure.
+**Honesty:** Evaluation is **local simulation only**.
 
-### Prerequisites
-
-- AWS account with appropriate credentials
-- AWS CLI configured
-- Docker installed
-
-### Setup
-
-1. Configure AWS credentials:
-```bash
-export AWS_ACCESS_KEY_ID=your_key
-export AWS_SECRET_ACCESS_KEY=your_secret
-export AWS_DEFAULT_REGION=us-east-1
-```
-
-2. Deploy (experimental):
-```bash
-# Build Docker images
-docker-compose build
-
-# Deploy to ECS (not yet implemented)
-# aws ecs create-cluster --cluster-name securefl-ids
-```
-
-## Kubernetes Deployment (Experimental)
-
-**Note:** K8s deployment is experimental and requires additional configuration.
-
-### Prerequisites
-
-- Kubernetes cluster (minikube/kind for local)
-- kubectl configured
-- Helm (optional)
-
-### Deploy
-
-```bash
-# Create namespace
-kubectl create namespace securefl-ids
-
-# Deploy (Helm chart not yet provided)
-# helm install securefl-ids ./helm/
-```
+- No Docker Compose or Helm chart is committed in this repository.
+- `terraform/` under `securefl-ids/` exists as a research IaC scaffold but has **not** been applied (`terraform apply` forbidden until the alignment-first gate).
+- Do not treat ECS / Kubernetes / Docker steps as available or tested.
 
 ## Troubleshooting
 

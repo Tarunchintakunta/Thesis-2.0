@@ -34,7 +34,9 @@ def test_six_configurations_from_three_designs_and_two_modes():
 
 def test_every_resource_is_tagged_through_default_tags():
     t = text("main.tf")
-    assert 'project = "dynamodb-pk-capacity"' in t and 'student = "24205478"' in t
+    assert 'project = "dynamodb-pk-capacity"' in t
+    assert 'managed_by = "terraform"' in t
+    assert "student" not in t  # no student name/ID in Terraform tags
     assert "default_tags" in t
 
 

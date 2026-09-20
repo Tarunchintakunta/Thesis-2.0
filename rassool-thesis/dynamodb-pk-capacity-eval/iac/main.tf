@@ -1,6 +1,6 @@
 # Six DynamoDB tables (3 key designs x 2 capacity modes), the load-generator
 # Lambda, its IAM role, a results bucket and the monitoring. Everything carries
-# the project / student tags. `terraform destroy` removes all of it.
+# project tags only (no personal name/ID). `terraform destroy` removes all of it.
 
 provider "aws" {
   region = var.region
@@ -12,8 +12,10 @@ provider "aws" {
 
 locals {
   tags = {
-    project = "dynamodb-pk-capacity"
-    student = "24205478"
+    project    = "dynamodb-pk-capacity"
+    managed_by = "terraform"
+    purpose    = "research-eval"
+    data       = "synthetic"
   }
 
   designs = {

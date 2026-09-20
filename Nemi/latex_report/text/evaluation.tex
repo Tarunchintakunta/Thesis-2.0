@@ -1,13 +1,13 @@
 \section{Evaluation}
 \label{sec:evaluation}
 
-This section presents experimental results comparing the baseline PP-FL-DP-IDS implementation with the enhanced SecureFL-IDS framework across detection performance, communication efficiency, and convergence characteristics.
+This section reports \textbf{committed proof-of-concept results only}. All numeric claims below match \texttt{results/comparison/results.json} unless explicitly labelled as baseline-paper reference or future work. No Docker, Kubernetes, or live AWS campaign was executed.
 
 \subsection{Experimental Results}
 
 \subsubsection{Detection Performance}
 
-Table~\ref{tab:detection_results} presents the actual experimental results from 30-round training on synthetic UNSW-NB15-derived data.
+Table~\ref{tab:detection_results} presents the actual experimental results from 30-round training on synthetic UNSW-NB15-derived data (5 federated clients, local multi-process simulation).
 
 \begin{table}[h]
 \centering
@@ -20,35 +20,21 @@ F1-Score & 0.0190 & 0.0000 \\
 Avg Comm (MB/round) & 1.83 & 3.12 \\
 \bottomrule
 \end{tabular}
-\caption{Actual results from proof-of-concept implementation (synthetic data, 30 rounds, 5 clients)}
+\caption{Committed PoC results (synthetic data, 30 rounds, 5 clients; source: \texttt{results/comparison/results.json})}
 \label{tab:detection_results}
 \end{table}
 
-\textbf{Important Note on Results:}
-
-The low F1-scores in Table~\ref{tab:detection_results} reflect limitations of the proof-of-concept implementation rather than the methodology:
+\textbf{Honest interpretation:}
 
 \begin{itemize}
-    \item \textbf{Synthetic Dataset:} Simplified 20-feature representation versus full 49-feature UNSW-NB15
-    \item \textbf{Limited Training:} 30 rounds with 10K samples versus recommended 50+ rounds with 2.5M samples
-    \item \textbf{Class Imbalance:} Models converged to majority-class prediction without proper balancing techniques
+    \item Accuracy is $\approx 0.793$--$0.800$; the improved variant does \emph{not} demonstrate a large accuracy win on this PoC.
+    \item F1-scores are near zero (baseline $\approx 0.019$, improved $0.0$), consistent with majority-class prediction on a simplified synthetic feature space.
+    \item These figures must not be restated as 91--94\% accuracy or $\sim$90\% F1; those values belong to the Saklani et al.\ baseline paper on full UNSW-NB15, not to this artefact's committed run.
 \end{itemize}
 
-\textbf{Expected Results with Full Dataset:}
-
-Based on the baseline paper \citep{saklani2026privacy} achieving 91.8\% accuracy and our methodology enhancements:
-
-\begin{itemize}
-    \item \textbf{Baseline (Expected):} 91-92\% accuracy, 90-91\% F1-score
-    \item \textbf{SecureFL-IDS (Expected):} 93-94\% accuracy, 92-93\% F1-score
-    \item \textbf{Improvements:} +2-3\% detection metrics, 40-50\% communication reduction
-\end{itemize}
-
-The committed implementation successfully demonstrates the framework architecture, privacy mechanisms, and communication efficiency. Production deployment would require the full UNSW-NB15 dataset, extended training, and hyperparameter tuning.
+\textbf{Baseline-paper reference (not this PoC):} \citet{saklani2026privacy} report $\approx 91.8\%$ accuracy on full UNSW-NB15. Reaching comparable numbers would require the full feature set, larger samples, longer training, and class balancing---none of which are evidenced by the committed \texttt{results.json}.
 
 \subsubsection{Communication Efficiency}
-
-Communication cost measurements from actual experiments (Table~\ref{tab:communication_results}) demonstrate the framework's parameter transmission characteristics.
 
 \begin{table}[h]
 \centering
@@ -57,215 +43,49 @@ Communication cost measurements from actual experiments (Table~\ref{tab:communic
 \textbf{Metric} & \textbf{Baseline} & \textbf{SecureFL-IDS} \\
 \midrule
 Avg Cost/Round (MB) & 1.83 & 3.12 \\
-Total Cost (30 rounds) & 54.9 & 93.6 \\
+Total Cost (30 rounds) & 54.8 & 93.5 \\
 \bottomrule
 \end{tabular}
-\caption{Communication cost from actual 30-round experiments}
+\caption{Communication cost from the committed 30-round PoC}
 \label{tab:communication_results}
 \end{table}
 
-\textbf{Observation:}
+\textbf{Observation:} The improved CNN-LSTM model transmits \emph{more} bytes per round than the baseline CNN in this PoC. A $-45\%$ communication reduction is \textbf{not} achieved in the committed results; compression exists in code but is offset by larger model size. Any $-40$--$50\%$ target is aspirational pending tuning on full data.
 
-The improved model shows \textit{higher} communication cost due to the larger CNN-LSTM architecture versus baseline CNN. The compression mechanism is functional but offset by increased model size.
+\subsubsection{Convergence}
 
-\textbf{Expected Optimization with Tuning:}
+Both arms ran for a fixed $30$ rounds in the PoC. Claims of ``$93\%$ by round 35'' or ``$30\%$ faster convergence'' are \textbf{not} supported by \texttt{results.json} and are omitted.
 
-With proper compression parameter tuning and architecture optimization:
-\begin{itemize}
-    \item Target: 40-50\% reduction versus uncompressed transmission
-    \item Requires: Compression ratio adjustment, gradient quantization
-    \item Trade-off: Communication efficiency versus model capacity
-\end{itemize}
-
-The committed code implements the compression mechanism correctly; production deployment would tune these parameters based on bandwidth constraints and accuracy requirements.
-
-\subsubsection{Convergence Analysis}
-
-Figure~\ref{fig:convergence} would show accuracy and F1-score progression over federated rounds (placeholder for actual figure generation).
-
-\textbf{Convergence Characteristics:}
+\subsection{What was not evaluated}
 
 \begin{itemize}
-    \item Baseline: Reaches 91\% accuracy by round 50
-    \item SecureFL-IDS: Reaches 93\% accuracy by round 35
-    \item 30\% faster convergence (35 vs 50 rounds to stable performance)
+    \item Privacy--utility sweep tables with fabricated $\epsilon$ rows (not in committed results)
+    \item Ablation / scalability tables citing $0.937$ accuracy (not in committed results)
+    \item Statistical significance tests on the PoC (not committed)
+    \item Centralised IDS comparator
+    \item Live AWS, Docker Compose, or Kubernetes deployments (Terraform scaffold present under \texttt{securefl-ids/terraform/} but \textbf{not applied})
 \end{itemize}
 
-Accelerated convergence is attributed to:
-\begin{enumerate}
-    \item Quality-weighted aggregation prioritizing high-quality clients
-    \item CNN-LSTM's improved gradient signals
-    \item Adaptive privacy budgets reducing excessive noise on reliable clients
-\end{enumerate}
+\subsection{Comparison with related work (positioning only)}
 
-\subsection{Privacy-Utility Trade-off}
-
-\begin{table}[h]
-\centering
-\begin{tabular}{lccc}
-\toprule
-\textbf{$\epsilon$} & \textbf{Accuracy} & \textbf{F1-Score} & \textbf{Privacy Level} \\
-\midrule
-0.5 & 0.885 & 0.872 & Very High \\
-1.0 & 0.937 & 0.931 & High \\
-2.0 & 0.951 & 0.947 & Moderate \\
-$\infty$ (No DP) & 0.964 & 0.960 & None \\
-\bottomrule
-\end{tabular}
-\caption{Privacy-utility trade-off for SecureFL-IDS}
-\label{tab:privacy_utility}
-\end{table}
-
-\textbf{Analysis:}
-
-\begin{itemize}
-    \item At $\epsilon=1.0$ (recommended), accuracy loss versus no privacy is only 2.7\%
-    \item Tighter privacy ($\epsilon=0.5$) incurs 7.9\% accuracy loss
-    \item Adaptive privacy budgets help maintain utility while ensuring strong privacy
-\end{itemize}
-
-\subsection{Statistical Significance}
-
-Independent t-test on accuracy values across 10 rounds:
-
-\begin{itemize}
-    \item $t$-statistic: 3.42
-    \item $p$-value: 0.0089
-    \item \textbf{Result:} Statistically significant at $\alpha=0.05$ level
-\end{itemize}
-
-The improvement is not due to random variation, confirming the effectiveness of the proposed enhancements.
-
-\subsection{Ablation Study}
-
-Table~\ref{tab:ablation} isolates the contribution of each enhancement.
-
-\begin{table}[h]
-\centering
-\begin{tabular}{lccc}
-\toprule
-\textbf{Configuration} & \textbf{Accuracy} & \textbf{Comm (MB)} & \textbf{Rounds} \\
-\midrule
-Baseline (Saklani et al.) & 0.912 & 1.10 & 50 \\
-+ CNN-LSTM & 0.928 & 1.10 & 45 \\
-+ Adaptive DP & 0.930 & 1.10 & 42 \\
-+ Compression & 0.930 & 0.60 & 42 \\
-All (SecureFL-IDS) & 0.937 & 0.60 & 35 \\
-\bottomrule
-\end{tabular}
-\caption{Ablation study showing individual enhancement contributions}
-\label{tab:ablation}
-\end{table}
-
-\textbf{Insights:}
-
-\begin{itemize}
-    \item CNN-LSTM provides the largest accuracy gain (+1.6\%)
-    \item Adaptive DP contributes modestly to accuracy (+0.2\%) but improves convergence
-    \item Compression reduces bandwidth without accuracy loss
-    \item Combined effects yield 2.5\% total accuracy improvement
-\end{itemize}
-
-\subsection{Comparison with Related Work}
-
-Table~\ref{tab:related_comparison} positions SecureFL-IDS relative to recent federated IDS research.
-
-\begin{table}[h]
-\centering
-\begin{tabular}{lcccc}
-\toprule
-\textbf{Approach} & \textbf{Accuracy} & \textbf{Privacy} & \textbf{Comm Eff.} & \textbf{Dataset} \\
-\midrule
-Verma \& Jailia (2025) & 99.52\% & No & No & Custom \\
-Nellutla et al. (2025) & 92.3\% & No & Yes (34\%) & CIC-IDS \\
-Pr \& Benitta (2026) & 96.3\% & No & No & Custom \\
-Saklani et al. (2026) & 91.8\% & Yes (DP) & No & UNSW-NB15 \\
-\textbf{SecureFL-IDS} & \textbf{93.7\%} & \textbf{Yes (DP)} & \textbf{Yes (45\%)} & \textbf{UNSW-NB15} \\
-\bottomrule
-\end{tabular}
-\caption{Comparison with related federated IDS approaches}
-\label{tab:related_comparison}
-\end{table}
-
-\textbf{Positioning:}
-
-SecureFL-IDS is the first approach to simultaneously provide:
-\begin{enumerate}
-    \item Strong privacy guarantees (differential privacy)
-    \item Significant communication efficiency (45\% reduction)
-    \item Competitive detection accuracy (93.7\%)
-    \item Evaluation on standard benchmark (UNSW-NB15)
-\end{enumerate}
-
-\subsection{Scalability Analysis}
-
-\begin{table}[h]
-\centering
-\begin{tabular}{lcccc}
-\toprule
-\textbf{Clients} & \textbf{Round Time (s)} & \textbf{Accuracy} & \textbf{Comm/Round (MB)} \\
-\midrule
-3 & 0.25 & 0.937 & 0.60 \\
-5 & 0.38 & 0.935 & 1.00 \\
-10 & 0.72 & 0.931 & 2.00 \\
-20 & 1.45 & 0.928 & 4.00 \\
-\bottomrule
-\end{tabular}
-\caption{Scalability with increasing number of clients (SecureFL-IDS)}
-\label{tab:scalability}
-\end{table}
-
-\textbf{Observations:}
-
-\begin{itemize}
-    \item Round time scales approximately linearly with client count
-    \item Accuracy degrades slightly (<1\%) with more clients due to increased heterogeneity
-    \item Communication cost per round scales linearly
-    \item System remains practical up to 20+ clients on standard hardware
-\end{itemize}
+Related federated IDS papers (including Saklani et al.) report higher accuracy on full benchmarks. This PoC does \textbf{not} claim to outperform them numerically. SecureFL-IDS is positioned as an FL+DP artefact with adaptive privacy and compression \emph{hooks}, evaluated honestly on synthetic local simulation.
 
 \subsection{Limitations}
 
-\textbf{Experimental Limitations:}
-
 \begin{itemize}
-    \item Local simulation only; no evaluation on distributed cloud infrastructure
-    \item Synthetic dataset sample when full UNSW-NB15 unavailable
-    \item Binary classification only (normal vs attack); multi-class extension left for future work
-    \item Honest-but-curious threat model; no Byzantine resilience evaluation
+    \item Local simulation only; no distributed cloud evaluation
+    \item Synthetic dataset (20 features / limited samples) when full UNSW-NB15 unavailable
+    \item Binary classification; near-zero F1 under class imbalance
+    \item Honest-but-curious threat model only
+    \item Terraform exists but was not applied; no production AWS claim
 \end{itemize}
 
-\textbf{Performance Limitations:}
+\subsection{Threats to validity}
 
 \begin{itemize}
-    \item CNN-LSTM increases training time by ~15\% per round versus baseline CNN
-    \item Privacy noise still causes ~2-3\% accuracy loss versus centralized non-private baseline
-    \item Top-k compression effectiveness depends on gradient distribution (may vary across datasets)
+    \item Single PoC configuration; not multi-seed averaged
+    \item Simulated non-IID may not match real tenant heterogeneity
+    \item Local timing does not capture network latency or orchestration overhead
 \end{itemize}
 
-\subsection{Threats to Validity}
-
-\textbf{Internal Validity:}
-
-\begin{itemize}
-    \item Single random seed per configuration (should ideally average over multiple seeds)
-    \item Simulated non-IID distribution may not perfectly match real cloud tenant heterogeneity
-    \item Pilot experiments use smaller samples for speed; full-scale results may differ
-\end{itemize}
-
-\textbf{External Validity:}
-
-\begin{itemize}
-    \item Evaluation on one dataset (UNSW-NB15); generalization to other IDS benchmarks (CIC-IDS2017, TON\_IoT) requires validation
-    \item Local simulation may not capture network latency, packet loss, and other real-world factors
-    \item Results may not generalize to other federated learning applications beyond intrusion detection
-\end{itemize}
-
-\textbf{Construct Validity:}
-
-\begin{itemize}
-    \item Accuracy and F1-score as primary metrics; other metrics (detection latency, false alarm rate) also important in production
-    \item Data quality score uses entropy-based approximation; other quality measures may yield different results
-\end{itemize}
-
-Despite these limitations, the controlled experimental design provides strong evidence for the effectiveness of the proposed enhancements in the evaluated scenarios.
+The controlled PoC validates that the implementation runs and emits metrics; it does \textbf{not} establish production-grade detection performance or cloud-native deployment readiness.

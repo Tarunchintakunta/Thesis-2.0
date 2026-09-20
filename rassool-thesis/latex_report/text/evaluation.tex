@@ -129,8 +129,8 @@ The simulation successfully validates:
     \item \textbf{Zipfian distribution:} Kolmogorov-Smirnov test confirms that sampled keys match the target Zipfian distribution (p = [MOTO SIM: 0.42] $>$ 0.05).
     \item \textbf{K3 scatter-gather:} K3 read operations correctly query all 10 shards and return merged results (validated by unit tests).
     \item \textbf{Metrics collection:} Per-operation latency, throttle counts, and consumed capacity are correctly recorded and aggregated.
-    \item \textbf{Cost modelling:} Cost calculations correctly apply \texttt{eu-west-1} pricing to consumed RCU/WCU (validated against AWS Cost Explorer in pilot study).
-    \item \textbf{Statistical analysis:} ANOVA, post-hoc tests, and visualisations execute without errors and produce interpretable output.
+    \item \textbf{Cost modelling:} Cost calculations apply \texttt{eu-west-1} list prices from \texttt{config/prices.yaml} to consumed RCU/WCU in the analysis code. This is \textbf{not} a live AWS Cost Explorer cross-check; no Cost Explorer export is committed.
+    \item \textbf{Statistical analysis:} ANOVA, post-hoc tests, and visualisations execute without errors on simulation fixtures and produce interpretable output.
 \end{enumerate}
 
-The artefact is ready for deployment to production AWS infrastructure.
+The artefact is designed for later live AWS deployment under the alignment-first gate; moto validation alone does \textbf{not} constitute production DynamoDB evidence.

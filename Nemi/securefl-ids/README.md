@@ -79,7 +79,7 @@ securefl-ids/
 - **Dataset:** UNSW-NB15 (subset included; full dataset download script provided)
 - **Local Simulation:** Multi-process simulation of federated clients (no AWS required)
 - **Privacy:** Opacus library for differential privacy
-- **Deployment:** Docker-ready (docker-compose for multi-client simulation)
+- **Deployment:** Local multi-process simulation only (no Docker/K8s/AWS executed)
 
 ## Experiments
 
@@ -116,7 +116,7 @@ All experiments run locally by default:
 
 ⚠️ **Note**: Low F1-scores due to synthetic dataset limitations. See `RESULTS_NOTE.md` for details.
 
-### Expected Results (Full UNSW-NB15)
+### Baseline-paper reference (NOT this PoC — full UNSW-NB15 not run)
 
 Based on baseline paper (Saklani et al. 2026) and methodology:
 
@@ -149,10 +149,10 @@ Tests include:
 
 ## Deployment Notes
 
-- **Local Simulation (Default):** No cloud resources needed
-- **Docker:** `docker-compose up` for containerized clients
-- **AWS (Optional):** See `docs/CONFIGURATION_MANUAL.md` for ECS deployment
-- **Kubernetes:** Helm chart provided for K8s deployment (experimental)
+- **Local Simulation (Default / only executed):** No cloud resources needed
+- **Docker / Kubernetes / Helm:** Not present in this repo; do not claim container or K8s deployment
+- **AWS:** Not deployed. Terraform scaffold at `terraform/` exists but has **not** been applied
+- See `STATUS.md` and `RESULTS_NOTE.md` for honest PoC metrics (acc ~0.793/0.800, F1 near 0)
 
 ## Privacy Guarantees
 
@@ -163,7 +163,7 @@ Tests include:
 ## Limitations and Future Work
 
 - Current implementation: Honest-but-curious threat model (no Byzantine resilience)
-- Local simulation only (AWS deployment code provided but not tested on live infrastructure)
+- Local simulation only; Terraform at `terraform/` exists but is not applied; no Docker/K8s
 - Binary/limited multi-class classification (could extend to zero-day detection)
 - No concept drift handling (future: continuous learning mechanisms)
 

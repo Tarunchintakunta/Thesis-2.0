@@ -6,16 +6,16 @@
 This research presented SecureFL-IDS, a privacy-preserving federated intrusion detection framework for cloud-native environments. The work makes four primary contributions:
 
 \begin{enumerate}
-    \item \textbf{Baseline Replication:} Faithful implementation of the PP-FL-DP-IDS approach by \citet{saklani2026privacy}, achieving 91.2\% accuracy and establishing a reproducible baseline for comparison.
+    \item \textbf{Baseline Replication:} Implementation of the PP-FL-DP-IDS approach by \citet{saklani2026privacy} as a local federated simulation baseline.
     
-    \item \textbf{Enhanced Framework:} SecureFL-IDS introduces adaptive differential privacy, communication-efficient aggregation via top-k compression, and CNN-LSTM hybrid architecture, improving accuracy to 93.7\% (+2.5\%), reducing communication costs by 45.2\%, and accelerating convergence by 30\%.
+    \item \textbf{Enhanced Framework:} SecureFL-IDS adds adaptive differential privacy, top-k compression hooks, and a CNN-LSTM hybrid architecture in code. These enhancements are \emph{implemented}; their benefit is \textbf{not} demonstrated as literature-level 93.7\% accuracy / $-45\%$ communication wins on the committed PoC.
     
-    \item \textbf{Comprehensive Evaluation:} Systematic experimental analysis on the UNSW-NB15 benchmark under realistic non-IID data distribution, demonstrating statistically significant improvements across detection performance, privacy preservation, and resource efficiency.
+    \item \textbf{Honest PoC Evaluation:} Committed results (\texttt{results/comparison/results.json}): baseline accuracy $0.793$ (F1 $\approx 0.019$) vs improved accuracy $0.800$ (F1 $0.0$); communication $1.83$ vs $3.12$~MB/round on synthetic data.
     
-    \item \textbf{Open-Source Artefact:} Complete implementation with modular codebase, local simulation environment, unit tests, experiment scripts, and deployment templates for reproducibility and practical deployment.
+    \item \textbf{Open-Source Artefact:} Modular codebase, local simulation, tests, and a Terraform scaffold (\texttt{securefl-ids/terraform/}) that has \textbf{not} been applied. No Docker/Kubernetes/live-AWS execution is claimed.
 \end{enumerate}
 
-\subsection{Research Question Answered}
+\subsection{Research Question Answered (within PoC scope)}
 
 The primary research question asked:
 
@@ -23,103 +23,33 @@ The primary research question asked:
 \textit{What is the effect of combining Federated Learning with Differential Privacy and communication-efficient aggregation on the accuracy, privacy preservation, and resource efficiency of cloud-native intrusion detection systems?}
 \end{quote}
 
-The experimental results provide a clear answer:
+Within the committed PoC:
 
 \begin{itemize}
-    \item \textbf{Accuracy:} Adaptive privacy and enhanced neural architectures improve detection accuracy by 2.5\% without compromising privacy guarantees.
-    
-    \item \textbf{Privacy:} ($\epsilon=1.0$, $\delta=10^{-5}$)-differential privacy provides strong protection against membership inference attacks with only ~2-3\% accuracy cost.
-    
-    \item \textbf{Communication Efficiency:} Top-k gradient compression reduces bandwidth by 45\% while maintaining detection performance, making federated IDS practical for bandwidth-constrained cloud-edge scenarios.
-    
-    \item \textbf{Convergence:} Quality-weighted aggregation accelerates convergence by 30\%, reducing training time and enabling faster adaptation to evolving threats.
+    \item \textbf{Accuracy:} Marginal change ($0.793 \rightarrow 0.800$) on synthetic data; not a validated $+2.5\%$ production claim.
+    \item \textbf{F1:} Near zero for both arms---models fail to separate the minority (attack) class under the synthetic setup.
+    \item \textbf{Communication:} Improved arm used \emph{more} MB/round; the $-45\%$ efficiency claim is unsupported by \texttt{results.json}.
+    \item \textbf{Deployment:} Local simulation only; cloud-native orchestration not evaluated.
 \end{itemize}
 
-SecureFL-IDS demonstrates that federated learning can effectively address the privacy-utility-efficiency trilemma in cloud-native intrusion detection.
+###{Implications for Practice}
 
-\subsection{Implications for Practice}
-
-\textbf{For Cloud Security Practitioners:}
-
-\begin{itemize}
-    \item Federated learning enables multi-tenant threat detection without violating data sovereignty requirements
-    \item Differential privacy provides formal privacy guarantees suitable for regulatory compliance (e.g., GDPR)
-    \item Communication-efficient aggregation makes federated IDS feasible for geographically distributed deployments
-    \item Open-source implementation facilitates rapid adoption and customization
-\end{itemize}
-
-\textbf{For Cloud Infrastructure Providers:}
-
-\begin{itemize}
-    \item SecureFL-IDS can be integrated into cloud security services (AWS GuardDuty, Azure Sentinel) to enable privacy-preserving collaborative threat intelligence
-    \item Container orchestration (Kubernetes) simplifies deployment and scaling
-    \item Modular design supports integration with existing monitoring pipelines
-\end{itemize}
+Practitioners should treat this artefact as a research prototype: FL+DP plumbing exists, but detection quality and communication efficiency must be re-measured on full UNSW-NB15 (or equivalent) before any production integration narrative (including AWS GuardDuty-style services or Kubernetes orchestration).
 
 \subsection{Limitations and Constraints}
 
-This research has several limitations that should be acknowledged:
-
 \begin{enumerate}
-    \item \textbf{Evaluation Scope:} Experiments use local simulation on a single dataset (UNSW-NB15). Real-world validation on distributed cloud infrastructure with multiple organizations remains future work.
-    
-    \item \textbf{Threat Model:} Assumes honest-but-curious participants without Byzantine behavior. Production deployment requires additional defenses (e.g., robust aggregation, anomaly detection).
-    
-    \item \textbf{Attack Taxonomy:} Current implementation focuses on binary classification. Extending to fine-grained multi-class attack detection (9+ categories) and zero-day threats would enhance practical utility.
-    
-    \item \textbf{Dynamic Environments:} Static federated rounds do not adapt to concept drift or evolving attack patterns. Continuous learning mechanisms are needed for long-term deployment.
-    
-    \item \textbf{Computational Overhead:} CNN-LSTM architecture increases training time by ~15\%. Resource-constrained edge devices may require model compression or quantization.
+    \item Local simulation only; Terraform present but not applied; no Docker/K8s evidence.
+    \item Synthetic data drives near-zero F1.
+    \item No centralised IDS comparator.
+    \item Honest-but-curious threat model only.
+    \item No live metered cloud campaign.
 \end{enumerate}
 
 \subsection{Future Work}
 
-Several promising directions for extending this research include:
-
-\subsubsection{Byzantine Resilience}
-
-Integrate robust aggregation methods (Krum, Trimmed Mean, median aggregation) to defend against malicious clients attempting model poisoning attacks. This would move beyond the honest-but-curious threat model to address adversarial federated learning scenarios.
-
-\subsubsection{Asynchronous Federated Learning}
-
-Implement asynchronous aggregation protocols to tolerate stragglers (slow or unreliable clients) without blocking global model updates. This improves system responsiveness and fault tolerance in dynamic cloud environments.
-
-\subsubsection{Personalized Models}
-
-Explore personalized federated learning where each client maintains a local model fine-tuned to its specific traffic patterns while still benefiting from global knowledge. This could improve detection of tenant-specific attack vectors.
-
-\subsubsection{Multi-Attack Classification}
-
-Extend from binary (normal vs attack) to multi-class classification across 9+ attack categories (DoS, Reconnaissance, Exploits, etc.). This provides finer-grained threat intelligence for incident response.
-
-\subsubsection{Zero-Day Detection}
-
-Integrate anomaly detection layers (autoencoders, isolation forests) to identify previously unseen attack patterns not present in training data. This addresses the limitation of supervised learning's reliance on labeled historical attacks.
-
-\subsubsection{Continuous Learning}
-
-Implement online learning mechanisms to adapt the federated model to concept drift and evolving attack strategies without periodic retraining from scratch. This is critical for long-term production deployment.
-
-\subsubsection{Secure Aggregation}
-
-Apply cryptographic secure aggregation protocols (e.g., secure multi-party computation) to provide information-theoretic privacy guarantees beyond differential privacy's probabilistic protection. This addresses sophisticated gradient inversion attacks.
-
-\subsubsection{Cross-Dataset Evaluation}
-
-Validate SecureFL-IDS on additional IDS benchmarks (CIC-IDS2017, TON\_IoT, Edge-IIoTset) to assess generalization across different network environments and attack distributions.
-
-\subsubsection{Real-World Deployment}
-
-Pilot SecureFL-IDS with actual cloud providers or enterprises to evaluate performance under real network conditions, operational constraints, and regulatory requirements.
-
-\subsubsection{Explainability}
-
-Integrate explainable AI techniques (SHAP, LIME, attention mechanisms) to provide interpretable detection decisions, crucial for security analysts investigating flagged traffic.
+Full UNSW-NB15 training, centralised baseline, multi-class detection, Byzantine-robust aggregation, and---only after the alignment-first gate---optional live AWS evaluation using the existing Terraform scaffold.
 
 \subsection{Closing Remarks}
 
-Cloud-native computing has revolutionized application deployment but introduced new security challenges that traditional centralized defenses struggle to address. This research demonstrates that federated learning with differential privacy and communication optimization can provide an effective solution, enabling collaborative intrusion detection that respects data privacy, scales to distributed infrastructures, and achieves competitive detection performance.
-
-SecureFL-IDS represents a step toward practical privacy-preserving security systems for cloud environments. The open-source implementation and comprehensive evaluation provide a foundation for future research and real-world deployment. As cloud adoption continues to accelerate and privacy regulations tighten, federated learning approaches like SecureFL-IDS will become increasingly critical for securing modern distributed systems while respecting data sovereignty and user privacy.
-
-The code, datasets, experiment configurations, and results are publicly available at: \texttt{https://github.com/Tarunchintakunta/Thesis-2.0/tree/main/Nemi} to facilitate reproducibility, extension, and practical adoption.
+SecureFL-IDS contributes a reproducible FL+DP IDS codebase and an honest PoC. Claimed metrics match committed results; inflated accuracy/F1/communication and Docker/K8s/AWS production claims are deliberately excluded. CA2 alignment remains incomplete pending fuller experiments and (if required) live cloud evaluation.

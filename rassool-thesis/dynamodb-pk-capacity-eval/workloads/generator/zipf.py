@@ -38,7 +38,7 @@ def calibrate(n: int, frac: float = 0.10, target: float = 0.90, lo: float = 0.3,
 
 
 class Zipf:
-    def __init__(self, n: int, s: float, perm_seed: int = 24205478):
+    def __init__(self, n: int, s: float, perm_seed: int = 20250920):
         self.n = int(n)
         self.s = float(s)
         self.cdf = _cdf(self.n, self.s)

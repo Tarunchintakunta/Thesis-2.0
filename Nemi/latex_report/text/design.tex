@@ -180,24 +180,9 @@ Default mode for development and evaluation:
     \item Deterministic for reproducibility
 \end{itemize}
 
-\subsubsection{Containerized Deployment}
+\subsubsection{Future deployment modes (not executed)}
 
-Docker Compose configuration:
-\begin{itemize}
-    \item Separate container per client + server
-    \item gRPC or REST API for parameter exchange
-    \item Persistent volume for model checkpoints
-\end{itemize}
-
-\subsubsection{Cloud Deployment}
-
-AWS ECS or Kubernetes:
-\begin{itemize}
-    \item Clients as ECS tasks / K8s pods
-    \item Server as central service with load balancer
-    \item S3 / persistent volumes for model storage
-    \item CloudWatch / Prometheus for monitoring
-\end{itemize}
+No Docker Compose file, Helm chart, or live AWS deployment was executed for this evaluation. A Terraform scaffold exists under \texttt{securefl-ids/terraform/} but has \textbf{not} been applied. Any container or cloud orchestration remains future work after the alignment-first gate.
 
 \subsection{Security Considerations}
 

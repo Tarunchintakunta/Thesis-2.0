@@ -23,5 +23,17 @@
 ## Iteration log
 1. **2026-09-20 — Nemi claims hygiene + DOI notes.** AWS not started.  
 2. **2026-09-20 — Baseline CA2-fit audit;** Varun→SkyStore; Halfmoon PDF fixed; all BASELINE_PAPER.md expanded.  
+<<<<<<< HEAD
 3. **2026-09-20 — Exploration gate closed (Venkat DONE).** Alignment-first gate still open. Anji/Venkat/Yashaswini claim hygiene agents running. Rasool eval softened (no “ready for production” claim).  
 4. **2026-09-20 — Varun LaTeX rewritten** (removed spam boilerplate; abstract/related/eval honest dry-run; SkyStore primary). Mehak/Pooja STATUS no longer claim research 100%/SUBMIT-READY for CA2.
+=======
+3. **2026-09-20 — Exploration gate closed (Venkat DONE).** Alignment-first gate still open.  
+4. **2026-09-20 — Varun LaTeX rewritten**; Mehak/Pooja STATUS honesty.  
+5. **2026-09-20 — Venkat/Anji/Yashaswini claim↔evidence fixes.**  
+6. **2026-09-20 — Terraform for all 8 AWS-goal theses**; no personal IDs in `.tf` (`TERRAFORM_POLICY.md`).  
+7. **2026-09-20 — Exploration gate file restored (all 8 DONE).** Claim hygiene agents: Venkat DOI/AWS-residual, Chaitanya+Vikas, Nemi+Rasool. AWS creds present but **apply not started**.
+8. **2026-09-20 — Venkat READY_FOR_AWS_ALIGNMENT_PATH=yes** (`venkat_AWS_RESIDUAL.md`). Still NOT COMPLETE until live EC2 evidence.
+9. **2026-09-20 — Nemi + Rasool claim hygiene (this pass).** Nemi: PoC metrics locked; no Docker/K8s/AWS/production overclaims; TF not applied. Rasool: K4 dominance quarantined; Cost Explorer pilot claim removed; STATUS <100%; iac tags already project-only. AWS **not** started.
+10. **2026-09-20 — Chaitanya+Vikas claim hygiene.** Eval/STATUS honesty; ROI/ADOPT not measured; P4 quarantined; full campaign empty called out. No AWS deploy.
+9. **2026-09-20 — Venkat DOI+AWS residual merged from agent onto feature branch.** READY_FOR_AWS=yes; NOT COMPLETE.
+>>>>>>> 8532d9c (fix(nemi,rasool): raise CA2 claim hygiene without AWS deploy)

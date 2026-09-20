@@ -65,20 +65,14 @@ This research makes the following contributions to the field of privacy-preservi
         \item Quality-weighted aggregation considering client data characteristics
     \end{itemize}
     
-    \item \textbf{Comprehensive Evaluation:} Quantitative analysis demonstrating that SecureFL-IDS achieves:
-    \begin{itemize}
-        \item 2.5\% improvement in accuracy (93.7\% vs 91.2\%)
-        \item 45.2\% reduction in communication cost per round
-        \item 30\% faster convergence (35 vs 50 rounds)
-    \end{itemize}
+    \item \textbf{Proof-of-concept Evaluation:} Committed local PoC results (\texttt{results/comparison/results.json}) on synthetic data: baseline accuracy $0.793$ (F1 $\approx 0.019$) versus improved accuracy $0.800$ (F1 $0.0$); communication $1.83$ vs $3.12$~MB/round. Near-zero F1 and higher improved communication cost are reported honestly; literature-level 91--94\% figures are \emph{not} claimed as achieved here.
     
-    \item \textbf{Open-Source Artefact:} A complete, documented implementation including:
+    \item \textbf{Open-Source Artefact:} A documented implementation including:
     \begin{itemize}
         \item Modular Python codebase with baseline and improved variants
-        \item Local simulation environment requiring no cloud resources
-        \item Unit and integration test suite
-        \item Experimental configurations and reproducibility instructions
-        \item Docker and Kubernetes deployment templates
+        \item Local multi-process simulation (the only executed evaluation mode)
+        \item Unit tests and experiment scripts
+        \item Terraform scaffold under \texttt{securefl-ids/terraform/} (\textbf{not applied}; no live AWS/Docker/K8s claim)
     \end{itemize}
 \end{enumerate}
 

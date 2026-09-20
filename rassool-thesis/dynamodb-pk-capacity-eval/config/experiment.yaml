@@ -1,7 +1,7 @@
 # Factorial design - committed values from the master prompt (section 2).
 # Changing anything here after the pilot needs a dated amendment in docs/ANALYSIS_PLAN.md.
 project: dynamodb-pk-capacity
-student_id: "24205478"
+run_label: "ddbpk-eval"
 region: eu-west-1
 table_prefix: ddbpk              # tables are ddbpk-<k1|k2|k3>-<ondemand|provisioned>
 
@@ -21,7 +21,7 @@ dataset:
 
 zipf:
   s: 1.070916                    # calibrated: hottest 10% of 1,000,000 keys get 90% of ops (top 1% get 78%)
-  perm_seed: 24205478
+  perm_seed: 20250920
 
 k3_shards: 10                    # N for the write-sharded key
 
@@ -40,7 +40,7 @@ driver:
 
 schedule:
   blocks: 30                     # every block runs all 24 cells once in a new random order
-  seed: 24205478
+  seed: 20250920
 
 sensitivity:                     # item size, not part of the factorial
   item_sizes_kb: [1, 8, 32]

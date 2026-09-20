@@ -168,7 +168,7 @@ def _write_raw(rows, event: dict) -> str | None:
 def lambda_handler(event: dict, context=None) -> dict:
     global _COLD
     cold, _COLD = _COLD, False
-    z = _zipf(int(event.get("orders", keys.N_ORDERS)), float(event["zipf_s"]), int(event.get("perm_seed", 24205478)))
+    z = _zipf(int(event.get("orders", keys.N_ORDERS)), float(event["zipf_s"]), int(event.get("perm_seed", 20250920)))
     threads = int(event.get("threads", 32))
     client = make_client(threads, event.get("endpoint_url"))
     if event.get("mode") == "warmup":

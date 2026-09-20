@@ -228,9 +228,9 @@ for round in range(num_rounds):
 
 **Compression Ratio:** 0.5 (keep 50% of gradients)
 
-**Savings:**
-- Baseline: ~1.1 MB/round
-- Improved: ~0.6 MB/round (~45% reduction)
+**PoC communication (committed results.json):**
+- Baseline: ~1.83 MB/round
+- Improved: ~3.12 MB/round (higher than baseline; −45% not achieved on PoC)
 
 ## Non-IID Data Distribution
 
@@ -274,18 +274,10 @@ Where α controls heterogeneity:
 - No network overhead
 - Fast iteration
 
-### Containerized (Docker Compose)
+### Container / cloud (not executed)
 
-- Each client in separate container
-- Network simulation via Docker networking
-- Closer to real deployment
-
-### Cloud Deployment (AWS/Kubernetes)
-
-- Clients as ECS tasks or K8s pods
-- Central aggregator service
-- S3 for model storage
-- CloudWatch for monitoring
+- No Docker Compose / Helm / live AWS run in this PoC
+- Terraform scaffold at `../terraform/` exists but is **not applied**
 
 ## Security Considerations
 
@@ -317,19 +309,11 @@ For ε=1.0, δ=1e-5:
 
 ## Performance Characteristics
 
-### Baseline (Saklani et al. 2026)
+### Committed PoC (`results/comparison/results.json`)
 
-- Accuracy: ~91%
-- F1-Score: ~90%
-- Communication: ~1.1 MB/round
-- Convergence: ~50 rounds
-
-### Improved (SecureFL-IDS)
-
-- Accuracy: ~93% (+2%)
-- F1-Score: ~92% (+2%)
-- Communication: ~0.6 MB/round (-45%)
-- Convergence: ~35 rounds (-30%)
+- Baseline: accuracy 0.793, F1 ≈ 0.019, ~1.83 MB/round
+- Improved: accuracy 0.800, F1 0.0, ~3.12 MB/round
+- Literature ~91–94% figures are **not** this PoC
 
 ## Future Enhancements
 

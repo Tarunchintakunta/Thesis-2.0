@@ -17,21 +17,17 @@ The committed results in `results/` and `figures/` are from **real local experim
 2. **Limited training**: 30 rounds with small sample (10K samples vs 2.5M in full dataset)
 3. **Class imbalance**: 80/20 normal/attack distribution
 
-## Expected Results with Real UNSW-NB15
+## Baseline-paper reference (NOT this PoC)
 
-Based on the baseline paper (Saklani et al. 2026) and our methodology:
+Saklani et al. (2026) report ~91.8% accuracy on full UNSW-NB15. The table below is a **literature / methodology aspiration**, not committed artefact output:
 
-| Metric | Baseline (Expected) | Improved (Expected) |
-|--------|---------------------|---------------------|
+| Metric | Baseline (paper-scale aspiration) | Improved (aspiration) |
+|--------|-----------------------------------|------------------------|
 | Accuracy | ~91-92% | ~93-94% |
 | F1-Score | ~90-91% | ~92-93% |
-| Communication | Standard | -40-50% reduction |
+| Communication | Standard | target −40-50% reduction (unsupported by PoC) |
 
-These expected values are based on:
-- Full UNSW-NB15 dataset (2.5M samples, 49 features)
-- Longer training (50+ rounds)
-- Proper feature engineering and class balancing
-- Validated by baseline paper achieving 91.8% accuracy
+Do **not** cite these as achieved SecureFL-IDS results. Achieved numbers remain accuracy ~0.793/0.800 and F1 near 0.
 
 ## Why the Difference?
 
