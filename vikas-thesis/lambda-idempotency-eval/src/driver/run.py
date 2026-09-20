@@ -133,7 +133,7 @@ def run_phase(reqs: list[dict], backend, out: Path, max_invocations: int, worker
     write_ground_truth(reqs, out / "ground_truth.jsonl")
     warm = warm_up(backend, workers, warmup_rounds)
     lock = threading.Lock()
-    fh = open(out / "deliveries.jsonl", "a", encoding="utf-8")
+    fh = open(out / "deliveries.jsonl", "a", encoding="utf-8", buffering=1)
     t_start = time.time()
     done = [0]
 
@@ -150,6 +150,7 @@ def run_phase(reqs: list[dict], backend, out: Path, max_invocations: int, worker
                    "t_start": round(t, 3)}
             with lock:
                 fh.write(json.dumps({k: row.get(k) for k in FIELDS}) + "\n")
+                fh.flush()
                 done[0] += 1
 
     try:
