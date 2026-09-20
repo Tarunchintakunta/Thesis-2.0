@@ -75,15 +75,15 @@ This research focuses narrowly on a specific deployment context to enable rigoro
 This work makes the following contributions to microservice RCA research:
 
 \begin{enumerate}
-    \item \textbf{Novel Hybrid Method:} A lightweight approach combining fast statistical detection with unsupervised ML localisation—a middle ground between pure threshold methods and supervised deep learning that prior work has not explored.
+    \item \textbf{Rule-Primary Method:} Lightweight CloudWatch 3-sigma detection + X-Ray ranking for no-history serverless settings, with an optional Isolation Forest hybrid arm evaluated as beyond-CA2 comparison code.
     
-    \item \textbf{Fair Comparison Protocol:} A three-leg evaluation framework that makes trained and untrained methods ``legible'' to one another by separating ideal-data ceilings (citations), common-data comparisons (RCAEval), and overhead measurement (live infrastructure).
+    \item \textbf{Fair Comparison Protocol:} A three-leg evaluation framework separating ideal-data ceilings (citations), common-data comparisons (RCAEval), and overhead measurement (live infrastructure).
     
-    \item \textbf{Empirical Accuracy-Overhead Positioning:} Joint reporting of detection/localisation accuracy and monitoring overhead on common terms—a dimension prior work typically omits.
+    \item \textbf{Evidence-Disciplined Positioning:} Joint accuracy/overhead reporting with Leg~2 numbers recomputed from committed raw JSON (not invented F1-from-Top-3 shortcuts).
     
-    \item \textbf{Complete Artefact:} A production-ready AWS SAM application (Infrastructure as Code, Lambda handlers, fault injector, detector, ranker, evaluator) that is fully tested, deployable, and reproducible.
+    \item \textbf{Deployable Artefact:} An AWS SAM application (IaC, handlers, injector, detector, ranker, evaluator) that is tested and documented for third-party Leg~3.
     
-    \item \textbf{Verified Bibliography:} 24 verified sources (DOI/URL confirmed, 2022-2026) providing comprehensive coverage of deep learning RCA, causal inference methods, training-free detection, benchmarks, and AWS observability.
+    \item \textbf{Verified Bibliography:} Sources with DOI \texttt{note=\{doi: \ldots\}} fields meeting the Moodle DOI rule, covering deep RCA, causal methods, training-free detection, benchmarks, and AWS observability.
 \end{enumerate}
 
 \section{Report Structure}
@@ -104,4 +104,4 @@ The remainder of this report is organised as follows:
     \item \textbf{Chapter 7 (Conclusions and Future Work):} Summary of findings, confidence assessment, implications for research and practice, and directions for future investigation.
 \end{itemize}
 
-This research ultimately demonstrates that newly deployed serverless microservices can achieve competitive fault detection and localisation without the training data and computational resources required by state-of-the-art deep learning methods, at a monitoring cost that is practically sustainable.
+Committed Leg~2 evidence does not yet support a within-10\,pp competitiveness claim; live AWS Leg~3 remains required for the overhead half of the CA2 decision rule.
