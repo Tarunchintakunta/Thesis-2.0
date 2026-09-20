@@ -42,7 +42,7 @@ The pilot tested 3 configurations (VT 30/300/900, batch 10, MRC 3, no fault) wit
 
 \subsection{Power Analysis}
 
-Pilot runs estimated effect sizes for recovery time (VT 30 vs. 900 under consumer kill): Cohen's d ≈ 3.5 (very large). Power analysis (Mann-Whitney U, α=0.05, power=0.80) indicated N=3 per group sufficient for detecting large effects. Campaigns used 5 repeats for conservatism.
+Pilot power planning (`power_from_pilot.json`) recommended 3 confirmatory repeats (plan\_repeats=5). Committed confirmatory cells in \texttt{stats\_H1\_H2\_H3.json} use $n=10$ per group.
 
 \section{Baseline Replication: Steady-State Validation}
 
@@ -84,114 +84,80 @@ The sync vs. queue arms were compared under (1) no fault and (2) consumer\_kill 
 
 All hypothesis tests used α = 0.05 and Holm-Bonferroni correction for family-wise error rate control.
 
-\subsection{H1: Message Loss}
+\subsection{H1: Message Loss (CA2 confirmatory)}
 
-\textbf{Hypothesis:} SQS queue arm with DLQ, VT ≥ 900, MRC ≥ 3 has negligible loss (< 0.1\%) vs. sync arm under faults.
+\textbf{Source of truth:} \texttt{results/summary/stats\_H1\_H2\_H3.json} and \texttt{hypotheses.md} (\texttt{backend: localsim} only).
 
-\textbf{Test:} Mann-Whitney U comparing queue arm (configs with VT ≥ 900, MRC ≥ 3, N=45 runs) vs. sync arm (N=10 runs) under each fault type.
+\textbf{Registered H1 (campaign A\_vt\_consumer\_kill):} visibility timeout has no effect on \emph{message-loss rate} under consumer failure.
 
-\textbf{Result:}
-\begin{itemize}
-    \item Queue arm: Mean loss 0.00\%, SD 0.00\% (zero in all runs).
-    \item Sync arm: Mean loss 0.18\%, SD 0.12\% (range 0.1–0.6\%).
-    \item Mann-Whitney U: p < 0.001 (raw), p < 0.003 (Holm-adjusted), rank-biserial r = 1.0 (perfect separation).
-\end{itemize}
+\textbf{Result:} Loss rate was identically 0.0 for all VT levels tested (30--600\,s; $n=10$ each). With zero variance the confirmatory test is undefined (\texttt{test: none (no variance)}; $p=1.0$, Holm-adjusted $p=1.0$).
 
-\textbf{Conclusion:} \textbf{H1 supported.} SQS configuration with DLQ and sufficient VT/MRC prevents message loss under failure. Zero loss observed across all fault types (consumer kill, unhandled error, datastore reject, datastore timeout). DLQ captures messages that fail repeatedly; redelivery ensures eventual processing.
+\textbf{Decision:} \textbf{Fail to reject H0} --- CA2 H1 as a VT$\rightarrow$loss effect is \textbf{not estimable} on this simulator campaign because the queue+DLQ arm never loses messages under the tested horizon. Zero loss is an important descriptive finding, but it is \textbf{not} the same as a supported VT-effect hypothesis. Exploratory analyses instead show VT effects on \emph{recovery time} and \emph{duplicate rate}.
 
-\subsection{H2: maxReceiveCount Independence for Transient Faults}
+\subsection{H2: maxReceiveCount and recovery time}
 
-\textbf{Hypothesis:} Recovery time after transient fault (consumer\_kill, 10s) does not differ significantly across MRC ∈ \{1, 3, 5, 10\} at VT = 30.
+\textbf{Registered H2 (campaign B\_mrc\_unhandled\_error):} retry limit (\texttt{maxReceiveCount}) has no effect on recovery time.
 
-\textbf{Test:} Kruskal-Wallis H comparing recovery time distributions for 4 MRC groups (N=5 per group).
+\textbf{Test:} Kruskal--Wallis on recovery\_time\_s across MRC $\in\{1,3,5,10\}$ ($n=10$ each).
 
-\textbf{Result:}
-\begin{itemize}
-    \item MRC 1: Median recovery 33s, IQR [31, 36]
-    \item MRC 3: Median recovery 34s, IQR [32, 35]
-    \item MRC 5: Median recovery 36s, IQR [33, 37]
-    \item MRC 10: Median recovery 35s, IQR [33, 38]
-    \item Kruskal-Wallis H: p = 0.42 (raw), η² = 0.04 (very small effect).
-\end{itemize}
+\textbf{Result (committed):} $H=4.98$, raw $p=0.173$, Holm-adjusted $p=0.520$, $\varepsilon^2=0.128$. Group medians: 30\,s (MRC\,1), 35\,s (MRC\,3), 30\,s (MRC\,5), 35\,s (MRC\,10).
 
-\textbf{Conclusion:} \textbf{H2 supported.} Recovery time for transient faults is independent of MRC; differences are negligible (2–3 seconds, well within noise). However, \textbf{DLQ traffic differs substantially}:
-\begin{itemize}
-    \item MRC 1: 29\% of messages moved to DLQ (unnecessarily dead-lettered; would succeed on retry).
-    \item MRC 3: 2\% to DLQ.
-    \item MRC 5: 0.5\% to DLQ.
-    \item MRC 10: 0.1\% to DLQ.
-\end{itemize}
+\textbf{Decision:} \textbf{Fail to reject H0} (do not claim ``H2 supported'' as a positive finding beyond non-significance). Exploratory DLQ capture vs MRC on the same campaign is strong ($H=37.69$, $p=3.3\times10^{-8}$, $\varepsilon^2=0.966$): MRC\,1 mean DLQ capture $\approx0.294$ vs $\approx0$ at MRC$\ge5$.
 
-\textbf{Practical Implication:} For transient faults, set MRC ≥ 3 to avoid unnecessary DLQ traffic. Higher MRC (≥5) introduces minimal additional benefit for transient faults but increases duplicate rate slightly (more retries → more redeliveries).
+\subsection{H3: Steady-state optimum under fault}
 
-\subsection{H3: Steady-State Optimum Transfer}
+\textbf{Registered tests (campaign E\_guidance\_transfer):} throughput-optimal config (VT\,600, batch\,50) vs alternatives on (i)~loss and (ii)~recovery.
 
-\textbf{Hypothesis:} Steady-state-optimal config (batch 50, VT 600) has significantly longer recovery time than alternatives (batch 10/1, VT 30) under consumer\_kill.
+\textbf{H3\_loss:} loss identically 0 --- no variance; fail to reject H0 ($p_{\mathrm{adj}}=1$).
 
-\textbf{Test:} Mann-Whitney U comparing (batch 50, VT 600) vs. pooled alternatives (batch 10 VT 30, batch 1 VT 30, batch 50 VT 30).
+\textbf{H3\_recovery:} Mann--Whitney $U=250$, raw $p=7.92\times10^{-4}$, Holm-adjusted $p=3.17\times10^{-3}$, rank-biserial $r=0.667$. Optimal mean recovery $600$\,s vs alternatives mean $224$\,s ($n_{\mathrm{opt}}=10$, $n_{\mathrm{rest}}=30$).
 
-\textbf{Result:}
-\begin{itemize}
-    \item (Batch 50, VT 600): Median recovery ~600s, IQR [595, 605]
-    \item Alternatives: Median recovery ~36s, IQR [32, 40]
-    \item Mann-Whitney U: p = 0.021 (raw), p = 0.084 (Holm-adjusted), rank-biserial r = 0.67 (large effect).
-\end{itemize}
-
-\textbf{Conclusion:} \textbf{H3 partially supported.} Recovery time for steady-state-optimal config is ~16× longer (600s vs. 36s), with large effect size (r = 0.67). However, after Holm-Bonferroni correction, p = 0.084 > 0.05, so the result is not statistically significant at the family-wise level. 
-
-\textbf{Interpretation:} The evidence \emph{suggests} that long VT delays recovery, but the hypothesis test was under-powered due to pooling heterogeneous alternatives (which increased variance). Post-hoc pairwise comparison (batch 50 VT 600 vs. batch 50 VT 30 only) yields p < 0.01 (significant). 
-
-\textbf{Practical Implication:} Visibility timeout is the dominant factor in recovery time. Long VT (600s) optimizes steady-state latency but delays redelivery after failure. Practitioners should \textbf{balance latency optimization vs. recovery responsiveness}: use shorter VT (30–120s) for workloads where fast recovery is critical, even if it slightly increases steady-state latency (due to premature visibility timeout expiry during long-running processing).
-
+\textbf{Decision:} \textbf{Reject H0 for H3\_recovery} (significant after Holm). Earlier draft text citing $p_{\mathrm{adj}}=0.084$ and ``borderline / not significant'' is \textbf{incorrect} relative to committed stats and is withdrawn. Practical reading: the steady-state-favourable long VT materially lengthens recovery under consumer kill in the simulator.
 \section{Key Findings}
 
 \subsection{Recovery Time Follows Visibility Timeout 1:1}
 
-Figure \texttt{recovery\_vs\_visibility.png} shows recovery time increases linearly with VT (slope ≈ 1.0, R² = 0.98). Example:
+Exploratory campaign~A (\texttt{consumer\_kill}) recovery\_time\_s group means in \texttt{stats\_H1\_H2\_H3.json}:
 \begin{itemize}
-    \item VT 30: ~35s recovery
-    \item VT 120: ~122s recovery
-    \item VT 600: ~600s recovery
+    \item VT\,30: mean $33$\,s (median $30$)
+    \item VT\,60: mean $61$\,s
+    \item VT\,120: mean $120$\,s
+    \item VT\,300: mean $300$\,s
+    \item VT\,600: mean $600$\,s
 \end{itemize}
-
-\textbf{Mechanism:} Messages sent during fault window are received, fail, enter in-flight state with VT timer. They become visible again only after VT expires. Consumer then reprocesses them. Total recovery ≈ VT + processing time.
+($H=48.50$, $p=7.44\times10^{-10}$, $\varepsilon^2=0.990$). Mechanism: failed messages remain in-flight until VT expires, then reappear for reprocessing.
 
 \textbf{Implication:} \textbf{VT is a recovery time knob.} Set it based on acceptable recovery SLA, not just steady-state processing time.
 
-\subsection{DLQ Traffic Depends on maxReceiveCount and Fault Type}
+\subsection{DLQ Traffic Depends on maxReceiveCount (exploratory)}
 
-Figure \texttt{dlq\_vs\_max\_receive\_count.png} (heatmap by fault type):
+Committed exploratory Kruskal--Wallis results in \texttt{stats\_H1\_H2\_H3.json}:
 
-\textbf{Transient faults (consumer\_kill, datastore\_timeout):}
+\textbf{Campaign B (\texttt{unhandled\_error}), DLQ capture by MRC:}
 \begin{itemize}
-    \item MRC 1: 25–30\% to DLQ (too aggressive)
-    \item MRC 3: 1–3\% to DLQ (acceptable)
-    \item MRC ≥ 5: < 1\% to DLQ
+    \item MRC\,1: mean $\approx0.294$ ($n=10$)
+    \item MRC\,3: mean $\approx0.0009$
+    \item MRC\,5 and MRC\,10: mean $0.0$
+    \item $H=37.69$, $p=3.28\times10^{-8}$, $\varepsilon^2=0.966$
 \end{itemize}
 
-\textbf{Deterministic-like faults (unhandled\_error, datastore\_reject):}
+\textbf{Campaign C (\texttt{datastore\_reject}), DLQ capture by MRC:}
 \begin{itemize}
-    \item MRC 1: 15–20\% to DLQ (some messages would succeed on retry due to transient conditions)
-    \item MRC 3: 8–12\% to DLQ
-    \item MRC ≥ 5: 5–8\% to DLQ (diminishing returns; truly broken messages eventually DLQ'd)
+    \item MRC\,1: mean $\approx0.170$
+    \item MRC\,3: mean $\approx0.0003$
+    \item MRC\,5 and MRC\,10: mean $0.0$
+    \item $H=32.70$, $p=3.72\times10^{-7}$, $\varepsilon^2=0.839$
 \end{itemize}
 
-\textbf{Implication:} \textbf{Tune MRC to failure pattern.} If failures are mostly transient (downstream recovers quickly), MRC 2–3 minimizes DLQ noise. If deterministic poison messages are common, MRC 1–2 quarantines them faster, freeing resources.
+\textbf{Implication:} Under these simulator fault windows, MRC\,1 dead-letters a large fraction that higher MRC retains for retry; MRC$\ge5$ sends almost nothing to DLQ in the committed cells. Do not cite older draft ranges (e.g., ``5--8\% DLQ at MRC$\ge5$'') that contradict these means.
 
 \subsection{Duplicates Over Baseline Floor}
 
-Figure \texttt{duplicates\_over\_floor.png}: Baseline duplicate rate ~0.002 (from at-least-once delivery). Under failure:
-\begin{itemize}
-    \item MRC 1: +0.001 (negligible increase; most messages DLQ'd before duplicate)
-    \item MRC 3: +0.01 (1\% additional duplicates from retries)
-    \item MRC ≥ 5: +0.14 (14\% additional duplicates; more retries → more redeliveries)
-\end{itemize}
-
-\textbf{Implication:} Higher MRC trades DLQ traffic for duplicate processing. With idempotent consumers, this is acceptable. Without idempotency, high MRC risks duplicate side effects.
+Baseline duplicate floor from H0 summary: $\approx0.00197$. Under \texttt{unhandled\_error} (campaign~B excess duplicates in the same JSON): MRC\,1 excess $\approx0$ (messages DLQ'd early); MRC\,3/5/10 excess $\approx0.136$ each. Higher MRC therefore trades DLQ traffic for duplicate redeliveries in this campaign. Idempotent consumers neutralize duplicate side effects; non-idempotent consumers do not.
 
 \subsection{Batch Size and Recovery}
 
-Batch size has minimal effect on recovery time (p = 0.31, η² = 0.03). Recovery is dominated by VT. However, larger batches amplify \emph{in-flight backlog} during failure (more messages in single failed batch), slightly increasing visible depth spike. Effect is small (< 10\% difference).
+No confirmatory batch$\rightarrow$recovery test is registered in \texttt{stats\_H1\_H2\_H3.json}. Recovery under consumer kill is dominated by VT in exploratory campaign~A (means $\approx33$\,s at VT\,30 through $600$\,s at VT\,600). Batch-size recovery claims with $p=0.31$ / $\eta^2=0.03$ are withdrawn as unsupported by the committed stats files.
 
 \section{Figures}
 
@@ -217,12 +183,12 @@ All figures include axis labels, legends, titles, and captions in report text.
 
 The evaluation confirms:
 \begin{itemize}
-    \item \textbf{SQS DLQ + redelivery prevents message loss} (H1 supported).
-    \item \textbf{Recovery time is independent of MRC for transient faults} (H2 supported), but DLQ traffic differs.
-    \item \textbf{Long VT delays recovery} (H3 large effect, borderline significance after correction).
+    \item \textbf{Queue-arm loss floor is zero} under tested faults (H1 VT$\rightarrow$loss confirmatory test not estimable).
+    \item \textbf{MRC$\rightarrow$recovery H2:} fail to reject; DLQ capture vs MRC is the clear exploratory signal.
+    \item \textbf{Long VT delays recovery} (H3\_recovery reject H0 after Holm, $p_{\mathrm{adj}}=0.003$, $r=0.667$).
     \item \textbf{Visibility timeout is the primary recovery time determinant} (1:1 relationship).
-    \item \textbf{MRC should match failure pattern} (2–3 for transient, 1–2 for deterministic).
-    \item \textbf{Batch size has minimal recovery impact}; optimize for throughput.
+    \item \textbf{MRC should be tuned using DLQ/duplicate evidence} (exploratory: MRC\,1 high DLQ; MRC$\ge5$ near-zero DLQ but higher duplicates under unhandled\_error).
+    \item \textbf{Batch$\rightarrow$recovery:} not supported by committed confirmatory stats; optimize batch for throughput with caution.
 \end{itemize}
 
-Findings provide empirical, statistically rigorous guidance for SQS configuration under failure scenarios, extending \citet{Kyrychenko2025} steady-state baseline to real-world resilience requirements.
+Findings are \textbf{localsim-only}. Adaptive VT/DIVE was not evaluated (\texttt{adaptive\_vt: false}). Cost was not an experimental DV. Live AWS validation remains required for CA2 cloud evidence.

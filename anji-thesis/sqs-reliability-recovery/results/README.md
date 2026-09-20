@@ -43,10 +43,12 @@ Each step folder has `manifests/<RUN_ID>.json` (source of truth) and a
   under unhandled_error (~17 % under datastore_reject) that would have succeeded
   on a retry; 3 or more sends almost nothing to the DLQ but brings duplicates
   (~0.14 per processed order).
-* **Steady-state optimum under fault (H3):** VT 600 / batch 50 takes ~600 s to
-  recover vs ~36 s for VT 30. Large effect (rank-biserial r = 0.67) but not
-  significant after Holm (p = 0.021, adjusted 0.084) because the pre-registered
-  test pools the alternatives, one of which also has VT 600.
+* **Steady-state optimum under fault (H3):** From `stats_H1_H2_H3.json`,
+  H3_loss is not estimable (loss identically 0). H3_recovery **rejects H0**
+  after Holm: Mann–Whitney U = 250, raw p = 0.000792, adjusted p = 0.00317,
+  rank-biserial r = 0.667; optimal (VT 600 / batch 50) mean recovery 600 s vs
+  alternatives mean 224 s (n_opt=10, n_rest=30). Earlier text citing adjusted
+  p = 0.084 is incorrect relative to committed stats.
 
 Full tables: `summary/hypotheses.md`; group means and 95 % bootstrap CIs:
 `summary/stats_H1_H2_H3.json`.

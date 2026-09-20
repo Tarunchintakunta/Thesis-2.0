@@ -105,7 +105,7 @@ Simulator behavior matches AWS SQS Developer Guide~\citep{AWSSQSGuide}:
     \item DynamoDB writes: \$1.25 per million.
 \end{itemize}
 
-Pilot (18 runs, 1000 messages each) estimated at \$0.10. Full experiments (350+ runs, 10,000 messages each) estimated at \$50-100. Simulator avoids all costs.
+Pilot (18 runs, 1000 messages each) estimated at \$0.10. Full experiments (350+ runs, 10,000 messages each) estimated at \$50-100 by \texttt{estimate\_cost.py}. These are \textbf{estimator projections only}---no live AWS spend occurred and no experimental cost DV is in \texttt{results/summary/}. Simulator avoids all charges.
 
 \subsection{Free-Tier Guard}
 

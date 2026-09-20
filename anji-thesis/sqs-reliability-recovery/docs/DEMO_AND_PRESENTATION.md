@@ -17,12 +17,12 @@
    - Outline the primary IVs: Visibility Timeout and `maxReceiveCount` (redrive).
    - Outline DVs measured: duplicate rates, message loss, DLQ capture, recovery time.
 4. **Key Results (3 min):**
-   - **Figure 1:** Duplicate Rate vs Visibility Timeout over a failure window.
-   - **Figure 2:** Recovery Time vs `maxReceiveCount` (trade-off diagram).
-   - **Figure 3:** Dynamic visibility optimization introducing the **DIVE (Dynamic Intelligent Visibility Extender) algorithm**, showcasing how adaptive extensions alleviate static tuning constraints under failure conditions and heavily limit duplicate pollution over time.
+   - **Figure 1:** Duplicate Rate vs Visibility Timeout over a failure window (localsim).
+   - **Figure 2:** Recovery Time vs Visibility Timeout / MRC (trade-off; recovery tracks VT).
+   - **Figure 3:** Guidance-transfer / H3 scatter (steady-state-favourable long VT lengthens recovery). **Do not claim DIVE results** — `adaptive_vt` was false in all committed runs.
 5. **Implications for Practitioners (1 min):**
-   - Advice on how engineering teams should adjust static timeouts and when they should utilize the upcoming DIVE mechanism.
-   - Reassess "ideal" throughput config when factoring in resilience guarantees.
+   - Advice on balancing static VT against recovery SLA using committed H1–H3/exploratory evidence.
+   - Adaptive visibility (optional code path) is future work, not an evaluated contribution.
 6. **Limitations & Q&A Tease (0.5 min):**
    - Cloud provider drifts.
    - Scape limitation restricted to Standard queues rather than FIFO.
@@ -36,7 +36,7 @@
    - Display the flow: Producer → API Gateway/SQS → AWS Lambda (Consumer) → DynamoDB.
    - Contrast the Synced Arm vs the Queue-Decoupled Arm + DLQ.
 2. **Deployed Resources in Console (1 min):**
-   - Open up the AWS Console or recorded screenshot showing the active SAM deployment (SQS, DLQ, Lambda, DynamoDB table).
+   - Prefer showing the **local simulator / SAM template** and committed manifests. Live AWS console deploy was **not** executed for this submission; do not imply production CloudWatch evidence.
 3. **Produce 100 Orders & Happy Path (1.5 min):**
    - Issue command to produce 100 synthetic orders.
    - Open DynamoDB, demonstrating successful idempotent writes.
@@ -47,9 +47,9 @@
 5. **Varying Configuration (`maxReceiveCount`) (1.5 min):**
    - Change `maxReceiveCount` parameter from 5 to 1.
    - Rerun experiment and plot the immediate contrast in how fast the DLQ absorbs failing tasks.
-6. **Show Recovery Plot and DIVE Reference (1 min):**
-   - Output the visual Python plotting from the most recent campaign.
-   - Briefly overview how the **DIVE (Dynamic Intelligent Visibility Extender) algorithm** dynamically updates the timeout in response to backpressure on these same graphs, demonstrating lowered duplicate profiles against standard static rules.
+6. **Show Recovery Plot (1 min):**
+   - Output the visual Python plotting from the most recent campaign (localsim manifests).
+   - State clearly that **DIVE/adaptive_vt was not run** in the committed matrix; optional handler path exists for future campaigns only.
 7. **Traceability and Reproducibility (1 min):**
    - Point out the `results/manifests/` storing exact configurations and git hashes.
    - Mention the Configuration Manual detailing all deployment logic.

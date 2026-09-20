@@ -56,7 +56,9 @@ Fault injection testing, also known as chaos engineering, has emerged as a criti
 
 \subsection{Gap: Controlled Application-Level Fault Injection in Queue Consumers}
 
-The fault injection literature primarily targets infrastructure-level failures (crashes, partitions, disk faults) or microservice-level communication failures. There is limited work on \emph{systematic, controlled injection} of application-level faults within queue consumers—such as unhandled exceptions, datastore rejections, or downstream timeouts—and how these interact with queue configuration parameters like visibility timeout and maxReceiveCount. This research fills that gap by implementing an in-process fault switch that deterministically triggers specific fault types at configured times, enabling reproducible measurement of recovery metrics.
+CA2 methodological precedent: \citet{AlSaidAhmad2024Chaos} show that delay-based chaos injection into cloud-native (including serverless) workloads is a validated empirical technique, with effects that are load-dependent rather than uniform. Architectural context: \citet{Bosilia2025AsyncResilience} find that asynchronous/queue-based designs absorb failures that synchronous counterparts propagate, but they vary architecture rather than SQS knobs. The present thesis inverts that design: hold the queue architecture fixed and vary VT/MRC under controlled consumer and downstream faults.
+
+The broader fault injection literature primarily targets infrastructure-level failures (crashes, partitions, disk faults) or microservice-level communication failures. There is limited work on \emph{systematic, controlled injection} of application-level faults within queue consumers—such as unhandled exceptions, datastore rejections, or downstream timeouts—and how these interact with queue configuration parameters like visibility timeout and maxReceiveCount. This research fills that gap by implementing an in-process fault switch that deterministically triggers specific fault types at configured times, enabling reproducible measurement of recovery metrics.
 
 \section{Serverless Computing and AWS Lambda Reliability}
 

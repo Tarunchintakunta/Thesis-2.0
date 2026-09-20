@@ -1,12 +1,29 @@
+## Alignment note (2026-09-20, iter-1)
+
+**CA2 research alignment ≈ 72% — still < 100%. AWS phase blocked.**
+
+Authoritative evidence: `results/summary/stats_H1_H2_H3.json`, `stats_H0_throughput_config.json`, `hypotheses.md` (`backend: localsim` only).
+
+| Issue | Status |
+|-------|--------|
+| H1–H3 LaTeX/report vs JSON | Fixed in `latex_report/text/{abstract,evaluation,conclusion}.tex` + `results/README.md` |
+| DIVE / production overclaims | Softened: STATUS + VIVA/DEMO + final report; `adaptive_vt: false` in all manifests |
+| CA2 lit in bib | Added AlSaidAhmad2024Chaos + Bosilia2025AsyncResilience (`note={doi:…}`); cited in relatedwork |
+| Obj4 cost as experimental claim | Softened: cost = estimator projection only; no cost DV in results |
+| Live AWS SQS / CloudWatch | **Residual blocker** — not started (do not deploy until alignment gate) |
+
+Remaining to 100%: live AWS key-cell validation (CA2 cloud evidence); optional dedicated adaptive_vt campaign if DIVE is retained as a claim; reconcile phase run-count table (documented 350 vs on-disk manifests/stats run counts) without inventing metrics.
+
+---
 # Project Status: Simulation vs Live AWS
 
 **Student:** Anjaneya Reddy Gurram (24288853)  
 **Project:** Reliability and Recovery of Amazon SQS Messaging under Injected Consumer and Downstream Failures  
-**Last Updated:** September 19, 2026
+**Last Updated:** September 20, 2026
 
 ## Executive Summary
 
-This artefact has been developed with a **local simulator** that emulates SQS, Lambda, and DynamoDB behavior on a virtual clock. All experimental results, figures, and statistical analyses included in this submission are generated from **simulated runs**, not from live AWS infrastructure.
+This artefact has been developed with a **local simulator** that emulates SQS, Lambda, and DynamoDB behavior on a virtual clock. All experimental results, figures, and statistical analyses included in this submission are generated from **simulated runs**, not from live AWS infrastructure. **DIVE/adaptive_vt was not enabled** in the committed experiment matrix.
 
 ## Implementation Status
 

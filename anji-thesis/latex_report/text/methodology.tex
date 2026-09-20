@@ -155,7 +155,7 @@ All experimental results in this submission are generated from a discrete-event 
 \begin{itemize}
     \item \textbf{Reproducibility:} Seeded random number generators and deterministic event ordering ensure that the same config produces the same results across runs. Live AWS introduces network variability, cold starts, and service events that are difficult to control.
     
-    \item \textbf{Cost and Free-Tier Awareness:} 350+ runs on live AWS would incur substantial costs (estimated \$50-100+). The simulator runs in seconds with zero AWS charges, aligning with the project's free-tier-aware mandate.
+    \item \textbf{Cost and Free-Tier Awareness:} Live AWS execution of the full matrix was not performed. \texttt{estimate\_cost.py} projects on the order of \$50--100+ for a comparable live campaign; that figure is an estimator output, not a measured Obj4 cost trade-off. The simulator runs in seconds with zero AWS charges. Reliability/recovery/latency were the measured DVs; monetary cost was not.
     
     \item \textbf{Ethical and Practical Feasibility:} The study uses the researcher's personal AWS account (no institutional or sponsored resources). Simulation avoids AWS quota limits and potential billing surprises.
     

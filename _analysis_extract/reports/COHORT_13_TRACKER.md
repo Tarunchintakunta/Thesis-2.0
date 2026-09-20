@@ -1,0 +1,45 @@
+# Full cohort alignment tracker (13 theses; kasi excluded from work)
+
+**Total theses in repo:** 13  
+**Active alignment iteration:** **all 12** (kasi excluded) — including theses **not** on the AWS goal list  
+**Same bar for everyone:** Research Alignment to CA2 = **exactly 100%** before COMPLETE  
+**Kasi:** excluded from all tasks  
+**Branch:** `feature/aws-ca2-alignment` only — do not push to `main`  
+**AWS deploy:** only after that thesis hits 100%, and only if its CA2 requires AWS
+
+## Scores (latest)
+
+| # | Thesis | Latest % | CA2 file | Need 100%? |
+|---|--------|---------:|----------|------------|
+| 1 | Anji | 72% | proposal.docx | Yes |
+| 2 | Varun | 58% | RIC_CA2.txt | Yes |
+| 3 | Yashaswini | 62% | proposal.docx | Yes |
+| 4 | Rasool | 62% | proposal.docx | Yes |
+| 5 | Chaitanya | 67% | proposal.docx | Yes |
+| 6 | Vikas | 68% | proposal.docx | Yes |
+| 7 | Venkat | 63% | venkat_ca2.txt | Yes |
+| 8 | Nemi | ~55% | CA2.txt | Yes |
+| 9 | Mehak | 80% | **NOT FOUND** (align to report RQ until CA2 added) | Yes |
+| 10 | Pooja | 77% | **NOT FOUND** | Yes |
+| 11 | Uday | 83% | **NOT FOUND** | Yes |
+| 12 | Vishvaksen | 78% | **NOT FOUND** | Yes |
+| 13 | Kasi | — | — | **EXCLUDED** |
+
+**None at 100% yet.**
+
+
+## Iteration log (alignment fixes, AWS still blocked)
+
+- 2026-09-20: Anji `evaluation.tex` H1–H3 rewritten to match `stats_H1_H2_H3.json`
+- 2026-09-20c: Anji abstract/conclusion/results README + DIVE VIVA/DEMO + CA2 Al-Said/Bosilia bib + Obj4 cost estimator-only; STATUS ~72% <100% (live SQS residual)
+- 2026-09-20: Yashaswini RCAEval Top-k table corrected from raw JSON (rules AC@3=0.611)
+- 2026-09-20: Venkat speedup/time narrative corrected from `summary_statistics.json`
+- 2026-09-20: Varun STATUS completion demoted; minimal `refs.bib` with `note={doi:}`
+- Genuine AWS goal list unchanged (8 CA2-verified); Mehak/Pooja/Uday/Vishvaksen not on AWS list
+- **None at 100% yet**
+
+- 2026-09-20b: Rasool intro/eval — no production/Cost-Explorer overclaim
+- 2026-09-20b: Nemi README — PoC metrics; Docker/Helm/Opacus demoted
+- 2026-09-20b: Chaitanya abstract — ADOPT band proxy-only
+- 2026-09-20b: Vikas eval — acknowledge live pilot path + empty campaign
+- 2026-09-20b: Added `CA2_COMMITMENTS.md` for Mehak/Pooja/Uday/Vishvaksen (binding until real CA2 exists)

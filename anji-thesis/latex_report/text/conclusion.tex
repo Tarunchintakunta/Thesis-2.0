@@ -15,10 +15,10 @@ The study measured message loss, duplicate processing, DLQ traffic, recovery tim
 This is the first systematic, quantitative study of SQS configuration under controlled, reproducible fault injection. Prior work by \citet{Kyrychenko2025} established steady-state performance optima; this research extends that baseline to failure scenarios, revealing that:
 
 \begin{itemize}
-    \item \textbf{Zero message loss} is achievable with DLQ + sufficient visibility timeout and maxReceiveCount (H1 supported).
-    \item \textbf{Recovery time follows visibility timeout nearly 1:1} (600s VT → 600s recovery), identifying VT as a recovery time knob, not just a latency parameter.
-    \item \textbf{maxReceiveCount determines DLQ vs. duplicate trade-off} for transient faults (H2 supported): low MRC dead-letters unnecessarily, high MRC increases duplicates.
-    \item \textbf{Steady-state throughput optima (long VT, large batch) incur 16× longer recovery time} (H3 large effect), suggesting practitioners must balance performance vs. resilience.
+    \item \textbf{Queue-arm loss floor is zero} under tested faults (campaign~A); H1 as a VT$\rightarrow$loss effect is \textbf{not estimable} (fail to reject; $p_{\mathrm{adj}}=1$)---zero loss is descriptive, not a supported VT effect.
+    \item \textbf{Recovery time follows visibility timeout nearly 1:1} under consumer kill (exploratory; e.g., VT\,600 $\rightarrow$ mean recovery $600$\,s), identifying VT as a recovery time knob.
+    \item \textbf{MRC$\rightarrow$recovery H2:} fail to reject ($H=4.98$, $p_{\mathrm{adj}}=0.520$). Exploratory DLQ capture vs MRC is the clear signal (MRC\,1 mean $\approx0.294$ under unhandled\_error vs $\approx0$ at MRC$\ge5$).
+    \item \textbf{H3\_recovery rejects H0 after Holm} ($U=250$, $p_{\mathrm{adj}}=3.17\times10^{-3}$, $r=0.667$): throughput-favourable VT\,600/batch\,50 mean recovery $600$\,s vs alternatives mean $224$\,s. Do not cite withdrawn $p_{\mathrm{adj}}=0.084$ drafts.
 \end{itemize}
 
 \subsection{Reproducible Fault Injection Framework}
@@ -68,7 +68,7 @@ Practitioners should profile their \emph{failure patterns} (transient vs. determ
 
 \subsection{Simulator as Research Tool}
 
-The study validates simulation as a cost-effective, reproducible alternative to live experimentation for relative configuration effects. Absolute timing differs from AWS (no cold starts, deterministic timing), but relative rankings (VT 600 > VT 30 for recovery time) are expected to hold. This approach enables research that would be cost-prohibitive on live infrastructure (\$50-100+ for 350 runs).
+The study validates simulation as a reproducible alternative to live experimentation for relative configuration effects. Absolute timing differs from AWS (no cold starts, deterministic timing), but relative rankings (VT\,600 recovers slower than VT\,30) are expected to hold. Live-cost projections from the estimator are not experimental evidence of a reliability--cost Pareto frontier.
 
 \section{Validity Assessment}
 
