@@ -1,15 +1,15 @@
-# Live AWS key-cell smoke for CA2 residual evidence.
-# NOT a full 350-cell localsim redo. Four cells × 1 repeat, scaled load.
-# Contrasts: VT under consumer_kill; MRC under unhandled_error.
-# Beyond-CA2 confirmatory n=3 (same cells): configs/live_key_cells_n3.yaml.
+# Beyond-CA2 confirmatory protocol for the same 4 lite cells as live_key_cells.yaml.
+# Preferred live execution: DRY_RUN=0 --live --repeats 3 (or this file), then destroy.
+# This file is the localsim stand-in when shared-account ConcurrentExecutions
+# cannot host ESM maximum_concurrency=5 alongside another campaign.
 seed: 9001
 defaults:
-  repeats: 1
+  repeats: 3
   randomise_order: false
   fixed:
     arm: queue
     load_profile: normal
-    order_count: 200          # lite: keep credit spend tiny
+    order_count: 200
     rate_per_sec: 10
     fault_start_s: 20
     fault_window_s: 30
@@ -17,12 +17,12 @@ defaults:
     drain_timeout_s: 180
     max_receive_count: 5
     batch_size: 10
+    max_concurrency: 5
 
 campaigns:
   L_vt_consumer_kill:
     fixed: {fault_mode: consumer_kill}
     matrix:
-      # 30 vs 90 (not 600) so recovery waits stay affordable live
       visibility_timeout: [30, 90]
 
   L_mrc_unhandled_error:

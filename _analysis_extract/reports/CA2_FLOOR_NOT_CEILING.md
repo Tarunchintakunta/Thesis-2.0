@@ -13,4 +13,3 @@
 - Yashaswini: lite Leg 3 + PDF + CausalRCA quarantine/waiver is enough for COMPLETE; CausalRCA-90 / 30-min cells are optional beyond-CA2 enhancements.
 - Anji / Chaitanya / Rasool: confirmatory $n$ and extra cells are **improvements beyond lite CA2 smoke**, encouraged when Free Tier / concurrency allow.
 - Varun: fuller FinOps remains both CA2 and beyond-CA2 value — pursue when capacity free.
-- Nemi: live lite EC2+S3+CW FL closes the floor; Docker/K8s, full 2.5M-flow, and 50-round campaigns are optional beyond-CA2.

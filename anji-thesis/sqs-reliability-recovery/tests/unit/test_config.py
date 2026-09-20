@@ -66,7 +66,27 @@ def test_campaign_defaults_are_merged():
 
 @pytest.mark.parametrize(
     "name,expected",
-    [("pilot", 18), ("arms", 10), ("key_cells", 20), ("fault_campaigns", 187), ("baseline_kyrchenko", 109)],
+    [
+        ("pilot", 18),
+        ("arms", 10),
+        ("key_cells", 20),
+        ("fault_campaigns", 187),
+        ("baseline_kyrchenko", 109),
+        ("live_key_cells", 4),
+        ("live_key_cells_n3", 12),
+        ("live_key_cells_concurrency_sensitivity", 8),
+    ],
 )
 def test_shipped_configs_expand(name, expected):
     assert len(plan_runs(load_yaml(CONFIGS / f"{name}.yaml"))) == expected
+
+
+def test_live_key_cells_n3_matches_lite_cells():
+    lite = plan_runs(load_yaml(CONFIGS / "live_key_cells.yaml"))
+    n3 = plan_runs(load_yaml(CONFIGS / "live_key_cells_n3.yaml"))
+    lite_cells = {(s.campaign, s.fault_mode, s.visibility_timeout, s.max_receive_count) for s in lite}
+    n3_cells = {(s.campaign, s.fault_mode, s.visibility_timeout, s.max_receive_count) for s in n3}
+    assert lite_cells == n3_cells
+    assert {s.repeat for s in n3} == {0, 1, 2}
+    assert all(s.max_concurrency == 5 for s in n3)
+    assert all(s.order_count == 200 for s in n3)

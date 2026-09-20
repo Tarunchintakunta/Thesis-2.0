@@ -71,7 +71,7 @@ This research employs a controlled experimental design with the following compon
     \item \textbf{Statistical Analysis:} Hypothesis tests with Holm-Bonferroni correction for family-wise error rate, effect size calculation (rank-biserial r for ordinal comparisons), 95\% bootstrap confidence intervals, and power analysis from pilot runs.
 \end{itemize}
 
-Confirmatory experimental results in this submission are generated from the local simulator (`DRY\_RUN=1`). A **lite live AWS round** (4 cells $\times n{=}1$, 200 orders, destroyed after) is reported under \texttt{results/live/key\_cells/}. Live$\leftrightarrow$sim \textbf{relative ranks} agree; absolute recovery seconds are not scale-matched. Live confirmatory $n{>}1$ remains future work.
+Confirmatory hypothesis tests in this submission are generated from the local simulator (`DRY\_RUN=1`). A separate \textbf{live AWS lite} key-cell round (4/4 cells; $n{=}1$; destroy-after-round) is reported in Chapter~5; it is directional only and does not replace localsim H1--H3. Chapter~5 also records a beyond-CA2 localsim $n{=}3$ pass on those four cells and the live $n{=}3$ plan that was not executed under shared-account concurrency limits. Absolute live timings may differ from simulation due to network variability and cold starts.
 
 \section{Contributions}
 
@@ -94,7 +94,7 @@ This study focuses on:
     \item \textbf{SQS Standard queues} (not FIFO, which has different semantics and lower throughput).
     \item \textbf{Lambda consumers} triggered by event source mappings with batch processing.
     \item \textbf{Transient and deterministic-like faults} injected at the consumer/downstream level, not infrastructure failures (AZ outages, SQS service events).
-    \item \textbf{Simulated confirmatory campaigns}, plus a measured live lite 4-cell smoke (not confirmatory $n{>}1$).
+    \item \textbf{Simulated confirmatory experiments} (localsim H1--H3) plus a \textbf{live lite} 4-cell AWS round (directional; $n{=}1$).
 \end{itemize}
 
 Known limitations include:

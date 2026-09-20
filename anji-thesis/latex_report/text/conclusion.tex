@@ -83,7 +83,7 @@ The study validates simulation as a reproducible alternative to live experimenta
 \subsection{Remaining Limitations}
 
 \begin{itemize}
-    \item \textbf{External validity (AWS fidelity):} Lite live 4-cells show \textbf{relative ranks} matching localsim (VT, MRC DLQ/dup). Absolute recovery is shorter on the 200-order live cells than on $\sim$3600-order localsim campaigns. Confirmatory live $n{>}1$ is still open.
+    \item \textbf{External validity (AWS fidelity):} A live lite key-cell round (4/4 cells; $n{=}1$; destroy-after-round) was completed. A beyond-CA2 live $n{=}3$ repeat was not executed (shared-account ConcurrentExecutions). Localsim $n{=}3$ on the same cells is simulation, not AWS. Absolute metrics may still differ under live confirmatory $n$ or untested cells (burst/VT600). Relative VT/MRC effects observed live are directional only.
     
     \item \textbf{Workload generalizability:} Synthetic payloads, single processing pattern. Findings should generalize to similar workloads (e-commerce, logging, event routing) but may not cover all edge cases (e.g., very large messages, complex processing logic).
     
@@ -97,7 +97,7 @@ The study validates simulation as a reproducible alternative to live experimenta
 \subsection{Short-Term Extensions}
 
 \begin{enumerate}
-    \item \textbf{Live AWS Validation:} Lite 4/4 + relative-rank fidelity is done. Remaining: confirmatory repeats / CA2-depth key cells (VT 600 / MRC 10 / $n{>}1$). Do not start a new apply by default.
+    \item \textbf{Confirmatory live depth:} Protocol is \texttt{configs/live\_key\_cells\_n3.yaml} (same four lite cells, $n{=}3$). Blocked on 2026-09-20 by Vikas \texttt{idem-eval-fn} (ConcurrentExecutions max $=4$ of 10). Localsim $n{=}3$ already executed. Re-apply Terraform (\texttt{sqs-rr}, no student IDs) only when observed max $+5 \le 9$, then destroy after the round.
     
     \item \textbf{Additional Fault Types:} Extend to partial downstream failures (50\% requests fail), gradual degradation (increasing latency over time), cascading failures (downstream triggers upstream).
     

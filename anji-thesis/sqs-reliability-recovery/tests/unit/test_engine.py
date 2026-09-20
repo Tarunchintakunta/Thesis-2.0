@@ -75,3 +75,21 @@ def test_batch_size_helps_throughput_on_a_backlog():
 def test_datastore_timeout_burns_the_function_timeout():
     _, res, _ = run(fault_mode="datastore_timeout", fault_rate=0.25)
     assert res.counters["invocation_timeout"] > 0
+
+
+def test_lite_cells_zero_loss_at_reduced_poller_concurrency():
+    """Beyond-CA2: ESM max_concurrency=2 still preserves queue-arm loss floor on lite load."""
+    shared = dict(
+        order_count=200,
+        rate_per_sec=10,
+        fault_start_s=20,
+        fault_window_s=30,
+        drain_timeout_s=180,
+        fault_rate=0.25,
+        max_concurrency=2,
+        batch_size=10,
+    )
+    _, _, kill = run(fault_mode="consumer_kill", visibility_timeout=30, max_receive_count=5, **shared)
+    _, _, err = run(fault_mode="unhandled_error", visibility_timeout=30, max_receive_count=5, **shared)
+    assert kill["loss_rate"] == 0.0
+    assert err["loss_rate"] == 0.0

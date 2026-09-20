@@ -198,7 +198,63 @@ L\_mrc\_unhandled\_error & unhandled\_error & 30 & 5 & 0.0 & 0.05 & 0.0 & 28.506
 \caption{Live lite key-cells ($n=1$). Recovery for MRC\,1 unhandled\_error was censored (\texttt{recovered: false}). Throughput: 2.824, 1.537, 7.122, 2.920\,msg/s. Measured cost sum $\approx$\$0.00144; wall 772.3\,s.}
 \end{table}
 
-\textbf{Directional only (not confirmatory $n{>}1$):} under consumer\_kill, measured recovery was longer at VT\,90 than VT\,30; under unhandled\_error, MRC\,1 showed DLQ capture $0.16$ while MRC\,5 showed DLQ $0$ with duplicate rate $0.05$; loss was $0$ on all four cells. Live$\leftrightarrow$sim \textbf{relative ranks agree} (\texttt{results/live/key\_cells/fidelity.json}; VT90 matched to sim VT60). Absolute recovery seconds are \textbf{not} comparable (live 200 orders vs localsim $\sim$3600). Do \textbf{not} claim live H1--H3 decisions or completion of the burst/\texttt{key\_cells.yaml} matrix (VT\,600 / MRC\,10 / repeats\,5) from this lite round.
+\textbf{Directional only (not confirmatory):} under consumer\_kill, measured recovery was longer at VT\,90 than VT\,30; under unhandled\_error, MRC\,1 showed DLQ capture $0.16$ while MRC\,5 showed DLQ $0$ with duplicate rate $0.05$; loss was $0$ on all four cells. Do \textbf{not} claim live H1--H3 decisions or completion of the burst/\texttt{key\_cells.yaml} matrix (VT\,600 / MRC\,10 / repeats\,5) from this lite round.
+
+\subsection{Live$\leftrightarrow$localsim descriptive delta (same cells; not a fidelity test)}
+
+Table below juxtaposes live $n{=}1$ cells with localsim means for matching \texttt{(fault, VT, MRC)} where manifests exist. Absolute recovery differs (live colder/faster under consumer\_kill); directions (VT lengthens recovery; MRC\,1 raises DLQ under unhandled\_error) are consistent. Label: \textbf{directional}, $n{=}1$ vs multi-run localsim---not a confirmatory fidelity hypothesis.
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{llrrrrrr}
+\hline
+\textbf{Cell} & \textbf{Src} & \textbf{loss} & \textbf{dup} & \textbf{DLQ} & \textbf{rec.\ (s)} & \textbf{$n$} \\
+\hline
+consumer\_kill VT30 MRC5 & live & 0.0 & 0.015 & 0.0 & 2.34 & 1 \\
+consumer\_kill VT30 MRC5 & localsim & $\approx$0.001 & 0.080 & 0.0 & 32.7 & 56 \\
+consumer\_kill VT90 MRC5 & live & 0.0 & 0.005 & 0.0 & 7.53 & 1 \\
+unhandled\_error VT30 MRC1 & live & 0.0 & 0.0 & 0.16 & --- & 1 \\
+unhandled\_error VT30 MRC1 & localsim & 0.0 & 0.0 & 0.321 & 30.4 & 26 \\
+unhandled\_error VT30 MRC5 & live & 0.0 & 0.05 & 0.0 & 28.5 & 1 \\
+unhandled\_error VT30 MRC5 & localsim & $\approx$0.000 & 0.103 & 0.0 & 32.3 & 26 \\
+\hline
+\end{tabular}
+\caption{Descriptive live$\leftrightarrow$localsim delta. Localsim rows aggregate packaging-deduped manifests matching the cell; not Holm-tested as a fidelity DV.}
+\end{table}
+
+\section{Beyond-CA2 confirmatory plan}
+
+Formal CA2 is the \textbf{floor} (\texttt{CA2\_FLOOR\_NOT\_CEILING.md}). The preferred exceedance is a live repeat of the \textbf{same four lite cells} at $n{=}3$ (\texttt{configs/live\_key\_cells\_n3.yaml}), then destroy. Terraform names remain \texttt{sqs-rr-*} (no student IDs).
+
+\subsection{Live $n{=}3$ gate (not executed)}
+
+A 2026-09-20 probe of the shared account (\texttt{results/beyond\_ca2/concurrency\_probe\_2026-09-20.json}) measured: Lambda \texttt{ConcurrentExecutions} limit $=10$; CloudWatch maximum concurrent executions over 15\,min $=4$ (steady), driven by \texttt{idem-eval-fn} (Vikas campaign still invoking; 1743 invocations in that window). Anji's event-source mapping default is \texttt{maximum\_concurrency}$=5$. Applying the stack would leave one spare slot and risk throttling both campaigns. \textbf{No live $n{=}3$ round was started}; no live $n{=}3$ metrics are reported.
+
+Re-run when observed concurrent maximum $+5 \le 9$, using the commands in \texttt{DESIGN\_RATIONALE\_BEYOND\_CA2.md}. Cost is expected to stay Free-Tier (projection: about $3\times$ the measured lite sum $\approx\$0.00144$, not a new measurement).
+
+\subsection{Localsim $n{=}3$ on the same four cells (executed)}
+
+Twelve localsim manifests under \texttt{results/localsim/key\_cells\_n3/} use the lite load (200 orders, 10\,msg/s). Authoritative aggregation: \texttt{results/beyond\_ca2/localsim\_key\_cells\_summary.json}. These are \textbf{not} AWS measurements.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{llrrrrrr}
+\hline
+\textbf{Campaign} & \textbf{Fault} & \textbf{VT} & \textbf{MRC} & \textbf{$n$} & \textbf{loss} & \textbf{dup} & \textbf{DLQ} \\
+\hline
+L\_vt\_consumer\_kill & consumer\_kill & 30 & 5 & 3 & 0.0 & 0.0017 & 0.0 \\
+L\_vt\_consumer\_kill & consumer\_kill & 90 & 5 & 3 & 0.0 & 0.0067 & 0.0 \\
+L\_mrc\_unhandled\_error & unhandled\_error & 30 & 1 & 3 & 0.0 & 0.0 & 0.050 \\
+L\_mrc\_unhandled\_error & unhandled\_error & 30 & 5 & 3 & 0.0 & 0.013 & 0.0 \\
+\hline
+\end{tabular}
+\caption{Beyond-CA2 localsim $n{=}3$ on the live lite cells. Recovery means were $0$\,s (consumer\_kill) and $1.67$\,s (unhandled\_error; one of three repeats at $5$\,s). Not a live confirmatory table.}
+\end{table}
+
+On this lite horizon, localsim recovery does \textbf{not} reproduce campaign~A's 1:1 VT law (that claim stays with the 350-cell confirmatory design). The $n{=}3$ cells do support a zero loss floor and the MRC\,1 vs MRC\,5 DLQ direction (MRC\,1 mean $0.050$, range $0$--$0.09$; MRC\,5 mean $0$). Live $n{=}1$ MRC\,1 DLQ was $0.16$---same sign, different magnitude; not a paired test.
+
+A second localsim campaign varied ESM poller count $2$ vs $5$ ($n{=}1$, eight cells, \texttt{results/localsim/key\_cells\_concurrency/}): loss remained $0$. Treat as a contention proxy only.
 
 \section{Summary}
 
@@ -210,7 +266,8 @@ The evaluation confirms (localsim confirmatory unless noted):
     \item \textbf{Visibility timeout is the primary recovery time determinant} (1:1 relationship) in localsim exploratory campaign~A.
     \item \textbf{MRC should be tuned using DLQ/duplicate evidence} (exploratory localsim; live lite MRC\,1 vs MRC\,5 DLQ/dup directionally consistent, $n=1$).
     \item \textbf{Batch$\rightarrow$recovery:} not supported by committed confirmatory stats; optimize batch for throughput with caution.
-    \item \textbf{Live lite 4/4 + relative-rank fidelity:} measured smoke on AWS; confirmatory/deeper CA2 key-cell live still open.
+    \item \textbf{Live lite 4/4:} measured smoke on AWS ($n{=}1$); not confirmatory.
+    \item \textbf{Beyond-CA2:} localsim $n{=}3$ on the same four cells executed; live $n{=}3$ blocked by shared-account ConcurrentExecutions (Vikas). No invented live repeats.
 \end{itemize}
 
-Confirmatory findings are \textbf{localsim}. Adaptive VT/DIVE was not evaluated (\texttt{adaptive\_vt: false}). Cost was not an experimental DV. Live AWS lite evidence exists; live$\leftrightarrow$sim relative ranks agree. CA2 alignment remains \textbf{below 100\%} pending confirmatory or deeper live key-cell coverage.
+Confirmatory findings are \textbf{localsim} (350-cell H1--H3). Adaptive VT/DIVE was not evaluated (\texttt{adaptive\_vt: false}). Cost was not an experimental DV. Live AWS lite evidence exists. CA2 \textbf{floor is met}; live $n{>}1$ remains a documented beyond-CA2 enhancement, not a completeness gate.
