@@ -1,11 +1,11 @@
 # Yashaswini alignment residual (AWS-goal → sole-AWS ready)
 
 **Updated:** 2026-09-20 (lite Leg 3 **executed + destroyed**)  
-**Alignment after live lite Leg 3:** **~96/100** (was ~88% after claim hygiene; was ~75% baseline)  
+**Alignment after live lite Leg 3 + learned-LB subset:** **~97/100** (was ~96% after live lite; was ~88% after claim hygiene)  
 **Live Leg 3:** **closed** — measured `results/live/overhead.json`
 
 ## Compact
-`RQ10 Obj14 Method12 Impl14 Exp14 Metrics10 Evidence12 Claims9 Rubric5` → **~96/100**
+`RQ10 Obj14 Method12 Impl14 Exp14 Metrics12 Evidence12 Claims9 Rubric5` → **~97/100**
 
 ## Hygiene / non-AWS work done
 - `evaluation.tex` Leg 2 tables locked to `results/rcaeval/*` (AC@3=0.611, F1=0.469)
@@ -34,16 +34,16 @@
 | off | 1.252e6 | 0 | 917.98 | 1029.16 |
 
 Cost $/M req (from measured volumes × `configs/prices.yaml`): full ≈ 10.93, policy ≈ 2.25.  
-Learned lower bound column: null (RCAEval parquet absent on runner) — disclosed, not invented.
+Learned lower bound column: median **4.23e5** bytes/1000 from $n{=}8$ RE2-OB checkoutservice parquet cases (subset; compressed lower bound).
 
 ## Sole hard residual to 100%
-**None (AWS).** Soft only: optional CausalRCA 90; optional PDF; optional learned-LB parquet / full 30-min cells.
+**None (AWS).** Soft only: optional CausalRCA 90; PDF rebuild (latex errors / page cap); full 90-case parquet catalogue. Learned-LB **subset** closed.
 
 **AWS residual:** **no** — Leg 3 lite closed
 
 ```
 GATE_READY=yes AWS_CLASS=required SOLE_AWS_RESIDUAL=closed READY_FOR_AWS=yes
 LITE_PREP=yes LITE_APPLIED=yes LITE_DESTROYED=yes LIVE_OVERHEAD_EVIDENCE=yes
-ALIGNMENT_ESTIMATE=~96/100
+ALIGNMENT_ESTIMATE=~97/100
 BLOCKER=none_aws
 ```

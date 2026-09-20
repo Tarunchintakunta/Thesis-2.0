@@ -198,7 +198,7 @@ L\_mrc\_unhandled\_error & unhandled\_error & 30 & 5 & 0.0 & 0.05 & 0.0 & 28.506
 \caption{Live lite key-cells ($n=1$). Recovery for MRC\,1 unhandled\_error was censored (\texttt{recovered: false}). Throughput: 2.824, 1.537, 7.122, 2.920\,msg/s. Measured cost sum $\approx$\$0.00144; wall 772.3\,s.}
 \end{table}
 
-\textbf{Directional only (not confirmatory):} under consumer\_kill, measured recovery was longer at VT\,90 than VT\,30; under unhandled\_error, MRC\,1 showed DLQ capture $0.16$ while MRC\,5 showed DLQ $0$ with duplicate rate $0.05$; loss was $0$ on all four cells. Do \textbf{not} claim live H1--H3 decisions, live$\leftrightarrow$sim fidelity tests, or completion of the burst/\texttt{key\_cells.yaml} matrix (VT\,600 / MRC\,10 / repeats\,5) from this lite round.
+\textbf{Directional only (not confirmatory $n{>}1$):} under consumer\_kill, measured recovery was longer at VT\,90 than VT\,30; under unhandled\_error, MRC\,1 showed DLQ capture $0.16$ while MRC\,5 showed DLQ $0$ with duplicate rate $0.05$; loss was $0$ on all four cells. Live$\leftrightarrow$sim \textbf{relative ranks agree} (\texttt{results/live/key\_cells/fidelity.json}; VT90 matched to sim VT60). Absolute recovery seconds are \textbf{not} comparable (live 200 orders vs localsim $\sim$3600). Do \textbf{not} claim live H1--H3 decisions or completion of the burst/\texttt{key\_cells.yaml} matrix (VT\,600 / MRC\,10 / repeats\,5) from this lite round.
 
 \section{Summary}
 
@@ -210,7 +210,7 @@ The evaluation confirms (localsim confirmatory unless noted):
     \item \textbf{Visibility timeout is the primary recovery time determinant} (1:1 relationship) in localsim exploratory campaign~A.
     \item \textbf{MRC should be tuned using DLQ/duplicate evidence} (exploratory localsim; live lite MRC\,1 vs MRC\,5 DLQ/dup directionally consistent, $n=1$).
     \item \textbf{Batch$\rightarrow$recovery:} not supported by committed confirmatory stats; optimize batch for throughput with caution.
-    \item \textbf{Live lite 4/4:} measured smoke on AWS; confirmatory/deeper CA2 key-cell live still open.
+    \item \textbf{Live lite 4/4 + relative-rank fidelity:} measured smoke on AWS; confirmatory/deeper CA2 key-cell live still open.
 \end{itemize}
 
-Confirmatory findings are \textbf{localsim}. Adaptive VT/DIVE was not evaluated (\texttt{adaptive\_vt: false}). Cost was not an experimental DV. Live AWS lite evidence exists; CA2 alignment remains \textbf{below 100\%} pending confirmatory or deeper live key-cell coverage.
+Confirmatory findings are \textbf{localsim}. Adaptive VT/DIVE was not evaluated (\texttt{adaptive\_vt: false}). Cost was not an experimental DV. Live AWS lite evidence exists; live$\leftrightarrow$sim relative ranks agree. CA2 alignment remains \textbf{below 100\%} pending confirmatory or deeper live key-cell coverage.

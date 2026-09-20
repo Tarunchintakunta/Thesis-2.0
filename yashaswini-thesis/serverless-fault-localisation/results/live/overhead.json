@@ -78,6 +78,7 @@
     }
   },
   "asymmetry": "the learned baselines run offline; their overhead is a lower bound from their inputs, not a measurement on this service",
-  "learned_lower_bound_bytes_per_1000_requests": null,
-  "learned_lower_bound_note": "data/rcaeval case files absent; live volume/latency/cost still measured; learned lower bound omitted (not invented)"
+  "learned_lower_bound_bytes_per_1000_requests": 422804.47009362606,
+  "learned_lower_bound_note": "median compressed RCAEval telemetry bytes/1000 req over 8 RE2-OB cases with traces.parquet (subset; parquet is a lower bound, not live-service volume)",
+  "learned_lower_bound_n_cases": 8
 }

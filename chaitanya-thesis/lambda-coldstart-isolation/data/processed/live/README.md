@@ -18,6 +18,7 @@
 - `h3_metrics.csv` / `h3_costs.csv` / `h3_warming_summary.csv` / `h3_summary.json` — H3-lite fold
 - `roi_lite_by_variant.csv` — measured mean cost / cost-per-1k (all-cold)
 - `adopt_lite_matrix.csv` — point-estimate bands vs `analysis_plan.yaml` practical thresholds (**not** Holm-confirmed ADOPT)
+- `reports/paper/tables/live_lite/hypotheses.json` — Holm family **run on lite $n$** (H1/H2 reject; H3 fail; bytecode dropped)
 - `live_summary.json` — inventory + notes
 
 ## H3-lite

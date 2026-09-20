@@ -1,0 +1,243 @@
+{
+  "data_mode": "live",
+  "label": "measured on AWS Lambda, eu-west-1, arm64",
+  "alpha": 0.05,
+  "tests": {
+    "H1": {
+      "test": "kruskal_wallis",
+      "statistic": 28.756757,
+      "p": 1e-06,
+      "effect": 0.821622,
+      "effect_name": "epsilon_squared",
+      "normal": false,
+      "groups": [
+        "python",
+        "nodejs",
+        "java"
+      ],
+      "n": [
+        12,
+        12,
+        12
+      ],
+      "medians": {
+        "python": 88.32,
+        "nodejs": 140.455,
+        "java": 333.4
+      },
+      "family": "confirmatory",
+      "p_holm": 3e-06,
+      "reject": true
+    },
+    "H2_python": {
+      "test": "mann_whitney_u",
+      "statistic": 144.0,
+      "p": 3.7e-05,
+      "effect": 1.0,
+      "effect_name": "rank_biserial",
+      "normal": false,
+      "n": [
+        12,
+        12
+      ],
+      "median_a": 3355.95,
+      "median_b": 88.32,
+      "median_diff": 3267.63,
+      "median_diff_ci95": [
+        2667.875,
+        3348.26
+      ],
+      "family": "confirmatory",
+      "p_holm": 0.000146,
+      "reject": true
+    },
+    "H2_nodejs": {
+      "test": "mann_whitney_u",
+      "statistic": 144.0,
+      "p": 3.7e-05,
+      "effect": 1.0,
+      "effect_name": "rank_biserial",
+      "normal": false,
+      "n": [
+        12,
+        12
+      ],
+      "median_a": 1000.795,
+      "median_b": 140.455,
+      "median_diff": 860.34,
+      "median_diff_ci95": [
+        730.335,
+        965.61225
+      ],
+      "family": "confirmatory",
+      "p_holm": 0.000146,
+      "reject": true
+    },
+    "H2_java": {
+      "test": "mann_whitney_u",
+      "statistic": 144.0,
+      "p": 3.7e-05,
+      "effect": 1.0,
+      "effect_name": "rank_biserial",
+      "normal": false,
+      "n": [
+        12,
+        12
+      ],
+      "median_a": 687.26,
+      "median_b": 333.4,
+      "median_diff": 353.86,
+      "median_diff_ci95": [
+        211.81,
+        430.98
+      ],
+      "family": "confirmatory",
+      "p_holm": 0.000146,
+      "reject": true
+    },
+    "H3": {
+      "test": "wilcoxon_signed_rank",
+      "statistic": 0.0,
+      "p": 1.0,
+      "effect": -1.0,
+      "effect_name": "matched_rank_biserial",
+      "normal": false,
+      "n": 3,
+      "mean_diff": -0.222222,
+      "blocks": 3,
+      "mean_cold_fraction_on": 0.0,
+      "mean_cold_fraction_off": 0.222222,
+      "family": "confirmatory",
+      "p_holm": 1.0,
+      "reject": false
+    },
+    "H3_fisher": {
+      "test": "fisher_exact",
+      "odds_ratio": 0.0,
+      "p": 0.473684,
+      "p1": 0.0,
+      "p2": 0.2,
+      "risk_difference": -0.2,
+      "ci1": [
+        0.0,
+        0.277533
+      ],
+      "ci2": [
+        0.056682,
+        0.509838
+      ],
+      "family": "descriptive"
+    },
+    "H4_python": {
+      "test": "kruskal_wallis",
+      "statistic": 10.971206,
+      "p": 0.02689,
+      "effect": 0.185953,
+      "effect_name": "epsilon_squared",
+      "normal": false,
+      "groups": [
+        128,
+        512,
+        1024,
+        1769,
+        3008
+      ],
+      "n": [
+        12,
+        12,
+        12,
+        12,
+        12
+      ],
+      "medians": {
+        "128": 84.995,
+        "512": 86.49,
+        "1024": 70.175,
+        "1769": 87.995,
+        "3008": 86.58
+      },
+      "family": "exploratory:H4",
+      "p_holm": 0.02689,
+      "reject": true
+    },
+    "H1_posthoc_python_vs_nodejs": {
+      "test": "mann_whitney_u",
+      "statistic": 12.0,
+      "p": 0.000592,
+      "effect": -0.833333,
+      "effect_name": "rank_biserial",
+      "normal": false,
+      "n": [
+        12,
+        12
+      ],
+      "median_a": 88.32,
+      "median_b": 140.455,
+      "median_diff": -52.135,
+      "median_diff_ci95": [
+        -67.064375,
+        -37.279125
+      ],
+      "family": "posthoc:H1",
+      "p_holm": 0.000592,
+      "reject": true
+    },
+    "H1_posthoc_python_vs_java": {
+      "test": "mann_whitney_u",
+      "statistic": 0.0,
+      "p": 3.7e-05,
+      "effect": -1.0,
+      "effect_name": "rank_biserial",
+      "normal": false,
+      "n": [
+        12,
+        12
+      ],
+      "median_a": 88.32,
+      "median_b": 333.4,
+      "median_diff": -245.08,
+      "median_diff_ci95": [
+        -328.36,
+        -232.425
+      ],
+      "family": "posthoc:H1",
+      "p_holm": 0.00011,
+      "reject": true
+    },
+    "H1_posthoc_nodejs_vs_java": {
+      "test": "mann_whitney_u",
+      "statistic": 0.0,
+      "p": 3.7e-05,
+      "effect": -1.0,
+      "effect_name": "rank_biserial",
+      "normal": false,
+      "n": [
+        12,
+        12
+      ],
+      "median_a": 140.455,
+      "median_b": 333.4,
+      "median_diff": -192.945,
+      "median_diff_ci95": [
+        -278.475,
+        -181.21
+      ],
+      "family": "posthoc:H1",
+      "p_holm": 0.00011,
+      "reject": true
+    }
+  },
+  "cold_fraction_used_for_cost": 0.2,
+  "notes": [
+    "python-bytecode dropped from H2 (valid Init n<3; Unhandled on live lite)",
+    "exploratory:H4: no data for H4_nodejs, H4_java (family size shrinks to 1)",
+    "exploratory:combined: no data for combined_python, combined_nodejs, combined_java (family size shrinks to 0)"
+  ],
+  "figures": [
+    "init_by_runtime.png",
+    "package_size_effect.png",
+    "memory_effect.png",
+    "warming_frequency.png",
+    "decision_matrix.png"
+  ]
+}

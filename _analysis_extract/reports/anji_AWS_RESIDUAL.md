@@ -1,11 +1,11 @@
 # Anji alignment residual (AWS-goal)
 
-**Updated:** 2026-09-20 (live lite key-cells measured; stack destroyed)  
-**Alignment:** **~94/100** (was ~90% post packaging-dedup; was ~78% before)  
+**Updated:** 2026-09-20 (live lite key-cells + live↔sim relative-rank fidelity; stack destroyed)  
+**Alignment:** **~96/100** (was ~94% after live lite; was ~90% post packaging-dedup)  
 **Status:** **NOT COMPLETE**
 
 ## Compact
-`RQ9 Obj12 Method13 Impl13 Exp11 Metrics10 Evidence11 Claims8 Rubric7` → **~94/100**
+`RQ9 Obj12 Method13 Impl13 Exp11 Metrics10 Evidence12 Claims9 Rubric7` → **~96/100**
 
 ## Live AWS inventory (evidence-only)
 
@@ -40,8 +40,9 @@ Directional only (do not cite as confirmatory): longer VT → longer measured re
 
 ## Top blockers to 100%
 1. **Confirmatory live** (repeats > 1) and/or **CA2-depth key cells** (`configs/key_cells.yaml` burst / VT 600 / MRC 10) — lite smoke ≠ full residual closure
-2. Live↔sim fidelity writeup with explicit non-overclaim
-3. Optional soft: adaptive_vt only if DIVE re-introduced
+2. Optional soft: adaptive_vt only if DIVE re-introduced
+
+Live↔sim **relative-rank** writeup is filled (`results/live/key_cells/fidelity.json`); not live $n{>}1$.
 
 **Do not mark sole AWS residual closed:** lite 4-cell n=1 is necessary but not sufficient for 100% CA2 alignment.
 

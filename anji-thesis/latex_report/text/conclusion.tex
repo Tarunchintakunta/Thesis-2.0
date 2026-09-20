@@ -83,7 +83,7 @@ The study validates simulation as a reproducible alternative to live experimenta
 \subsection{Remaining Limitations}
 
 \begin{itemize}
-    \item \textbf{External validity (AWS fidelity):} Absolute metrics may differ from live AWS due to cold starts, network jitter, CloudWatch delays. Relative effects are expected to hold, but live validation (future work) is needed to quantify deltas.
+    \item \textbf{External validity (AWS fidelity):} Lite live 4-cells show \textbf{relative ranks} matching localsim (VT, MRC DLQ/dup). Absolute recovery is shorter on the 200-order live cells than on $\sim$3600-order localsim campaigns. Confirmatory live $n{>}1$ is still open.
     
     \item \textbf{Workload generalizability:} Synthetic payloads, single processing pattern. Findings should generalize to similar workloads (e-commerce, logging, event routing) but may not cover all edge cases (e.g., very large messages, complex processing logic).
     
@@ -97,7 +97,7 @@ The study validates simulation as a reproducible alternative to live experimenta
 \subsection{Short-Term Extensions}
 
 \begin{enumerate}
-    \item \textbf{Live AWS Validation:} Execute a subset of runs (20–30 key cells) on AWS, compare metrics to simulator, quantify fidelity. Publish delta report as appendix. Estimated cost: \$10-15.
+    \item \textbf{Live AWS Validation:} Lite 4/4 + relative-rank fidelity is done. Remaining: confirmatory repeats / CA2-depth key cells (VT 600 / MRC 10 / $n{>}1$). Do not start a new apply by default.
     
     \item \textbf{Additional Fault Types:} Extend to partial downstream failures (50\% requests fail), gradual degradation (increasing latency over time), cascading failures (downstream triggers upstream).
     

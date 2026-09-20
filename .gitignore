@@ -73,6 +73,7 @@ rassool-thesis/dynamodb-pk-capacity-eval/results/*
 !rassool-thesis/dynamodb-pk-capacity-eval/results/keycell_destroy.log
 !rassool-thesis/dynamodb-pk-capacity-eval/results/keycell_analyse.log
 !rassool-thesis/dynamodb-pk-capacity-eval/results/keycell_collect.log
+!rassool-thesis/dynamodb-pk-capacity-eval/results/hypotheses_keycell_n1.json
 
 # vikas: lambda zip + local/moto run folders (make functional recreates them)
 vikas-thesis/lambda-idempotency-eval/build/

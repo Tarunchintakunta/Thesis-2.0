@@ -1,11 +1,11 @@
 # Rasool alignment residual (live W3/W4 key-cells measured)
 
 **Updated:** 2026-09-20 (live key-cell round 12/12; stack destroyed)  
-**Alignment:** **~92/100** (was ~78% after claim hygiene)  
+**Alignment:** **~94/100** (was ~92% after 12/12; was ~78% after claim hygiene)  
 **Status:** **NOT COMPLETE** (literal 100% still open)
 
 ## Compact
-`RQ8 Obj10 Method13 Impl13 Exp11 Metrics9 Evidence11 Claims8 Rubric8` → **~92/100**
+`RQ8 Obj10 Method13 Impl13 Exp11 Metrics10 Evidence11 Claims9 Rubric8` → **~94/100**
 
 ## Live AWS inventory (evidence-only)
 
@@ -40,7 +40,8 @@ Path: `rassool-thesis/dynamodb-pk-capacity-eval/results/`
 **Key-cell round:** complete (12/12 planned for W3/W4 × K1–K3 × capacity).  
 **Request-path list-price sum (`cost_usd`):** ≈ **$0.251**.  
 **Missing from full factorial:** all W1/W2 cells.  
-**Not computed:** live ANOVA / KS / Tukey.
+**Not computed:** confirmatory batch ANOVA / Tukey (interaction unidentified at $n=1$).  
+**Computed (exploratory):** additive OLS on 6 W3/W4 cell means; request-level Kruskal–Wallis on `results/raw/*.csv.gz` (pseudo-replication).
 
 Directional only (do not cite as confirmatory): zero throttles on all 12; K3 latencies/costs higher than K1/K2 on several cells; provisioned W4 `cost_per_10k` lower than on-demand for K1/K2 on this replicate.
 
@@ -50,8 +51,10 @@ Directional only (do not cite as confirmatory): zero throttles on all 12; K3 lat
 
 ## Top blockers to 100%
 1. **Soft:** W1/W2 live factorial cells
-2. **Soft:** confirmatory repeats ($n>1$ / design $n=30$) and live ANOVA if required
+2. **Soft:** confirmatory repeats ($n>1$ / design $n=30$)
 3. Soft: Cost Explorer cross-check (optional; not required to close hard residual)
+
+Exploratory n=1 stats written (`report/generated/hypotheses_keycell_n1.json`). Do not cite as confirmatory ANOVA.
 
 **Hard AWS residual closed:** prior sole hard residual was the live DynamoDB key-cell campaign; 12/12 W3/W4 measured + destroy-after-round satisfies that gate. Remaining gaps are soft.
 
@@ -61,7 +64,7 @@ Directional only (do not cite as confirmatory): zero throttles on all 12; K3 lat
 GATE_READY=yes
 LIVE_KEYCELL_COMPLETE=yes
 LIVE_FULL_FACTORIAL=no
-LIVE_ANOVA=no
+LIVE_ANOVA=exploratory_n1_only
 AWS_CLASS=required
 SOLE_AWS_RESIDUAL=no
 DESTROY_AFTER_ROUND=yes

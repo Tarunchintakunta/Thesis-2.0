@@ -6,9 +6,9 @@
 
 ## Alignment note (2026-09-20 — live W3/W4 key-cells measured)
 
-**CA2 research alignment ≈ 92% — still < 100%. NOT COMPLETE.**
+**CA2 research alignment ≈ 94% — still < 100%. NOT COMPLETE.**
 
-Live evidence is a **12-cell × n=1** key-cell round (K1–K3 × on_demand/provisioned × W3/W4) under `results/` (`batches.csv`, `raw/`, `keycell_summary.*`). It does **not** fill W1/W2, does **not** run confirmatory repeats ($n=30$), and does **not** claim live ANOVA/KS.
+Live evidence is a **12-cell × n=1** key-cell round (K1–K3 × on_demand/provisioned × W3/W4). Exploratory additive OLS (no interaction) and request-level Kruskal–Wallis are in `report/generated/hypotheses_keycell_n1.json`. They do **not** fill W1/W2 and are **not** confirmatory batch ANOVA ($n=1$ saturates the interaction residual).
 
 | Issue | Status |
 |-------|--------|
@@ -16,7 +16,7 @@ Live evidence is a **12-cell × n=1** key-cell round (K1–K3 × on_demand/provi
 | Stack teardown | **Destroyed** after round (32 resources; `DESTROY_EXIT=0`) |
 | Hard AWS residual (first live key-cell campaign) | **Closed** — `SOLE_AWS_RESIDUAL=no` |
 | Soft: W1/W2 factorial cells | **Open** — still `[TO BE FILLED]` |
-| Soft: confirmatory $n>1$ / ANOVA on live | **Open** — not computed |
+| Soft: confirmatory $n>1$ / ANOVA on live | **Exploratory only** — interaction ANOVA unidentified; additive OLS + request-level KW written |
 
 ### Live key-cell round (measured; n=1 each; eu-west-1; orders=100000)
 
@@ -39,7 +39,7 @@ Live evidence is a **12-cell × n=1** key-cell round (K1–K3 × on_demand/provi
 - Request-path list-price sum (analysis `cost_usd`, wall-only provisioned): **≈ $0.251**
 - Evidence: `results/batches.csv`, `results/raw/*.csv.gz` (12), `results/keycell_summary.csv`, `keycell_round_run.log`
 - Destroy: Terraform **32 resources** destroyed; no `ddbpk*` tables/Lambda remaining in eu-west-1
-- **Not claimed:** W1/W2 cells; live ANOVA/Tukey; Cost Explorer validation; K4 dominance; Zipfian calibrated at 1M with 100k seed caveat
+- **Not claimed:** W1/W2 cells; confirmatory live ANOVA/Tukey; Cost Explorer validation; K4 dominance; Zipfian calibrated at 1M with 100k seed caveat
 
 ```
 READY_FOR_AWS=done_keycell_round
@@ -48,11 +48,11 @@ AWS_CLASS=required
 GATE_READY=yes
 LIVE_KEYCELL_COMPLETE=yes
 LIVE_FULL_FACTORIAL=no
-LIVE_ANOVA=no
+LIVE_ANOVA=exploratory_n1_only
 DESTROY_AFTER_ROUND=yes
 ```
 
-Remaining to 100% (soft only): W1/W2 live cells and/or confirmatory repeats + live ANOVA if an operator requires them; do **not** start a new AWS apply by default. Keep claims evidence-bound (key-cell = directional $n=1$).
+Remaining to 100% (soft only): W1/W2 live cells and/or confirmatory repeats. Exploratory n=1 additive OLS + request-level KW are filled; do **not** cite them as confirmatory ANOVA. Do **not** start a new AWS apply by default.
 
 ---
 
@@ -73,7 +73,7 @@ Artefact (Terraform, Lambda workloads, Zipfian generator, cost model, ANOVA pipe
 | IaC tags | `project` / `managed_by` / `purpose` / `data` only — **no student name/ID** |
 | STATUS honesty | **≈92% < 100%**; hard sole residual closed |
 
-**Alignment after live key-cell fold:** ~**92%** (was ~78%). Compact: `RQ8 Obj10 Method13 Impl13 Exp11 Metrics9 Evidence11 Claims8 Rubric8` → ~92/100.
+**Alignment after live key-cell fold + exploratory stats:** ~**94%** (was ~92% after 12/12). Compact: `RQ8 Obj10 Method13 Impl13 Exp11 Metrics10 Evidence11 Claims9 Rubric8` → ~94/100.
 
 ## What Has Been Completed
 
@@ -131,4 +131,4 @@ GATE_READY=yes AWS_CLASS=required SOLE_AWS_RESIDUAL=no READY_FOR_AWS=done_keycel
 ```
 
 **Last Updated:** 2026-09-20  
-**Status:** Live W3/W4 key-cells 12/12 folded (~92%); CA2 **not** 100%; soft residual = W1/W2 + confirmatory/ANOVA
+**Status:** Live W3/W4 key-cells 12/12 + exploratory n=1 stats (~94%); CA2 **not** 100%; soft residual = W1/W2 + confirmatory repeats

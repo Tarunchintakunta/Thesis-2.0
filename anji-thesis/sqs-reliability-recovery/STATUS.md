@@ -1,8 +1,8 @@
 ## Alignment note (2026-09-20 — live lite key-cells measured)
 
-**CA2 research alignment ≈ 94% — still < 100%. NOT COMPLETE.**
+**CA2 research alignment ≈ 96% — still < 100%. NOT COMPLETE.**
 
-Authoritative confirmatory stats remain packaging-deduped localsim: `results/summary/stats_H1_H2_H3.json` (`runs: 350`, `backend: localsim`). Live evidence is a **lite 4-cell × n=1** smoke under `results/live/key_cells/` (`configs/live_key_cells.yaml`); it does **not** replace H1–H3.
+Authoritative confirmatory stats remain packaging-deduped localsim: `results/summary/stats_H1_H2_H3.json` (`runs: 350`, `backend: localsim`). Live evidence is a **lite 4-cell × n=1** smoke under `results/live/key_cells/` (`configs/live_key_cells.yaml`); it does **not** replace H1–H3. Live↔sim **relative ranks** agree (`results/live/key_cells/fidelity.json`); absolute recovery times are **not** scale-matched.
 
 | Issue | Status |
 |-------|--------|
@@ -23,7 +23,8 @@ Authoritative confirmatory stats remain packaging-deduped localsim: `results/sum
 - Wall: **772.3 s** (`run.log`); measured cost sum **≈ $0.00144**
 - Evidence: `results/live/key_cells/manifests/*.json`, `raw/`, `summary.json`, `summary.csv`, `live_key_cells_summary.json`
 - Destroy: Terraform state serial 43, **0 resources**; no `sqs-rr*` Lambda/SQS in eu-west-1 after round
-- **Not claimed:** live confirmatory H1–H3; live↔sim fidelity test; burst/`key_cells.yaml` (VT 600 / MRC 10 / repeats=5)
+- **Not claimed:** live confirmatory H1–H3; live n>1; burst/`key_cells.yaml` (VT 600 / MRC 10 / repeats=5)
+- **Fidelity (non-AWS):** relative ranks agree (longer VT → longer recovery; MRC1 DLQ > MRC5; MRC5 dup > MRC1). Absolute recovery 2.3–28 s live vs ~32–61 s localsim (200 vs ~3600 orders). VT90 matched to sim VT60.
 
 ```
 READY_FOR_AWS=done_lite_round
@@ -35,7 +36,7 @@ LIVE_CONFIRMATORY=no
 DESTROY_AFTER_ROUND=yes
 ```
 
-Remaining to 100%: confirmatory live repeats and/or CA2-depth key cells (burst / longer VT), plus evaluation claims kept evidence-bound.
+Remaining to 100%: confirmatory live repeats and/or CA2-depth key cells (burst / longer VT). Live↔sim relative-rank writeup is filled; do **not** treat it as live n>1.
 
 ---
 # Project Status: Simulation vs Live AWS
@@ -68,7 +69,7 @@ Primary experimental evidence is the **local simulator** (350 packaging-deduplic
 ### ⚠️ Partial / open
 
 1. **Confirmatory live campaigns** (repeats > 1; burst / VT 600 matrix from `key_cells.yaml`)
-2. **Live↔sim fidelity** statistical comparison — not run
+2. **Live↔sim fidelity** — relative ranks written (`results/live/key_cells/fidelity.json`); absolute recovery not comparable
 3. **Dedicated adaptive_vt / DIVE campaign** (optional; matrix disabled)
 
 ## Simulation Validity
@@ -93,8 +94,8 @@ Two git cohorts differ only by whether `spec.adaptive_vt: false` is present. Met
 
 ## Conclusion
 
-Localsim evidence is reconciled to the 350-cell design. Live lite key-cells are **measured (4/4)** but **not confirmatory**. **CA2 alignment ≈ 94% < 100%** until confirmatory/deeper live CA2 key-cell evidence lands.
+Localsim evidence is reconciled to the 350-cell design. Live lite key-cells are **measured (4/4)** but **not confirmatory**. Live↔sim relative ranks agree; absolute recovery does not match at this scale. **CA2 alignment ≈ 96% < 100%** until confirmatory/deeper live CA2 key-cell evidence lands.
 
 ---
 
-**Honest Disclosure:** Live spend for this lite round ≈ **$0.00144** measured (cost-guard estimate was ~$0.01 with safety). Stack destroyed after round. CA2 alignment **≈ 94% < 100%**. **NOT COMPLETE.**
+**Honest Disclosure:** Live spend for this lite round ≈ **$0.00144** measured (cost-guard estimate was ~$0.01 with safety). Stack destroyed after round. CA2 alignment **≈ 96% < 100%**. **NOT COMPLETE.**

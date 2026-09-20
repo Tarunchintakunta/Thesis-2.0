@@ -3,10 +3,10 @@
 **Research Title:** Lightweight Fault Detection and Localisation in AWS Serverless Microservices  
 **Last Updated:** 2026-09-20
 
-## Completion Status: NEAR COMPLETE (CA2 alignment ~96%; sole AWS residual closed)
+## Completion Status: NEAR COMPLETE (CA2 alignment ~97%; sole AWS residual closed)
 
-**Research alignment after lite Leg 3 live overhead:** ~96% — Leg 2 tables locked to RCAEval raw; CausalRCA $n{=}4$ fixed-order quarantined (non-peer); **live Leg 3 overhead measured** under `results/live/overhead.json` (lite protocol).  
-**Not 100% SUBMIT-READY** only for soft packaging (optional CausalRCA 90 / PDF / learned lower-bound parquet). **AWS residual: closed.**
+**Research alignment after lite Leg 3 + learned-LB parquet subset:** ~97% — Leg 2 tables locked to RCAEval raw; CausalRCA $n{=}4$ fixed-order quarantined (non-peer); **live Leg 3 overhead measured** under `results/live/overhead.json` (lite protocol); learned lower bound filled from $n{=}8$ RE2-OB parquet cases (`results/live/learned_lower_bound.csv`).  
+**Not 100% SUBMIT-READY.** Remaining soft: CausalRCA 90; PDF rebuild (pdflatex currently errors / over-length). **AWS residual: closed.**
 
 Authoritative Leg 2 evidence: `results/rcaeval/{summary.md,localisation.csv,detection.json,fixed_order.json}` (from `eval/leg2.py`).  
 Authoritative Leg 3 evidence: `results/live/overhead.json` + `data/runs/live_lite_overhead/` (from lite campaign).
@@ -19,7 +19,7 @@ Authoritative Leg 3 evidence: `results/live/overhead.json` + `data/runs/live_lit
 | Overhead $/latency as live | **Measured (lite)** — `results/live/overhead.json` |
 | latex `refs.bib` | Synced from verified `bib/references.bib` (DOI notes) |
 | Live Leg 3 AWS | **Done (lite)** — destroyed after round |
-| Soft residuals | Optional CausalRCA 90; optional PDF; RCAEval parquet for learned LB |
+| Soft residuals | Optional CausalRCA 90; PDF rebuild (latex errors); learned-LB **filled** ($n{=}8$ subset) |
 
 ---
 
@@ -58,21 +58,22 @@ Protocol: `configs/experiment_lite_overhead.yaml` (5 min/condition, 1 rps, 300 r
 - **reduction_policy_vs_full = 0.803** (≥ 0.5 expected) — **supported** on lite window  
 - Cost $/M req (list-price arithmetic on measured volumes): full ≈ $10.93, policy ≈ $2.25  
 - Latency H0 (policy vs off): Mann–Whitney $p\approx1.2\times10^{-5}$; median_diff ≈ −42 ms (policy lower)  
-- Learned lower bound: **omitted** (`data/rcaeval` parquet absent this host) — not invented  
+- Learned lower bound: **median $4.23\times10^{5}$ bytes/1000 req** from $n{=}8$ RE2-OB `checkoutservice` cases with `traces.parquet` (`results/live/learned_lower_bound.csv`) — compressed parquet **lower bound**, not live-service volume; subset not the full 90-case catalogue  
 - Lite is **directional** measured evidence, not confirmatory 30-minute cells
 
 ## What is NOT done (soft)
 
-1. Optional: full CausalRCA 90-case rerun (non-blocking; currently quarantined).
-2. Optional: PDF rebuild after claim hygiene.
-3. Optional: re-download RCAEval parquet for learned lower-bound column; full 30-min Leg 3 cells.
+1. Optional: full CausalRCA 90-case rerun (non-blocking; currently quarantined; ~minutes/case).
+2. Optional: PDF rebuild after claim hygiene (pdflatex currently errors; over-length vs 20-page cap).
+3. Full 90-case RCAEval parquet catalogue / 30-min Leg 3 cells. Learned-LB **subset** ($n{=}8$) is filled.
 
 ## Blockers to 100%
 
-1. Soft packaging only (CausalRCA / PDF / learned LB parquet). **No AWS blocker.**
+1. Soft packaging (CausalRCA 90 / clean PDF). Learned-LB subset closed. **No AWS blocker.**
 
 ```
 READY_FOR_AWS=yes SOLE_AWS_RESIDUAL=closed AWS_CLASS=required
 LITE_PREP=yes LITE_APPLIED=yes LITE_DESTROYED=yes LIVE_OVERHEAD_EVIDENCE=yes
-ALIGNMENT_ESTIMATE=~96/100
+LEARNED_LB_SUBSET=yes
+ALIGNMENT_ESTIMATE=~97/100
 ```

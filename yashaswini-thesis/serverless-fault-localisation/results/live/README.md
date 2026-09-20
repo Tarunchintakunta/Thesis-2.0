@@ -16,6 +16,6 @@
 
 - **Reduction policy vs full:** 0.803 (80.3%) — meets ≥50% volume bar on this lite cell  
 - **Cost / 1M req (list-price):** full ≈ \$10.93; policy ≈ \$2.25  
-- Learned lower bound omitted (`data/rcaeval` case files absent) — not invented  
+- Learned lower bound: median $4.23\times10^{5}$ bytes/1000 ($n{=}8$ RE2-OB checkoutservice parquet; compressed lower bound)  
 
 Lite is directional measured evidence, not confirmatory 30-minute cells (`configs/experiment.yaml`).

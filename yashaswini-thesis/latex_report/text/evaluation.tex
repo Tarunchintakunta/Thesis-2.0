@@ -200,7 +200,7 @@ Off (PassThrough, ERROR) & $1.252\times10^{6}$ & 0 & $3.755\times10^{5}$ \\
 
 \subsection{Latency / cost (live lite)}
 
-End-to-end load-generator latency (policy vs off): Mann--Whitney $p\approx1.2\times10^{-5}$, median difference $\approx -42$\,ms (policy lower). List-price cost per million requests from measured volumes: full $\approx\$10.93$, policy $\approx\$2.25$. Learned lower-bound column omitted (RCAEval parquet absent on the runner) --- not invented.
+End-to-end load-generator latency (policy vs off): Mann--Whitney $p\approx1.2\times10^{-5}$, median difference $\approx -42$\,ms (policy lower). List-price cost per million requests from measured volumes: full $\approx\$10.93$, policy $\approx\$2.25$. Learned lower bound (compressed RCAEval parquet, $n{=}8$ RE2-OB \texttt{checkoutservice} cases): median $4.23\times10^{5}$ bytes/1000 requests --- a lower bound on learned-arm inputs, not a live-service measurement (\texttt{results/live/learned\_lower\_bound.csv}).
 
 \section{Competitiveness Assessment}
 

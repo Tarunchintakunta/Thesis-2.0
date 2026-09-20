@@ -28,9 +28,11 @@ Live Lambda (lite) & \texttt{data/raw/live*/}, \texttt{data/processed/live/} &
 \end{tabular}
 \end{table}
 
-\textbf{Residual (soft):} Confirmatory sample sizes ($n{\ge}30$ per cell per the power plan),
-a working \texttt{python-bytecode} cell, and Holm--Bonferroni tests over the confirmatory
-family. The hard gate of ``no live Init Duration'' is closed for the lite campaign.
+**Residual (soft):** Confirmatory sample sizes ($n{\ge}30$ per cell per the power plan).
+\texttt{python-bytecode} is \textbf{formally dropped} from H2 (Unhandled; no Init). Holm--Bonferroni
+\textbf{was run on lite $n$} (\texttt{reports/paper/tables/live\_lite/hypotheses.json}): H1/H2 reject;
+H3 fails to reject ($p_{\mathrm{holm}}=1$, 3 blocks). Underpowered vs the freeze. The hard gate of
+``no live Init Duration'' is closed for the lite campaign.
 
 \section{Live Lambda Init Duration (lite, measured)}
 \label{sec:eval_live_init}
@@ -136,6 +138,9 @@ package prune (lite $n{=}12$):
 
 These bands apply practical thresholds from \texttt{configs/analysis\_plan.yaml} only.
 They are \textbf{not} substitutes for the pre-registered Holm family.
+Lite Holm results: H1/H2 \textbf{reject}; H3 \textbf{fail to reject} ($n_{\mathrm{blocks}}=3$).
+Warming therefore stays \texttt{avoid} on the Holm decision matrix even though the
+point-estimate cold-rate drop is $0.20$.
 
 \section{Proxy Benchmark Results (Not Lambda Init Duration)}
 \label{sec:eval_proxy}
@@ -200,6 +205,9 @@ figures are watermarked SYNTHETIC. Mock outputs are excluded from research concl
     \item \textbf{H4-lite:} complete --- Python optimised memory sweep.
     \item \textbf{H3-lite:} complete --- 30\,m sparse warmer on vs off ($n{=}10$/arm).
     \item \textbf{Measured cost / ROI-lite:} present in \texttt{data/processed/live/}.
+    \item \textbf{Holm family on lite $n$:} H1/H2 reject at $\alpha{=}0.05$; H3 does not
+      ($p_{\mathrm{holm}}=1$). Warming ADOPT-lite point estimate is \textbf{not} Holm-supported.
+    \item \textbf{python-bytecode:} formally dropped (W7).
     \item \textbf{Stack:} \texttt{coldstart-study-*} still deployed (do not destroy while
       shared-account work continues).
 \end{itemize}
@@ -212,9 +220,9 @@ runtime, package size, memory, low-frequency warming). No such results are repor
 
 \section{Summary}
 
-Live lite Init Duration, H3 cold-rate, H4 memory, and measured cost cells are in
-\texttt{data/processed/live/}. Package prune shows large Init reductions and lower
-all-cold cost per 1{,}000 on the point estimates. Soft residuals remain: confirmatory $n$,
-Holm family tests, and a fixed bytecode variant.
+Live lite Init Duration, H3 cold-rate, H4 memory, measured cost cells, and the lite Holm
+family are in \texttt{data/processed/live/} and \texttt{reports/paper/tables/live\_lite/}.
+Package prune H2 rejects after Holm (lite $n{=}12$). Soft residual: confirmatory $n{\ge}30$.
+\texttt{python-bytecode} is dropped, not pending a silent fix.
 
 Kondragunta Lakshmi Chaitanya

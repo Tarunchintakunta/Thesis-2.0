@@ -1,0 +1,8 @@
+control,scope,init_delta_ms,cold_freq_delta,ms_saved_per_invocation,delta_cost_per_1k_usd,test,p_holm,band,when_to_use
+Switch runtime,java -> python,245.07999999999998,0.0,49.016,-0.0011348945633333333,H1,2.847866427575736e-06,adopt,new functions where the team is free to pick the language
+Prune package,python default->optimised,3267.6299999999997,0.0,653.526,-0.008251819036666667,H2_python,0.000146338214155884,adopt,see thesis notes
+Prune package,nodejs default->optimised,860.3399999999999,0.0,172.06799999999998,-0.0026393465300000004,H2_nodejs,0.000146338214155884,adopt,see thesis notes
+Prune package,java default->optimised,353.86,0.0,70.772,-0.0008644487666666665,H2_java,0.000146338214155884,adopt,see thesis notes
+Raise memory (exploratory),python 128->1024 MB,14.820000000000007,0.0,2.9640000000000017,0.00011625058125000002,H4_python,0.02688952682253635,avoid,when cold p95 matters more than the price per GB-s
+Low-frequency warming,EventBridge rate(5 min),,-0.2,16.932,0.00033229675777777775,H3,1.0,avoid,"sparse, latency-sensitive traffic; one ping keeps one environment, so bursts still go cold"
+(Future) Provisioned concurrency,not measured,,,,,-,,not tested,"paid feature, out of the primary scope (future work)"

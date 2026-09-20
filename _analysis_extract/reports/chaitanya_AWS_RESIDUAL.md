@@ -1,11 +1,11 @@
 # Chaitanya alignment residual (AWS-goal)
 
-**Updated:** 2026-09-20 (live Init + H3-lite + H4-lite + ROI-lite folded)  
-**Alignment:** **~95/100** (was ~67% proxy-only / Init residual)  
+**Updated:** 2026-09-20 (lite Holm family + bytecode drop)  
+**Alignment:** **~97/100** (was ~95% after live Init+H3+H4 lite)  
 **Status:** **NOT COMPLETE** (literal 100% still open)
 
 ## Compact
-`RQ9 Obj12 Method13 Impl13 Exp11 Metrics10 Evidence12 Claims9 Rubric6` → **~95/100**
+`RQ9 Obj12 Method13 Impl13 Exp11 Metrics12 Evidence12 Claims10 Rubric6` → **~97/100**
 
 ## Live AWS inventory (evidence-only)
 
@@ -59,8 +59,8 @@ Point estimates vs `analysis_plan.yaml` practical thresholds (**not** Holm-confi
 Measured Init+campaign list-price cost (processed costs sum, Init rounds): ≈ **$0.0013** (+ H3 ≈$0.00002).
 
 ## Top blockers to 100%
-1. **Soft:** confirmatory $n$ (power plan `min_n_per_cell: 30`) + Holm family on H1/H2/H3
-2. **Soft:** fix or drop `python-bytecode` cell (Unhandled on live)
+1. **Soft:** confirmatory $n$ (power plan `min_n_per_cell: 30`). Lite Holm **ran** (H1/H2 reject; H3 fail to reject, 3 blocks).
+2. **Closed:** `python-bytecode` formally dropped (Unhandled on live; ASSUMPTIONS W7)
 3. **Soft:** longer H3 (pre-registered 4 h / gap 360) if depth required beyond lite
 4. Destroy stack only after shared-account campaigns finish
 
@@ -72,7 +72,7 @@ LIVE_INIT_LITE=yes
 LIVE_H3_LITE=yes
 LIVE_H4_LITE=yes
 ROI_LITE_MEASURED=yes
-LIVE_CONFIRMATORY=no
+LIVE_CONFIRMATORY=lite_holm_underpowered
 AWS_CLASS=required
 SOLE_AWS_RESIDUAL=soft
 DESTROY_AFTER_ROUND=deferred

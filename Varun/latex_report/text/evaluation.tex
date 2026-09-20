@@ -2,7 +2,7 @@
 
 \section{Data provenance}
 
-Committed metrics come from three evidence layers:
+Committed metrics come from two evidence layers:
 
 \begin{enumerate}
     \item \textbf{Local simulator} (\texttt{DRY\_RUN=1}):
@@ -10,13 +10,13 @@ Committed metrics come from three evidence layers:
     \item \textbf{Live lite probe} (2026-09-20, \texttt{eu-west-1}):
           \texttt{s3-predictive-optimization/results/live/live\_lite\_summary.json}
           (paired raw vectors in \texttt{live\_lite\_raw.json}).
-    \item \textbf{Local three-workload Wilcoxon} (CA2 §3.3 protocol, simulator trial-buckets):
-          \texttt{results/data/multi\_workload\_wilcoxon.json}.
 \end{enumerate}
 
-The live round is a \textbf{lite scope} probe (24 objects $\times$ 2 storage classes).
-No live S3 Inventory \emph{job} was run. Metadata modules on disk parse lite JSON,
-Inventory CSV, and Boto3 listings (moto-tested); they do not invent CE-settled savings.
+The live round is a \textbf{lite scope} probe (24 objects $\times$ 2 storage classes),
+not a multi-workload CA2 FinOps campaign. No S3 Inventory \emph{job} was enabled.
+\texttt{src/metadata/collector.py} now exists; \texttt{results/live/lite\_metadata.json}
+reconstructs the destroyed 48-object lite table (not a post-destroy ListObjects call).
+See \texttt{docs/FINOPS\_LITE.md}.
 
 Forecast evaluation uses a \textbf{temporal holdout}
 (\texttt{eval\_protocol=temporal\_holdout}): Prophet and naive persistence are fit on the
@@ -81,18 +81,8 @@ GET STANDARD\_IA & 24 & 524.2 & 29.4 & 491.3--624.2 \\
           GET latency $W{=}0$, $p{=}1.19\times10^{-7}$;
           PUT latency $W{=}0$, $p{=}1.19\times10^{-7}$
           (all significant on this probe).
-          This is \textbf{not} a live multi-workload savings Wilcoxon campaign.
+          This is \textbf{not} a multi-workload savings Wilcoxon campaign.
 \end{itemize}
-
-\section{Local three-workload Wilcoxon (simulator)}
-
-CA2 names static/archival, mixed-access, and high-churn trial buckets ($n{\approx}10$).
-\texttt{analysis/statistics.py} ran $n{=}10$ synthetic buckets $\times$ 80 objects against
-Lifecycle and Intelligent-Tiering (\texttt{multi\_workload\_wilcoxon.json}).
-Significant cost cut vs \emph{both} natives on \textbf{static\_archival} and \textbf{mixed\_access}
-($p{=}0.00195$); high-churn vs Lifecycle is \textbf{not} significant ($p{=}0.557$).
-Simulator success bar ``$\ge 2$ of 3 workloads vs both natives'' is met.
-Mean recommend+compare overhead $\approx 0.2$\,ms. These cells are \textbf{not} live AWS bills.
 
 \section{What is and is not evidenced}
 
@@ -102,16 +92,18 @@ Mean recommend+compare overhead $\approx 0.2$\,ms. These cells are \textbf{not} 
           savings; holdout \texttt{beats\_naive=true} on pilot, baseline, and improved.
     \item \textbf{Evidenced (live lite):} real S3 PUT/GET to STANDARD vs STANDARD\_IA;
           CE/CW API reachability; paired Wilcoxon on modeled per-object storage cost and
-          live latency ($n{=}24$); lite metadata/statistics modules over archived JSON.
-    \item \textbf{Evidenced (local 3-workload):} Wilcoxon protocol vs Lifecycle and
-          Intelligent-Tiering on three CA2 mixes; operational overhead timed.
-    \item \textbf{Not evidenced (live):} S3 Inventory \emph{job} CSV from AWS; CE-settled
-          campaign savings; live trial-buckets for the three workloads
-          (see \texttt{DESIGN\_RATIONALE\_BEYOND\_CA2.md}).
+          live latency ($n{=}24$).
+    \item \textbf{Not evidenced:} full multi-workload live FinOps RQ; live Inventory job;
+          CE-settled campaign savings; multi-workload Wilcoxon success protocol
+    \item \textbf{Present (non-live):} \texttt{src/metadata/} collector; reconstructed
+          lite inventory (48 objects); Wilcoxon helper \texttt{analysis/statistics.py}
+          success protocol.
 \end{itemize}
 
-\section{Residual / completion}
+\section{Residual}
 
-Alignment is \textbf{not} 100\%. Live Inventory job + CE-settled multi-workload campaign
-remain the sole hard AWS residual (concurrency-blocked this pass). Simulated and modeled
-storage deltas must not be read as Cost Explorer settled bills.
+After local claim hygiene and the live lite probe, the sole hard residual to 100\% CA2
+alignment remains a \textbf{fuller live S3 FinOps campaign}
+(Inventory/metadata collector + multi-workload Wilcoxon + CE-settled costs).
+Simulated and modeled storage deltas must not be read as Cost Explorer bills.
+The lite probe does not close that residual.

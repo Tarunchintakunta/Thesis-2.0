@@ -92,7 +92,7 @@ class MetricsCalculator:
             "statistic": float(statistic),
             "p_value": float(p_value),
             "alpha": alpha,
-            "significant": p_value < alpha,
+            "significant": bool(p_value < alpha),
             "n": len(sample1)
         }
     

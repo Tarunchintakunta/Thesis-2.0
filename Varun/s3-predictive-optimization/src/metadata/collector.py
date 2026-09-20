@@ -1,93 +1,162 @@
-"""Metadata collection: live-lite JSON + Inventory CSV + Boto3 listing.
+"""S3 object metadata collection.
 
-Formal CA2 Table 1 names Boto3 + S3 Inventory + CloudWatch. This package
-implements those *modules* against committed evidence or injected clients.
-It does not invent Inventory-job output or CE-settled campaign savings.
+Live path uses Boto3 ListObjectsV2 (optional Inventory CSV). Offline path
+rebuilds the destroyed lite-round object table from committed live_lite JSON.
+A live Inventory *job* was never enabled; do not claim it was.
 """
-
 from __future__ import annotations
 
+import csv
+import io
 import json
+from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Iterable, List, Optional
 
-from .boto3_collector import list_object_metadata, metadata_report_from_listing
-from .inventory_csv import inventory_summary, parse_inventory_csv
 
-DEFAULT_SUMMARY = (
-    Path(__file__).resolve().parents[2]
-    / "results"
-    / "live"
-    / "live_lite_summary.json"
-)
-DEFAULT_RAW = (
-    Path(__file__).resolve().parents[2] / "results" / "live" / "live_lite_raw.json"
+FEATURE_FIELDS = (
+    "key", "size_bytes", "size_kb", "size_mb", "storage_class",
+    "age_days", "last_access_days", "access_frequency", "current_storage_class",
 )
 
 
-def load_lite_summary(path: Optional[Path] = None) -> Dict[str, Any]:
-    p = Path(path) if path else DEFAULT_SUMMARY
-    with open(p) as f:
-        return json.load(f)
-
-
-def load_lite_raw(path: Optional[Path] = None) -> Any:
-    p = Path(path) if path else DEFAULT_RAW
-    with open(p) as f:
-        return json.load(f)
-
-
-def inventory_from_lite(summary: Optional[Dict[str, Any]] = None) -> List[Dict[str, Any]]:
-    """Object-level inventory view derived from lite sample_objects (not S3 Inventory)."""
-    summary = summary or load_lite_summary()
-    samples = (summary.get("s3") or {}).get("sample_objects") or []
-    rows: List[Dict[str, Any]] = []
-    for s in samples:
-        rows.append(
-            {
-                "key_standard": s.get("key_standard"),
-                "key_ia": s.get("key_ia"),
-                "size_bytes": s.get("size_bytes"),
-                "storage_class_standard": s.get("storage_class_standard"),
-                "storage_class_ia": s.get("storage_class_ia"),
-                "source": "live_lite_summary.sample_objects",
-                "note": "Not AWS S3 Inventory CSV — lite probe objects only",
-            }
-        )
-    return rows
-
-
-def metadata_report(summary: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
-    summary = summary or load_lite_summary()
-    s3 = summary.get("s3") or {}
+def _size_fields(size_bytes: int) -> dict:
+    size_bytes = int(size_bytes)
     return {
-        "round": summary.get("round"),
-        "region": summary.get("region"),
-        "bucket": summary.get("bucket"),
-        "objects_per_arm": s3.get("objects_per_arm"),
-        "listed_key_count": s3.get("listed_key_count"),
-        "inventory_rows": len(inventory_from_lite(summary)),
-        "wilcoxon": summary.get("wilcoxon") or summary.get("stats"),
-        "cost_explorer_probe": summary.get("cost_explorer") or summary.get("ce"),
-        "cloudwatch": summary.get("cloudwatch") or summary.get("cw"),
-        "disclaimer": (
-            "Parses live-lite evidence only. Inventory CSV / Boto3 listing "
-            "are separate helpers; they do not close CE-settled campaign savings."
-        ),
+        "size_bytes": size_bytes,
+        "size_kb": round(size_bytes / 1024, 4),
+        "size_mb": round(size_bytes / (1024 * 1024), 6),
     }
 
 
-__all__ = [
-    "inventory_from_lite",
-    "inventory_summary",
-    "list_object_metadata",
-    "load_lite_raw",
-    "load_lite_summary",
-    "metadata_report",
-    "metadata_report_from_listing",
-    "parse_inventory_csv",
-]
+def from_inventory_csv(text: str, collected_at: Optional[datetime] = None) -> List[Dict[str, Any]]:
+    """Parse an S3 Inventory CSV (bucket,key,size,last_modified_date,storage_class, …)."""
+    now = collected_at or datetime.now(timezone.utc)
+    rows = []
+    reader = csv.DictReader(io.StringIO(text))
+    for r in reader:
+        key = r.get("key") or r.get("Key") or r.get("object_key")
+        if not key:
+            continue
+        size = int(float(r.get("size") or r.get("Size") or 0))
+        storage = (r.get("storage_class") or r.get("StorageClass") or "STANDARD").upper()
+        last_mod = r.get("last_modified_date") or r.get("LastModifiedDate") or ""
+        age_days = 0
+        if last_mod:
+            try:
+                ts = datetime.fromisoformat(last_mod.replace("Z", "+00:00"))
+                age_days = max(0, int((now - ts).total_seconds() // 86400))
+            except ValueError:
+                age_days = 0
+        rec = {
+            "key": key,
+            "storage_class": storage,
+            "current_storage_class": storage,
+            "age_days": age_days,
+            "last_access_days": age_days,
+            "access_frequency": 0,
+            "source": "inventory_csv",
+            **_size_fields(size),
+        }
+        rows.append(rec)
+    return rows
 
 
-if __name__ == "__main__":
-    print(json.dumps(metadata_report(), indent=2, default=str))
+def from_list_objects(client, bucket: str, prefix: str = "") -> List[Dict[str, Any]]:
+    """Live ListObjectsV2. Not executed in the committed lite round after destroy."""
+    paginator = client.get_paginator("list_objects_v2")
+    now = datetime.now(timezone.utc)
+    rows = []
+    for page in paginator.paginate(Bucket=bucket, Prefix=prefix):
+        for obj in page.get("Contents") or []:
+            last = obj["LastModified"]
+            if last.tzinfo is None:
+                last = last.replace(tzinfo=timezone.utc)
+            age_days = max(0, int((now - last).total_seconds() // 86400))
+            storage = str(obj.get("StorageClass") or "STANDARD").upper()
+            rows.append({
+                "key": obj["Key"],
+                "storage_class": storage,
+                "current_storage_class": storage,
+                "age_days": age_days,
+                "last_access_days": age_days,
+                "access_frequency": 0,
+                "etag": obj.get("ETag"),
+                "source": "list_objects_v2",
+                **_size_fields(int(obj["Size"])),
+            })
+    return rows
+
+
+def from_lite_round(summary: dict, raw: Optional[dict] = None) -> List[Dict[str, Any]]:
+    """Rebuild the 48-object lite table from committed live_lite JSON (bucket destroyed)."""
+    s3 = summary.get("s3") or {}
+    n = int(s3.get("objects_per_arm") or 0)
+    size = int(s3.get("object_bytes") or 0)
+    prefix = s3.get("prefix") or ""
+    collected = summary.get("collected_at")
+    samples = (s3.get("sample_objects") or []) + ((raw or {}).get("sample_objects") or [])
+    by_idx: dict[int, dict] = {}
+    for samp in samples:
+        for kind, field in (("std", "key_standard"), ("ia", "key_ia")):
+            key = samp.get(field)
+            if not key:
+                continue
+            try:
+                idx = int(Path(key).stem.split("-")[-1])
+            except ValueError:
+                continue
+            by_idx.setdefault(idx, {})[kind] = samp
+    rows = []
+    for i in range(n):
+        samp = by_idx.get(i, {})
+        std_s = samp.get("std") or {}
+        ia_s = samp.get("ia") or {}
+        std_key = std_s.get("key_standard") or f"{prefix}std/obj-{i:03d}.bin"
+        ia_key = ia_s.get("key_ia") or f"{prefix}ia/obj-{i:03d}.bin"
+        std_size = int(std_s.get("size_bytes") or size)
+        ia_size = int(ia_s.get("size_bytes") or size)
+        rows.append({
+            "key": std_key,
+            "storage_class": "STANDARD",
+            "current_storage_class": "STANDARD",
+            "age_days": 0,
+            "last_access_days": 0,
+            "access_frequency": 0,
+            "source": "lite_round_reconstructed",
+            "collected_at": collected,
+            **_size_fields(std_size),
+        })
+        rows.append({
+            "key": ia_key,
+            "storage_class": "STANDARD_IA",
+            "current_storage_class": "STANDARD_IA",
+            "age_days": 0,
+            "last_access_days": 0,
+            "access_frequency": 0,
+            "source": "lite_round_reconstructed",
+            "collected_at": collected,
+            **_size_fields(ia_size),
+        })
+    return rows
+
+
+def inventory_summary(rows: Iterable[Dict[str, Any]]) -> Dict[str, Any]:
+    rows = list(rows)
+    dist: dict[str, int] = {}
+    bytes_by: dict[str, int] = {}
+    for r in rows:
+        sc = r.get("storage_class") or "STANDARD"
+        dist[sc] = dist.get(sc, 0) + 1
+        bytes_by[sc] = bytes_by.get(sc, 0) + int(r.get("size_bytes") or 0)
+    return {
+        "n_objects": len(rows),
+        "storage_class_counts": dist,
+        "bytes_by_class": bytes_by,
+        "total_bytes": sum(bytes_by.values()),
+        "sources": sorted({r.get("source") for r in rows if r.get("source")}),
+    }
+
+
+def load_json(path: str | Path) -> dict:
+    return json.loads(Path(path).read_text())

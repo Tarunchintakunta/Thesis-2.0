@@ -28,4 +28,10 @@ power:
   mwu_are: 0.864                  # asymptotic relative efficiency of Mann-Whitney vs t
   min_effect_ms: 50               # = practical.min_init_saving_ms
 
-amendments: []
+amendments:
+  - date: "2026-09-20"
+    reason: >
+      Live lite had no valid Init samples for python-bytecode (Unhandled on all 24
+      invocations). H2 confirmatory contrast is default vs optimised for every runtime.
+      Holm family was run on lite n=12 (H1/H2) and H3 n=3 blocks — underpowered vs
+      min_n_per_cell 30; H3 did not reject. python-bytecode formally dropped from H2.

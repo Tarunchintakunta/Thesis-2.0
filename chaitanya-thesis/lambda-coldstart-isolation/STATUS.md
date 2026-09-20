@@ -338,8 +338,8 @@ The literature review clearly distinguishes:
 
 ### Soft residual / submission polish
 
-- [ ] Confirmatory `n≥30` (optional for literal 100%) + Holm family
-- [ ] Fix or formally drop `python-bytecode` cell
+- [x] Fix or formally drop `python-bytecode` cell
+- [ ] Confirmatory `n≥30` (optional for literal 100%)
 - [ ] Destroy stack after shared-account campaigns finish
 - [ ] Compile final report PDF; weekly/viva Moodle items
 
@@ -373,11 +373,11 @@ The literature review clearly distinguishes:
 | H3 warming frequency (lite) | **DONE** — on 0.00 / off 0.20 (`n=10`/arm) |
 | H4 memory (Python lite) | **DONE** — mean ≈81.5 ms (`n=60`) |
 | Measured ROI / ADOPT-lite | **DONE** (point estimates; not Holm-confirmed) |
-| Confirmatory n + Holm family | **SOFT residual** |
-| python-bytecode cell | **SOFT residual** (Unhandled) |
+| Confirmatory n + Holm family | **SOFT residual** — Holm **run on lite $n$** (H1/H2 reject; H3 fail); $n{\ge}30$ still open |
+| python-bytecode cell | **Dropped** (Unhandled; ASSUMPTIONS W7) |
 | Evaluation predictive-provisioning filler | Removed / quarantined |
 
-Hard live-Init residual closed at lite depth. Soft confirmatory / bytecode / destroy remain (~95% alignment; see `_analysis_extract/reports/chaitanya_AWS_RESIDUAL.md`).
+Hard live-Init residual closed at lite depth. Soft confirmatory $n{\ge}30$ remains. Bytecode formally dropped. Lite Holm family run (~97% alignment; see `_analysis_extract/reports/chaitanya_AWS_RESIDUAL.md`).
 
 ## 11. Honesty and Integrity Statement
 
@@ -396,7 +396,7 @@ This project adheres to strict honesty rules:
 
 ---
 
-**Status Summary:** Live lite Init (H2), H3 warming, H4 memory, and cost-model ROI/ADOPT point estimates are collected and folded into evaluation. **Soft residual:** confirmatory full-$n$ Holm family (and optional bytecode fix). Hard Init residual closed at lite scope (~94–95%).
+**Status Summary:** Live lite Init (H2), H3 warming, H4 memory, cost-model ROI/ADOPT point estimates, and the **lite Holm family** are collected. H1/H2 reject after Holm; H3 does not. **Soft residual:** confirmatory $n{\ge}30$. Bytecode formally dropped. Hard Init residual closed at lite scope (~97%).
 
 **Last Updated:** September 20, 2026  
 **Document Version:** 1.2 (live lite fold)  

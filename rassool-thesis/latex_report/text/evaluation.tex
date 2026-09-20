@@ -1,6 +1,6 @@
 \section{Evaluation}
 
-\textit{Note:} Mixed (W3) and Burst (W4) cells below are filled from the live DynamoDB key-cell round (\texttt{results/batches.csv}, $n{=}1$, \texttt{orders}{=}100000, \texttt{eu-west-1}, 2026-09-20). Steady (W1) and Read-heavy (W2) cells remain unfilled. Moto unit tests exercise the pipeline only and are \textbf{not} empirical findings. Live ANOVA/KS were \textbf{not} computed and are not invented. Cost figures are list-price proxies from \texttt{config/prices.yaml} (publication 2026-09-11), not Cost Explorer.
+\textit{Note:} Mixed (W3) and Burst (W4) cells below are filled from the live DynamoDB key-cell round (\texttt{results/batches.csv}, $n{=}1$, \texttt{orders}{=}100000, \texttt{eu-west-1}, 2026-09-20). Steady (W1) and Read-heavy (W2) cells remain unfilled. Moto unit tests exercise the pipeline only and are \textbf{not} empirical findings. Confirmatory two-way ANOVA with interaction is \textbf{not identified} at $n{=}1$. Exploratory additive OLS and request-level Kruskal--Wallis are in \texttt{report/generated/hypotheses\_keycell\_n1.json} (pseudo-replication; not confirmatory). Cost figures are list-price proxies from \texttt{config/prices.yaml} (publication 2026-09-11), not Cost Explorer.
 
 \subsection{Designed Campaign Configuration}
 
@@ -78,22 +78,22 @@ K3-Provisioned & 0.007128 & 0.005567 \\ \hline
 \end{tabular}
 \end{table}
 
-\textit{Directional only (not practitioner guidance):} On this $n{=}1$ round, K3 on-demand showed higher list-price cost per 10k than K1/K2 on-demand under both W3 and W4; provisioned W4 costs were lower than on-demand for K1/K2. These observations are not validated by ANOVA or Cost Explorer.
+\textit{Directional only (not practitioner guidance):} On this $n{=}1$ round, K3 on-demand showed higher list-price cost per 10k than K1/K2 on-demand under both W3 and W4; provisioned W4 costs were lower than on-demand for K1/K2. Exploratory additive OLS on the six W3 cell means: key $F{=}63.6$, $p{=}0.015$ (residual df${=}2$; \textbf{not} confirmatory). Request-level Kruskal--Wallis $p$ values are $\approx 0$ from $n{=}18000$ ops/cell --- a pseudo-replication artefact, not the pre-registered batch ANOVA.
 
-\subsection{Statistical Analysis (pipeline present; live ANOVA not run)}
+\subsection{Statistical Analysis (exploratory n=1; confirmatory ANOVA not identified)}
 
-Two-way ANOVA with interaction is implemented in \texttt{analysis/analyse.py} and covered by unit tests on \emph{synthetic fixtures}. Table \ref{tab:sim-anova} remains unfilled: live campaign ANOVA $F$/$p$ values were \textbf{not} computed ($n{=}1$ key-cell round).
+Two-way ANOVA with interaction is implemented in \texttt{analysis/analyse.py}. At $n{=}1$ per cell the interaction saturates residual df, so Table \ref{tab:sim-anova} reports the \textbf{exploratory additive} OLS on W3 cell means (residual df${=}2$), not the pre-registered interaction model.
 
 \begin{table}[h]
 \centering
-\caption{ANOVA for Mean Latency (W3) --- not computed on live key-cells}
+\caption{Exploratory additive OLS for mean latency (W3, $n{=}1$ cells) --- not confirmatory}
 \label{tab:sim-anova}
 \begin{tabular}{|l|c|c|c|}
 \hline
 \textbf{Factor} & \textbf{F-statistic} & \textbf{p-value} & \textbf{Effect} \\ \hline
-Key Design (K) & [NOT COMPUTED] & [NOT COMPUTED] & [NOT COMPUTED] \\ \hline
-Capacity Mode (C) & [NOT COMPUTED] & [NOT COMPUTED] & [NOT COMPUTED] \\ \hline
-Interaction (K $\times$ C) & [NOT COMPUTED] & [NOT COMPUTED] & [NOT COMPUTED] \\ \hline
+Key Design (K) & 63.57 & 0.0155 & exploratory, df$_{\mathrm{res}}{=}2$ \\ \hline
+Capacity Mode (C) & 2.43 & 0.260 & exploratory, df$_{\mathrm{res}}{=}2$ \\ \hline
+Interaction (K $\times$ C) & [NOT IDENTIFIED] & [NOT IDENTIFIED] & $n{=}1$ saturates residual \\ \hline
 \end{tabular}
 \end{table}
 
@@ -114,4 +114,4 @@ Moto does \textbf{not} replicate network latency, adaptive/burst capacity, auto-
 
 \subsection{Residual for CA2 evidence}
 
-The first live DynamoDB key-cell campaign (W3/W4, 12/12) is measured and the stack destroyed. Soft residuals remain: W1/W2 live cells, confirmatory repeats, and live ANOVA if required for literal 100\% alignment. Practitioner guidance stays deferred until those soft gaps are closed or explicitly waived.
+The first live DynamoDB key-cell campaign (W3/W4, 12/12) is measured and the stack destroyed. Soft residuals remain: W1/W2 live cells and confirmatory repeats. Exploratory n=1 stats are filled and must not be cited as confirmatory ANOVA. Practitioner guidance stays deferred.
