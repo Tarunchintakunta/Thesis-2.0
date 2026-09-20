@@ -19,7 +19,7 @@
 |--------|:------------------:|:--------:|-----------|------------|
 | Anji | soft (n>1) | Lite 4/4 destroyed | **~94–98%** | **NOT COMPLETE** |
 | Chaitanya | soft (full-n) | Init+H4+H3-lite | **~94–95%** | **NOT COMPLETE** |
-| Rasool | soft (W1/W2) | Live 12/12 destroyed | **~88–92%** | **NOT COMPLETE** |
+| Rasool | soft (W1/W2 / ANOVA) | Live 12/12 destroyed; STATUS/eval folded | **~92%** | **NOT COMPLETE** |
 | Varun | **yes** (fuller FinOps) | Lite done destroyed | **~90%** | **NOT COMPLETE** |
 | Nemi | **yes** (cloud FL) | No | **~78%** | **NOT COMPLETE** |
 | Vikas | **yes** (campaign) | r5 RUNNING (~0.5k+/24k) | **~74%** | **NOT COMPLETE** |
