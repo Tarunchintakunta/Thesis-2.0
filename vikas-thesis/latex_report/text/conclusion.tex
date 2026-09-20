@@ -10,7 +10,7 @@ This study makes three contributions to the serverless computing and cloud syste
 
 Prior work on serverless fault tolerance has focused primarily on custom runtime solutions (Halfmoon, Boki, CausalMesh, LambdaStore, Styx, Netherite, $\mu$2sls) that achieve exactly-once or strong consistency guarantees by replacing or augmenting the FaaS platform \citep{Qi2025Halfmoon, Jia2024Boki, Zhang2024CausalMesh, Mast2026LambdaStore, Psarakis2025Styx, Burckhardt2022Netherite, Kallas2023Mu2sls}. While these systems demonstrate significant advances, they are unavailable to practitioners on managed platforms such as AWS Lambda, Google Cloud Functions, or Azure Functions.
 
-This study is the first to empirically measure the duplicate-mutation reduction, end-to-end latency overhead, and consumed capacity costs of the three application-level write strategies documented by AWS: plain unconditional writes (P1), conditional writes (P2), and idempotency-key patterns (P3). The functional validation on moto confirms that P2 and P3 achieve 0\% duplicate mutations (vs 100\% for P1) under known injected retry counts, providing practitioners with quantitative evidence to inform the choice of idempotency strategy.
+This study implements a controlled measurement of the three application-level write strategies documented by AWS: plain unconditional writes (P1), conditional writes (P2), and idempotency-key patterns (P3). Moto confirms plumbing (0\% vs 100\% duplicates in-mock). A live pilot exists; the full campaign does not. Practitioner-facing quantitative cost claims await live campaign cells. P4/\texttt{TransactWriteItems} is out of scope.
 
 \subsection{Pilot-First Replication Methodology for Serverless Experiments}
 
@@ -39,7 +39,7 @@ The research question asked:
 
 \subsection{Objective 1: Quantify Duplicate-Mutation Rates}
 
-\textbf{Status:} Partially met (moto validation only; live AWS pending).
+\textbf{Status:} Partially met (moto plumbing + live pilot at multiplicity 2; full live campaign deliveries empty).
 
 The moto functional validation quantifies duplicate-mutation rates for P1, P2, and P3 under known injected retry multiplicities of 1, 2, and 5:
 
@@ -51,11 +51,11 @@ The moto functional validation quantifies duplicate-mutation rates for P1, P2, a
 
 Statistical tests (two-proportion $z$-test, chi-square) decisively reject the null hypothesis of equal duplicate rates (Holm-corrected $p < 10^{-14}$ for P1 vs P2 and P1 vs P3). Pre-registered expectation E1 (P1 majority duplicates) is supported; E2 (guarded paths $> 90\%$ reduction) is supported at multiplicity 5 but inconclusive at multiplicity 2 due to small sample size ($N = 30$).
 
-However, moto is a mock environment, not live AWS. The research question is fully answered only when the live AWS campaign is run with a pilot-determined $N \approx 1000$ per path per multiplicity.
+However, moto is a mock environment, and the live pilot covers multiplicity 2 only. The research question for the registered factorial is fully answered only when the live AWS campaign (pilot-chosen $N = 1000$) is executed; \texttt{deliveries.jsonl} is currently empty.
 
 \subsection{Objective 2: Measure Latency}
 
-\textbf{Status:} Not met (moto data not trustworthy; live AWS pending).
+\textbf{Status:} Not met (moto unusable for cost/latency; live pilot has means at mult=2 only; full campaign empty).
 
 Moto reports sub-5 ms mean latency for all paths, with no cold-start overhead. This is unrealistic: real AWS Lambda exhibits 100--500 ms cold-start latency and 1--10 ms warm-execution latency \citep{Scheuner2022CrossFit, Liu2023FaaSLight, Elhemali2022DynamoDB}. The latency measurements from moto are not cited as research findings.
 
@@ -63,7 +63,7 @@ Live AWS campaign data is required to quantify the latency overhead of P2 and P3
 
 \subsection{Objective 3: Measure Consumed Capacity}
 
-\textbf{Status:} Not met (moto data not trustworthy; live AWS pending).
+\textbf{Status:} Not met (moto unusable for cost/latency; live pilot has means at mult=2 only; full campaign empty).
 
 Moto reports fixed 0.5 WCUs for every DynamoDB write, which is incorrect. Real AWS DynamoDB bills 1.0 WCU for successful writes, 1.0 WCU for failed conditional checks, and 1.0 RCU for reads \citep{AWSDynamoDBDocs, Elhemali2022DynamoDB}. The capacity measurements from moto are not cited as research findings.
 

@@ -18,7 +18,7 @@ DynamoDB idem-eval   (on-demand, stream NEW_AND_OLD_IMAGES, TTL on "expiry")
 ```
 
 All resources come from `infra/` and are tagged `project = lambda-idempotency-eval`,
-`student = X25178849`, `data = synthetic`.
+`project = lambda-idempotency-eval`, `managed_by = terraform`, `purpose = research-eval`, `data = synthetic` (no student name/ID tags).
 
 ## 2. Prerequisites
 

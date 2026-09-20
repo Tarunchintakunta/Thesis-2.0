@@ -1,3 +1,9 @@
+> **NON-AUTHORITATIVE / QUARANTINED (2026-09-20).**  
+> This markdown draft overclaims **P4 / TransactWriteItems** results (exactly-once on managed AWS, ~66% latency win, 4.0 vs 3.0 WCU) that are **not** evidenced by `config/experiment.yaml` (P1–P3 only), ASSUMPTIONS A12, empty live campaign `deliveries.jsonl`, or moto campaign cells.  
+> **Do not cite this file** for CA2 evaluation. Authoritative narrative: `latex_report/` + `STATUS.md`. Multi-item transactions = future work.
+
+---
+
 # Title: An Empirical Evaluation of Application-Level Idempotency Strategies for Retry Correctness on AWS Lambda and Amazon DynamoDB
 
 **Abstract**

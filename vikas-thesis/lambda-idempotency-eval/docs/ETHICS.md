@@ -8,7 +8,7 @@ the facts it should rest on.
 
 - [ ] No human participants, no personal data, no survey or interview
 - [ ] Payloads are synthetic (`src/driver/schedule.py`, `data/payload_template.json`): made-up account ids and amounts from a seeded random generator
-- [ ] The target system is the student's own AWS account and only resources created for this study (`infra/`, tagged `student = X25178849`)
+- [ ] The target system is the operator's own AWS account and only resources created for this study (`infra/`, tagged `project = lambda-idempotency-eval`)
 - [ ] No third-party systems are tested, scanned or loaded
 
 ## Acceptable use

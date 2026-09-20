@@ -15,7 +15,7 @@ The pre-registered analysis plan (\texttt{docs/ANALYSIS\_PLAN.md}) specifies hyp
 
 \subsection{Multi-Runtime Comparison}
 
-This study provides the first systematic comparison of cold-start initialization across three production runtimes (Python 3.12, Node.js 20, Java 21) under controlled package-size conditions. Prior work either focuses on single runtimes \citep{bluemke2025ijet} or measures aggregate latency without isolating Init Duration \citep{wen2023characterizing}.
+This study provides a systematic \textit{proxy} comparison of process-start costs across three production runtimes (Python 3.12, Node.js 20, Java 21) under controlled package-size conditions; live Lambda Init Duration comparison remains residual. Prior work either focuses on single runtimes \citep{bluemke2025ijet} or measures aggregate latency without isolating Init Duration \citep{wen2023characterizing}.
 
 Proxy benchmarks (local process initialization measurements) on the GitHub Actions CI runner demonstrate:
 
@@ -27,17 +27,11 @@ Proxy benchmarks (local process initialization measurements) on the GitHub Actio
 
 These findings suggest \textit{dependency bloat costs far exceed runtime choice} for initialization overhead. While these are proxy measurements (not Lambda Init Duration), they validate hypothesis directions before AWS execution.
 
-\subsection{Decision Matrix Framework}
+\subsection{Decision Matrix Framework (Pending Live Cost Cells)}
 
-The decision matrix expresses optimizations as \textit{milliseconds saved per dollar per 1,000 invocations}, enabling practitioners to select strategies matching their latency and budget constraints. For example, package pruning (Python default → optimised) yields:
+The decision matrix \textit{framework} expresses optimizations as milliseconds saved per dollar per 1{,}000 invocations. Proxy package-pruning deltas (e.g., Python default $\rightarrow$ optimised median init-proxy $\Delta = 2362.8$\,ms) illustrate the intended numerator only. The denominator $\Delta C_{1000}$ and any ADOPT / CONSIDER band placement require live Lambda Init Duration and billed-duration cells; they are \textbf{not} claimed as measured AWS results in this submission.
 
-\begin{equation}
-\text{ROI} = \frac{2362.8 \text{ ms}}{\Delta C_{1000}} \approx \infty \text{ ms/USD (negligible cost increase)}
-\end{equation}
-
-This "infinite ROI" (or near-infinite for storage costs) places package optimization in the \textbf{ADOPT} band: significant latency savings with negligible cost penalty.
-
-In contrast, provisioned concurrency (not evaluated here but documented by AWS) eliminates cold starts but incurs continuous warm-container costs proportional to provisioned capacity—potentially \$10–\$50/month per function at 1 unit provisioned. The decision matrix would show high latency reduction but high cost, placing it in the "Consider for latency-critical only" band.
+Provisioned concurrency (out of scope; documented by AWS) would eliminate cold starts at continuous warm-container cost. Ranking that control against free package pruning remains future live analysis.
 
 \subsection{Reproducible Artefact}
 
@@ -47,7 +41,7 @@ The complete experimental artefact is available in the project repository:
     \item Infrastructure-as-Code (AWS SAM template)
     \item Six Lambda function variants (verified digest uniformity)
     \item Data collection pipeline (invoke → collect → parse → cost → analyze)
-    \item 100+ pytest tests (88/93 passing)
+    \item 100+ pytest tests (\texttt{make test} status documented in \texttt{STATUS.md})
     \item Verified bibliography (26 DOI entries, \texttt{scripts/check\_bib.py})
     \item Mock backend (synthetic data generation for zero-cost validation)
     \item Proxy benchmarks (local init measurements with real data)
@@ -57,7 +51,7 @@ All code, configurations, and documentation enable independent replication by ot
 
 \section{Implications for Practice}
 
-The findings (validated via proxy benchmarks, pending live Lambda confirmation) suggest three actionable recommendations for serverless practitioners:
+Pending live Lambda Init Duration, the following are \textit{provisional} recommendations guided by proxy package-size evidence only (H3 warming and H4 memory are unmeasured on AWS):
 
 \subsection{Recommendation 1: Aggressively Prune Dependencies}
 
@@ -82,9 +76,9 @@ However, JVM's first handler execution is slower (Java optimised: 84.8 ms handle
     \item AWS SnapStart is enabled (Java 11/17 Corretto only, checkpoints post-initialization)
 \end{itemize}
 
-\subsection{Recommendation 3: Low-Frequency Warming for Moderate Traffic}
+\subsection{Recommendation 3: Low-Frequency Warming (Unmeasured --- H3 Residual)}
 
-EventBridge scheduled invocations (every 5 minutes) provide a zero-baseline-cost alternative to provisioned concurrency for moderate-traffic functions (invoked less than once per 10 minutes). Warming pings incur only per-request (\$0.0000002) and minimal execution costs (handler returns immediately).
+EventBridge scheduled invocations (every 5 minutes) are \textit{hypothesised} as a low-cost alternative to provisioned concurrency for moderate-traffic functions. H3 has \textbf{not} been run on live Lambda; cost figures below are pricing-model estimates only, not measured campaign outcomes.
 
 Estimated warming cost (per function, 5-minute schedule):
 \begin{equation}
@@ -191,11 +185,9 @@ where $p_{\text{cold}}$ is cold-start frequency under various traffic patterns.
 
 \section{Final Remarks}
 
-This research demonstrates that developer-adjustable controls—particularly deployment package optimization—offer significant cold-start latency reduction with minimal cost increase. Proxy benchmark results suggest package-size effects dominate runtime selection, challenging the conventional wisdom that "choosing the fastest runtime" is the primary optimization lever.
+Proxy benchmarks provide directional evidence that package-size effects can dominate runtime selection on a local CI host. They do not measure AWS Lambda Init Duration, warming frequency, memory effects, or ROI.
 
-The study's rigorous methodology (pre-registered hypotheses, explicit Init Duration isolation, data provenance tracking, reproducible artefact) establishes a template for future serverless performance investigations. The decision matrix framework enables practitioners to make evidence-based trade-offs between latency improvement and cost overhead.
-
-While live AWS Lambda validation is required to confirm absolute Init Duration magnitudes, the proxy benchmarks provide strong directional evidence: \textit{prune dependencies first, choose runtimes second, provision continuously only as a last resort}.
+The study's methodology (pre-registered hypotheses, Init Duration isolation plan, data-mode segregation, reproducible artefact) is ready for live confirmation. Until live REPORT-line Init Duration exists, practitioner recommendations remain provisional: prune dependencies first as a \textit{hypothesis}, then confirm magnitudes and cost bands on Lambda.
 
 \textbf{Final line (per master prompt requirement):}
 

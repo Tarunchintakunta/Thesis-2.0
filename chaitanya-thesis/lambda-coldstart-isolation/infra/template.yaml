@@ -1,7 +1,7 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
 Description: >-
-  Cold-start isolation study (Kondragunta Lakshmi Chaitanya, 25171216).
+  Cold-start isolation research artefact.
   Python 3.12 / Node.js 20 / Java 21 x default / optimised package, plus a
   warming pair with a low-frequency EventBridge warmer. arm64 everywhere.
   No provisioned concurrency, no SnapStart (future work only).

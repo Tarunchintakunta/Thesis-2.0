@@ -1,15 +1,17 @@
 # One DynamoDB table and one Lambda function (master prompt 5 and 6). On-demand
 # capacity, streams on (the independent record of every state change), no SDK
 # or platform retries. `terraform destroy` removes all of it.
+# Tags: project slug only — no personal name or personal ID.
 
 provider "aws" {
   region = var.region
 
   default_tags {
     tags = {
-      project = "lambda-idempotency-eval"
-      student = "X25178849"
-      data    = "synthetic"
+      project    = "lambda-idempotency-eval"
+      managed_by = "terraform"
+      purpose    = "research-eval"
+      data       = "synthetic"
     }
   }
 }

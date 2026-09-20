@@ -7,7 +7,9 @@
 
 ---
 
-## Overall Status: SUBMIT-READY (LOCAL VALIDATION)
+## Overall Status: LOCAL + PROXY COMPLETE — RESIDUAL = LIVE LAMBDA INIT
+
+**Sole residual to answer the CA2 RQ on AWS:** live CloudWatch REPORT *Init Duration* (plus H3 warming frequency and H4 memory cells). Proxy ≠ Init Duration. ROI / ADOPT bands are **not** measured on AWS.
 
 This project investigates cold-start latency reduction in AWS Lambda across runtime languages (Python 3.12, Node.js 20, Java 21), deployment package sizes, memory allocations, and low-frequency EventBridge warming strategies.
 
@@ -196,8 +198,8 @@ make MODE=live campaign pipeline            # run full experiment, analyze
 3. **Literature Survey** ✓ (3–4 pages, 15–20 DOIs cited, gap analysis)
 4. **Research Methodology** ✓ (controlled experiment design, variables, statistical plan)
 5. **Design and Implementation Specifications** ✓ (architecture, IaC, workload, instrumentation)
-6. **Evaluation** ⧗ TEMPLATE (awaiting live AWS results; proxy/mock results documented separately)
-7. **Conclusions and Discussion** ⧗ TEMPLATE (decision matrix framework ready)
+6. **Evaluation** ✓ REWRITTEN (proxy tables only; explicitly no live Init Duration / ROI / ADOPT claims; residual = live Lambda)
+7. **Conclusions and Discussion** ✓ QUARANTINED (decision-matrix framework pending live cost cells; proxy ≠ Lambda)
 8. **References** ✓ (26 verified entries in `bib/references.bib`)
 
 **Figures/Tables:**
@@ -365,6 +367,19 @@ make MODE=live campaign pipeline            # run full experiment, analyze
 
 ---
 
+## Residual to 100% CA2 alignment
+
+| Item | Status |
+|------|--------|
+| Proxy package-size evidence | Present (REAL); labeled not Lambda |
+| Mock pipeline | Present (SYNTHETIC); not RQ answer |
+| Live Lambda Init Duration (H1 primary) | **NOT RUN** — sole hard residual |
+| H3 warming frequency / H4 memory | **NOT RUN** (live) |
+| Measured ROI / ADOPT decision matrix | **NOT MEASURED** (framework only) |
+| Evaluation chapter predictive-provisioning filler | Removed / quarantined |
+
+Non-AWS claim hygiene for evaluation / STATUS / abstract ROI wording is complete. Remaining blocker to a full RQ answer is live AWS Lambda data collection (no deploy in this pass).
+
 ## 11. Honesty and Integrity Statement
 
 This project adheres to strict honesty rules:
@@ -382,10 +397,10 @@ This project adheres to strict honesty rules:
 
 ---
 
-**Status Summary:** The project is ready for live AWS execution and final submission. All infrastructure, code, tests, and documentation are complete. The baseline DOI is verified, literature review is comprehensive, and research design is rigorous. The student must deploy to their personal AWS account, collect live data, and finalize the Evaluation section with real Lambda Init Duration results.
+**Status Summary:** Local artefact, proxy evidence, and claim hygiene are in place. Evaluation no longer claims live Init Duration or measured ROI. **Sole residual:** live Lambda Init Duration (+ H3/H4) on the researcher's AWS account. No AWS deploy in this alignment pass.
 
-**Last Updated:** September 19, 2026  
-**Document Version:** 1.0  
+**Last Updated:** September 20, 2026  
+**Document Version:** 1.1 (claim hygiene)  
 **Prepared by:** Project build system (autonomous research assistant)
 
 ---
