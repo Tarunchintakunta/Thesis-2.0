@@ -62,6 +62,8 @@ def main(argv=None) -> int:
     ap.add_argument("--run", default="data/runs/live")
     ap.add_argument("--stack", default="faultlab")
     ap.add_argument("--region", default="eu-west-1")
+    ap.add_argument("--config", default="configs/experiment.yaml",
+                    help="experiment yaml (use configs/experiment_lite_overhead.yaml for lite Leg 3)")
     args = ap.parse_args(argv)
     import boto3
 
@@ -69,7 +71,10 @@ def main(argv=None) -> int:
     from injector.injector import Injector
     from workloads import loadgen
 
-    exp = yaml.safe_load(open(ROOT / "configs/experiment.yaml"))
+    cfg = Path(args.config)
+    if not cfg.is_absolute():
+        cfg = ROOT / cfg
+    exp = yaml.safe_load(open(cfg))
     run = Path(args.run)
     run.mkdir(parents=True, exist_ok=True)
     p = plan_phase(exp, args.phase, time.time())

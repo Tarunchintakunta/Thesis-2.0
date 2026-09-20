@@ -49,8 +49,13 @@ def main(argv=None) -> int:
     ap.add_argument("--summarise", action="store_true")
     ap.add_argument("--stack", default="faultlab")
     ap.add_argument("--region", default="eu-west-1")
+    ap.add_argument("--config", default="configs/experiment.yaml",
+                    help="experiment yaml (use configs/experiment_lite_overhead.yaml for lite Leg 3)")
     args = ap.parse_args(argv)
-    exp = yaml.safe_load(open(ROOT / "configs/experiment.yaml"))
+    cfg = Path(args.config)
+    if not cfg.is_absolute():
+        cfg = ROOT / cfg
+    exp = yaml.safe_load(open(cfg))
     run = Path(args.run)
     if args.summarise:
         from eval import overhead

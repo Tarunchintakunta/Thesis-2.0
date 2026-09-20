@@ -1,0 +1,79 @@
+# Free-Tier–safe lite Leg 3 overhead only (not full calibration/campaign).
+# Same stack/services/tracing conditions as experiment.yaml; shorter windows.
+# Full protocol remains configs/experiment.yaml (30 min/condition).
+stack_name: faultlab
+services: [orders_api, inventory, payments, notifications]
+entry_service: orders_api
+fault_targets: [inventory, payments, notifications]
+
+fault_types: [timeout, dependency_failure, throttling, elevated_latency]
+
+injection:
+  duration_s: 60
+  recovery_s: 300
+  per_type_per_load: 60
+  seed: 24262404
+  timeout_hold_ms: 1500
+  client_timeout_ms: 1000
+  latency_ms: [300, 800]
+  throttle_reserved_concurrency: 0
+
+load:
+  steady_rps: 1                 # lite: half of full (2) to ease account concurrency
+  peak_multiplier: 5
+
+calibration:
+  hours: 24
+control:
+  minutes: 60
+
+detector:
+  period_s: 60
+  series: [ErrorRate, Duration, ThrottleRate]
+  rules:
+    window_min: 30
+    sigma: 3.0
+    percentile: 99
+    min_baseline_points: 10
+    min_std:
+      ErrorRate: 0.005
+      ThrottleRate: 0.005
+      Duration: 5.0
+  match_tolerance_s: 120
+
+localisation:
+  k: [1, 3]
+  depth_weight: 0.5
+
+tracing:
+  full:    {mode: Active, reservoir_per_s: 1000, fixed_rate: 1.0, log_level: INFO}
+  policy:  {mode: Active, reservoir_per_s: 1,    fixed_rate: 0.05, log_level: ERROR}
+  "off":   {mode: PassThrough, log_level: ERROR}
+overhead:
+  minutes_per_condition: 5      # lite: 5 min × 3 conditions (full protocol uses 30)
+
+rcaeval:
+  dataset: RE2-OB
+  side_s: 600
+  bucket_s: 10
+  calibration_s: 300
+  control_s: 300
+  rolling_s: 300
+  rank_window_s: 300
+  series: {latency: Duration, error: ErrorRate}
+  min_std: {Duration: 0.005, ErrorRate: 0.005}
+  entry_sli: frontend_latency
+  baselines: [baro, circa, causalrca, tracerca]
+
+stats:
+  alpha: 0.05
+  bootstrap: 2000
+  permutations: 10000
+
+expectations:
+  f1_concession_pp: 10
+  top3_concession_pp: 10
+  telemetry_reduction: 0.5
+
+budget:
+  daily_usd: 10
