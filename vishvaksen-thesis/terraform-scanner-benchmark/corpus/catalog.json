@@ -1,0 +1,39 @@
+{
+  "n_modules": 240,
+  "n_per_category": 60,
+  "defective_fraction_target": 0.6,
+  "categories": [
+    "public_storage",
+    "overpermissive_access",
+    "encryption_at_rest",
+    "weak_logging"
+  ],
+  "ethics": "evaluation_only_no_apply",
+  "scale_note": "Formal CA2 N = 60 modules/category \u00d7 4 = 240; 60% defective (36 insecure + 24 secure per category).",
+  "counts": {
+    "public_storage": {
+      "n": 60,
+      "insecure": 36,
+      "secure": 24,
+      "defective_fraction": 0.6
+    },
+    "overpermissive_access": {
+      "n": 60,
+      "insecure": 36,
+      "secure": 24,
+      "defective_fraction": 0.6
+    },
+    "encryption_at_rest": {
+      "n": 60,
+      "insecure": 36,
+      "secure": 24,
+      "defective_fraction": 0.6
+    },
+    "weak_logging": {
+      "n": 60,
+      "insecure": 36,
+      "secure": 24,
+      "defective_fraction": 0.6
+    }
+  }
+}

@@ -1,7 +1,7 @@
 # CA2 Commitments — Vishvaksen (formal)
 
 **Source:** Derived from formal CA2 file `vishvaksen-thesis/VishvaksenMachana_25173421_proposal.docx` (*Evaluation of Terraform Security Scanners and Policy-as-Code Gates…*).  
-**Status:** Binding research contract = **formal CA2**. Current `iac-security/` artefact implements a **different thesis** (War et al. comment-ablation hybrid) and does **not** satisfy this CA2.  
+**Status:** Binding research contract = **formal CA2**. Formal artefact = `terraform-scanner-benchmark/`. War comment-ablation hybrid is quarantined at `_superseded_proxy/iac-security/` and is **not** this CA2.  
 **AWS deploy / apply:** **Not required.** Formal ethics: corpus is evaluation-only; **“No live infrastructure is applied.”** Free-tier AWS may be used only for optional parse/validate. **Do not terraform-apply** insecure modules.
 
 ## Research question (formal)
@@ -25,6 +25,6 @@ Verdet et al. (2025) Terraform security-policy adoption study — gap is missing
 | Remediation effort (diff LOC) | Required |
 
 ## Non-goals / honesty
-- Prior proxy “War comment-ablation + TF-IDF hybrid” is **not** this CA2.
+- Prior proxy “War comment-ablation + TF-IDF hybrid” is **not** this CA2 (`_superseded_proxy/`).
 - Synthetic labelled modules are **not** a blocker (formal corpus is purpose-built synthetic).
 - Fine-tuned CodeBERT / Ansible-Puppet smell detection is out of scope for this formal CA2.

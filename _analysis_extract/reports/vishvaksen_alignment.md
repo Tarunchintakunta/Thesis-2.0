@@ -2,10 +2,10 @@
 
 **Updated:** 2026-09-20  
 **Formal file:** `vishvaksen-thesis/VishvaksenMachana_25173421_proposal.docx`  
-**Alignment to formal CA2:** **~28/100** (was ~86 vs superseded War comment-ablation proxy)
+**Alignment to formal CA2:** **~62/100** (was ~28 when artefact was War hybrid)
 
 ## Compact
-`RQ3 Obj2 Method2 Impl5 Exp4 Metrics4 Evidence3 Claims2 Rubric3` → **~28/100**
+`RQ6 Obj7 Method6 Impl7 Exp6 Metrics7 Evidence6 Claims5 Rubric5` → **~62/100**
 
 ## Formal extract (binding)
 | Field | Formal CA2 |
@@ -17,13 +17,15 @@
 | AWS apply | **Forbidden** for insecure modules; no live infra apply |
 
 ## Artefact vs formal
-`iac-security/` is a **different programme** (War comment-ablation + TF-IDF hybrid on synthetic snippets). Domain keyword overlap (IaC misconfiguration); tools/corpus/stages do **not** match formal Checkov/tfsec/OPA benchmark.
+`terraform-scanner-benchmark/` is the formal programme (N=240 labelled
+modules; Checkov; tfsec; OPA; scripted checklist).  
+`_superseded_proxy/iac-security/` is a **different** programme (War
+comment-ablation) and is **not** evidence.
 
-## True blockers to 100% (vs formal)
-1. Labelled Terraform secure/insecure corpus (4 AWS categories) with dual review
-2. Three-stage evaluation: manual checklist, Checkov+tfsec defaults, OPA/Rego CI gate
-3. Per-category P/R/F1/FN + scan time + remediation LOC; pinned tool versions
-4. Soft: retire War-hybrid-as-CA2 claims; publish corpus/policies/scripts
+## Remaining blockers to 100%
+1. Independent human checklist (scripted regex ≠ human rater)
+2. 20% second-reviewer subsample
+3. Thesis write-up vs Verdet (Holm–Bonferroni / McNemar in prose)
 
 **AWS required:** **no** (do not apply)  
-**Synthetic:** **not** a blocker (formal corpus is synthetic by design)
+**Synthetic:** **not** a blocker

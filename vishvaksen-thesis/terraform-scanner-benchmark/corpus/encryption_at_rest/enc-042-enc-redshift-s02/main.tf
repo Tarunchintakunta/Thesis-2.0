@@ -1,0 +1,33 @@
+# EVALUATION ONLY — do not terraform apply.
+# Synthetic labelled AWS Terraform module for scanner and policy-as-code measurement.
+# Category: encryption_at_rest | Label: secure | Module: enc-042-enc-redshift-s02 | Pattern: enc-redshift
+
+terraform {
+  required_version = ">= 1.5.0"
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.0"
+    }
+  }
+}
+
+provider "aws" {
+  region = "eu-west-2"
+}
+
+resource "aws_redshift_cluster" "this" {
+  cluster_identifier  = "eval-enc-042-enc-redshift-s02"
+  node_type           = "dc2.large"
+  master_username     = "evaladmin"
+  master_password     = var.master_password
+  cluster_type        = "single-node"
+  publicly_accessible = false
+  encrypted           = true
+  skip_final_snapshot = true
+}
+
+variable "master_password" {
+  type      = string
+  sensitive = true
+}
