@@ -80,6 +80,10 @@ yashaswini-thesis/serverless-fault-localisation/data/runs/sim/
 *.fdb_latexmk
 *.fls
 *.log
+!rassool-thesis/dynamodb-pk-capacity-eval/results/keycell_round_run.log
+!rassool-thesis/dynamodb-pk-capacity-eval/results/keycell_destroy.log
+!rassool-thesis/dynamodb-pk-capacity-eval/results/keycell_analyse.log
+!rassool-thesis/dynamodb-pk-capacity-eval/results/keycell_collect.log
 *.out
 *.run.xml
 *.synctex.gz
