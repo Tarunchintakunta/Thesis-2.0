@@ -18,7 +18,8 @@ Authoritative Leg 2 evidence: `results/rcaeval/{summary.md,localisation.csv,dete
 | Overhead $/latency as live | Softened — estimator only; no `results/live/` |
 | latex `refs.bib` | Synced from verified `bib/references.bib` (DOI notes) |
 | STATUS Submit-Ready | **Demoted** |
-| Live Leg 3 AWS | **Sole residual** — not deployed |
+| Live Leg 3 AWS | **Sole residual** — lite prep ready; apply deferred |
+| Lite Leg 3 prep (2026-09-20) | Packages + `terraform validate` OK; **not applied** (account ConcurrentExecutions limit 10; shared campaigns at 8–10) |
 
 ---
 
@@ -27,7 +28,7 @@ Authoritative Leg 2 evidence: `results/rcaeval/{summary.md,localisation.csv,dete
 1. SAM artefact + moto tests (76); sim rig under `results/sim/` (labeled NOT AWS).
 2. RCAEval raw + recomputed Leg 2 summary (rules/BARO/CIRCA/TraceRCA/hybrid $n{=}90$; CausalRCA $n{=}4$ quarantined).
 3. Config manual / analysis plan / bib present.
-4. Terraform scaffold under `terraform/` (**not applied**).
+4. Terraform scaffold under `terraform/` (**not applied**); lite packaging path `make tf-package` / `docs/LITE_LEG3_OVERHEAD.md`.
 
 ## Evidence-locked Leg 2 numbers (do not invent)
 
@@ -45,17 +46,18 @@ CausalRCA: `fixed_order.json` share$=1.0$ → cannot be strongest baseline.
 
 ## What is NOT done
 
-1. Live AWS Leg 3 (`results/live/` absent) — calibration / fault campaigns / measured overhead.
+1. Live AWS Leg 3 (`results/live/` absent) — measured overhead (lite or full). Full calibration / fault campaigns remain optional depth beyond the sole residual.
 2. Optional: full CausalRCA 90-case rerun (non-blocking; currently quarantined).
 3. PDF rebuild after claim hygiene (optional packaging).
 
 ## Blockers to 100%
 
 1. Keep LaTeX/STATUS/MD locked to raw JSON (no invented competitiveness win).
-2. **AWS residual (sole):** Leg 3 live overhead once gate allows.
+2. **AWS residual (sole):** Leg 3 live overhead — **prep complete**, execution blocked by shared-account Lambda concurrency (limit 10; Vikas/Chaitanya/Rassool pressure). See `docs/LITE_LEG3_OVERHEAD.md` and `_analysis_extract/reports/yashaswini_AWS_RESIDUAL.md`.
 
 ```
 READY_FOR_AWS=yes SOLE_AWS_RESIDUAL=yes AWS_CLASS=required
+LITE_PREP=yes LITE_APPLIED=no BLOCKER=account_lambda_concurrency
 ```
 
-**Do not** `sam deploy` / `terraform apply` until alignment-first gate.
+**Do not** invent overhead metrics. **Do not** apply while ConcurrentExecutions headroom is unsafe.

@@ -5,7 +5,8 @@ STACK ?= faultlab
 RUN ?= data/runs/live
 
 .PHONY: setup test lint cfn-lint check-bib sim budget rcaeval-data rcaeval-venv leg2-rules leg2-baselines leg2 \
-	build deploy seed calibration steady peak collect rig destroy aws-verify
+	build deploy seed calibration steady peak collect rig destroy aws-verify \
+	tf-package tf-init tf-validate tf-plan lite-overhead-help
 
 setup:
 	python3.12 -m venv .venv
@@ -66,6 +67,24 @@ rig:
 
 destroy:
 	sam delete --stack-name $(STACK)
+
+# Terraform path (preferred when SAM CLI is unavailable). Packages → validate → apply.
+tf-package:
+	bash scripts/package_terraform.sh
+
+tf-init:
+	cd terraform && terraform init -input=false
+
+tf-validate: tf-package
+	cd terraform && terraform init -input=false && terraform validate
+
+tf-plan: tf-validate
+	cd terraform && terraform plan -input=false
+
+lite-overhead-help:
+	@echo "Lite Leg 3: configs/experiment_lite_overhead.yaml (5 min x 3 conditions @ 1 rps)"
+	@echo "See docs/LITE_LEG3_OVERHEAD.md — destroy after; tags: project/managed_by/purpose/data only"
+	@echo "Gate: account ConcurrentExecutions headroom before apply (shared student account)."
 
 aws-verify:
 	@bash ../../scripts/aws-verify/yashaswini-serverless.sh
