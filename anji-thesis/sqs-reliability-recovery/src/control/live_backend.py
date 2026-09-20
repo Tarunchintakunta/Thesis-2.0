@@ -23,6 +23,7 @@ import json
 import threading
 import time
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Any
 
 from control.fault_controller import SsmFaultController, schedule_for_run
@@ -61,6 +62,42 @@ class StackOutputs:
             consumer_function=out["QueueConsumerFunctionName"],
             mapping_id=out["ConsumerMappingId"],
             fault_param=out["FaultParamName"],
+        )
+
+    @classmethod
+    def from_terraform(cls, terraform_dir: str | Path) -> "StackOutputs":
+        """Load outputs from ``terraform output -json`` (preferred live IaC path)."""
+        import subprocess
+
+        tf_dir = Path(terraform_dir)
+        proc = subprocess.run(
+            ["terraform", "output", "-json"],
+            cwd=tf_dir,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        raw = json.loads(proc.stdout or "{}")
+
+        def _val(key: str) -> str:
+            entry = raw.get(key)
+            if entry is None:
+                raise KeyError(f"terraform output missing: {key}")
+            value = entry.get("value") if isinstance(entry, dict) else entry
+            if value is None:
+                raise KeyError(f"terraform output {key} is null (Lambda packages missing?)")
+            return str(value)
+
+        return cls(
+            queue_url=_val("orders_queue_url"),
+            dlq_url=_val("orders_dlq_url"),
+            queue_arn=_val("orders_queue_arn"),
+            api_url=_val("sync_api_url"),
+            orders_table=_val("orders_table_name"),
+            events_table=_val("events_table_name"),
+            consumer_function=_val("consumer_function_name"),
+            mapping_id=_val("consumer_mapping_id"),
+            fault_param=_val("fault_param_name"),
         )
 
 

@@ -55,6 +55,16 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     p.add_argument("--limit", type=int, help="stop after N runs (smoke tests)")
     p.add_argument("--live", action="store_true", help="really use AWS (also needs DRY_RUN=0)")
     p.add_argument("--stack-name", default=os.environ.get("STACK_NAME", "sqs-rr-dev"))
+    p.add_argument(
+        "--terraform-dir",
+        default=os.environ.get("TERRAFORM_DIR", str(PROJECT_ROOT / "terraform")),
+        help="load StackOutputs from terraform output -json (preferred over CloudFormation)",
+    )
+    p.add_argument(
+        "--from-cfn",
+        action="store_true",
+        help="use CloudFormation stack outputs instead of terraform (legacy)",
+    )
     p.add_argument("--pricing", default=str(PROJECT_ROOT / "configs" / "pricing.yaml"))
     p.add_argument("--from-env", action="store_true", help="one ad-hoc run built from .env / environment variables")
     p.add_argument("--quiet", action="store_true")
@@ -187,7 +197,11 @@ def main(argv: list[str] | None = None) -> int:
         estimate = check_plan(specs, pricing)
         print(f"[cost guard] ~${estimate['usd_total']:.2f} for {estimate['runs']} runs "
               f"(~{estimate['est_wall_hours']:.1f} h), limit ${estimate['limit_usd']:.2f}")
-        outputs = StackOutputs.from_stack(args.stack_name)
+        if args.from_cfn:
+            outputs = StackOutputs.from_stack(args.stack_name)
+        else:
+            outputs = StackOutputs.from_terraform(args.terraform_dir)
+            print(f"[live] stack from terraform dir {args.terraform_dir}")
     elif args.live:
         print("[info] --live given but DRY_RUN is not 0 -> staying on the local simulator")
 

@@ -179,16 +179,38 @@ Eleven figures are provided in \texttt{results/figures/}:
 
 All figures include axis labels, legends, titles, and captions in report text.
 
+\section{Live AWS lite key-cells (measured)}
+
+A separate \textbf{lite} live round (\texttt{configs/live\_key\_cells.yaml}, $n=1$ per cell, $200$ orders, region \texttt{eu-west-1}) produced four manifests under \texttt{results/live/key\_cells/}. This is \textbf{not} a confirmatory replacement for H1--H3 (still localsim-only, $n=5$ after packaging-dedup). Authoritative live inventory: \texttt{results/live/key\_cells/summary.json}. The Terraform stack was destroyed after the round; evidence files were kept.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{llrrrrrr}
+\hline
+\textbf{Campaign} & \textbf{Fault} & \textbf{VT} & \textbf{MRC} & \textbf{loss} & \textbf{dup} & \textbf{DLQ} & \textbf{rec.\ (s)} \\
+\hline
+L\_vt\_consumer\_kill & consumer\_kill & 30 & 5 & 0.0 & 0.015 & 0.0 & 2.343 \\
+L\_vt\_consumer\_kill & consumer\_kill & 90 & 5 & 0.0 & 0.005 & 0.0 & 7.532 \\
+L\_mrc\_unhandled\_error & unhandled\_error & 30 & 1 & 0.0 & 0.0 & 0.16 & --- \\
+L\_mrc\_unhandled\_error & unhandled\_error & 30 & 5 & 0.0 & 0.05 & 0.0 & 28.506 \\
+\hline
+\end{tabular}
+\caption{Live lite key-cells ($n=1$). Recovery for MRC\,1 unhandled\_error was censored (\texttt{recovered: false}). Throughput: 2.824, 1.537, 7.122, 2.920\,msg/s. Measured cost sum $\approx$\$0.00144; wall 772.3\,s.}
+\end{table}
+
+\textbf{Directional only (not confirmatory):} under consumer\_kill, measured recovery was longer at VT\,90 than VT\,30; under unhandled\_error, MRC\,1 showed DLQ capture $0.16$ while MRC\,5 showed DLQ $0$ with duplicate rate $0.05$; loss was $0$ on all four cells. Do \textbf{not} claim live H1--H3 decisions, live$\leftrightarrow$sim fidelity tests, or completion of the burst/\texttt{key\_cells.yaml} matrix (VT\,600 / MRC\,10 / repeats\,5) from this lite round.
+
 \section{Summary}
 
-The evaluation confirms:
+The evaluation confirms (localsim confirmatory unless noted):
 \begin{itemize}
     \item \textbf{Queue-arm loss floor is zero} under tested faults (H1 VT$\rightarrow$loss confirmatory test not estimable).
     \item \textbf{MRC$\rightarrow$recovery H2:} fail to reject; DLQ capture vs MRC is the clear exploratory signal.
     \item \textbf{Long VT lengthens mean recovery} (descriptive: VT\,600 mean $600$\,s vs alternatives $224$\,s, $r=0.667$); H3\_recovery \textbf{fails to reject} after Holm ($p_{\mathrm{adj}}=0.084$).
-    \item \textbf{Visibility timeout is the primary recovery time determinant} (1:1 relationship).
-    \item \textbf{MRC should be tuned using DLQ/duplicate evidence} (exploratory: MRC\,1 high DLQ; MRC$\ge5$ near-zero DLQ but higher duplicates under unhandled\_error).
+    \item \textbf{Visibility timeout is the primary recovery time determinant} (1:1 relationship) in localsim exploratory campaign~A.
+    \item \textbf{MRC should be tuned using DLQ/duplicate evidence} (exploratory localsim; live lite MRC\,1 vs MRC\,5 DLQ/dup directionally consistent, $n=1$).
     \item \textbf{Batch$\rightarrow$recovery:} not supported by committed confirmatory stats; optimize batch for throughput with caution.
+    \item \textbf{Live lite 4/4:} measured smoke on AWS; confirmatory/deeper CA2 key-cell live still open.
 \end{itemize}
 
-Findings are \textbf{localsim-only}. Adaptive VT/DIVE was not evaluated (\texttt{adaptive\_vt: false}). Cost was not an experimental DV. Live AWS validation remains required for CA2 cloud evidence.
+Confirmatory findings are \textbf{localsim}. Adaptive VT/DIVE was not evaluated (\texttt{adaptive\_vt: false}). Cost was not an experimental DV. Live AWS lite evidence exists; CA2 alignment remains \textbf{below 100\%} pending confirmatory or deeper live key-cell coverage.
