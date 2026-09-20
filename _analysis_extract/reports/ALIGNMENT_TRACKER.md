@@ -17,10 +17,10 @@
 | Rasool | 62% | **~88–92% live DDB 12/12** | Soft: W1/W2 / ANOVA | **No — hard K×W3/W4 closed** |
 | Chaitanya | 67% | **~94–95% live Init+H3+H4 lite** | Soft: confirmatory n + bytecode | **No — hard Init closed (lite)** |
 | Vikas | 68% | **~74% campaign in progress** | Soft: DOI | **Yes — sole (full campaign)** — **r5 RUNNING** |
-| Mehak | 80% | **~64% vs formal** | GCT files + Aldomi-on-GCT | **No** |
-| Pooja | 77% | **~48% vs formal** | Traces+LSTM+K8s; AWS not sole | **Yes** (not sole) |
-| Uday | 83% | **~18% vs formal MQTT** | Artefact≠CA2 | **Yes** (not sole) |
-| Vishvaksen | 78% | **~28% vs formal scanner** | Artefact≠CA2 | **No** |
+| Mehak | 80% | **~82% vs formal** | Broader GCT parts; Aldomi paper-faithful; net channel | **No** |
+| Pooja | 77% | **~62% vs formal** | GCT2011/Alibaba + live K8s; AWS not sole | **Yes** (not sole) |
+| Uday | 83% | **~56% mock harness + TF** | Live IoT Core + free-tier scale | **Yes** (not sole) |
+| Vishvaksen | 78% | **~62% vs formal scanner** | Human checklist + dual review | **No** |
 
 ## Iteration log
 1–13. Prior hygiene / exploration / formal rescore (see git history).  
@@ -32,4 +32,8 @@
 19. **2026-09-20 — Nemi non-AWS raise** (~68→~78); sole=cloud FL; no apply.  
 20. **2026-09-20 — Yashaswini Leg3 lite prep** (validate/plan; apply deferred under concurrency=10).  
 21. **2026-09-20 — Reconverge** agent cursor/* branches onto `feature/aws-ca2-alignment`; Vikas r5 workers=4 continues.  
-22. **2026-09-20 — Yashaswini Leg3 lite live** apply→3 conditions→`results/live/overhead.json`→destroy (~96%; sole AWS residual closed; reduction=0.803).
+22. **2026-09-20 — Yashaswini Leg3 lite live** apply→3 conditions→`results/live/overhead.json`→destroy (~96%; sole AWS residual closed; reduction=0.803).  
+23. **2026-09-20 — Vishvaksen formal scanner tree** `terraform-scanner-benchmark/` N=240 + runners; War proxy quarantined (~28%→~62%; AWS apply still forbidden).  
+24. **2026-09-20 — Pooja non-AWS raise** (~48→~62): GCT v1 slice+LSTM, K8s dry-run vs HPA, formal metrics, NimbusGuard proxy quarantined; no AWS deploy.  
+25. **2026-09-20 — Uday formal artefact rebuild** `mqtt-qos-iot-core/` mock dry-run + unapplied IoT Core TF; proxy quarantined; **~56%**; **not COMPLETE**; no AWS apply.  
+26. **2026-09-20 — Mehak GCT MV + train** 2011 subset + join + 5-seed `--dataset gct` (~64→~82%); results under `results/gct/`.

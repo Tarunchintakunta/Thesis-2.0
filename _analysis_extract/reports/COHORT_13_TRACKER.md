@@ -21,7 +21,7 @@
 | 8 | Nemi | **~78%** | CA2.txt | Yes |
 | 9 | Mehak | **~88%** | **NOT FOUND** → `CA2_COMMITMENTS.md` | Yes |
 | 10 | Pooja | **~85%** | **NOT FOUND** → `CA2_COMMITMENTS.md` | Yes |
-| 11 | Uday | **~90%** | **NOT FOUND** → `CA2_COMMITMENTS.md` | Yes |
+| 11 | Uday | **~56% vs formal MQTT** | `UdayKiranReddyDodda_X25166484_proposal.docx` | Yes |
 | 12 | Vishvaksen | **~86%** | **NOT FOUND** → `CA2_COMMITMENTS.md` | Yes |
 | 13 | Kasi | — | — | **EXCLUDED** |
 
@@ -49,3 +49,4 @@
 - 2026-09-20e: Varun temporal-holdout forecast fix; Yashaswini CausalRCA quarantine; both READY_FOR_AWS=yes; still NOT COMPLETE; no AWS apply
 - 2026-09-20f: Anji live lite 4/4 folded → ~98%; SOLE_AWS_RESIDUAL=no; soft confirmatory $n>1$; NOT COMPLETE; no new AWS apply
 - 2026-09-20g: Nemi non-AWS raise → ~78%; centralised + real UNSW sample; SOLE_AWS_RESIDUAL=yes; no terraform apply
+- 2026-09-20h: Uday formal MQTT artefact `mqtt-qos-iot-core/` (mock dry-run + unapplied IoT Core TF); proxy quarantined; **~56%**; NOT COMPLETE; no AWS apply

@@ -1,0 +1,39 @@
+# Published unit prices used for *estimated* cost (objective 4).
+# Not a bill. Recompute if AWS revises the public price list.
+# Region: eu-west-1. Retrieved from AWS IoT Core / Lambda / DynamoDB public pricing
+# pages as documented 2026-09-20. Treat as research estimates only.
+currency: USD
+region: eu-west-1
+retrieved: "2026-09-20"
+source_notes:
+  - "https://aws.amazon.com/iot-core/pricing/"
+  - "https://aws.amazon.com/lambda/pricing/"
+  - "https://aws.amazon.com/dynamodb/pricing/"
+safety_factor: 2.0
+
+iot_core:
+  # Connectivity $0.08 / million minutes; messaging $1.00 / million (5 KB) in Ireland.
+  usd_per_million_minutes: 0.08
+  usd_per_million_messages: 1.00
+  usd_per_million_rules_triggered: 0.15
+  usd_per_million_rule_actions: 0.15
+  message_size_kb_block: 5
+
+lambda:
+  usd_per_million_requests: 0.20
+  usd_per_gb_second: 0.0000133334
+  assumed_memory_mb: 128
+  assumed_duration_ms: 15
+
+dynamodb:
+  # On-demand WRU (eu-west-1 typical public list; small items = 1 WRU)
+  usd_per_million_wru: 1.25
+  usd_per_million_rru: 0.25
+
+free_tier_monthly:
+  iot_messages: 250000
+  iot_minutes: 250000
+  iot_rules: 250000
+  iot_actions: 250000
+  lambda_requests: 1000000
+  lambda_gb_seconds: 400000
