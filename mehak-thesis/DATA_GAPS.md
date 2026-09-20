@@ -2,9 +2,9 @@
 
 **Binding CA2:** `MAHEK NAAZ.docx`  
 **Required dataset:** Google Cluster Trace (GCT) — CPU, memory, disk I/O, network, scheduling/machine events  
-**Status in this repo:** **ABSENT** — no GCT files under `mehak-thesis/` or elsewhere in Thesis-2.0 (verified 2026-09-20).
+**Status in this repo (2026-09-20):** **PARTIAL** — minimum viable **2011** subset landed under `mhsa-tdl-framework/data/gct/2011/` (see `data/gct/PROVENANCE.md`). Full 41 GB trace not downloaded; expand `task_usage`/`task_events` parts for stronger coverage.
 
-Formal CA2 does **not** pin a GCT generation. Both public families are acceptable sources; **neither is present**.
+Formal CA2 does **not** pin a GCT generation. 2011 MV subset is present; 2019 cells remain absent.
 
 ## Missing artefacts (must land under `mehak-thesis/mhsa-tdl-framework/data/gct/`)
 
@@ -43,18 +43,30 @@ Formal evaluation is **healthy vs unhealthy / failure** classification with Acc,
 
 **Synthetic `TelemetrySimulator` labels are not a substitute** for these GCT-derived labels under formal CA2.
 
-## Baselines blocked without GCT
+## Baselines on this GCT subset
 
-Formal baselines (Aldomi-style hybrid; RF / KNN / SVM / GRU monitors) must be scored on the **same GCT-derived splits**. Artefact classical baselines on synthetic telemetry (see `results/`) are **scaffold only** — not formal CA2 evidence.
+RF / KNN / SVM and an Aldomi-style GRU+feature-gate **scaffold** are scored on the
+same GCT windows (`results/gct/`). That is **not** a paper-faithful Aldomi clone.
+Synthetic `results/results_*.csv` remain artefact-as-built only.
 
 ## Loader contract
 
 `mhsa-tdl-framework/src/data/gct_loader.py` looks for `MHSA_GCT_ROOT` or `data/gct/{2011,2019}/`. If missing, it raises with this file’s checklist — **no silent synthetic fallback** when `--dataset gct` is requested.
 
-## What exists today (artefact-as-built)
+## What exists today
 
 | Artefact | Path | Formal CA2 role |
 |----------|------|-----------------|
+| GCT 2011 MV subset | `mhsa-tdl-framework/data/gct/2011/` | **Landed** — 1 usage part + 2 event parts + machine_events (`data/gct/PROVENANCE.md`) |
+| GCT 5-seed metrics | `mhsa-tdl-framework/results/gct/` | Formal-path evidence on this subset (`dataset=gct`) |
 | Synthetic telemetry | `src/data/telemetry_simulator.py` | Proxy / development only |
-| 5-seed results (incl. formal metric suite on synthetic) | `results/results_*.csv` | **Not** GCT evidence |
+| Synthetic 5-seed CSVs | `results/results_*.csv` | **Not** GCT evidence |
 | Optional SAM/Lambda | `template.yaml` | **Not** required by formal CA2 |
+
+## Still missing
+
+- Remaining 2011 `task_events` / `task_usage` parts 00002–00499 (~41 GB full trace)
+- `job_events`, `machine_attributes`
+- 2011 **network-byte** channel (schema has none; 4th MHSA channel = sampled CPU)
+- Entire 2019 Borg eight-cell family
+- Paper-faithful Aldomi architecture / hyperparams (scaffold only)

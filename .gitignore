@@ -27,6 +27,11 @@ cdk.out/
 **/data/interim/
 **/data/processed/
 **/data/external/loghub/*.log
+# Mehak GCT bulk (scripts/download_gct_2011.py; keep provenance json/md)
+mehak-thesis/mhsa-tdl-framework/data/gct/**/*.csv.gz
+mehak-thesis/mhsa-tdl-framework/data/gct/**/*.partial
+mehak-thesis/mhsa-tdl-framework/data/gct/**/*.gstmp
+mehak-thesis/mhsa-tdl-framework/data/gct/**/*.npz
 # trained model pickles (re-created by the pipeline)
 **/results/models/
 *.joblib
@@ -40,6 +45,12 @@ chaitanya-thesis/lambda-coldstart-isolation/build/
 # chaitanya: processed CSVs are small and are the dataset deliverable, keep them
 !chaitanya-thesis/lambda-coldstart-isolation/data/processed/
 chaitanya-thesis/lambda-coldstart-isolation/data/pilot/*/raw/
+
+# uday: terraform lambda zip + mock raw dumps
+uday-thesis/mqtt-qos-iot-core/build/
+uday-thesis/mqtt-qos-iot-core/results/mock/device_log/
+uday-thesis/mqtt-qos-iot-core/results/mock/delivered/
+uday-thesis/mqtt-qos-iot-core/results/mock/manifests/
 
 # terraform state / plans / lambda zips (rassool)
 .terraform/

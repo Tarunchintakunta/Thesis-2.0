@@ -1,0 +1,46 @@
+{
+  "canonical_repo": "https://github.com/google/cluster-data",
+  "schema": "https://github.com/google/cluster-data/blob/master/ClusterData2011_2.md",
+  "bucket_gs": "gs://clusterdata-2011-2",
+  "bucket_http": "https://storage.googleapis.com/clusterdata-2011-2",
+  "license": "CC-BY 4.0 (Google cluster-data)",
+  "trace": "clusterdata-2011-2 (v2.1, ~29 days, May 2011 Borg cell)",
+  "files": [
+    {
+      "object": "machine_events/part-00000-of-00001.csv.gz",
+      "url": "https://storage.googleapis.com/clusterdata-2011-2/machine_events/part-00000-of-00001.csv.gz",
+      "path": "/Users/valletivarish/Documents/Thesis-2.0/mehak-thesis/mhsa-tdl-framework/data/gct/2011/machine_events/part-00000-of-00001.csv.gz",
+      "expected_bytes": 347211,
+      "action": "downloaded",
+      "sha256": "fc44b8d2b33a96a261382488789855be7a0ce338888c99930ff45cb592249664",
+      "bytes": 347211
+    },
+    {
+      "object": "task_events/part-00000-of-00500.csv.gz",
+      "url": "https://storage.googleapis.com/clusterdata-2011-2/task_events/part-00000-of-00500.csv.gz",
+      "path": "/Users/valletivarish/Documents/Thesis-2.0/mehak-thesis/mhsa-tdl-framework/data/gct/2011/task_events/part-00000-of-00500.csv.gz",
+      "expected_bytes": 4139742,
+      "action": "downloaded",
+      "sha256": "eae977d521bc6ed5d8deef56f1e06009d41844d4eb9a7e308e610d68e1b10f18",
+      "bytes": 4139742
+    },
+    {
+      "object": "task_events/part-00001-of-00500.csv.gz",
+      "url": "https://storage.googleapis.com/clusterdata-2011-2/task_events/part-00001-of-00500.csv.gz",
+      "path": "/Users/valletivarish/Documents/Thesis-2.0/mehak-thesis/mhsa-tdl-framework/data/gct/2011/task_events/part-00001-of-00500.csv.gz",
+      "expected_bytes": 924634,
+      "action": "downloaded",
+      "sha256": "c122f250cf1f9817dc722a5b7457eb5caf122619accfada078de66d40f311501",
+      "bytes": 924634
+    },
+    {
+      "object": "task_usage/part-00000-of-00500.csv.gz",
+      "url": "https://storage.googleapis.com/clusterdata-2011-2/task_usage/part-00000-of-00500.csv.gz",
+      "path": "/Users/valletivarish/Documents/Thesis-2.0/mehak-thesis/mhsa-tdl-framework/data/gct/2011/task_usage/part-00000-of-00500.csv.gz",
+      "expected_bytes": 91723415,
+      "action": "downloaded",
+      "sha256": "841254d3bc4199c26c82890dcd6bc87fcfb1ff23d75be8e39f0337f0ed1c6e28",
+      "bytes": 91723415
+    }
+  ]
+}

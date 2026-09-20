@@ -1,7 +1,12 @@
 # Results provenance
 
-- Dataset flag used for this CSV: **synthetic**
-- Formal CA2 requires **Google Cluster Trace** (`--dataset gct`).
-- If dataset is `synthetic`, these numbers are **artefact-as-built only** and do **not** close the GCT residual (see `../../DATA_GAPS.md`).
-- Formal metric suite columns present: Accuracy, Precision, Recall, Macro-F1, ROC-AUC, Latency (ms).
-- Classical RF/KNN/SVM rows are scaffold monitors on the same feature matrix; Aldomi hybrid reproduction still needs GCT feature schemas.
+## Synthetic (artefact-as-built, not formal CA2)
+
+- Files: `results_per_seed.csv`, `results_summary.csv` from `--dataset synthetic`.
+- These rows are **not** Google Cluster Trace evidence.
+
+## Google Cluster Trace (formal CA2)
+
+- Files: `gct/results_per_seed.csv`, `gct/results_summary.csv`, `gct/RESULTS_PROVENANCE.md` from `--dataset gct`.
+- Load meta: `{}`
+- Dataset flag in those CSVs: **gct**.

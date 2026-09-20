@@ -1,0 +1,11 @@
+# Results provenance
+- Dataset flag used for this CSV: **gct**
+- Formal CA2 requires **Google Cluster Trace** (`--dataset gct`).
+- If dataset is `synthetic`, these numbers are **artefact-as-built only** and do **not** close the GCT residual (see `../../DATA_GAPS.md`).
+- Formal metric suite columns present: Accuracy, Precision, Recall, Macro-F1, ROC-AUC, Latency (ms), plus Fail-* binary (EVICT∪FAIL vs healthy).
+- Classical RF/KNN/SVM rows are scaffold monitors on the same feature matrix.
+- Aldomi-style GRU+feature-gate is a **family scaffold**, not a paper clone.
+- GCT load meta: `{}`
+- GCT CSVs live under `results/gct/` so synthetic CSVs are not overwritten.
+- 2011 channel 3 is assigned_mem (no network-byte field in this schema).
+- Subset: ≥1 task_events part + ≥1 task_usage part + machine_events; not the full 29-day trace.
