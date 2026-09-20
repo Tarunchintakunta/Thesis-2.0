@@ -43,14 +43,15 @@ Do **not** cite these as achieved SecureFL-IDS results. Achieved numbers remain 
 
 ## What This Demonstrates
 
-✅ **Implementation is correct**: Tests pass, methodology matches baseline paper  
-✅ **Architecture works**: Code executes successfully, produces convergence  
-✅ **Privacy mechanisms functional**: DP noise injection, adaptive epsilon working  
-✅ **Communication efficiency**: Compression reduces parameter transmission  
-✅ **Reproducible**: One-command execution with documented results  
+✅ **Implementation runs:** Tests pass; baseline and improved arms execute  
+✅ **Architecture works:** Code produces convergence metrics on synthetic data  
+✅ **Privacy mechanisms present:** DP noise injection / adaptive epsilon code paths exist  
+✅ **Reproducible PoC:** One-command local run with documented `results/comparison/results.json`  
 
-❌ **Not production-ready results**: Needs full dataset and longer training  
-❌ **F1-scores low**: Models need more features and training to separate classes  
+❌ **Not a communication win:** Improved arm used *more* MB/round (3.12 vs 1.83); compression does not yield −45% on this PoC  
+❌ **Not production-ready results:** Needs full dataset and longer training  
+❌ **F1-scores near zero:** Majority-class collapse on synthetic features  
+❌ **No centralised IDS comparator / no live AWS** 
 
 ## Reproducing Better Results
 

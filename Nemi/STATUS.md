@@ -8,8 +8,8 @@
 
 ## Overall Status: NOT COMPLETE (CA2 alignment < 100%)
 
-**Research alignment (claim hygiene pass):** ~64% — PoC metrics honest; Docker/K8s/AWS/production overclaims removed; DOI `note={doi:…}` added; README baseline-paper figures demoted.  
-**Not SUBMIT-READY for CA2.** Live AWS / full UNSW-NB15 / centralised baseline remain blockers.
+**Research alignment (claim hygiene pass):** ~68% — PoC metrics locked to `results/comparison/results.json`; methodology demoted (synthetic PoC, not full UNSW / 50 rounds); Docker/K8s/AWS overclaims removed; DOI `note={doi:…}` verified on wired `refs.bib`.  
+**Not SUBMIT-READY for CA2.** Non-AWS blockers remain (centralised IDS + full UNSW-NB15) before sole-AWS residual.
 
 ---
 
@@ -18,7 +18,7 @@
 ### 1. Research & Literature Review
 - [x] Literature review and baseline paper (Saklani et al. 2026)
 - [x] Research gaps and RQ formulated
-- [ ] WhatsApp DOI `note={doi:...}` format not fully verified across `refs.bib`
+- [x] WhatsApp DOI `note={doi:...}` present on wired scholarly entries in `latex_report/refs.bib`
 
 ### 2. Artefact Implementation
 
@@ -26,10 +26,10 @@
 - [x] `securefl-ids/` with baseline, improved, and common modules
 - [x] Unit tests present (`tests/`)
 - [x] Experiment scripts and docs
-- [x] Terraform scaffold at `securefl-ids/terraform/` (**exists; not applied** — no live AWS)
+- [x] Terraform scaffold at `securefl-ids/terraform/` (**exists; not applied** — no live AWS; no student name/ID tags)
 
 #### Baseline / Improved (PoC only)
-Committed PoC in `results/comparison/results.json` (synthetic data, 30 rounds, 5 clients):
+**Authoritative:** `results/comparison/results.json` (synthetic data, 30 rounds, 5 clients):
 
 | Metric | Baseline | Improved |
 |--------|----------|----------|
@@ -37,7 +37,8 @@ Committed PoC in `results/comparison/results.json` (synthetic data, 30 rounds, 5
 | F1-Score | ~0.019 (~1.9%) | **0.0** |
 | Avg Comm (MB/round) | 1.83 | 3.12 |
 
-**Do not cite** literature-style 91–94% accuracy, ~90% F1, or −45% communication as *achieved* results — those are baseline-paper / expected-with-full-data figures only, not this PoC.
+**Do not cite** `results/pilot/pilot_results.json` (10-round smoke; baseline acc 0.4) as the CA2 PoC.  
+**Do not cite** literature-style 91–94% accuracy, ~90% F1, or −45% communication as *achieved* results.
 
 ### 3. Experiments & Evaluation
 - [x] Local PoC experiment committed (`results/comparison/results.json`)
@@ -48,7 +49,7 @@ Committed PoC in `results/comparison/results.json` (synthetic data, 30 rounds, 5
 
 ### 4. Documentation
 - [x] README, CONFIGURATION_MANUAL, ARCHITECTURE, RESULTS_NOTE
-- [x] LaTeX report draft present
+- [x] LaTeX report draft present (methodology aligned to PoC)
 - [x] Terraform README notes apply gate (not applied)
 
 ### 5. Deployment honesty
@@ -65,20 +66,23 @@ Committed PoC in `results/comparison/results.json` (synthetic data, 30 rounds, 5
 ## Known Limitations (honest)
 
 1. PoC F1 near zero (majority-class collapse on synthetic 20-feature sample)
-2. Improved variant uses **more** communication MB/round than baseline in the committed PoC (larger CNN-LSTM), not a −45% win
+2. Improved variant uses **more** communication MB/round than baseline in the committed PoC
 3. No Docker/K8s/AWS production evidence
 4. No centralised IDS comparator
 5. Terraform not applied (alignment-first gate)
 
 ---
 
-## Remaining blockers to 100% (non-AWS first, then AWS residual)
+## Remaining blockers to 100%
 
-1. Keep report/STATUS/README metrics locked to `results.json` (no 91–94% as “achieved”)
-2. Centralised IDS baseline (CA2 comparator gap)
-3. Real UNSW-NB15 (or documented equivalent) experiment
-4. DOI `note={doi:...}` hygiene if required by cohort rule
-5. **AWS residual (yes):** live cloud-native FL evaluation once alignment-first gate allows — Terraform ready, not applied
+**Non-AWS (still open — blocks sole-AWS residual):**
+1. Centralised IDS baseline (CA2 comparator gap) — no artefact path
+2. Real UNSW-NB15 (or documented equivalent) experiment — not in `results/`
+
+**AWS residual (yes, not sole):**
+3. Live cloud-native FL evaluation — Terraform ready, not applied
+
+Claim hygiene (metrics lock, DOI, overclaim demotion) is closed.
 
 ---
 
@@ -92,4 +96,4 @@ make test
 ```
 
 **Last Updated:** 2026-09-20  
-**Status:** Claim hygiene raised; CA2 alignment **not** 100%
+**Status:** Claim hygiene raised (~68%); CA2 alignment **not** 100%; SOLE_AWS_RESIDUAL=no

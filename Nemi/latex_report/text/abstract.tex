@@ -8,7 +8,7 @@ SecureFL-IDS addresses these challenges by combining Federated Learning (FL) wit
 
 The evaluated artefact runs as a \textbf{local simulation only}. Docker, Kubernetes, and live AWS (e.g.\ ECS) deployments are \emph{not} claimed as executed; a Terraform scaffold under \texttt{securefl-ids/terraform/} exists but has \textbf{not} been applied. Privacy mechanisms follow ($\epsilon$, $\delta$)-differential privacy with target $\epsilon = 1.0$ and $\delta = 10^{-5}$ in the implemented code paths.
 
-This work contributes a reproducible FL+DP IDS artefact and an honest PoC evaluation. Full-dataset training, a centralised IDS comparator, and live cloud-native deployment remain future work required for CA2 completion.
+This work contributes a reproducible FL+DP IDS artefact and an honest PoC evaluation. A centralised IDS comparator, full UNSW-NB15 training, and live cloud-native deployment remain open blockers for CA2 completion (AWS only after non-AWS residuals clear).
 
 \end{abstract}
 

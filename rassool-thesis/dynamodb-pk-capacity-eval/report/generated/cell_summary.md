@@ -1,6 +1,7 @@
 # Cell summary (6 configurations x 4 workloads)
 
-No results/batches.csv yet - every value is [TO BE FILLED FROM EXPERIMENT].
+No `results/batches.csv` yet — every value is `[TO BE FILLED FROM EXPERIMENT]`.
+These placeholders await the **live DynamoDB campaign** (do not invent moto fills).
 
 | workload | configuration | latency_mean_ms | latency_p95_ms | latency_p99_ms | throughput_ops_s | throttle_rate | cost_per_10k |
 |---|---|---|---|---|---|---|---|
