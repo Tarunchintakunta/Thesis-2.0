@@ -5,7 +5,7 @@
 - Formal metric suite columns present: Accuracy, Precision, Recall, Macro-F1, ROC-AUC, Latency (ms), plus Fail-* binary (EVICT∪FAIL vs healthy).
 - Classical RF/KNN/SVM rows are scaffold monitors on the same feature matrix.
 - Aldomi-style GRU+feature-gate is a **family scaffold**, not a paper clone.
-- GCT load meta: `{}`
+- GCT load meta: `{"family": "2011", "root": "/Users/valletivarish/Documents/Thesis-2.0/mehak-thesis/mhsa-tdl-framework/data/gct", "seq_length": 10, "horizon": 5, "n_windows": 12000, "fail_forced_windows": 489, "n_fail_event_keys": 14819, "n_usage_series": 20412, "transient_rate": 0.21466666666666667, "task_events_parts": ["part-00000-of-00500.csv.gz", "part-00001-of-00500.csv.gz"], "task_usage_parts": ["part-00000-of-00500.csv.gz"], "metrics": ["cpu", "mem", "disk", "net"], "channel_notes": {"cpu": "mean CPU usage rate", "mem": "canonical memory usage", "disk": "mean disk I/O time \u00d750 clipped", "net": "sampled CPU (no network-byte field in 2011 schema)"}, "seed": 42}`
 - GCT CSVs live under `results/gct/` so synthetic CSVs are not overwritten.
-- 2011 channel 3 is assigned_mem (no network-byte field in this schema).
+- 2011 channel 3 (`net`) is sampled CPU — ClusterData 2011 has no network-byte column.
 - Subset: ≥1 task_events part + ≥1 task_usage part + machine_events; not the full 29-day trace.

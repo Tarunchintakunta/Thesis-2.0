@@ -3,9 +3,11 @@
   "root": "/Users/valletivarish/Documents/Thesis-2.0/mehak-thesis/mhsa-tdl-framework/data/gct",
   "seq_length": 10,
   "horizon": 5,
-  "n_windows": 7999,
-  "fail_forced_windows": 2,
-  "transient_rate": 0.2514064258032254,
+  "n_windows": 12000,
+  "fail_forced_windows": 489,
+  "n_fail_event_keys": 14819,
+  "n_usage_series": 20412,
+  "transient_rate": 0.21466666666666667,
   "task_events_parts": [
     "part-00000-of-00500.csv.gz",
     "part-00001-of-00500.csv.gz"

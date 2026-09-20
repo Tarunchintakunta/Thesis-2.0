@@ -39,4 +39,6 @@ Machine-readable copy: `DOWNLOAD_PROVENANCE.json` (written by the fetcher).
 
 Join evidence on this subset (measured 2026-09-20): usage keys are a subset of
 event keys (179427/179427 overlap); FAIL tasks in usage = 479; EVICT in usage =
-5787. That is enough for a first formal run; it is **not** the full 29-day cell.
+5787. Loader prefers FAIL-family series so event-forced windows are not dropped
+by the first-N cap (`fail_forced_windows=489` on N=12000 in `results/gct/`).
+That is enough for a first formal run; it is **not** the full 29-day cell.
