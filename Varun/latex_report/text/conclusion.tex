@@ -1,6 +1,8 @@
 \chapter{Conclusion}
-This work delivers a reproducible \textbf{local} S3 FinOps artefact: rule and ML recommenders, Prophet versus naive forecasting (temporal holdout), and a savings estimator driven by local list prices. Committed dry-run results support a simulated cost-reduction narrative under synthetic workloads, but they do \textbf{not} validate a live AWS research question.
+This work delivers a reproducible \textbf{local} S3 FinOps artefact: rule and ML recommenders, Prophet versus naive forecasting (temporal holdout), and a savings estimator driven by local list prices. Committed dry-run results support a simulated cost-reduction narrative under synthetic workloads.
 
 \textbf{Evidence locked to JSON.} Pilot / baseline / improved allocation accuracies $0.320$ / $0.504$ / $0.178$; holdout MAPE $0.016$ / $0.006$ / $0.231$ versus naive $0.44$; \texttt{beats\_naive=true} on all three arms. Simulated savings percentages ($42\%$, $21\%$, $57\%$) must not be read as Cost Explorer or production bills.
 
-\textbf{What remains.} Live metadata collection, multi-workload Wilcoxon testing, and CloudWatch/Cost Explorer cross-checks are unimplemented. Those are the sole hard residual to 100\% CA2 alignment; the project is not SUBMIT-READY until a gated live campaign exists. Claims track the dry-run artefact only.
+\textbf{Live lite (measured).} A destroy-after probe on real S3 (\texttt{results/live/live\_lite\_summary.json}) recorded STANDARD vs STANDARD\_IA PUT/GET means, CE Unblended sum $\$3.6\times10^{-9}$ over a lagged account window, CloudWatch Logs success, and Wilcoxon $p{<}10^{-6}$ at $n{=}24$ on modeled cost and live latency. Scope is explicitly lite: not Inventory-backed, not multi-workload, not CE-settled savings.
+
+\textbf{What remains.} Live metadata collection (\texttt{src/metadata/} still absent), multi-workload Wilcoxon protocol, and CE-settled campaign cost validation remain the sole hard residual to 100\% CA2 alignment. The project is not SUBMIT-READY; claims track dry-run JSON plus the disclosed lite probe only.

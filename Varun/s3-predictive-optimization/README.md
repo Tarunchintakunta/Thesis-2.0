@@ -94,7 +94,7 @@ s3-predictive-optimization/
 
 ### 6. Evaluation
 - Allocation accuracy, MAPE/RMSE, simulated $ savings
-- Wilcoxon multi-workload campaign **not executed** (no stats module committed)
+- Live lite Wilcoxon ($n{=}24$ cost + PUT/GET latency) recorded under `results/live/`; multi-workload campaign **not** executed
 
 ## Experiment Modes
 
@@ -106,8 +106,9 @@ export DRY_RUN=1  # Default
 make pilot
 ```
 
-### Live AWS Mode (future / gated)
-Documented as a residual under the alignment-first gate. **Do not run** until Research Alignment hits 100% or sole residual is live CA2 AWS. No live results are committed.
+### Live AWS Mode
+**Live lite done** (2026-09-20): `scripts/live_lite_round.py` → `results/live/live_lite_{summary,raw}.json`; stack destroyed.
+Full multi-workload FinOps campaign remains the sole CA2 residual (`READY_FOR_AWS=yes`).
 
 ## Baseline Papers
 

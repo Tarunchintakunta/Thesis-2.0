@@ -12,8 +12,12 @@ The implementation lives under \texttt{Varun/s3-predictive-optimization/} and is
     \item \texttt{src/savings/} + \texttt{src/pricing/} --- list-price estimator (not live
           Pricing API).
     \item \texttt{tests/} --- pytest suite including holdout hygiene tests.
-    \item \texttt{terraform/} --- scaffold only; \textbf{not applied}.
+    \item \texttt{terraform/} --- temporary eval stack applied for the 2026-09-20
+          live lite probe, then \textbf{destroyed} (8 resources; empty state retained).
+    \item \texttt{scripts/live\_lite\_round.py} --- measured S3/CE/CW/Wilcoxon lite probe
+          writing \texttt{results/live/live\_lite\_\{summary,raw\}.json}.
 \end{itemize}
 
-No \texttt{src/metadata/} collector and no \texttt{analysis/statistics.py} Wilcoxon module
-are committed; do not claim them. Live AWS verification remains gated.
+No \texttt{src/metadata/} collector and no dedicated multi-workload
+\texttt{analysis/statistics.py} campaign module are committed; do not claim them.
+The lite Wilcoxon calls are probe-scoped ($n{=}24$), not a full FinOps campaign.

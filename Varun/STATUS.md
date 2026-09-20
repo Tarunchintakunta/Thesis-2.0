@@ -52,10 +52,11 @@ Savings metadata may say “AWS Pricing API”; implementation uses local `confi
 | CE S3 Unblended (2026-09-13→20) | **sum $3.6e-09** (account window; not round savings) |
 | CW metrics | API ok; `BucketSizeBytes` datapoints **[]** (new-bucket lag) |
 | CW Logs | PutLogEvents ok → `/research/s3-pred-opt` stream `lite-20260920T120351Z` |
-| Wilcoxon cost (n=24) | W=0, p=**9.63e-07**, significant |
+| Wilcoxon cost (n=24) | W=0, p=**9.63e-07**, significant (probe-scoped; not multi-workload) |
 | Wilcoxon GET latency (n=24) | W=0, p=**1.19e-07**, significant |
+| Wilcoxon PUT latency (n=24) | W=0, p=**1.19e-07**, significant |
 | Modeled Δ storage $/mo (std−IA) | **3.845e-05** (list-rate model; not CE bill) |
-| Destroy | **complete** (8 resources); bucket absent |
+| Destroy | **complete** (8 resources); empty terraform state; bucket absent |
 
 Artefacts: `results/live/live_lite_summary.json`, `results/live/live_lite_raw.json`.
 

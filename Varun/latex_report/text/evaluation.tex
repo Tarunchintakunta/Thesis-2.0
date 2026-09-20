@@ -2,10 +2,19 @@
 
 \section{Data provenance}
 
-All committed metrics are from the \textbf{local S3 simulator} (\texttt{DRY\_RUN=1}).
-Authoritative artefacts:
-\texttt{s3-predictive-optimization/results/data/\{pilot,baseline,improved\}\_results.json}.
-No live S3 Inventory, Cost Explorer, CloudWatch, or Wilcoxon campaign is claimed.
+Committed metrics come from two evidence layers:
+
+\begin{enumerate}
+    \item \textbf{Local simulator} (\texttt{DRY\_RUN=1}):
+          \texttt{s3-predictive-optimization/results/data/\{pilot,baseline,improved\}\_results.json}.
+    \item \textbf{Live lite probe} (2026-09-20, \texttt{eu-west-1}):
+          \texttt{s3-predictive-optimization/results/live/live\_lite\_summary.json}
+          (paired raw vectors in \texttt{live\_lite\_raw.json}).
+\end{enumerate}
+
+The live round is a \textbf{lite scope} probe (24 objects $\times$ 2 storage classes),
+not a multi-workload CA2 FinOps campaign. No S3 Inventory job and no
+\texttt{src/metadata/} collector were run.
 
 Forecast evaluation uses a \textbf{temporal holdout}
 (\texttt{eval\_protocol=temporal\_holdout}): Prophet and naive persistence are fit on the
@@ -31,17 +40,66 @@ Improved (ML) & 0.178 & 0.231 & 0.44 & \textbf{Yes} & 57.4 \\
 \end{tabular}
 \end{table}
 
+\section{Live lite AWS probe (measured only)}
+
+Terraform applied a temporary eval bucket
+\texttt{s3-pred-opt-60d216643d19b67c00e7ffc8d0} with research tags only
+(\texttt{project}/\texttt{managed\_by}/\texttt{purpose}/\texttt{data}; no personal name/ID tags),
+then destroyed (8 resources; bucket verified absent).
+
+\begin{table}[h]
+\centering
+\caption{Live lite S3 PUT/GET wall times (ms); $n{=}24$ objects per class @ 160\,KiB}
+\label{tab:varun_live_lite_latency}
+\begin{tabular}{lcccc}
+\hline
+\textbf{Op / class} & \textbf{$n$} & \textbf{Mean} & \textbf{Stdev} & \textbf{Min--Max} \\
+\hline
+PUT STANDARD & 24 & 1008.3 & 224.6 & 824.5--1829.1 \\
+PUT STANDARD\_IA & 24 & 681.6 & 213.9 & 513.0--1307.4 \\
+GET STANDARD & 24 & 187.2 & 14.7 & 166.4--234.5 \\
+GET STANDARD\_IA & 24 & 524.2 & 29.4 & 491.3--624.2 \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{itemize}
+    \item \textbf{Cost Explorer} \texttt{GetCostAndUsage} AmazonS3,
+          2026-09-13$\rightarrow$20: sum Unblended \textbf{\$3.6$\times$10$^{-9}$}
+          (account window; \emph{not} round savings).
+    \item \textbf{CloudWatch:} ListMetrics/GetMetricStatistics OK;
+          \texttt{BucketSizeBytes} datapoints empty (new-bucket lag).
+          Logs: PutLogEvents OK $\rightarrow$ \texttt{/research/s3-pred-opt}
+          stream \texttt{lite-20260920T120351Z}.
+    \item \textbf{Modeled} monthly storage (list rates $\times$ live sizes):
+          STANDARD \$8.42$\times$10$^{-5}$; IA \$4.58$\times$10$^{-5}$;
+          $\Delta$ (std$-$IA) \$3.845$\times$10$^{-5}$/mo --- \emph{not} a settled CE bill.
+    \item \textbf{Wilcoxon} (paired, $\alpha{=}0.05$, $n{=}24$):
+          modeled cost $W{=}0$, $p{=}9.63\times10^{-7}$;
+          GET latency $W{=}0$, $p{=}1.19\times10^{-7}$;
+          PUT latency $W{=}0$, $p{=}1.19\times10^{-7}$
+          (all significant on this probe).
+          This is \textbf{not} a multi-workload savings Wilcoxon campaign.
+\end{itemize}
+
 \section{What is and is not evidenced}
 
 \begin{itemize}
-    \item \textbf{Evidenced:} recommendation + forecast + savings pipeline on synthetic
-          workloads; naive persistence baseline (Beck et al.); local list-price savings;
-          holdout \texttt{beats\_naive=true} on pilot, baseline, and improved.
-    \item \textbf{Not evidenced:} live AWS FinOps RQ, Inventory/Boto3 metadata collector,
-          Cost Explorer cross-check, multi-workload Wilcoxon.
+    \item \textbf{Evidenced (dry-run):} recommendation + forecast + savings pipeline on
+          synthetic workloads; naive persistence baseline (Beck et al.); local list-price
+          savings; holdout \texttt{beats\_naive=true} on pilot, baseline, and improved.
+    \item \textbf{Evidenced (live lite):} real S3 PUT/GET to STANDARD vs STANDARD\_IA;
+          CE/CW API reachability; paired Wilcoxon on modeled per-object storage cost and
+          live latency ($n{=}24$).
+    \item \textbf{Not evidenced:} full multi-workload live FinOps RQ; Inventory/Boto3
+          metadata collector; CE-settled campaign savings; multi-workload Wilcoxon
+          success protocol.
 \end{itemize}
 
 \section{Residual}
 
-Sole remaining CA2 residual after local claim hygiene: \textbf{live S3 / CE / CloudWatch /
-Wilcoxon campaign} (AWS). Simulated savings must not be read as Cost Explorer bills.
+After local claim hygiene and the live lite probe, the sole hard residual to 100\% CA2
+alignment remains a \textbf{fuller live S3 FinOps campaign}
+(Inventory/metadata collector + multi-workload Wilcoxon + CE-settled costs).
+Simulated and modeled storage deltas must not be read as Cost Explorer bills.
+The lite probe does not close that residual.
