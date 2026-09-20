@@ -13,8 +13,14 @@
 | Vikas | vikas_alignment.md | 68% | DONE |
 | Anji | anji_alignment.md | 72% | DONE |
 | Varun | — | — | PENDING |
-| Yashaswini | — | — | PENDING |
+| Yashaswini | yashaswini_alignment.md | 62% | DONE |
 | Rasool | rassool_alignment.md | 62% | DONE |
 | Venkat | — | — | PENDING |
 
 **AWS deployment MUST NOT start until all 8 rows are DONE.**
+
+## Yashaswini exploration note (this run)
+- Report: `_analysis_extract/reports/yashaswini_alignment.md`
+- AWS_CLASS=required (Lambda, API Gateway, DynamoDB, CloudWatch, X-Ray)
+- GATE_READY=yes for exploration completeness (not 100% CA2 alignment)
+- Agent: https://cursor.com/agents/bc-a96b5798-fe38-54b8-8582-39d4dec89f04
