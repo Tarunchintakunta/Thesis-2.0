@@ -195,12 +195,31 @@ wait_ssm "$INSTANCE_ID"
 # IAM instance-profile attach can lag a few seconds after SSM is Online.
 sleep 15
 
+SSM_PARAMS="${OUT_DIR}/ssm_params_${RUN_ID}.json"
+python3 - "$SSM_PARAMS" "$BUCKET" "$REGION" "$LOG_GROUP" "$RUN_ID" <<'PY'
+import json, sys
+path, bucket, region, log_group, run_id = sys.argv[1:]
+payload = {
+    "commands": [
+        "set -euxo pipefail",
+        f"aws s3 cp s3://{bucket}/lite/{run_id}/artefact.tgz /tmp/securefl-artefact.tgz",
+        "rm -rf /opt/securefl-ids",
+        "mkdir -p /opt/securefl-ids",
+        "tar -xzf /tmp/securefl-artefact.tgz -C /opt/securefl-ids",
+        "chmod +x /opt/securefl-ids/scripts/bootstrap_cloud.sh",
+        f"/opt/securefl-ids/scripts/bootstrap_cloud.sh {bucket} {region} {log_group} {run_id}",
+    ]
+}
+with open(path, "w", encoding="utf-8") as fh:
+    json.dump(payload, fh)
+PY
+
 CMD_ID="$(aws ssm send-command --region "$REGION" \
   --instance-ids "$INSTANCE_ID" \
   --document-name "AWS-RunShellScript" \
   --comment "securefl-ids lite cloud FL ${RUN_ID}" \
   --timeout-seconds 2400 \
-  --parameters "{\"commands\":[\"bash -lc 'cd / && aws s3 cp s3://${BUCKET}/lite/${RUN_ID}/artefact.tgz /tmp/securefl-artefact.tgz && rm -rf /opt/securefl-ids && mkdir -p /opt/securefl-ids && tar -xzf /tmp/securefl-artefact.tgz -C /opt/securefl-ids && chmod +x /opt/securefl-ids/scripts/bootstrap_cloud.sh && /opt/securefl-ids/scripts/bootstrap_cloud.sh ${BUCKET} ${REGION} ${LOG_GROUP} ${RUN_ID}'\"]}" \
+  --parameters "file://${SSM_PARAMS}" \
   --query 'Command.CommandId' --output text)"
 log "ssm command=$CMD_ID"
 
