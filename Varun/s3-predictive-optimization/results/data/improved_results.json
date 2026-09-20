@@ -4,7 +4,7 @@
     "description": "ML recommendation + time-series forecasting + savings estimation",
     "mode": "dry_run"
   },
-  "timestamp": "2026-09-19T07:55:15.113792",
+  "timestamp": "2026-09-20T17:12:57.449506",
   "config": {
     "experiment": {
       "name": "improved_ml_forecast",
@@ -513,7 +513,7 @@
         "recommended_storage_class": "STANDARD_IA",
         "confidence": 0.9938129186630249,
         "class_probabilities": {
-          "GLACIER_FLEXIBLE": 0.00039339697104878724,
+          "GLACIER_FLEXIBLE": 0.0003933970001526177,
           "GLACIER_INSTANT": 0.005194660741835833,
           "STANDARD": 0.0005990172503516078,
           "STANDARD_IA": 0.9938129186630249
@@ -1255,7 +1255,7 @@
         "recommended_storage_class": "STANDARD",
         "confidence": 0.9901068210601807,
         "class_probabilities": {
-          "GLACIER_FLEXIBLE": 0.0008848215802572668,
+          "GLACIER_FLEXIBLE": 0.0008848215220496058,
           "GLACIER_INSTANT": 0.005483733024448156,
           "STANDARD": 0.9901068210601807,
           "STANDARD_IA": 0.003524625673890114
@@ -3736,7 +3736,7 @@
           "GLACIER_FLEXIBLE": 9.564061474520713e-05,
           "GLACIER_INSTANT": 0.9978492259979248,
           "STANDARD": 0.00029713206458836794,
-          "STANDARD_IA": 0.0017579722916707397
+          "STANDARD_IA": 0.0017579721752554178
         },
         "reason": "ML prediction (confidence: 99.78%)"
       },
@@ -5990,7 +5990,7 @@
           "GLACIER_FLEXIBLE": 5.9780271840281785e-05,
           "GLACIER_INSTANT": 0.9994199275970459,
           "STANDARD": 0.00010939954518107697,
-          "STANDARD_IA": 0.00041091060847975314
+          "STANDARD_IA": 0.0004109106375835836
         },
         "reason": "ML prediction (confidence: 99.94%)"
       },
@@ -7191,7 +7191,7 @@
         "recommended_storage_class": "GLACIER_INSTANT",
         "confidence": 0.9996046423912048,
         "class_probabilities": {
-          "GLACIER_FLEXIBLE": 4.1475686884950846e-05,
+          "GLACIER_FLEXIBLE": 4.147568324697204e-05,
           "GLACIER_INSTANT": 0.9996046423912048,
           "STANDARD": 0.00012383615830913186,
           "STANDARD_IA": 0.00023008219432085752
@@ -7735,12 +7735,12 @@
         "key": "data/test-object-000542.dat",
         "current_storage_class": "STANDARD",
         "recommended_storage_class": "GLACIER_INSTANT",
-        "confidence": 0.7633334398269653,
+        "confidence": 0.7633333802223206,
         "class_probabilities": {
-          "GLACIER_FLEXIBLE": 0.0021300166845321655,
-          "GLACIER_INSTANT": 0.7633334398269653,
-          "STANDARD": 0.001910478575155139,
-          "STANDARD_IA": 0.2326260209083557
+          "GLACIER_FLEXIBLE": 0.002130016451701522,
+          "GLACIER_INSTANT": 0.7633333802223206,
+          "STANDARD": 0.0019104784587398171,
+          "STANDARD_IA": 0.2326260805130005
         },
         "reason": "ML prediction (confidence: 76.33%)"
       },
@@ -8633,7 +8633,7 @@
         "recommended_storage_class": "STANDARD_IA",
         "confidence": 0.9956556558609009,
         "class_probabilities": {
-          "GLACIER_FLEXIBLE": 0.0007348809740506113,
+          "GLACIER_FLEXIBLE": 0.0007348810322582722,
           "GLACIER_INSTANT": 0.002876046346500516,
           "STANDARD": 0.0007333718822337687,
           "STANDARD_IA": 0.9956556558609009
@@ -9349,7 +9349,7 @@
         "class_probabilities": {
           "GLACIER_FLEXIBLE": 0.0020489736925810575,
           "GLACIER_INSTANT": 0.002726695267483592,
-          "STANDARD": 0.0007421470945701003,
+          "STANDARD": 0.0007421471527777612,
           "STANDARD_IA": 0.994482159614563
         },
         "reason": "ML prediction (confidence: 99.45%)"
@@ -9907,7 +9907,7 @@
         "recommended_storage_class": "STANDARD_IA",
         "confidence": 0.9957850575447083,
         "class_probabilities": {
-          "GLACIER_FLEXIBLE": 0.0008080807165242732,
+          "GLACIER_FLEXIBLE": 0.0008080806583166122,
           "GLACIER_INSTANT": 0.0026820660568773746,
           "STANDARD": 0.0007247924222610891,
           "STANDARD_IA": 0.9957850575447083
@@ -9963,7 +9963,7 @@
         "recommended_storage_class": "GLACIER_INSTANT",
         "confidence": 0.9852723479270935,
         "class_probabilities": {
-          "GLACIER_FLEXIBLE": 0.0013808379881083965,
+          "GLACIER_FLEXIBLE": 0.0013808378716930747,
           "GLACIER_INSTANT": 0.9852723479270935,
           "STANDARD": 0.00127646722830832,
           "STANDARD_IA": 0.012070335447788239
@@ -12780,7 +12780,7 @@
           "GLACIER_FLEXIBLE": 5.9780271840281785e-05,
           "GLACIER_INSTANT": 0.9994199275970459,
           "STANDARD": 0.00010939954518107697,
-          "STANDARD_IA": 0.00041091060847975314
+          "STANDARD_IA": 0.0004109106375835836
         },
         "reason": "ML prediction (confidence: 99.94%)"
       },
@@ -14146,20 +14146,23 @@
   },
   "forecasting": {
     "method": "prophet",
+    "eval_protocol": "temporal_holdout",
     "horizon_days": 30,
     "historical_points": 60,
+    "train_points": 30,
+    "holdout_points": 30,
     "naive_baseline": {
       "forecast": [
-        0.0196,
-        0.0196,
-        0.0196,
-        0.0196,
-        0.0196
+        0.019379480904947895,
+        0.019379480904947895,
+        0.019379480904947895,
+        0.019379480904947895,
+        0.019379480904947895
       ],
       "errors": {
-        "mape": 21.03767648521791,
-        "rmse": 0.0066196563858456165,
-        "mae": 0.005684,
+        "mape": 0.4416736485952577,
+        "rmse": 0.00010601964280705147,
+        "mae": 8.591888085937478e-05,
         "method": "naive_persistence"
       },
       "metadata": {
@@ -14173,41 +14176,41 @@
     "prophet": {
       "forecast": [
         {
-          "ds": "2026-09-19",
-          "yhat": 0.01949999991546365,
-          "yhat_lower": 0.019499999912157825,
-          "yhat_upper": 0.019499999918922973
+          "ds": "2026-08-21",
+          "yhat": 0.019458132537144776,
+          "yhat_lower": 0.01945070820090518,
+          "yhat_upper": 0.019466917372320515
         },
         {
-          "ds": "2026-09-20",
-          "yhat": 0.019399999915045707,
-          "yhat_lower": 0.019399999904694466,
-          "yhat_upper": 0.019399999925426174
+          "ds": "2026-08-22",
+          "yhat": 0.019553597959962254,
+          "yhat_lower": 0.019530347078527487,
+          "yhat_upper": 0.01957955833004907
         },
         {
-          "ds": "2026-09-21",
-          "yhat": 0.019299999914882873,
-          "yhat_lower": 0.019299999896224856,
-          "yhat_upper": 0.019299999934024793
+          "ds": "2026-08-23",
+          "yhat": 0.01945813253714291,
+          "yhat_lower": 0.01941536047755131,
+          "yhat_upper": 0.01950496383826785
         },
         {
-          "ds": "2026-09-22",
-          "yhat": 0.01929999991521101,
-          "yhat_lower": 0.019299999887648217,
-          "yhat_upper": 0.019299999945069087
+          "ds": "2026-08-24",
+          "yhat": 0.019362667114438743,
+          "yhat_lower": 0.019297880120813602,
+          "yhat_upper": 0.019435742969618332
         },
         {
-          "ds": "2026-09-23",
-          "yhat": 0.019399999915535565,
-          "yhat_lower": 0.019399999878350335,
-          "yhat_upper": 0.019399999955949564
+          "ds": "2026-08-25",
+          "yhat": 0.019267201691930722,
+          "yhat_lower": 0.01917924103684175,
+          "yhat_upper": 0.019368619873683133
         }
       ],
       "errors": {
-        "mape": 21.728586921626782,
-        "rmse": 0.00676123644930623,
-        "mae": 0.005854000084583128,
-        "r2": -2.971015137722152,
+        "mape": 0.23087054159153528,
+        "rmse": 4.949839687224631e-05,
+        "mae": 4.483672385488802e-05,
+        "r2": 0.755436435770177,
         "method": "prophet"
       },
       "metadata": {
@@ -14218,7 +14221,7 @@
         "trained": true
       }
     },
-    "beats_naive_baseline": false
+    "beats_naive_baseline": true
   },
   "savings": {
     "our_approach": {
@@ -23266,10 +23269,10 @@
       "accuracy": 0.178
     },
     "forecasting": {
-      "mape": 21.728586921626782,
-      "rmse": 0.00676123644930623,
-      "naive_mape": 21.03767648521791,
-      "beats_naive": false
+      "mape": 0.23087054159153528,
+      "rmse": 4.949839687224631e-05,
+      "naive_mape": 0.4416736485952577,
+      "beats_naive": true
     }
   }
 }

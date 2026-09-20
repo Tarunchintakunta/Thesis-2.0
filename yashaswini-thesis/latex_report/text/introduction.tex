@@ -39,8 +39,8 @@ These two dimensions (accuracy and overhead) are typically studied separately, b
     \item \textbf{Establish a three-leg evaluation protocol} that fairly compares trained vs untrained methods:
     \begin{itemize}
         \item \textbf{Leg 1 (Ceiling):} Position against Xing et al.'s (2025) published deep learning F1 of 93.8\% as the accuracy ceiling under ideal labeled-data conditions
-        \item \textbf{Leg 2 (Like-for-Like):} Direct comparison against reproducible RCAEval baselines (BARO, CIRCA, TraceRCA, CausalRCA) on identical 90-case benchmark
-        \item \textbf{Leg 3 (Overhead):} Measure telemetry volume, latency impact, and estimated cost for the rule-based approach on AWS infrastructure
+        \item \textbf{Leg 2 (Like-for-Like):} Direct comparison against reproducible RCAEval baselines (BARO, CIRCA, TraceRCA; $n{=}90$) on identical cases. CausalRCA is attempted but \textbf{quarantined} ($n{=}4$ committed; fixed-order flagged in \texttt{fixed\_order.json}) and is not a full peer
+        \item \textbf{Leg 3 (Overhead):} Measure telemetry volume, latency impact, and estimated cost on live AWS --- \textbf{not executed} in this submission (\texttt{results/live/} absent)
     \end{itemize}
     
     \item \textbf{Validate} the following pre-committed, refutable expectations:

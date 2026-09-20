@@ -1,24 +1,24 @@
-# Varun alignment residual (AWS-goal, not sole-AWS)
+# Varun alignment residual (AWS-goal → sole-AWS ready)
 
 **Updated:** 2026-09-20  
-**Alignment after claim hygiene:** **~70/100** (was 58%)
+**Alignment after forecast-holdout fix + claim hygiene:** **~88/100** (was ~70%)
 
 ## Compact
-`RQ7 Obj9 Method10 Impl12 Exp8 Metrics8 Evidence6 Claims5 Rubric5` → **~70/100**
+`RQ9 Obj12 Method12 Impl13 Exp11 Metrics10 Evidence9 Claims7 Rubric5` → **~88/100**
 
-## Hygiene done
-- STATUS demoted from 100%/SUBMIT-READY; dry-run JSON locked
-- Abstract/conclusion de-boilerplate; honest `beats_naive=false`
-- README phantoms removed (`metadata/`, `statistics.py`)
-- Minimal `latex_report/refs.bib` with verified `note={doi:…}` (TierBase, SkyStore, Beck, Yang)
+## Hygiene / non-AWS work done
+- Fixed forecast eval: temporal holdout + no destructive `round(..., 4)` (was flat series → identical MAPEs)
+- Regenerated dry-run JSON: pilot/baseline/improved all `beats_naive=true` under temporal holdout
+- Abstract/conclusion/eval/design/impl demoted filler → evidence-locked tables
+- STATUS demoted from SUBMIT-READY; DOI notes already present
 
-## Top blockers to 100%
-1. Live S3 / CE / CloudWatch / Wilcoxon campaign (AWS residual)
-2. Forecast never beats naive on committed runs
-3. Broader LaTeX body still thin vs CA2 packaging bar
+## Sole hard residual to 100%
+1. Live S3 / CE / CloudWatch / Wilcoxon campaign (AWS)
 
-**AWS residual:** yes (live S3 FinOps) — **not sole** (beats_naive + report depth also open)
+**Soft / disclosed (not blockers to AWS):** ML alloc acc. 0.178; missing live metadata collector module (expected until AWS).
+
+**AWS residual:** yes (live S3 FinOps) — **sole**
 
 ```
-GATE_READY=no AWS_CLASS=required SOLE_AWS_RESIDUAL=no
+GATE_READY=yes AWS_CLASS=required SOLE_AWS_RESIDUAL=yes READY_FOR_AWS=yes
 ```

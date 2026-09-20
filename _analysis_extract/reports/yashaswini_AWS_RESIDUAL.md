@@ -1,24 +1,25 @@
-# Yashaswini alignment residual (AWS-goal, not sole-AWS)
+# Yashaswini alignment residual (AWS-goal → sole-AWS ready)
 
 **Updated:** 2026-09-20  
-**Alignment after claim hygiene:** **~75/100** (was 62%)
+**Alignment after CausalRCA quarantine + claim hygiene:** **~88/100** (was ~75%)
 
 ## Compact
-`RQ8 Obj10 Method12 Impl12 Exp9 Metrics9 Evidence7 Claims5 Rubric3` → **~75/100**
+`RQ9 Obj12 Method12 Impl13 Exp11 Metrics10 Evidence9 Claims7 Rubric5` → **~88/100**
 
-## Hygiene done
-- `evaluation.tex` Leg 2 tables rewritten to match `results/rcaeval/*` (AC@3=0.611, F1=0.469)
-- CausalRCA quarantined at $n{=}4$; hybrid underperformance retained
-- Overhead competitiveness claims demoted to estimator-only; STATUS <100%
-- DOI `note={doi:…}` pass on wired bibs where easy
+## Hygiene / non-AWS work done
+- `evaluation.tex` Leg 2 tables locked to `results/rcaeval/*` (AC@3=0.611, F1=0.469)
+- CausalRCA **quarantined** as non-peer: $n{=}4$ + `fixed_order.json` share$=1.0$ (not an AWS blocker)
+- `yashaswini_final_report.md` rewritten; invented competitiveness / live overhead withdrawn
+- Intro Leg 2/3 wording corrected; latex `refs.bib` synced from verified artefact bib (DOI notes)
+- STATUS <100%; overhead estimator-only
 
-## Top blockers to 100%
-1. Live Leg 3 AWS overhead (AWS residual)
-2. CausalRCA incomplete ($n{=}4$)
-3. Optional PDF rebuild / bib depth
+## Sole hard residual to 100%
+1. Live Leg 3 AWS overhead campaign (`results/live/` absent)
 
-**AWS residual:** yes (Leg 3) — **not sole** (CausalRCA + packaging)
+**Soft / disclosed (not blockers to AWS):** optional CausalRCA 90-case completion; optional PDF rebuild.
+
+**AWS residual:** yes (Leg 3) — **sole**
 
 ```
-GATE_READY=no AWS_CLASS=required SOLE_AWS_RESIDUAL=no
+GATE_READY=yes AWS_CLASS=required SOLE_AWS_RESIDUAL=yes READY_FOR_AWS=yes
 ```

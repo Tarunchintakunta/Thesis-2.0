@@ -27,7 +27,7 @@ A key methodological challenge is that trained deep learning methods and untrain
     \item \textbf{BARO} \citep{pham2024baro}: Multivariate Bayesian online change point detection
     \item \textbf{CIRCA} \citep{li2022circa}: Causal inference with intervention recognition
     \item \textbf{TraceRCA} \citep{li2021tracerca}: Spectrum-based localisation from trace analysis
-    \item \textbf{CausalRCA} \citep{xin2023causalrca}: GNN + PageRank root cause scoring
+    \item \textbf{CausalRCA} \citep{xin2023causalrca}: GNN + PageRank root cause scoring (attempted; committed $n{=}4$ only and fixed-order flagged --- quarantined, not a peer)
 \end{itemize}
 
 \textbf{Evaluation metrics:}
@@ -111,7 +111,7 @@ A key methodological challenge is that trained deep learning methods and untrain
 \begin{itemize}
     \item \textbf{Unit of analysis:} One RCAEval failure case (600 seconds observation window)
     \item \textbf{Sample:} RE2-OB subset, 90 cases total
-    \item \textbf{Baseline methods:} BARO, CIRCA, TraceRCA, CausalRCA run on identical cases
+    \item \textbf{Baseline methods:} BARO, CIRCA, TraceRCA on identical $n{=}90$ cases; CausalRCA quarantined ($n{=}4$, fixed-order)
 \end{itemize}
 
 No replication is needed; each case is deterministic given the RCAEval telemetry.

@@ -38,7 +38,7 @@ A parallel line of research applies causal inference and unsupervised learning t
 
 \citet{li2022circa} introduce CIRCA (Causal Inference-based Root Cause Analysis), which uses intervention recognition and causal graphs to localise faults in online service systems. CIRCA builds a causal graph from service dependencies and uses perturbation analysis to identify root causes. While CIRCA avoids supervised training, it requires substantial computational resources to construct and analyse the causal graph for each incident, with reported analysis times of several minutes per case.
 
-\citet{xin2023causalrca} propose CausalRCA, a causal inference-based approach for precise fine-grained root cause localisation in microservices. CausalRCA uses graph neural networks with PageRank-based scoring to identify root causes from service dependency graphs. Their precision on the RCAEval benchmark is strong (Top-1 accuracy ~89\%), but the GNN inference adds latency that may be prohibitive for real-time alerting in serverless environments.
+\citet{xin2023causalrca} propose CausalRCA, a causal inference-based approach for precise fine-grained root cause localisation in microservices. CausalRCA uses graph neural networks with PageRank-based scoring to identify root causes from service dependency graphs. Published precision can be strong (literature Top-1 figures are citation-only here), but GNN inference adds latency that may be prohibitive for real-time alerting in serverless environments. In this artefact, CausalRCA is incomplete ($n{=}4$) and fixed-order flagged, so it is quarantined from peer ranking.
 
 \subsection{TraceRCA-Style Spectrum-Based Localisation}
 

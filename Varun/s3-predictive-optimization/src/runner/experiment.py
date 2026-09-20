@@ -120,66 +120,83 @@ class ExperimentRunner:
             return self.run_baseline_recommendation(objects)
     
     def generate_cost_history(self, objects, days=60):
-        """Generate synthetic cost history for forecasting."""
+        """Generate synthetic cost history for forecasting.
+
+        Preserve float precision: rounding to 4 d.p. previously collapsed
+        sub-cent daily costs (~1e-3) into a flat series, making Prophet
+        identical to naive persistence.
+        """
         history = []
         current_date = datetime.now() - timedelta(days=days)
         
         for day in range(days):
             date = current_date + timedelta(days=day)
             
-            # Calculate daily cost (simplified)
             daily_cost = sum(
                 self.pricing.get_storage_cost_per_month(
                     obj.get("current_storage_class", "STANDARD"),
                     obj.get("size_mb", 0) / 1024
-                ) / 30  # Daily cost
+                ) / 30
                 for obj in objects
             )
             
-            # Add some noise
+            # Weekly seasonality noise (series must vary for forecast eval)
             noise = daily_cost * 0.05 * (0.5 - abs(day % 7 - 3) / 10)
             daily_cost += noise
             
             history.append({
                 "date": date.isoformat(),
-                "cost": round(daily_cost, 4)
+                "cost": float(daily_cost)
             })
         
         return history
     
     def run_forecasting(self, cost_history):
-        """Run time-series forecasting and naive baseline."""
+        """Run Prophet vs naive on a temporal holdout of the cost series.
+
+        Prior bug: compared both forecasts to a synthetic growing 'actual'
+        never present in history, while rounded costs were flat — MAPEs
+        matched exactly and beats_naive was always false.
+        """
         if not self.config.get("forecasting", {}).get("enabled", False):
             return None
         
         print("Running cost forecasting...")
         
-        # Naive baseline
         naive = NaiveBaseline()
-        historical_costs = [h["cost"] for h in cost_history]
         horizon = self.config["forecasting"].get("horizon_days", 30)
-        naive_forecast = naive.forecast(historical_costs, horizon)
+
+        if len(cost_history) <= horizon + 2:
+            horizon = max(1, len(cost_history) // 3)
+        train_history = cost_history[:-horizon]
+        holdout = cost_history[-horizon:]
+        actual_future = [h["cost"] for h in holdout]
+        train_costs = [h["cost"] for h in train_history]
+        naive_forecast = naive.forecast(train_costs, horizon)
         
-        # Time-series forecast
         try:
             forecaster = TimeSeriesForecaster(self.config["forecasting"])
-            forecast_result = forecaster.forecast_cost(cost_history, horizon)
+            forecast_result = forecaster.forecast_cost(train_history, horizon)
             
             prophet_forecast = [f["yhat"] for f in forecast_result["forecast"]]
+            n = min(len(actual_future), len(prophet_forecast), len(naive_forecast))
+            actual_future = actual_future[:n]
+            prophet_forecast = prophet_forecast[:n]
+            naive_forecast = naive_forecast[:n]
             
-            # Generate "actual" future costs (simulated)
-            actual_future = [historical_costs[-1] * (1 + 0.02 * i) for i in range(horizon)]
-            
-            # Calculate errors vs naive
             naive_error = naive.calculate_error(actual_future, naive_forecast)
             prophet_error = forecaster.calculate_error(actual_future, prophet_forecast)
+            beats = prophet_error["mape"] < naive_error["mape"]
             
             self.results["forecasting"] = {
                 "method": "prophet",
+                "eval_protocol": "temporal_holdout",
                 "horizon_days": horizon,
                 "historical_points": len(cost_history),
+                "train_points": len(train_history),
+                "holdout_points": n,
                 "naive_baseline": {
-                    "forecast": naive_forecast[:5],  # First 5 days
+                    "forecast": naive_forecast[:5],
                     "errors": naive_error,
                     "metadata": naive.get_metadata()
                 },
@@ -188,7 +205,7 @@ class ExperimentRunner:
                     "errors": prophet_error,
                     "metadata": forecaster.get_metadata()
                 },
-                "beats_naive_baseline": prophet_error["mape"] < naive_error["mape"]
+                "beats_naive_baseline": beats
             }
             
             return {

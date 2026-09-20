@@ -1,108 +1,47 @@
 \chapter{Evaluation}
-[IMAGE PLACEHOLDER: result\_metrics\_chart.png]
-Metrics were gathered iteratively analyzing the gap.
 
-In reference to Hernandez (2026), the integration highlights a distinct improvement metric.
+\section{Data provenance}
 
+All committed metrics are from the \textbf{local S3 simulator} (\texttt{DRY\_RUN=1}).
+Authoritative artefacts:
+\texttt{s3-predictive-optimization/results/data/\{pilot,baseline,improved\}\_results.json}.
+No live S3 Inventory, Cost Explorer, CloudWatch, or Wilcoxon campaign is claimed.
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+Forecast evaluation uses a \textbf{temporal holdout}
+(\texttt{eval\_protocol=temporal\_holdout}): Prophet and naive persistence are fit on the
+prefix of the synthetic daily-cost series and scored on the held-out suffix.
+An earlier protocol compared both models to a synthetic growing series while costs
+were rounded to four decimals (flattening sub-cent series); that protocol is withdrawn.
 
+\section{Committed dry-run summary}
 
-Moreover, bridging the gap identified in Shen et al. (2025) and Yang et al. (2025) necessitates this novel perspective: Existing predictive storage models fail to factor in sudden burst access spikes on archival data. This research integrates a temporal recency buffer into S3 storage class prediction.
+\begin{table}[h]
+\centering
+\caption{Dry-run results locked to \texttt{results/data/*\_results.json}
+(temporal holdout forecast eval)}
+\label{tab:varun_dryrun}
+\begin{tabular}{lccccc}
+\hline
+\textbf{Run} & \textbf{Alloc.\ acc.} & \textbf{MAPE} & \textbf{Naive MAPE} & \textbf{Beats naive} & \textbf{Sim.\ sav.\ \%} \\
+\hline
+Pilot & 0.320 & 0.016 & 0.44 & \textbf{Yes} & 42.4 \\
+Baseline (rules) & 0.504 & 0.006 & 0.44 & \textbf{Yes} & 21.0 \\
+Improved (ML) & 0.178 & 0.231 & 0.44 & \textbf{Yes} & 57.4 \\
+\hline
+\end{tabular}
+\end{table}
 
-As noted in Taylor (2025), scalability remains paramount. The system design strictly adheres to this, as evidenced by the empirical measurements.
+\section{What is and is not evidenced}
 
-Metrics were gathered iteratively analyzing the gap.
+\begin{itemize}
+    \item \textbf{Evidenced:} recommendation + forecast + savings pipeline on synthetic
+          workloads; naive persistence baseline (Beck et al.); local list-price savings;
+          holdout \texttt{beats\_naive=true} on pilot, baseline, and improved.
+    \item \textbf{Not evidenced:} live AWS FinOps RQ, Inventory/Boto3 metadata collector,
+          Cost Explorer cross-check, multi-workload Wilcoxon.
+\end{itemize}
 
+\section{Residual}
 
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
-
-
-Metrics were gathered iteratively analyzing the gap.
-
-
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
-
-
-Metrics were gathered iteratively analyzing the gap.
-
-In reference to Wilson (2025), the integration highlights a distinct improvement metric.
-
-
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
-
-
-Metrics were gathered iteratively analyzing the gap.
-
-
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
-
-
-Metrics were gathered iteratively analyzing the gap.
-
-
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
-
-
-Moreover, bridging the gap identified in Shen et al. (2025) and Yang et al. (2025) necessitates this novel perspective: Existing predictive storage models fail to factor in sudden burst access spikes on archival data. This research integrates a temporal recency buffer into S3 storage class prediction.
-
-Metrics were gathered iteratively analyzing the gap.
-
-In reference to Gonzalez et al. (2026), the integration highlights a distinct improvement metric.
-
-
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
-
-
-Metrics were gathered iteratively analyzing the gap.
-
-
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
-
-
-As noted in Davis (2025), scalability remains paramount. The system design strictly adheres to this, as evidenced by the empirical measurements.
-
-Metrics were gathered iteratively analyzing the gap.
-
-
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
-
-
-Metrics were gathered iteratively analyzing the gap.
-
-In reference to Wilson (2025), the integration highlights a distinct improvement metric.
-
-
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
-
-[IMAGE PLACEHOLDER: terminal\_output.png]
+Sole remaining CA2 residual after local claim hygiene: \textbf{live S3 / CE / CloudWatch /
+Wilcoxon campaign} (AWS). Simulated savings must not be read as Cost Explorer bills.

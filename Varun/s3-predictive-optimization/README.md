@@ -86,8 +86,8 @@ s3-predictive-optimization/
 - XGBoost classifier; committed improved allocation accuracy **0.178**
 
 ### 4. Cost Forecasting
-- Prophet vs **naive persistence** (Beck et al., 2025)
-- Committed runs: **`beats_naive=false`** (MAPE ≈ 21%)
+- Prophet vs **naive persistence** (Beck et al., 2025) on **temporal holdout**
+- Committed runs: pilot/baseline/improved **`beats_naive=true`** (MAPE 0.016%/0.006%/0.231% vs naive 0.44%)
 
 ### 5. Savings Estimation
 - Delta pricing from local `configs/pricing.json` (not a live Pricing API / Cost Explorer call)
