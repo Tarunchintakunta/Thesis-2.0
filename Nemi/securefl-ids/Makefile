@@ -1,4 +1,4 @@
-.PHONY: help install pilot test experiment centralised unsw-real stats figures clean aws-verify
+.PHONY: help install pilot test experiment centralised unsw-real stats figures clean aws-verify live-cloud-fl
 
 help:
 	@echo "SecureFL-IDS Makefile"
@@ -12,7 +12,8 @@ help:
 	@echo "make stats        - Generate statistical analysis"
 	@echo "make figures      - Create evaluation figures"
 	@echo "make clean        - Remove generated files and cache"
-	@echo "make aws-verify   - Check AWS scaffold only (does NOT apply Terraform)"
+	@echo "make aws-verify   - Check AWS scaffold (does not apply)"
+	@echo "make live-cloud-fl - Free-Tier EC2+S3+CW lite FL, then destroy"
 
 install:
 	python3 -m venv .venv
@@ -68,6 +69,10 @@ clean:
 	rm -rf results/* figures/*
 	find . -type f -name "*.pyc" -delete
 	@echo "Cleaned generated files"
+
+live-cloud-fl:
+	@chmod +x scripts/run_live_cloud_fl.sh scripts/bootstrap_cloud.sh
+	@bash scripts/run_live_cloud_fl.sh
 
 aws-verify:
 	@bash ../../scripts/aws-verify/nemi-securefl.sh
