@@ -1,192 +1,61 @@
-# Project Status: Varun Gampa - S3 Cost Optimization
+# Project Status: Varun Gampa — S3 Cost Optimization
 
 **Student:** Varun Gampa (23398639)  
 **Programme:** MSc in Cloud Computing, National College of Ireland  
 **Project:** Predictive Storage Cost Optimization Framework for Amazon S3  
-**Last Updated:** September 19, 2026
+**Last Updated:** 2026-09-20
 
-## Overall Completion: 100%
+## Overall status: NOT COMPLETE (CA2 alignment < 100%)
 
-### ✅ Completed Components
+**Research alignment after claim hygiene:** ~70% — synthetic dry-run evidence locked to committed JSON; LaTeX/STATUS/README overclaims softened.  
+**Not SUBMIT-READY.** Live S3 / Wilcoxon / Cost Explorer path and forecast `beats_naive` remain blockers.
 
-#### 1. Core Implementation (100%)
-- [x] Metadata collection module (Boto3 + simulator)
-- [x] Baseline recommender (TierBase-inspired, Shen et al. 2025)
-- [x] ML recommender (XGBoost, Yang et al. 2025)
-- [x] Naive baseline forecaster (Beck et al. 2025)
-- [x] Time-series forecaster (Prophet)
-- [x] Savings estimator (delta pricing)
-- [x] Evaluation metrics module
-- [x] Experiment orchestration framework
-- [x] Local simulator (dry-run mode)
+Authoritative evidence: `s3-predictive-optimization/results/data/{pilot,baseline,improved}_results.json` (`mode: dry_run` only).
 
-#### 2. Testing (100%)
-- [x] Unit tests for pricing module (5 tests)
-- [x] Unit tests for recommendation engines (4 tests)
-- [x] Unit tests for forecasting (3 tests)
-- [x] Unit tests for savings estimation (4 tests)
-- [x] Integration tests (4 tests)
-- [x] All 16 tests passing
+| Issue | Status |
+|-------|--------|
+| STATUS “100% complete” | **Demoted** — CA2 live-AWS RQ unmet |
+| LaTeX filler / “successfully validated” | Softened to dry-run honesty |
+| README phantom `src/metadata/`, `analysis/statistics.py` | Corrected to on-disk tree |
+| `refs.bib` + `note={doi:…}` | Added under `latex_report/` |
+| Live S3 / CE / CloudWatch / Wilcoxon | **Residual** — not run (do not deploy until gate) |
+| Forecast beats naive | **Fails** on committed runs (`beats_naive: false`) |
 
-#### 3. Experiments & Results (100%)
-- [x] Pilot experiment (100 objects, 30 days) - COMPLETED
-- [x] Baseline experiment (1000 objects, 90 days) - COMPLETED
-- [x] Improved experiment (1000 objects, 90 days) - COMPLETED
-- [x] Real results committed (JSON + CSV)
-- [x] Figures generated (4 PNG files)
+---
 
-#### 4. Documentation (100%)
-- [x] README.md (comprehensive)
-- [x] ARCHITECTURE.md (system design + diagrams)
-- [x] CONFIGURATION_MANUAL.md (full config guide)
-- [x] STATUS.md (this file)
-- [x] Inline code documentation
-- [x] Makefile with targets
+## What is completed (local simulator)
 
-#### 5. Literature Review (95%)
-- [x] TierBase (Shen et al. 2025) - DOI verified
-- [x] Yang et al. (2025) MLSys - arXiv verified
-- [x] SkyStore (Liu et al. 2025) - DOI verified
-- [x] Beck et al. (2025) naive baseline - DOI verified
-- [x] Bodra (2025) ML resource allocation
-- [x] Yakkanti (2025) AI-enabled FinOps
-- [x] Tu et al. (2025) storage tiering
-- [ ] 10+ additional citations needed for full literature review (target: 15-20 total)
+1. Recommendation (TierBase-inspired rules + XGBoost), Prophet + naive forecast, savings estimator, local S3 simulator, experiment runner.
+2. **20** pytest tests collected/passing locally.
+3. Three committed dry-run experiments (pilot / baseline / improved) with figures.
+4. Docs: README, ARCHITECTURE, CONFIGURATION_MANUAL; Terraform scaffold under `s3-predictive-optimization/terraform/` (**not applied**).
 
-## Experimental Results Summary
+## Committed dry-run metrics (do not invent live AWS)
 
-### Data Mode: **SYNTHETIC (Local Simulator)**
+| Experiment | Allocation acc. | Forecast MAPE | Beats naive | Savings % (sim) |
+|------------|----------------:|--------------:|:-----------:|----------------:|
+| Pilot (100 obj, 30d) | 0.320 | 21.04 | **No** | 42.4 |
+| Baseline rules (1000, 90d) | 0.504 | 21.73 | **No** | 21.0 |
+| Improved ML (1000, 90d) | 0.178 | 21.73 | **No** | 57.4 |
 
-All experiments use the local simulator (`DRY_RUN=1`) with synthetic S3 access logs. No live AWS infrastructure was used. This is clearly documented throughout.
+Savings metadata may say “AWS Pricing API”; implementation uses local `configs/pricing.json`.
 
-### Pilot Experiment
-- **Objects:** 100
-- **Duration:** 30 days
-- **Method:** Baseline + ML
-- **Allocation Accuracy:** 32.0%
-- **Forecast MAPE:** 21.04%
-- **Beats Naive Baseline:** No (equal performance)
-- **Cost Savings:** $0.01/month (42.4%)
+## What is NOT done
 
-### Baseline Experiment (TierBase)
-- **Objects:** 1,000
-- **Duration:** 90 days
-- **Method:** Rule-based (TierBase-inspired)
-- **Allocation Accuracy:** 50.4%
-- **Precision:** 89.92%
-- **Recall:** 50.4%
-- **F1-Score:** 54.43%
-- **Forecast MAPE:** 21.73%
-- **Cost Savings:** $0.12/month (21.0%)
+1. Live S3 Inventory / Boto3 metadata collector path (`src/metadata/` **absent**).
+2. Live Cost Explorer / CloudWatch validation.
+3. Wilcoxon multi-workload success protocol (no `analysis/statistics.py` on disk).
+4. CA2 success bar: Prophet does **not** beat naive on committed runs.
+5. Terraform apply / any AWS spend.
 
-### Improved Experiment (ML + Forecast)
-- **Objects:** 1,000
-- **Duration:** 90 days
-- **Method:** XGBoost + Prophet
-- **Training Accuracy:** 100.0%
-- **Allocation Accuracy:** 17.8%
-- **Precision:** 33.47%
-- **Recall:** 17.8%
-- **F1-Score:** 20.23%
-- **Forecast MAPE:** 21.73%
-- **Cost Savings:** $0.34/month (57.4%)
+## Remaining blockers to 100%
 
-### Key Findings
+1. Keep report/STATUS locked to dry-run JSON (no live overclaim).
+2. Honest forecast narrative (`beats_naive: false`).
+3. **AWS residual (yes):** live S3 FinOps evaluation once alignment-first gate allows.
 
-1. **Savings Achieved:** Improved framework achieves 57.4% cost savings vs unoptimized baseline
-2. **Forecasting:** Prophet matches naive baseline (21.73% MAPE vs 21.04% MAPE) - honest evaluation
-3. **Baseline Strong:** TierBase-inspired rules achieve high precision (89.92%)
-4. **ML Potential:** XGBoost achieves highest savings but lower allocation accuracy in this synthetic dataset
-5. **Honest Comparison:** Framework includes naive baseline per Beck et al. (2025) - no inflated claims
-
-## Methodology Honesty
-
-### ✅ What is Real
-- Complete working implementation
-- All code tested and passing
-- Experiments actually run with real tool outputs
-- Results committed to Git (not fabricated)
-- Statistical tests implemented
-- Figures generated from actual data
-- Baseline papers verified with DOIs
-
-### ⚠️ What is Simulated
-- **S3 objects:** Synthetic, generated by `WorkloadGenerator`
-- **Access logs:** Synthetic access patterns (hot/warm/cold)
-- **Cost history:** Simulated based on storage class pricing
-- **"Optimal" labels:** Calculated via cost analysis, not ground truth
-- **AWS baselines:** Simulated (Lifecycle, Intelligent-Tiering)
-
-### ✅ What Could Be Live (Not Implemented Yet)
-- Real S3 bucket connection (Boto3 code exists, not executed)
-- Live AWS Cost Explorer API
-- Real CloudWatch metrics
-- Production S3 access logs
-
-**Note:** Framework is designed to work with live AWS (`DRY_RUN=0`) but this thesis uses only simulated data for reproducibility and cost control.
-
-## Completed Work (100%)
-
-### LaTeX Report Compilation ✅
-- [x] Fixed LaTeX document class (article → report)
-- [x] Escaped special characters (&, _) in LaTeX files
-- [x] Successfully compiled projectReport.pdf (20 pages)
-- [x] Added `make pdf` target to Makefile
-- [x] Updated quality gates to check for PDF presence
-
-### Final Polish ✅
-- [x] All 20 tests passing (pytest)
-- [x] Documentation complete (README, ARCHITECTURE, CONFIG)
-- [x] LaTeX report compiled to PDF
-- [x] Makefile targets documented
-- [x] PR created with "Closes #18"
-
-## Verification Checklist
-
-- [x] Tests pass (`make test`) - 20/20 tests passing
-- [x] Results exist (`results/data/*.json`)
-- [x] Figures exist (`results/figures/*.png`)
-- [x] Documentation complete (README, ARCHITECTURE, CONFIG)
-- [x] Baseline papers verified (DOIs confirmed)
-- [x] Honest about simulation vs live AWS
-- [x] Quality gates pass (`make gates`)
-- [x] LaTeX report compiled (projectReport.pdf)
-- [x] Final PR created
-
-## Quality Metrics
-
-- **Code Coverage:** ~80% (pytest)
-- **Test Pass Rate:** 100% (16/16 tests)
-- **Documentation:** Comprehensive (README + 2 manuals)
-- **Reproducibility:** 100% (fixed seeds, committed results)
-- **Baseline Verification:** 100% (all DOIs confirmed)
-- **Honest Reporting:** 100% (simulation clearly labeled)
-
-## Comparison to Sibling Projects
-
-Similar to `anji-thesis/sqs-reliability-recovery/`:
-- ✅ Makefile with targets
-- ✅ Dry-run mode default
-- ✅ Real results committed
-- ✅ Tests passing
-- ✅ Documentation complete
-- ✅ Figures generated
-- ✅ Honest STATUS.md
-
-## Future Enhancements (Beyond Thesis Scope)
-
-1. Live AWS integration testing
-2. Multi-cloud support (GCS, Azure Blob)
-3. Real-time streaming updates
-4. RL-based adaptive optimization
-5. AWS Cost Explorer API integration
-6. CI/CD pipeline for automated recommendations
-7. Web dashboard for visualization
-8. Production-ready deployment (Docker, SAM)
-
-## Contact
-
-**Student:** Varun Gampa  
-**Email:** X23398639@student.ncirl.ie  
-**Institution:** National College of Ireland  
-**Supervisor:** Sean Heeney
+```bash
+cd Varun/s3-predictive-optimization
+make test
+# DRY_RUN=1 only until gate + budget approval
+```

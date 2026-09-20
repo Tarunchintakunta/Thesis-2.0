@@ -11,14 +11,14 @@
 
 | # | Thesis | Latest % | CA2 file | Need 100%? |
 |---|--------|---------:|----------|------------|
-| 1 | Anji | 72% | proposal.docx | Yes |
-| 2 | Varun | 58% | RIC_CA2.txt | Yes |
-| 3 | Yashaswini | 62% | proposal.docx | Yes |
-| 4 | Rasool | 62% | proposal.docx | Yes |
+| 1 | Anji | **~78%** | proposal.docx | Yes |
+| 2 | Varun | **~70%** | RIC_CA2.txt | Yes |
+| 3 | Yashaswini | **~75%** | proposal.docx | Yes |
+| 4 | Rasool | **~74%** | proposal.docx | Yes |
 | 5 | Chaitanya | 67% | proposal.docx | Yes |
 | 6 | Vikas | 68% | proposal.docx | Yes |
 | 7 | Venkat | 63% | venkat_ca2.txt | Yes |
-| 8 | Nemi | ~55% | CA2.txt | Yes |
+| 8 | Nemi | **~64%** | CA2.txt | Yes |
 | 9 | Mehak | **~88%** | **NOT FOUND** → `CA2_COMMITMENTS.md` | Yes |
 | 10 | Pooja | **~85%** | **NOT FOUND** → `CA2_COMMITMENTS.md` | Yes |
 | 11 | Uday | **~90%** | **NOT FOUND** → `CA2_COMMITMENTS.md` | Yes |
@@ -44,3 +44,4 @@
 - 2026-09-20b: Vikas eval — acknowledge live pilot path + empty campaign
 - 2026-09-20b: Added `CA2_COMMITMENTS.md` for Mehak/Pooja/Uday/Vishvaksen (binding until real CA2 exists)
 - 2026-09-20c: Mehak/Pooja/Uday/Vishvaksen claim hygiene — STATUS &lt;100%, eval↔CSV, bib `note={doi:}`, residual notes; still NOT COMPLETE; no AWS
+- 2026-09-20d: Anji/Varun/Yashaswini/Rasool/Nemi claim hygiene raise — eval↔JSON, STATUS demote, DOI notes, residual notes; still NOT COMPLETE; no AWS

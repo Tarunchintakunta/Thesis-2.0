@@ -69,7 +69,7 @@ No `student` / student-ID tags in Terraform.
 
 - Artefact engineering: strong  
 - Empirical CA2 answer (live latency × throttle × cost surface): **missing**  
-- Alignment after claim hygiene: ~**65–70%** design/artefact credit; **not 100%**
+- Alignment after claim hygiene: ~**74%** design/artefact credit; **not 100%**
 
 **Do not** describe the project as SUBMIT-READY or production-ready science until live campaign results replace placeholders.
 

@@ -2,8 +2,8 @@ AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
 Description: >
   faultlab - order-processing microservice for the fault detection and localisation
-  study (Yashaswini Penumarthi, 24262404). Synthetic data only. The telemetry
-  condition (tracing on/off, sampling, log level) is chosen with the parameters.
+  study. Synthetic data only. The telemetry condition (tracing on/off, sampling,
+  log level) is chosen with the parameters.
 
 Parameters:
   TracingMode:
@@ -53,7 +53,8 @@ Globals:
         AWS_XRAY_SDK_ENABLED: !If [TracingOn, "true", "false"]
     Tags:
       project: faultlab
-      student: "24262404"
+      managed_by: sam
+      purpose: research-eval
       data: synthetic
 
 Resources:

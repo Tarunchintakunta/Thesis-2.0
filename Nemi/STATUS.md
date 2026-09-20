@@ -8,8 +8,8 @@
 
 ## Overall Status: NOT COMPLETE (CA2 alignment < 100%)
 
-**Research alignment (claim hygiene pass):** ~55% — PoC metrics honest; Docker/K8s/AWS/production overclaims removed.  
-**Not SUBMIT-READY for CA2.** Live AWS / full UNSW-NB15 campaign remain blockers.
+**Research alignment (claim hygiene pass):** ~64% — PoC metrics honest; Docker/K8s/AWS/production overclaims removed; DOI `note={doi:…}` added; README baseline-paper figures demoted.  
+**Not SUBMIT-READY for CA2.** Live AWS / full UNSW-NB15 / centralised baseline remain blockers.
 
 ---
 

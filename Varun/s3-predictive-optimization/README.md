@@ -50,102 +50,51 @@ s3-predictive-optimization/
 ├── pyproject.toml                    # Project metadata
 ├── .env.example                      # Example environment variables
 ├── src/
-│   ├── __init__.py
-│   ├── metadata/                     # S3 metadata collection
-│   │   ├── __init__.py
-│   │   └── collector.py             # Boto3-based object metadata extraction
-│   ├── recommendation/               # Storage-class recommendation
-│   │   ├── __init__.py
-│   │   ├── baseline.py              # TierBase-inspired rule-based recommender
-│   │   └── ml_recommender.py        # ML-enhanced recommender (XGBoost)
-│   ├── forecasting/                  # Cost forecasting
-│   │   ├── __init__.py
-│   │   ├── naive_baseline.py        # Naive persistence baseline
-│   │   └── time_series.py           # Prophet/ARIMA forecasting
-│   ├── savings/                      # Savings estimation
-│   │   ├── __init__.py
-│   │   └── estimator.py             # Cost delta calculation
-│   ├── pricing/                      # AWS pricing data
-│   │   ├── __init__.py
-│   │   └── s3_pricing.py            # S3 storage class pricing
-│   ├── evaluation/                   # Evaluation harness
-│   │   ├── __init__.py
-│   │   └── metrics.py               # Accuracy, MAPE, RMSE, savings
-│   ├── simulator/                    # Local simulator (dry-run mode)
-│   │   ├── __init__.py
-│   │   ├── s3_simulator.py          # Simulated S3 bucket
-│   │   └── workload_generator.py    # Synthetic access pattern generator
-│   └── runner/                       # Experiment orchestration
-│       ├── __init__.py
-│       └── experiment.py            # Main experiment runner
-├── configs/
-│   ├── pilot.yaml                   # Quick pilot run
-│   ├── baseline.yaml                # Baseline experiment
-│   ├── improved.yaml                # Improved framework experiment
-│   └── pricing.json                 # AWS S3 pricing data (2026)
-├── scripts/
-│   ├── scaffold.sh                  # Setup script
-│   ├── run_experiment.sh           # Run single experiment
-│   └── run_all.sh                  # Run all experiments
-├── tests/
-│   ├── __init__.py
-│   ├── test_metadata.py
-│   ├── test_recommendation.py
-│   ├── test_forecasting.py
-│   ├── test_savings.py
-│   └── test_integration.py
+│   ├── recommendation/               # TierBase rules + XGBoost recommender
+│   ├── forecasting/                  # Prophet + naive persistence baseline
+│   ├── savings/                      # Delta-pricing savings estimator
+│   ├── pricing/                      # Local list-price loader (`pricing.json`)
+│   ├── evaluation/                   # Allocation / MAPE metrics
+│   ├── simulator/                    # Synthetic S3 + workload generator
+│   ├── runner/                       # Experiment orchestration
+│   └── s3_storage_optimizer.py
+├── configs/                          # pilot / baseline / improved YAML + pricing.json
+├── tests/                            # 20 pytest tests (pricing, rec, forecast, savings, integration)
 ├── analysis/
-│   ├── statistics.py                # Statistical tests (Wilcoxon, etc.)
-│   └── plotting.py                  # Results visualization
+│   └── plotting.py                   # Figures only (no Wilcoxon module on disk)
+├── terraform/                        # Scaffold — **not applied**
 ├── docs/
-│   ├── ARCHITECTURE.md              # System architecture
-│   └── CONFIGURATION_MANUAL.md      # Configuration guide
-└── results/                         # Committed results (not empty!)
-    ├── data/                        # Raw experiment data (JSON/CSV)
-    │   ├── pilot_results.json
-    │   ├── baseline_results.json
-    │   └── improved_results.json
-    └── figures/                     # Generated figures (PNG)
-        ├── cost_comparison.png
-        ├── forecast_accuracy.png
-        ├── allocation_accuracy.png
-        └── savings_distribution.png
+│   ├── ARCHITECTURE.md
+│   └── CONFIGURATION_MANUAL.md
+└── results/
+    ├── data/{pilot,baseline,improved}_results.json
+    └── figures/*.png
 ```
 
-## Features
+**Not present (do not claim):** `src/metadata/collector.py`, `analysis/statistics.py`, live Boto3 Inventory path.
 
-### 1. Metadata Collection
-- Extracts object size, age, storage class, access frequency from S3
-- Works with local simulator (DRY_RUN=1) or live AWS (DRY_RUN=0)
-- Boto3-based implementation
+## Features (dry-run evidenced)
+
+### 1. Local metadata / workload path
+- Synthetic object features from `simulator/` (`DRY_RUN=1` only in committed runs)
+- Live Boto3 metadata collector **not implemented** on disk
 
 ### 2. Baseline Recommendation (TierBase-inspired)
-- Rule-based storage-class selection based on:
-  - Object age (days since last access)
-  - Access frequency (moving average)
-  - Object size
-- Thresholds derived from TierBase methodology
+- Rule-based storage-class selection (age, access frequency, size)
 
 ### 3. Improved ML Recommendation
-- XGBoost classifier trained on object features
-- Predicts optimal storage class for each object
-- Includes decision audit log
+- XGBoost classifier; committed improved allocation accuracy **0.178**
 
 ### 4. Cost Forecasting
-- Time-series forecasting (Prophet/ARIMA)
-- **Naive persistence baseline** (per Beck et al., 2025)
-- MAPE and RMSE metrics vs baseline
+- Prophet vs **naive persistence** (Beck et al., 2025)
+- Committed runs: **`beats_naive=false`** (MAPE ≈ 21%)
 
 ### 5. Savings Estimation
-- Calculates expected $ savings before applying recommendations
-- Compares current vs. recommended storage class costs
-- Uses AWS Pricing API data
+- Delta pricing from local `configs/pricing.json` (not a live Pricing API / Cost Explorer call)
 
 ### 6. Evaluation
-- **Storage-class allocation accuracy**: % correctly allocated
-- **Forecast error**: MAPE/RMSE vs naive baseline
-- **Realized cost savings**: $ and % reduction
-- **Statistical testing**: Wilcoxon signed-rank test (α=0.05)
+- Allocation accuracy, MAPE/RMSE, simulated $ savings
+- Wilcoxon multi-workload campaign **not executed** (no stats module committed)
 
 ## Experiment Modes
 
@@ -157,17 +106,8 @@ export DRY_RUN=1  # Default
 make pilot
 ```
 
-### Live AWS Mode (Optional)
-Requires AWS credentials and active S3 bucket.
-
-```bash
-export DRY_RUN=0
-export AWS_PROFILE=your-profile
-export S3_BUCKET=your-test-bucket
-make pilot
-```
-
-**Note:** Live AWS mode is documented but not required for this research. All committed results are from the local simulator with clearly-labeled synthetic data.
+### Live AWS Mode (future / gated)
+Documented as a residual under the alignment-first gate. **Do not run** until Research Alignment hits 100% or sole residual is live CA2 AWS. No live results are committed.
 
 ## Baseline Papers
 

@@ -17,7 +17,7 @@ SecureFL-IDS is a privacy-preserving federated intrusion detection framework for
 
 Saklani, S., Chohan, D.K., and Sharma, R. (2026) 'Privacy Preserving Cloud Native Intrusion Detection Using Federated Learning and Differential Privacy', *2026 8th International Conference on Intelligent Sustainable Systems (ICISS)*, pp. 387–392. https://doi.org/10.1109/iciss67859.2026.11454085
 
-**Baseline Results:** 91.8% accuracy, F1-score >90% on UNSW-NB15 dataset with non-IID tenant distribution.
+**Baseline Paper (Saklani et al. 2026):** reports 91.8% accuracy / F1 >90% on full UNSW-NB15 — **literature reference only**, not this PoC's committed results.
 
 ## Quick Start (One Command, Local Simulation)
 
@@ -116,17 +116,9 @@ All experiments run locally by default:
 
 ⚠️ **Note**: Low F1-scores due to synthetic dataset limitations. See `RESULTS_NOTE.md` for details.
 
-### Baseline-paper reference (NOT this PoC — full UNSW-NB15 not run)
+### Baseline-paper reference only (NOT achieved by this PoC)
 
-Based on baseline paper (Saklani et al. 2026) and methodology:
-
-| Metric | Baseline (Expected) | Improved (Expected) |
-|--------|---------------------|---------------------|
-| Accuracy | ~91-92% | ~93-94% |
-| F1-Score | ~90-91% | ~92-93% |
-| Communication | Standard | -40-50% reduction |
-
-*Expected values with full dataset (2.5M samples, 49 features, 50+ rounds)*
+Saklani et al. (2026) report ~91–94% accuracy / ~90% F1 on full UNSW-NB15. **This repository has not run that campaign.** Do not cite those figures as SecureFL-IDS results. Committed PoC: accuracy 0.793/0.800, F1 near 0 (table above).
 
 ## Testing
 

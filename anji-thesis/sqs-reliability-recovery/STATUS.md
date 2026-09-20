@@ -1,6 +1,6 @@
 ## Alignment note (2026-09-20, iter-1)
 
-**CA2 research alignment ≈ 72% — still < 100%. AWS phase blocked.**
+**CA2 research alignment ≈ 78% — still < 100%. AWS phase blocked.**
 
 Authoritative evidence: `results/summary/stats_H1_H2_H3.json`, `stats_H0_throughput_config.json`, `hypotheses.md` (`backend: localsim` only).
 
@@ -143,8 +143,8 @@ To validate simulation against real AWS (outside scope of this submission):
 
 ## Conclusion
 
-This submission demonstrates a **methodologically rigorous, reproducible, and cost-effective** approach to studying SQS reliability under failure injection. All results are **clearly labeled as simulated** in report text, figure captions, and `results/README.md`. The simulator's fidelity is sufficient to answer the research question and test hypotheses about configuration impacts. Live AWS validation remains future work and would not change the core findings about relative configuration effects.
+This submission demonstrates a **methodologically rigorous, reproducible, and cost-effective** localsim approach to studying SQS reliability under failure injection. All results are **clearly labeled as simulated** in report text, figure captions, and `results/README.md`. Relative configuration effects are interpretable under the simulator's documented limits; **live AWS key-cell validation remains required for CA2 cloud evidence** and must not be assumed to leave findings unchanged.
 
 ---
 
-**Honest Disclosure:** No AWS account was charged. No real queues were harmed in the making of this research.
+**Honest Disclosure:** No AWS account was charged. No real queues were harmed in the making of this research. CA2 alignment **< 100%**.

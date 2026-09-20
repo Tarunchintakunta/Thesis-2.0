@@ -17,13 +17,13 @@
 | Thesis | Sole AWS residual? | Live AWS | Alignment | **Status** |
 |--------|:------------------:|:--------:|-----------|------------|
 | Venkat | **yes** (EC2) | Terraform ready; CLI `--scheduler-address` wired; EC2 not applied | <100% | **NOT COMPLETE** |
-| Chaitanya | **yes** (Init Duration) | **Python Init + H4-lite DONE**; Node/Java/H3/ROI pending | <100% | **NOT COMPLETE** |
+| Chaitanya | **yes** (Init Duration) | **Py+Node Init + H4-lite DONE**; Java/H3/ROI pending | <100% | **NOT COMPLETE** |
 | Vikas | **yes** (full campaign) | Campaign daemon workers=4 (~1.5/s; ETA hours) | <100% | **NOT COMPLETE** |
-| Anji | no (also localsim gaps) | No | <100% | **NOT COMPLETE** |
-| Varun | partial (beats_naive fail) | No | <100% | **NOT COMPLETE** |
-| Yashaswini | Leg3 + CausalRCA n=4 | No | <100% | **NOT COMPLETE** |
-| Rasool | + DOI / fill cells | No | <100% | **NOT COMPLETE** |
-| Nemi | + baseline/UNSW | No | <100% | **NOT COMPLETE** |
+| Anji | no (localsim + live SQS) | No | **~78%** | **NOT COMPLETE** |
+| Varun | no (beats_naive + live S3) | No | **~70%** | **NOT COMPLETE** |
+| Yashaswini | no (CausalRCA n=4 + Leg3) | No | **~75%** | **NOT COMPLETE** |
+| Rasool | no (fill cells + live DDB) | No | **~74%** | **NOT COMPLETE** |
+| Nemi | no (baseline/UNSW + cloud FL) | No | **~64%** | **NOT COMPLETE** |
 
 ## Alignment-only (4)
 
@@ -34,7 +34,7 @@
 | Uday | ~90% | **No** | **NOT COMPLETE** |
 | Vishvaksen | ~86% | **No** | **NOT COMPLETE** |
 
-Residuals: `mehak_alignment.md`, `pooja_alignment.md`, `uday_alignment.md`, `vishvaksen_alignment.md`.
+Residuals: `mehak_alignment.md`, `pooja_alignment.md`, `uday_alignment.md`, `vishvaksen_alignment.md`; AWS-goal five: `anji_AWS_RESIDUAL.md`, `varun_AWS_RESIDUAL.md`, `yashaswini_AWS_RESIDUAL.md`, `rasool_AWS_RESIDUAL.md`, `nemi_AWS_RESIDUAL.md`.
 
 ## Credits
 ~$131 ceiling. Prefer destroy-after-round. Avoid long-lived EC2.

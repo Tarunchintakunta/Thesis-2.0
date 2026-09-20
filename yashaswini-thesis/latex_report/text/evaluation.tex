@@ -103,261 +103,139 @@ All & timeout & 0.667 & 0.917 & 1.58 & 0.917 \\
 \section{RCAEval Benchmark Results}
 \label{sec:rcaeval_results}
 
-\textit{Source: Public RCAEval dataset (RE2-OB subset, 90 cases). Valid like-for-like comparison.}
+\textit{Source: Public RCAEval RE2-OB raw under \texttt{results/rcaeval/}; aggregated by \texttt{eval/leg2.py} into \texttt{results/rcaeval/summary.md} / \texttt{localisation.csv} / \texttt{detection.json}. Offline benchmark --- not live AWS.}
 
 \subsection{Baseline Method Comparison}
 
-Table~\ref{tab:rcaeval_comparison} compares the rule-based approach against four RCAEval baselines on 90 Online Boutique failure cases.
+Table~\ref{tab:rcaeval_comparison} reports AC@1 / AC@3 / mean rank from committed raw. CausalRCA is incomplete ($n{=}4$); do not treat it as a full 90-case peer.
 
 \begin{table}[h]
 \centering
-\caption{Localisation Accuracy on RCAEval Benchmark (90 cases)}
+\caption{Localisation on RCAEval raw (authoritative; CausalRCA $n{=}4$)}
 \label{tab:rcaeval_comparison}
 \begin{tabular}{lcccc}
 \hline
-\textbf{Method} & \textbf{Top-1} & \textbf{Top-3} & \textbf{Mean Rank} & \textbf{Avg Time/Case} \\
+\textbf{Method} & \textbf{$n$} & \textbf{AC@1} & \textbf{AC@3} & \textbf{Mean rank} \\
 \hline
-\textbf{Rule-based (ours)} & 0.756 & 0.822 & 1.89 & 18 ms \\
-BARO & 0.811 & 0.911 & 1.54 & 320 ms \\
-CIRCA & 0.789 & 0.889 & 1.67 & 1200 ms \\
-TraceRCA & 0.744 & 0.844 & 1.98 & 12 ms \\
-CausalRCA & 0.889 & 0.933 & 1.22 & 2150 ms \\
-\hline
-Xing et al. (2025) [ceiling] & -- & 0.876 & -- & -- \\
+\textbf{Rule-based (ours)} & 90 & 0.289 & 0.611 & 2.98 \\
+BARO & 90 & 0.144 & 0.878 & 2.32 \\
+CIRCA & 90 & 0.589 & 0.878 & 2.08 \\
+TraceRCA & 90 & 0.111 & 0.644 & 2.92 \\
+Hybrid (optional) & 90 & 0.256 & 0.478 & 3.63 \\
+CausalRCA & \textbf{4} & 0.000 & 1.000 & 3.00 \\
 \hline
 \end{tabular}
 \end{table}
 
-\textbf{Key findings:}
+\textbf{Key findings (evidence-locked):}
 \begin{itemize}
-    \item Rule-based Top-3 (0.822) is within 11 percentage points of BARO's 0.911 and 11 pp of CIRCA's 0.889
-    \item Rule-based Top-3 is \textit{below} the strongest baseline by 11.1 pp (BARO 0.911 - Rule 0.822 = 0.089, close to the 10 pp threshold)
-    \item Rule-based execution time (18 ms) is 18$\times$ faster than BARO, 67$\times$ faster than CIRCA, 119$\times$ faster than CausalRCA
-    \item TraceRCA (the lightest baseline) has comparable speed (12 ms) but similar accuracy (Top-3 0.844 vs 0.822)
+    \item Rules AC@3 $=0.611$ vs BARO/CIRCA $=0.878$ --- gap $26.7$\,pp (exceeds the pre-committed $>$10\,pp concession bar)
+    \item Hybrid AC@3 $=0.478$ is \textbf{worse} than rules; hybrid is beyond CA2 primary scope
+    \item CausalRCA cells are quarantined to $n{=}4$; ranking tables that implied $n{=}90$ for CausalRCA are withdrawn
 \end{itemize}
 
 \subsection{Hypothesis Test: Detection Accuracy}
 
-RCAEval baselines are localisers, not detectors—they are handed the injection time and do not perform detection. Therefore, direct F1 comparison on common data is infeasible.
+RCAEval baselines are localisers, not detectors. Rule-arm detection on committed raw ($n{=}90$): TP$=90$, FP$=204$, FN$=0$ $\Rightarrow$ precision $=0.306$, recall $=1.0$, \textbf{F1 $=0.469$} (\texttt{detection.json}).
 
-\textbf{Adapted comparison:} We report the rule-based detector's F1 on RCAEval cases (treating each case as one injection) and compare conceptually against Xing et al.'s (2025) published ceiling.
-
-On RCAEval (assuming detection = localisation succeeded):
 \begin{itemize}
-    \item Rule-based detection F1 on RCAEval: $\sim$0.85 (estimated from Top-3 success rate, assuming detection fires when Top-3 localisation succeeds)
-    \item Xing et al. (2025) ceiling: F1 = 0.938
-    \item Gap: 0.938 - 0.85 = 8.8 percentage points (within the 10 pp threshold)
+    \item Xing et al.\ (2025) citation ceiling F1 $=0.938$ is Leg~1 literature only
+    \item Gap $0.938-0.469=46.9$\,pp --- \textbf{not} within 10\,pp
+    \item The withdrawn ``F1$\sim$0.85 from Top-3'' shortcut is invalid
 \end{itemize}
-
-\textbf{Conclusion:} The rule-based approach achieves detection accuracy within 10 percentage points of the published deep learning ceiling, supporting the pre-committed expectation.
 
 \subsection{Hypothesis Test: Localisation Accuracy}
 
-\textbf{H2 (Top-3 accuracy):} Rule-based Top-3 concedes $>$10 pp vs deep learning methods.
+\textbf{H2:} Rule Top-3 concedes $>$10\,pp vs strongest baselines.
 
-\textbf{Test:} Paired bootstrap CI for (BARO Top-3) - (Rule Top-3) on 90 cases.
-
-\textbf{Result:} 95\% CI for gap = [0.067, 0.112]
-
-\begin{itemize}
-    \item Lower bound 6.7 pp is \textit{below} 10 pp
-    \item Upper bound 11.2 pp is \textit{above} 10 pp
-    \item \textbf{Conclusion:} Inconclusive (CI straddles 10 pp threshold)
-\end{itemize}
-
-\textbf{Interpretation:} The rule-based approach does concede localisation accuracy (BARO is clearly better), but the margin is borderline. With more samples, the test might become conclusive.
+Bootstrap 95\% CI for (CIRCA$-$rules) Top-3 on $n{=}90$ $= [0.156,\ 0.378]$ (\texttt{summary.md}) --- the $>$10\,pp concession expectation is \textbf{supported}.
 
 \subsection{Per-Fault-Type Breakdown}
 
-Table~\ref{tab:rcaeval_faults} shows per-fault-type Top-3 accuracy for rule-based vs BARO.
+Table~\ref{tab:rcaeval_faults} uses AC@3 from \texttt{localisation\_by\_fault.csv} (rules vs BARO; 15 cases each).
 
 \begin{table}[h]
 \centering
-\caption{Top-3 Accuracy by Fault Type (RCAEval)}
+\caption{AC@3 by fault type (RCAEval raw)}
 \label{tab:rcaeval_faults}
 \begin{tabular}{lccc}
 \hline
 \textbf{Fault Type} & \textbf{Cases} & \textbf{Rule-based} & \textbf{BARO} \\
 \hline
-CPU spike & 15 & 0.933 & 0.933 \\
-Memory leak & 15 & 0.867 & 0.933 \\
-Network delay & 15 & 0.800 & 0.933 \\
-Network loss & 15 & 0.733 & 0.867 \\
-Disk I/O & 15 & 0.867 & 0.933 \\
-Socket error & 15 & 0.733 & 0.867 \\
+CPU & 15 & 0.667 & 0.800 \\
+Memory & 15 & 0.600 & 1.000 \\
+Delay & 15 & 0.600 & 0.800 \\
+Loss & 15 & 0.533 & 0.867 \\
+Disk & 15 & 0.600 & 1.000 \\
+Socket & 15 & 0.667 & 0.800 \\
 \hline
 \end{tabular}
 \end{table}
 
-\textbf{Observations:}
-\begin{itemize}
-    \item CPU spike faults: Rule-based matches BARO (0.933)
-    \item Network loss and socket errors: Rule-based struggles (0.733) vs BARO (0.867) - 13 pp gap
-    \item Network delay: 13 pp gap (BARO 0.933 vs Rule 0.800)
-\end{itemize}
-
-\textbf{Diagnosis:} Network faults (delay, loss, socket) exhibit correlated anomalies across multiple services (caller and callee both show symptoms). The simple trace ranking cannot disambiguate propagated symptoms from root causes, while BARO's Bayesian change-point detection better isolates the originating service.
-
 \section{Overhead Analysis}
 \label{sec:overhead_results}
 
-\textit{Source: If live AWS data is unavailable, this section presents simulated overhead estimates. STATUS.md clarifies provenance.}
+\textit{Source: \textbf{Estimator / simulated} volumes only. No live AWS Leg~3 campaign is committed (\texttt{results/live/} absent). Figures below are planning estimates, not measured CloudWatch/X-Ray bills.}
 
-\subsection{Telemetry Volume}
+\subsection{Telemetry Volume (estimate)}
 
-Table~\ref{tab:overhead_volume} compares telemetry volume under full (100\%) vs policy (5\%) X-Ray sampling.
+Table~\ref{tab:overhead_volume} is a list-price / sampling arithmetic estimate for policy vs full tracing. It is \textbf{quarantined} from empirical Leg~3 claims.
 
 \begin{table}[h]
 \centering
-\caption{Telemetry Volume per 1000 Requests}
+\caption{Estimated telemetry volume per 1000 requests (not live-measured)}
 \label{tab:overhead_volume}
 \begin{tabular}{lcc}
 \hline
 \textbf{Component} & \textbf{Full (100\%)} & \textbf{Policy (5\%)} \\
 \hline
-X-Ray traces recorded & 4000 spans & 200 spans \\
-X-Ray volume & 480 KB & 24 KB \\
-CloudWatch logs (INFO) & 320 KB & 80 KB (ERROR only) \\
-\textbf{Total telemetry} & 800 KB & 104 KB \\
-\textbf{Reduction} & -- & 87\% \\
+X-Ray spans (est.) & 4000 & 200 \\
+Total telemetry (est.) & 800 KB & 104 KB \\
+\textbf{Est.\ reduction} & -- & 87\% \\
 \hline
 \end{tabular}
 \end{table}
 
-\textbf{Calculation:}
-\begin{itemize}
-    \item Each request generates 4 Lambda invocations (orders-api $\rightarrow$ inventory, payments, notifications)
-    \item Full tracing: 4 spans/request $\times$ 1000 requests = 4000 spans
-    \item Policy tracing: 4 spans/request $\times$ 1000 requests $\times$ 0.05 = 200 spans
-    \item Average span size: 120 bytes (from X-Ray documentation)
-    \item CloudWatch logs: INFO mode logs all invocations (~80 bytes/log); ERROR mode logs only failures
-\end{itemize}
+\subsection{Latency / cost (estimate only)}
 
-\textbf{Result:} Telemetry volume reduced by 87\%, exceeding the $\geq$50\% target.
-
-\subsection{Latency Impact}
-
-Table~\ref{tab:overhead_latency} presents end-to-end latency with X-Ray tracing enabled vs disabled.
-
-\begin{table}[h]
-\centering
-\caption{End-to-End Latency Impact (milliseconds)}
-\label{tab:overhead_latency}
-\begin{tabular}{lccc}
-\hline
-\textbf{Percentile} & \textbf{Tracing OFF} & \textbf{Tracing ON (100\%)} & \textbf{Delta} \\
-\hline
-P50 & 82 ms & 87 ms & +5 ms (+6.1\%) \\
-P95 & 145 ms & 158 ms & +13 ms (+9.0\%) \\
-P99 & 198 ms & 218 ms & +20 ms (+10.1\%) \\
-\hline
-\end{tabular}
-\end{table}
-
-\textbf{Hypothesis test:} Welch's t-test on latency distributions, $H_0$: no difference.
-
-\textbf{Result:} $t = 4.32$, $p < 0.001$ (reject $H_0$), Cohen's d = 0.43 (medium effect size)
-
-\textbf{Conclusion:} X-Ray tracing adds statistically significant latency (~5-20 ms depending on percentile), but the absolute magnitude is small relative to overall request latency (82-198 ms).
-
-\subsection{Cost Estimation}
-
-Using AWS list prices (September 2026):
-
-\begin{itemize}
-    \item CloudWatch Logs: \$0.50/GB ingested
-    \item X-Ray traces: \$5.00 per million traces recorded
-\end{itemize}
-
-For 1 million requests per day:
-
-\textbf{Full tracing (100\%):}
-\begin{align*}
-\text{Log cost} &= 0.32 \text{ GB} \times 0.50 = \$0.16 / \text{day} \\
-\text{X-Ray cost} &= 4M \text{ spans} \times 5.00 / 1M = \$20.00 / \text{day} \\
-\textbf{Total} &= \$20.16 / \text{day} = \$604.80 / \text{month}
-\end{align*}
-
-\textbf{Policy tracing (5\%):}
-\begin{align*}
-\text{Log cost} &= 0.08 \text{ GB} \times 0.50 = \$0.04 / \text{day} \\
-\text{X-Ray cost} &= 0.2M \text{ spans} \times 5.00 / 1M = \$1.00 / \text{day} \\
-\textbf{Total} &= \$1.04 / \text{day} = \$31.20 / \text{month}
-\end{align*}
-
-\textbf{Cost reduction:} 94.8\% (\$604.80 $\rightarrow$ \$31.20)
-
-\textbf{Decision rule validation:} Telemetry volume reduced by 87\% and cost by 95\%, both exceeding the $\geq$50\% target.
+Latency deltas and \$/month figures previously written as measured results are \textbf{withdrawn} as live evidence. They remain design-time estimates pending Leg~3. Do not cite them as AWS campaign outcomes.
 
 \section{Competitiveness Assessment}
 
-Recall the pre-committed decision rule: \textit{The rule-based approach is competitive if F1 is within 10 pp of the strongest baseline AND telemetry volume is reduced by at least half.}
+Pre-committed rule: competitive if F1 within 10\,pp of the strongest baseline \textbf{and} telemetry volume $\geq$50\% reduced \textbf{on live overhead}.
 
-\textbf{F1 within 10 pp:} \\
-Estimated rule-based F1 on RCAEval $\sim$0.85, Xing ceiling 0.938, gap = 8.8 pp $\checkmark$
+\begin{itemize}
+    \item Rule-arm F1 $=0.469$ vs Xing ceiling $0.938$ --- \textbf{fails} the 10\,pp bar
+    \item Rules AC@3 $=0.611$ vs BARO/CIRCA $=0.878$ --- localisation also concedes $>$10\,pp
+    \item Overhead $\geq$50\% reduction is \textbf{unmeasured} (no Leg~3)
+\end{itemize}
 
-\textbf{Telemetry volume $\geq$50\% reduced:} \\
-87\% reduction achieved $\checkmark$
-
-\textbf{Conclusion:} The rule-based approach is \textbf{competitive} according to the decision rule, delivering detection accuracy close to deep learning baselines while dramatically reducing monitoring overhead.
+\textbf{Conclusion:} On committed evidence the approach is \textbf{not} competitive under the CA2 decision rule. Sim F1$\approx$0.97 must not be substituted for RCAEval or live AWS.
 
 \section{Implications for Research and Practice}
 
 \subsection{For Researchers}
-
 \begin{itemize}
-    \item \textbf{Accuracy-overhead Pareto frontier:} This work establishes that a (0.85 F1, 87\% overhead reduction) position is achievable. Future work can explore other frontier points via hybrid rule+ML or adaptive sampling.
-    
-    \item \textbf{Evaluation protocol:} The three-leg framework (ceiling citation, common data, overhead) provides a template for fairly comparing trained vs untrained methods in future RCA research.
-    
-    \item \textbf{RCAEval adoption:} The benchmark enables reproducible comparison. Future methods should report RCAEval performance alongside private dataset results.
+    \item Three-leg protocol remains useful; Leg~2 raw already falsifies invented Top-k/F1 tables
+    \item CausalRCA incompleteness ($n{=}4$) must be disclosed whenever that baseline is tabulated
+    \item Hybrid IF arm underperformed rules on Top-3 --- negative result retained
 \end{itemize}
 
 \subsection{For Practitioners}
-
 \begin{itemize}
-    \item \textbf{Newly deployed serverless services:} Rule-based detection + X-Ray ranking is viable from day one, with no training data or GPU infrastructure required.
-    
-    \item \textbf{Cost-benefit calculus:} For workloads processing 1M requests/day, full tracing costs ~\$600/month. Policy sampling (5\%) reduces this to ~\$30/month while retaining competitive fault detection (F1 $\sim$0.85). The dollar savings fund other operational improvements.
-    
-    \item \textbf{Known limitations:} Rule-based approaches struggle with network faults (delay, loss) that exhibit correlated symptoms across services. For complex multi-fault scenarios, consider hybrid approaches or upgrade to Bayesian methods (BARO) after accumulating sufficient telemetry.
+    \item Artefact is deployable via SAM/Terraform scaffolds but \textbf{undeployed} here
+    \item Do not budget ``\$600$\rightarrow$\$30'' savings as measured fact until Leg~3 exists
 \end{itemize}
 
 \section{Negative Results and Limitations}
 
-\subsection{Simulation vs Reality}
-
-Simulated rig results (F1 = 0.97, Top-3 = 0.98) are overly optimistic. Real AWS telemetry includes:
 \begin{itemize}
-    \item Cold-start variance (100-500 ms spikes unrelated to faults)
-    \item Network jitter and transient throttling
-    \item Correlated anomalies (multiple services degrade simultaneously due to shared infrastructure)
+    \item Simulated rig Top-3 $0.979$ vs RCAEval rules $0.611$ --- sim overstates accuracy
+    \item No live AWS Leg~3 overhead
+    \item CausalRCA $n{=}4$ only
+    \item Live F1 under real CloudWatch noise is unknown; prior $0.88$--$0.92$ guesses are withdrawn
 \end{itemize}
-
-We estimate live AWS F1 would be 0.88-0.92 and Top-3 would be 0.85-0.90 based on RCAEval performance.
-
-\subsection{Localisation on Network Faults}
-
-Rule-based Top-3 on network faults (delay, loss, socket) is only 0.73-0.80, a 10-13 pp gap vs BARO. The simple trace ranking cannot distinguish propagated symptoms from originating causes when multiple services show correlated metrics.
-
-\textbf{Future work:} Hybrid rule + Isolation Forest (implemented in \texttt{baseline\_runner/hybrid\_arm.py}) could improve network fault localisation by capturing metric correlation patterns.
-
-\subsection{Single-Microservice Topology}
-
-The order-processing system has only 4 services with shallow call depth (max 2 hops). Large microservice systems (10+ services, 4+ hops) may exhibit more complex fault propagation that defeats simple ranking. External validity is limited to similarly-sized serverless applications.
 
 \section{Summary}
 
-\textbf{Research question:} What accuracy-overhead position does rule-based fault detection and localisation occupy relative to learned deep baselines in AWS serverless microservices?
-
-\textbf{Answer:} The rule-based approach achieves:
-\begin{itemize}
-    \item Detection F1 $\sim$0.85 (within 8.8 pp of Xing et al.'s 0.938 ceiling)
-    \item Localisation Top-3 0.82 on RCAEval (11 pp below BARO's 0.91, borderline inconclusive)
-    \item 87\% telemetry volume reduction and 95\% cost reduction vs full tracing
-    \item Sub-20ms inference time (vs 2+ minutes for CausalRCA)
-\end{itemize}
-
-\textbf{Decision:} The approach is competitive—achieving near-ceiling detection accuracy while drastically reducing monitoring overhead. This position on the accuracy-overhead Pareto frontier is viable for newly deployed, cost-constrained serverless microservices.
-
-\textbf{Limitations:} Network fault localisation is weaker, and simulated rig results overestimate real-world performance. Live AWS evaluation would strengthen the conclusions.
+\textbf{RQ answer (evidence-locked):} On RCAEval raw, rule-arm F1 $=0.469$ and AC@3 $=0.611$ (vs BARO/CIRCA $0.878$). Leg~3 live overhead is absent. The approach is therefore \textbf{not} shown competitive on the CA2 decision rule; claim hygiene prefers this negative positioning over invented wins.

@@ -9,12 +9,12 @@
 
 | Thesis | Explore % | After claim hygiene | Blockers to 100% (non-AWS first) | AWS residual? |
 |--------|----------:|--------------------:|----------------------------------|---------------|
-| Nemi | 44% | **~58% PoC metrics locked** | Centralised baseline; UNSW; DOI notes | Yes (cloud FL) — not sole |
-| Varun | 58% | LaTeX de-boilerplate + honest dry-run | Live S3 Wilcoxon; beats_naive | Yes (live S3) |
-| Anji | 58–72% | **H1–H3↔JSON + DIVE softened** | Obj4 live cost; live SQS | Yes (live SQS) |
-| Yashaswini | 62% | **Eval↔raw fixed** | CausalRCA n=4; PDF rebuild; Leg3 | Yes (Leg3) |
+| Nemi | 44% | **~64% PoC+DOI+README** | Centralised baseline; UNSW | Yes (cloud FL) — not sole |
+| Varun | 58% | **~70% STATUS/LaTeX/DOI** | beats_naive fail; report depth | Yes (live S3) — not sole |
+| Anji | 58–72% | **~78% H1–H3+DOI** | Phase run-count reconcile | Yes (live SQS) — not sole |
+| Yashaswini | 62% | **~75% eval↔raw+STATUS** | CausalRCA n=4; PDF rebuild | Yes (Leg3) — not sole |
 | Venkat | 63% | **DOI + READY_FOR_AWS=yes** | Soft: scheduler CLI **wired** (`--scheduler-address`) | **Yes — sole hard (EC2)** |
-| Rasool | 62% | **~68% moto honesty; K4 quarantined** | Live K1–K3 factorial; DOI notes | Yes (live DDB) — not sole |
+| Rasool | 62% | **~74% moto+DOI+K4** | Fill cells still open | Yes (live DDB) — not sole |
 | Chaitanya | 67% | **Proxy-only eval; ROI not measured** | Soft: DOI notes | **Yes — sole hard (Lambda Init)** — **live python Init round RUNNING** |
 | Vikas | 68% | **Pilot≠campaign; P4 quarantined** | Soft: DOI notes | **Yes — sole hard (full campaign)** — **live campaign RUNNING** |
 | Mehak | 80% | **~88% commitments + DOI + STATUS** | Formal CA2; synthetic traces; VoR PDF | **No** (alignment-only) |
@@ -30,5 +30,6 @@
 5. **2026-09-20 — Venkat/Anji/Yashaswini claim↔evidence fixes; Venkat READY_FOR_AWS=yes.**  
 6. **2026-09-20 — Nemi + Rasool claim hygiene merged.**  
 7. **2026-09-20 — Chaitanya + Vikas claim hygiene merged** (proxy Init honesty; empty campaign called out; no student-ID tags). Still NOT COMPLETE.  
-8. **2026-09-20 — Live AWS started (READY subset):** Vikas full campaign daemon (workers=4, seed 20260926); Chaitanya Terraform `coldstart-study` python×3 applied + `live_python_init` running; Venkat `--scheduler-address` wired (EC2 not applied yet).  
+8. **2026-09-20 — Live AWS (READY subset):** Vikas campaign daemon (workers=4); Chaitanya live Python Init + H4-lite + Node.js Init collected; Venkat `--scheduler-address` wired (EC2 not applied).
 9. **2026-09-20 — Mehak/Pooja/Uday/Vishvaksen claim hygiene** (CA2_COMMITMENTS, STATUS honesty, eval↔CSV, `note={doi:}`); **no AWS deploy**. Still NOT COMPLETE.
+10. **2026-09-20 — Anji/Varun/Yashaswini/Rasool/Nemi claim hygiene raise** (eval↔JSON, STATUS demote, DOI notes, residual notes); **no AWS deploy**. Still NOT COMPLETE. Residuals: `anji_AWS_RESIDUAL.md`, `varun_AWS_RESIDUAL.md`, `yashaswini_AWS_RESIDUAL.md`, `rasool_AWS_RESIDUAL.md`, `nemi_AWS_RESIDUAL.md`.

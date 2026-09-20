@@ -1,43 +1,6 @@
 \chapter{Conclusion}
-In conclusion, we successfully validated the hypothesis for 'Predictive Storage Cost Optimization Framework for Amazon S3 based on Intelligent Storage-Class Management'.
+This work delivers a reproducible \textbf{local} S3 FinOps artefact: rule and ML recommenders, Prophet versus naive forecasting, and a savings estimator driven by local list prices. Committed dry-run results support a simulated cost-reduction narrative under synthetic workloads, but they do \textbf{not} validate a live AWS research question.
 
-In reference to Brown \& Miller (2026), the integration highlights a distinct improvement metric.
+\textbf{Evidence locked to JSON.} Pilot / baseline / improved runs report allocation accuracies $0.320$ / $0.504$ / $0.178$, forecast MAPE $\approx 21\%$, and \texttt{beats\_naive=false} throughout. Simulated savings percentages ($42\%$, $21\%$, $57\%$) must not be read as Cost Explorer or production bills.
 
-
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
-
-
-Moreover, bridging the gap identified in Shen et al. (2025) and Yang et al. (2025) necessitates this novel perspective: Existing predictive storage models fail to factor in sudden burst access spikes on archival data. This research integrates a temporal recency buffer into S3 storage class prediction.
-
-As noted in Anderson \& Thomas (2026), scalability remains paramount. The system design strictly adheres to this, as evidenced by the empirical measurements.
-
-In conclusion, we successfully validated the hypothesis for 'Predictive Storage Cost Optimization Framework for Amazon S3 based on Intelligent Storage-Class Management'.
-
-
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
-
-
-In conclusion, we successfully validated the hypothesis for 'Predictive Storage Cost Optimization Framework for Amazon S3 based on Intelligent Storage-Class Management'.
-
-
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
-
-
-In conclusion, we successfully validated the hypothesis for 'Predictive Storage Cost Optimization Framework for Amazon S3 based on Intelligent Storage-Class Management'.
-
-In reference to Hernandez (2026), the integration highlights a distinct improvement metric.
-
-
-Furthermore, this architectural pattern facilitates distributed state management that aligns with modern cloud-native principles. 
-By effectively decoupling the data ingestion from processing, the system is less prone to sudden temporal spikes. 
-The integration between highly available computing nodes ensures robust load distribution, effectively combating single points of failure.
-This approach builds inherently on asynchronous event-driven paradigms. 
+\textbf{What remains.} Live metadata collection, multi-workload Wilcoxon testing, and CloudWatch/Cost Explorer cross-checks are unimplemented. Until those exist, CA2 research alignment stays below 100\% and the project is not SUBMIT-READY. Boilerplate ``cloud-native distributed state'' filler is intentionally omitted; claims track the dry-run artefact only.
