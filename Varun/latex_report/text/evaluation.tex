@@ -13,10 +13,8 @@ Committed metrics come from two evidence layers:
 \end{enumerate}
 
 The live round is a \textbf{lite scope} probe (24 objects $\times$ 2 storage classes),
-not a multi-workload CA2 FinOps campaign. No S3 Inventory \emph{job} was enabled.
-\texttt{src/metadata/collector.py} now exists; \texttt{results/live/lite\_metadata.json}
-reconstructs the destroyed 48-object lite table (not a post-destroy ListObjects call).
-See \texttt{docs/FINOPS\_LITE.md}.
+not a multi-workload CA2 FinOps campaign. No S3 Inventory job and no
+\texttt{src/metadata/} collector were run.
 
 Forecast evaluation uses a \textbf{temporal holdout}
 (\texttt{eval\_protocol=temporal\_holdout}): Prophet and naive persistence are fit on the
@@ -93,10 +91,8 @@ GET STANDARD\_IA & 24 & 524.2 & 29.4 & 491.3--624.2 \\
     \item \textbf{Evidenced (live lite):} real S3 PUT/GET to STANDARD vs STANDARD\_IA;
           CE/CW API reachability; paired Wilcoxon on modeled per-object storage cost and
           live latency ($n{=}24$).
-    \item \textbf{Not evidenced:} full multi-workload live FinOps RQ; live Inventory job;
-          CE-settled campaign savings; multi-workload Wilcoxon success protocol
-    \item \textbf{Present (non-live):} \texttt{src/metadata/} collector; reconstructed
-          lite inventory (48 objects); Wilcoxon helper \texttt{analysis/statistics.py}
+    \item \textbf{Not evidenced:} full multi-workload live FinOps RQ; Inventory/Boto3
+          metadata collector; CE-settled campaign savings; multi-workload Wilcoxon
           success protocol.
 \end{itemize}
 

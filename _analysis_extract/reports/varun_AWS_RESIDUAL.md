@@ -1,10 +1,10 @@
 # Varun alignment residual (AWS-goal → sole-AWS ready)
 
 **Updated:** 2026-09-20 (live lite + LaTeX fold-in)  
-**Alignment after live lite + metadata/FinOps notes:** **~93/100** (was ~90% after live lite)
+**Alignment after live lite:** **~90/100** (was ~88% after forecast-holdout hygiene)
 
 ## Compact
-`RQ9 Obj13 Method12 Impl14 Exp12 Metrics11 Evidence10 Claims8 Rubric4` → **~93/100**
+`RQ9 Obj12 Method12 Impl13 Exp12 Metrics11 Evidence10 Claims7 Rubric4` → **~90/100**
 
 ## Hygiene / non-AWS work done
 - Fixed forecast eval: temporal holdout + no destructive `round(..., 4)` (was flat series → identical MAPEs)
@@ -25,10 +25,10 @@
 ## Sole hard residual to 100% — NOT CLOSED
 1. Full live S3 FinOps campaign: Inventory/metadata collector, multi-workload Wilcoxon savings protocol, CE-settled cost validation (**lite probe ≠ complete CA2 AWS RQ**)
 
-**Soft / disclosed (not blockers to AWS):** ML alloc acc. 0.178; collector module now present; live Inventory job still absent.
+**Soft / disclosed (not blockers to AWS):** ML alloc acc. 0.178; `src/metadata/` still absent.
 
-**AWS residual:** yes (full live S3 FinOps) — **sole** — metadata module/notes raise Impl/Obj but **do not close** the residual.
+**AWS residual:** yes (full live S3 FinOps) — **sole** — live lite raises evidence but **does not close** the residual.
 
 ```
-GATE_READY=yes AWS_CLASS=required SOLE_AWS_RESIDUAL=yes READY_FOR_AWS=yes LIVE_LITE=done DESTROYED=yes ALIGNMENT=~93
+GATE_READY=yes AWS_CLASS=required SOLE_AWS_RESIDUAL=yes READY_FOR_AWS=yes LIVE_LITE=done DESTROYED=yes ALIGNMENT=~90
 ```

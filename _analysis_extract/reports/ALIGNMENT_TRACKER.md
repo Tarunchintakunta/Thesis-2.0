@@ -9,28 +9,31 @@
 
 | Thesis | Explore % | After claim hygiene | Blockers to 100% (non-AWS first) | AWS residual? |
 |--------|----------:|--------------------:|----------------------------------|---------------|
-| Nemi | 44% | **~78% centralised+real UNSW** | Soft: full 2.5M / improved plateau | **Yes — sole (cloud FL)** |
-| Varun | 58% | **~93% metadata + FinOps notes** | Soft: live Inventory job; fuller FinOps campaign | **Yes — sole (fuller FinOps)** |
-| Anji | 58–72% | **~96% live SQS lite + fidelity** | Soft: confirmatory n>1 | **No — hard lite closed** |
-| Yashaswini | 62% | **~97% lite Leg3 + learned-LB subset** | Soft: CausalRCA 90 / PDF | **No — hard Leg3 closed (lite)** |
-| Venkat | 63% | **DOI + READY_FOR_AWS** | Soft: scheduler wired | **Yes — sole (matmul)** |
-| Rasool | 62% | **~94% live DDB 12/12 + exploratory stats** | Soft: W1/W2 / confirmatory n | **No — hard K×W3/W4 closed** |
-| Chaitanya | 67% | **~97% live Init+H3+H4 + lite Holm** | Soft: confirmatory n≥30 | **No — hard Init closed (lite)** |
-| Vikas | 68% | **~74% campaign in progress** | Soft: DOI | **Yes — sole (full campaign)** — **r5 RUNNING** |
-| Mehak | 80% | **~64% vs formal** | GCT files + Aldomi-on-GCT | **No** |
-| Pooja | 77% | **~48% vs formal** | Traces+LSTM+K8s; AWS not sole | **Yes** (not sole) |
-| Uday | 83% | **~18% vs formal MQTT** | Artefact≠CA2 | **Yes** (not sole) |
-| Vishvaksen | 78% | **~28% vs formal scanner** | Artefact≠CA2 | **No** |
+| Nemi | 44% | **~64% PoC+DOI+README** | Centralised baseline; UNSW | Yes (cloud FL) — not sole |
+| Varun | 58% | **~90% live lite S3/CE/CW/Wilcoxon (destroyed)** | Soft: ML alloc 0.178; full FinOps campaign open | **Yes — sole hard (full live S3 FinOps)** |
+| Anji | 58–72% | **~90% run-count+dedup** | Soft: optional DIVE campaign | **Yes — sole hard (live SQS)** |
+| Yashaswini | 62% | **~88% CausalRCA quarantine + READY_FOR_AWS** | Soft: optional CausalRCA 90 / PDF | **Yes — sole hard (Leg3)** |
+| Venkat | 63% | **DOI + READY_FOR_AWS=yes** | Soft: scheduler CLI **wired** (`--scheduler-address`) | **Yes — sole hard (EC2)** |
+| Rasool | 62% | **~74% moto+DOI+K4** | Fill cells still open | Yes (live DDB) — not sole |
+| Chaitanya | 67% | **Proxy-only eval; ROI not measured** | Soft: DOI notes | **Yes — sole hard (Lambda Init)** — **live python Init round RUNNING** |
+| Vikas | 68% | **Pilot≠campaign; P4 quarantined** | Soft: DOI notes | **Yes — sole hard (full campaign)** — **live campaign RUNNING** |
+| Mehak | 80% | **~54% vs formal `MAHEK NAAZ.docx`** | GCT + formal metrics/baselines (Thapliyal proxy superseded) | **No** |
+| Pooja | 77% | **~48% vs formal `Pooja_25120921_CA2.docx`** | Traces+LSTM+K8s metrics; AWS EC2/S3/CW (NimbusGuard proxy superseded); Gantt missing | **Yes** (not sole) |
+| Uday | 83% | **~18% vs formal MQTT/IoT Core proposal** | Artefact≠CA2 (federated RF); need MQTT disconnect campaign | **Yes** (not sole) |
+| Vishvaksen | 78% | **~28% vs formal Terraform scanner proposal** | Artefact≠CA2 (War hybrid); need labelled TF corpus + Checkov/tfsec/OPA | **No** |
 
 ## Iteration log
-1–13. Prior hygiene / exploration / formal rescore (see git history).  
-14. **2026-09-20 — Anji live SQS lite** 4/4 + destroy (~94–98%).  
-15. **2026-09-20 — Varun live S3 lite** + Wilcoxon (~90%).  
-16. **2026-09-20 — Chaitanya live Init+H4+H3-lite** (~94–95%).  
-17. **2026-09-20 — Rasool live DDB 12/12** K×cap×W3/W4 + destroy (~88–92%).  
-18. **2026-09-20 — Mehak non-AWS raise** (~54→~64); GCT still absent.  
-19. **2026-09-20 — Nemi non-AWS raise** (~68→~78); sole=cloud FL; no apply.  
-20. **2026-09-20 — Yashaswini Leg3 lite prep** (validate/plan; apply deferred under concurrency=10).  
-21. **2026-09-20 — Reconverge** agent cursor/* branches onto `feature/aws-ca2-alignment`; Vikas r5 workers=4 continues.  
-22. **2026-09-20 — Yashaswini Leg3 lite live** apply→3 conditions→`results/live/overhead.json`→destroy (~96%; sole AWS residual closed; reduction=0.803).
-24. **2026-09-20 — High-% soft residuals (no new AWS apply):** Yash learned-LB subset $n{=}8$ (~96→~97); Anji live↔sim relative-rank fidelity (~94→~96); Chaitanya lite Holm + bytecode drop (~95→~97); Rasool exploratory n=1 stats (~92→~94); Varun metadata collector + FinOps notes (~90→~93). **None COMPLETE.**
+1. **2026-09-20 — Nemi claims hygiene + DOI notes.** AWS not started.  
+2. **2026-09-20 — Baseline CA2-fit audit;** Varun→SkyStore; Halfmoon PDF fixed.  
+3. **2026-09-20 — Exploration gate closed (all 8 DONE).** Alignment-first gate open.  
+4. **2026-09-20 — Varun LaTeX / STATUS honesty; Terraform for 8 (no personal IDs).**  
+5. **2026-09-20 — Venkat/Anji/Yashaswini claim↔evidence fixes; Venkat READY_FOR_AWS=yes.**  
+6. **2026-09-20 — Nemi + Rasool claim hygiene merged.**  
+7. **2026-09-20 — Chaitanya + Vikas claim hygiene merged** (proxy Init honesty; empty campaign called out; no student-ID tags). Still NOT COMPLETE.  
+8. **2026-09-20 — Live AWS (READY subset):** Vikas campaign daemon (workers=4); Chaitanya live Python Init + H4-lite + Node.js Init collected; Venkat `--scheduler-address` wired (EC2 not applied).
+9. **2026-09-20 — Mehak/Pooja/Uday/Vishvaksen claim hygiene** (CA2_COMMITMENTS, STATUS honesty, eval↔CSV, `note={doi:}`); **no AWS deploy**. Still NOT COMPLETE.
+10. **2026-09-20 — Anji/Varun/Yashaswini/Rasool/Nemi claim hygiene raise** (eval↔JSON, STATUS demote, DOI notes, residual notes); **no AWS deploy**. Still NOT COMPLETE. Residuals: `anji_AWS_RESIDUAL.md`, `varun_AWS_RESIDUAL.md`, `yashaswini_AWS_RESIDUAL.md`, `rasool_AWS_RESIDUAL.md`, `nemi_AWS_RESIDUAL.md`.
+11. **2026-09-20 — Anji phase run-count reconcile + packaging-dedup stats** (350 design / 690 on-disk; H3_recovery fail-to-reject after Holm; READY_FOR_AWS=yes, sole=live SQS); **no AWS deploy**.
+12. **2026-09-20 — Varun + Yashaswini non-AWS raise toward sole-AWS:** Varun forecast temporal-holdout fix (all arms `beats_naive=true`); Yashaswini CausalRCA quarantined + final_report hygiene; both `READY_FOR_AWS=yes`. **No terraform apply.**
+13. **2026-09-20 — Mehak/Pooja/Uday/Vishvaksen formal-CA2 rescore.** Formal docx now binding; proxy extras dropped. Scores: Mehak ~54%, Pooja ~48%, Uday ~18%, Vishvaksen ~28%. Synthetic OK for Uday/Vish; GCT required for Mehak/Pooja. AWS required: Pooja+Uday yes (not deployed); Mehak+Vish no. **No AWS deploy; no invented results.**
+14. **2026-09-20 — Varun live lite fold-in:** measured S3/CE/CW/Wilcoxon ($n{=}24$) into STATUS + LaTeX; residual/cohort **~90%**; SOLE_AWS_RESIDUAL still **yes** (full FinOps campaign); stack destroyed.

@@ -11,14 +11,14 @@
 
 | # | Thesis | Latest % | CA2 file | Need 100%? |
 |---|--------|---------:|----------|------------|
-| 1 | Anji | **~96%** | proposal.docx | Yes |
-| 2 | Varun | **~93%** | RIC_CA2.txt | Yes |
-| 3 | Yashaswini | **~97%** | proposal.docx | Yes |
-| 4 | Rasool | **~94%** | proposal.docx | Yes |
-| 5 | Chaitanya | **~97%** | proposal.docx | Yes |
+| 1 | Anji | **~90%** | proposal.docx | Yes (sole hard) |
+| 2 | Varun | **~90%** (live lite done; full FinOps open) | RIC_CA2.txt | Yes |
+| 3 | Yashaswini | **~88%** | proposal.docx | Yes |
+| 4 | Rasool | **~74%** | proposal.docx | Yes |
+| 5 | Chaitanya | 67% | proposal.docx | Yes |
 | 6 | Vikas | 68% | proposal.docx | Yes |
 | 7 | Venkat | 63% | venkat_ca2.txt | Yes |
-| 8 | Nemi | **~78%** | CA2.txt | Yes |
+| 8 | Nemi | **~64%** | CA2.txt | Yes |
 | 9 | Mehak | **~88%** | **NOT FOUND** → `CA2_COMMITMENTS.md` | Yes |
 | 10 | Pooja | **~85%** | **NOT FOUND** → `CA2_COMMITMENTS.md` | Yes |
 | 11 | Uday | **~90%** | **NOT FOUND** → `CA2_COMMITMENTS.md` | Yes |
@@ -47,6 +47,3 @@
 - 2026-09-20d: Anji/Varun/Yashaswini/Rasool/Nemi claim hygiene raise — eval↔JSON, STATUS demote, DOI notes, residual notes; still NOT COMPLETE; no AWS
 - 2026-09-20e: Anji packaging-dedup + phase run-count reconcile → ~90%; READY_FOR_AWS=yes (sole=live SQS); no AWS
 - 2026-09-20e: Varun temporal-holdout forecast fix; Yashaswini CausalRCA quarantine; both READY_FOR_AWS=yes; still NOT COMPLETE; no AWS apply
-- 2026-09-20f: Anji live lite 4/4 folded → ~98%; SOLE_AWS_RESIDUAL=no; soft confirmatory $n>1$; NOT COMPLETE; no new AWS apply
-- 2026-09-20g: Nemi non-AWS raise → ~78%; centralised + real UNSW sample; SOLE_AWS_RESIDUAL=yes; no terraform apply
-- 2026-09-20i: High-% soft residuals (no new AWS apply): Yashaswini learned-LB subset $n{=}8$ (~96→~97); Anji live↔sim relative-rank fidelity (~94→~96); Chaitanya lite Holm + bytecode drop (~95→~97); Rasool exploratory n=1 stats (~92→~94); Varun metadata collector + FinOps notes (~90→~93). **None COMPLETE.**

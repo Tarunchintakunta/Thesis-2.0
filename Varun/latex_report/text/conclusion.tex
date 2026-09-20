@@ -5,6 +5,4 @@ This work delivers a reproducible \textbf{local} S3 FinOps artefact: rule and ML
 
 \textbf{Live lite (measured).} A destroy-after probe on real S3 (\texttt{results/live/live\_lite\_summary.json}) recorded STANDARD vs STANDARD\_IA PUT/GET means, CE Unblended sum $\$3.6\times10^{-9}$ over a lagged account window, CloudWatch Logs success, and Wilcoxon $p{<}10^{-6}$ at $n{=}24$ on modeled cost and live latency. Scope is explicitly lite: not Inventory-backed, not multi-workload, not CE-settled savings.
 
-\textbf{Local three-workload Wilcoxon.} Simulator trial-buckets ($n{=}10$) show significant cost cuts vs both native baselines on archival and mixed workloads; high-churn vs Lifecycle is not significant ($p{=}0.557$). See \texttt{results/data/multi\_workload\_wilcoxon.json}.
-
-\textbf{What remains.} Live S3 Inventory \emph{job} output and CE-settled campaign validation remain the sole hard AWS residual (not run: shared-account concurrency). Metadata and statistics \emph{modules} are now on disk. The project is not SUBMIT-READY; claims track dry-run JSON, the disclosed lite probe, and the local Wilcoxon protocol only.
+\textbf{What remains.} Live metadata collection (\texttt{src/metadata/} still absent), multi-workload Wilcoxon protocol, and CE-settled campaign cost validation remain the sole hard residual to 100\% CA2 alignment. The project is not SUBMIT-READY; claims track dry-run JSON plus the disclosed lite probe only.
