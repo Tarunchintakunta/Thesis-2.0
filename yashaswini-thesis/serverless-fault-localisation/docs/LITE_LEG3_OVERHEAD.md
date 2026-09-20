@@ -1,8 +1,11 @@
-# Lite Leg 3 — AWS overhead (Free-Tier–safe prep)
+# Lite Leg 3 — AWS overhead (Free-Tier–safe)
 
 Sole CA2 AWS residual for Yashaswini: measured overhead under
 `results/live/overhead.json` from three telemetry conditions on the live
 faultlab stack (Lambda + API Gateway + DynamoDB + CloudWatch + X-Ray).
+
+**Status 2026-09-20:** **EXECUTED** (lite) → evidence written → stack **destroyed**.
+See `results/live/README.md` and `_analysis_extract/reports/yashaswini_AWS_RESIDUAL.md`.
 
 ## Stack naming (collision-safe)
 
@@ -65,9 +68,8 @@ cd terraform && terraform destroy -auto-approve
 
 ## Do not invent metrics
 
-If apply is blocked (concurrency, missing packages, budget risk), document the
-blocker in `_analysis_extract/reports/yashaswini_AWS_RESIDUAL.md` and stop.
-Never fabricate overhead numbers.
+Never fabricate overhead numbers. Authoritative file: `results/live/overhead.json`.
+Measured lite outcome: reduction_policy_vs_full **= 0.803**.
 
 ## Status (2026-09-20)
 
