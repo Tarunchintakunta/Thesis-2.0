@@ -6,6 +6,6 @@ We propose a hybrid approach combining rule-based detection (CloudWatch 3-sigma 
 
 Our findings (evidence-locked): rule-arm F1 $=0.469$ and AC@3 $=0.611$ on RCAEval ($n{=}90$) vs BARO/CIRCA AC@3 $=0.878$ --- \textbf{not} within 10\,pp of the deep ceiling. Lite Leg~3 live overhead shows policy vs full volume reduction $=0.803$ ($\geq$50\% bar met on the lite cell). The joint CA2 competitiveness rule therefore still fails on accuracy. The hybrid localiser underperforms rules on Top-3. CausalRCA remains quarantined ($n{=}4$).
 
-This work contributes: (1) a novel lightweight hybrid detection-localisation method avoiding deep learning's training requirements and causal inference's computational complexity, (2) a fair comparison protocol bridging trained and untrained methods across accuracy and overhead dimensions, and (3) empirical validation that competitive fault detection is achievable for newly deployed serverless services under tight cost constraints.
+This work contributes: (1) a lightweight hybrid detection-localisation artefact avoiding deep learning's training requirements, (2) a three-leg comparison protocol spanning accuracy and overhead, and (3) evidence-locked RCAEval plus lite live overhead measurements that falsify invented competitiveness claims under the CA2 joint rule.
 
 \textbf{Keywords:} Microservices, Serverless Computing, Fault Detection, Root Cause Analysis, AWS Lambda, CloudWatch, X-Ray, Lightweight Machine Learning
