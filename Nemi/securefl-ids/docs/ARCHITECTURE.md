@@ -274,10 +274,10 @@ Where α controls heterogeneity:
 - No network overhead
 - Fast iteration
 
-### Container / cloud (not executed)
+### Container / cloud
 
-- No Docker Compose / Helm / live AWS run in this PoC
-- Terraform scaffold at `../terraform/` exists but is **not applied**
+- Live AWS lite FL (EC2 `t3.micro` + S3 + CloudWatch) executed then destroyed; see `results/live/cloud_lite_summary.json`
+- No Docker Compose / Helm in this PoC (beyond-CA2)
 
 ## Security Considerations
 

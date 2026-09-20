@@ -85,7 +85,7 @@ These projects do not use AWS (informational verification only):
 
 | Project | Script | Notes |
 |---------|--------|-------|
-| Nemi - SecureFL | `nemi-securefl.sh` | Federated learning, local only |
+| Nemi - SecureFL | `nemi-securefl.sh` | Live lite EC2+S3+CW; destroy-after-round |
 | Uday - IoT | `uday-iot.sh` | Simulation only, no live deployment |
 | Venkat - Matrix | `venkat-matrix.sh` | Local benchmarking only |
 

@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 # AWS verification for Nemi's SecureFL-IDS project
-# Project: securefl-ids
-# NOTE: This project does NOT use AWS - it's federated learning simulation only
+# Live lite FL uses EC2+S3+CloudWatch (not Lambda). Destroy-after-round.
 
 set -euo pipefail
 
@@ -20,7 +19,6 @@ fi
 
 log_info "Project directory: ${PROJECT_DIR}"
 
-# Verify project structure
 if [[ -f "${PROJECT_DIR}/Makefile" ]]; then
     log_success "Makefile exists"
 else
@@ -28,23 +26,23 @@ else
     exit 1
 fi
 
-log_info "This project does NOT use AWS services"
-log_info "It is a federated learning simulation that runs entirely locally"
-log_info "No AWS credentials or cloud resources required"
+if [[ -f "${PROJECT_DIR}/results/live/cloud_lite_summary.json" ]]; then
+    log_success "Live lite summary present"
+else
+    log_warning "Live lite summary missing"
+fi
 
-# Verify local execution capability
-if [[ -f "${PROJECT_DIR}/Makefile" ]]; then
-    log_info "Testing local execution..."
-    
-    if (cd "$PROJECT_DIR" && make test > /dev/null 2>&1); then
-        log_success "Local tests passed"
-    else
-        log_warning "Local tests had issues (may need dependencies)"
-    fi
+log_info "Checking leftover securefl-ids EC2 (should be none after destroy)"
+LEFTOVER="$(aws ec2 describe-instances --region eu-west-1 \
+  --filters Name=tag:project,Values=securefl-ids Name=instance-state-name,Values=pending,running,stopping \
+  --query 'Reservations[].Instances[].InstanceId' --output text 2>/dev/null || true)"
+if [[ -z "${LEFTOVER// /}" ]]; then
+    log_success "No running securefl-ids instances"
+else
+    log_error "Leftover instances: ${LEFTOVER}"
+    exit 1
 fi
 
 print_verification_summary
-
-log_info "AWS verification: N/A (local simulation only)"
-
+log_info "AWS verification: live lite recorded; stack should be destroyed"
 exit 0

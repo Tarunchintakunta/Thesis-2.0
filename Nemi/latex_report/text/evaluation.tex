@@ -1,7 +1,7 @@
 \section{Evaluation}
 \label{sec:evaluation}
 
-This section reports \textbf{committed experimental results only}. Numeric claims match either \texttt{results/comparison/results.json} (synthetic PoC) or \texttt{results/unsw\_real/results.json} (real UNSW-NB15 training-partition sample). No Docker, Kubernetes, or live AWS campaign was executed.
+This section reports \textbf{committed experimental results only}. Numeric claims match \texttt{results/comparison/results.json} (synthetic PoC), \texttt{results/unsw\_real/results.json} (real UNSW-NB15 training-partition sample), or \texttt{results/live/cloud\_lite\_summary.json} (live AWS lite FL). Docker/Kubernetes were not executed.
 
 \subsection{Synthetic PoC (locked FL metrics + centralised comparator)}
 
@@ -76,21 +76,41 @@ Avg Comm (MB/round) & 0.0 (N/A) & 3.08 & 3.12 \\
     \item Communication for improved remains slightly higher than baseline ($3.12$ vs $3.08$~MB/round).
 \end{itemize}
 
+\subsection{Live AWS lite federated round}
+
+A Free-Tier live round was executed on 2026-09-20 in \texttt{eu-west-1}: one \texttt{t3.micro} (\texttt{i-012ae234495584077}), S3 artefact bus with per-round global-weight round-trip, and CloudWatch namespace \texttt{SecureFL-IDS}. Configuration: 2 in-process clients, 3 rounds, 2500-row real-lite sample. Lambda was not used (shared-account \texttt{ConcurrentExecutions}=10 held by another campaign). The stack was destroyed after the round (9 Terraform resources). Authoritative JSON: \texttt{results/live/cloud\_lite\_summary.json}.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lcc}
+\toprule
+\textbf{Metric} & \textbf{Baseline FL} & \textbf{SecureFL-IDS} \\
+\midrule
+Accuracy & 0.5000 & 0.5480 \\
+F1-Score & 0.0000 & 0.2260 \\
+Avg Comm (MB/round) & 1.230 & 1.246 \\
+\bottomrule
+\end{tabular}
+\caption{Live AWS lite FL (3 rounds; \texttt{results/live/cloud\_lite\_summary.json}). Does not replace the 30-round local tables.}
+\label{tab:live_cloud_fl}
+\end{table}
+
 \subsection{What was not evaluated}
 
 \begin{itemize}
     \item Full $2.5$M-flow UNSW corpus / 50-round campaigns (optional depth)
     \item Privacy--utility sweep tables with fabricated $\epsilon$ rows
-    \item Live AWS, Docker Compose, or Kubernetes deployments (Terraform scaffold present under \texttt{securefl-ids/terraform/} but \textbf{not applied})
+    \item Docker Compose or Kubernetes deployments (beyond-CA2)
+    \item Multi-instance WAN FL / 50-round cloud campaigns (beyond-CA2)
 \end{itemize}
 
 \subsection{Limitations}
 
 \begin{itemize}
-    \item Local simulation only; no distributed cloud evaluation
-    \item Improved arm underperforms baseline FL on the real training-partition sample
+    \item Live cloud FL is lite (3 rounds / 2 in-process clients); not a confirmatory 50-round WAN study
+    \item Improved arm underperforms baseline FL on the 30-round real training-partition sample
     \item Binary classification focus in committed runs
-    \item Terraform exists but was not applied; no production AWS claim
+    \item No production AWS claim; stack destroyed after the lite round
 \end{itemize}
 
 \subsection{Threats to validity}
@@ -98,7 +118,7 @@ Avg Comm (MB/round) & 0.0 (N/A) & 3.08 & 3.12 \\
 \begin{itemize}
     \item Single configuration per campaign; not multi-seed averaged
     \item Stratified $25$k sample may not match full-corpus behaviour
-    \item Local timing does not capture network latency or orchestration overhead
+    \item Lite cloud round times are seconds-scale and do not estimate production training cost
 \end{itemize}
 
-The controlled experiments validate that centralised and federated arms run on both synthetic and real training-partition data and emit metrics; they do \textbf{not} establish cloud-native deployment readiness.
+The controlled experiments validate that centralised and federated arms run on synthetic and real training-partition data, and that a destroy-after-round AWS lite FL path emits S3/CloudWatch artefacts. They do \textbf{not} establish Kubernetes production readiness.

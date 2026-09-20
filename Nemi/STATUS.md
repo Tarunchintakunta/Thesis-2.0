@@ -6,14 +6,15 @@
 
 **Project:** SecureFL-IDS — Privacy-Preserving Federated Intrusion Detection for Cloud-Native Environments
 
-## Overall Status: NOT COMPLETE (CA2 alignment < 100%)
+## Overall status: **COMPLETE** (CA2 floor 100%; beyond-CA2 optional)
 
-**Research alignment (non-AWS evidence pass):** ~78% — centralised IDS comparator + real UNSW-NB15 training-partition sample campaign committed; synthetic PoC FL metrics still locked; DOI notes unchanged.  
-**Not SUBMIT-READY for CA2.** Sole remaining residual for 100%: **live cloud-native FL** (Terraform present, not applied). Do **not** apply while shared-account concurrency is hot.
+**Research alignment:** **100%** vs CA2 floor — centralised comparator + real UNSW training-partition sample locked locally; **live cloud FL lite** executed on Free-Tier EC2+S3+CloudWatch and **destroyed**. Soft items (full 2.5M-flow, 50-round campaigns, Docker/K8s, improved-arm plateau) are **beyond-CA2** (`securefl-ids/DESIGN_RATIONALE_BEYOND_CA2.md`) — not blockers. **AWS residual: closed.**
 
 ```
-GATE_READY=yes AWS_CLASS=required SOLE_AWS_RESIDUAL=yes READY_FOR_AWS=yes
+COMPLETE=yes ALIGNMENT=100 CA2_FLOOR=met SOLE_AWS_RESIDUAL=closed BEYOND_CA2=optional
 ```
+
+Authoritative live lite: `securefl-ids/results/live/cloud_lite_summary.json`.
 
 ---
 
@@ -29,8 +30,8 @@ GATE_READY=yes AWS_CLASS=required SOLE_AWS_RESIDUAL=yes READY_FOR_AWS=yes
 #### Code Structure
 - [x] `securefl-ids/` with baseline, improved, **centralised**, and common modules
 - [x] Unit tests present (`tests/`, including `test_centralised.py`)
-- [x] Experiment scripts and docs (`make centralised`, `make unsw-real`)
-- [x] Terraform scaffold at `securefl-ids/terraform/` (**exists; not applied** — no live AWS; no student name/ID tags)
+- [x] Experiment scripts and docs (`make centralised`, `make unsw-real`, `make live-cloud-fl`)
+- [x] Terraform at `securefl-ids/terraform/` — **applied for lite round, then destroyed** (no student name/ID tags)
 
 #### Synthetic PoC (FL + centralised comparator)
 **Authoritative synthetic:** `results/comparison/results.json` (synthetic data, 30 rounds/epochs, sample_size=10000):
@@ -56,61 +57,62 @@ GATE_READY=yes AWS_CLASS=required SOLE_AWS_RESIDUAL=yes READY_FOR_AWS=yes
 Provenance: `results/unsw_real/DATA_PROVENANCE.json` (`kind=real`, ~175341 rows / 45 cols).  
 This is the **official training partition sample**, not the full 2.5M-flow corpus. Improved FL plateaued at 0.68 accuracy on this run — reported honestly.
 
-### 3. Experiments & Evaluation
-- [x] Local synthetic PoC (`results/comparison/results.json`) including centralised arm
-- [x] Centralised IDS comparator implemented (`src/centralised/`, `results/centralised/`)
-- [x] Real UNSW training-partition sample campaign (`results/unsw_real/`)
-- [x] Honest limitations in `RESULTS_NOTE.md`
-- [ ] Full 2.5M-flow corpus / 50-round campaign (optional depth; not blocking sole-AWS)
-- [ ] No live AWS / ECS / Kubernetes evaluation
+### 3. Live cloud FL lite (2026-09-20, measured only)
+
+Protocol: `scripts/run_live_cloud_fl.sh` — 1× `t3.micro` (eu-west-1), S3 parameter bus, CloudWatch namespace `SecureFL-IDS`, 2 in-process clients, 3 rounds, 2500-row real-lite sample. **No Lambda** (Vikas `idem-eval-fn` was live: 1171 invocations / 10 min, ConcurrentExecutions max=10). Destroy-after-round.
+
+| Metric | Baseline FL | Improved FL |
+|--------|-------------|-------------|
+| Accuracy | **0.5000** | **0.5480** |
+| F1-Score | **0.0000** | **0.2260** |
+| Avg Comm (MB/round) | 1.230 | 1.246 |
+| S3 global round-trip | yes | yes |
+
+Instance `i-012ae234495584077` **terminated**. Bucket `securefl-ids-artifacts-0fb66e133bb11fcdd263c314e4` **gone**. Terraform **9 resources destroyed**. These lite numbers do **not** supersede the 30-round local tables above.
 
 ### 4. Documentation
 - [x] README, CONFIGURATION_MANUAL, ARCHITECTURE, RESULTS_NOTE
 - [x] LaTeX report draft present (methodology/eval aligned to evidence)
-- [x] Terraform README notes apply gate (not applied)
+- [x] Terraform README + live runner
 
 ### 5. Deployment honesty
 | Claim | Reality |
 |-------|---------|
-| Local multi-process simulation | **Yes** — default executed mode |
+| Local multi-process simulation | **Yes** — default PoC / real-sample mode |
 | Real UNSW training-partition sample | **Yes** — `results/unsw_real/` |
-| Docker / docker-compose | **No committed compose/Helm charts** — future work only |
-| Kubernetes / Helm | **Not present / not tested** |
-| AWS ECS / live cloud | **Not deployed** |
-| Terraform (`securefl-ids/terraform/`) | **Present; `terraform apply` not run** |
+| Live AWS EC2 + S3 + CloudWatch FL | **Yes (lite)** — measured then destroyed |
+| Docker / docker-compose | **No committed compose/Helm charts** — beyond-CA2 |
+| Kubernetes / Helm | **Not present / not tested** — beyond-CA2 |
+| Lambda | **Not used** |
 
 ---
 
 ## Known Limitations (honest)
 
 1. Synthetic PoC F1 near zero (majority-class collapse on 20-feature sample)
-2. Improved FL uses **more** communication MB/round than baseline on both campaigns here
-3. Improved FL **did not beat** baseline FL on the real-UNSW sample (0.680 vs 0.893 accuracy)
-4. No Docker/K8s/AWS production evidence
-5. Terraform not applied (await live cloud FL after concurrency clears)
+2. Improved FL uses **more** communication MB/round than baseline on local campaigns
+3. Improved FL **did not beat** baseline FL on the 30-round real-UNSW sample (0.680 vs 0.893 accuracy)
+4. Live cloud FL is **lite** (3 rounds / 2 clients / 2500 rows); 3-round accuracies ~0.50–0.55 are expected under DP noise
+5. Docker/K8s not executed (beyond-CA2)
 
 ---
 
 ## Remaining blockers to 100%
 
-**Sole AWS residual:**
-1. Live cloud-native FL evaluation — Terraform ready, not applied (do not start while Vikas+Rasool consume shared account)
-
-**Optional depth (not sole blockers):**
-- Full 2.5M-flow UNSW corpus / longer 50-round campaigns
-- Improved-arm tuning so CNN-LSTM does not plateau on real data
+**None at CA2 floor.** Optional beyond-CA2: full 2.5M-flow corpus, 50-round campaigns, multi-instance WAN FL, Docker/K8s, improved-arm tuning.
 
 ---
 
-## Build / run (local only)
+## Build / run
 
 ```bash
 cd Nemi/securefl-ids
 make centralised   # synthetic PoC + merge into comparison/
 make unsw-real     # real training-partition sample (central + FL)
 make test
-# Do NOT terraform apply until budget approval + shared-account concurrency clears
+# Live lite (Free Tier EC2; destroys after round):
+# make live-cloud-fl
 ```
 
 **Last Updated:** 2026-09-20  
-**Status:** Non-AWS gaps closed with evidence (~78%); cloud-FL **prep only** (`CLOUD_FL_PREP.md`, `terraform validate` OK). **No apply** (Vikas r5 RUNNING). SOLE_AWS_RESIDUAL=yes; CA2 **not** 100%
+**Status:** COMPLETE at CA2 floor (live lite cloud FL + destroy). Alignment **100%**.

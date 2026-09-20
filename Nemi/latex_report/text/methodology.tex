@@ -102,12 +102,13 @@ SecureFL-IDS modifies the baseline with:
 
 \subsection{Experimental Setup}
 
-All experiments run on a local simulation environment to ensure reproducibility without requiring cloud infrastructure:
+All experiments report both a local simulation (reproducible 30-round campaigns) and a live AWS lite federated round (one Free-Tier \texttt{t3.micro}, S3, CloudWatch; destroyed after measurement):
 
 \begin{itemize}
-    \item \textbf{Hardware:} Standard development machine (CPU-only, 8GB RAM minimum)
+    \item \textbf{Local hardware:} Standard development machine (CPU-only)
+    \item \textbf{Live lite:} AWS \texttt{t3.micro} in \texttt{eu-west-1} (\texttt{results/live/cloud\_lite\_summary.json})
     \item \textbf{Software:} Python 3.9+, PyTorch 2.0+, scikit-learn
-    \item \textbf{Simulation:} Multi-process federated clients with shared test set
+    \item \textbf{Simulation:} Multi-process federated clients with shared test set; live round uses the same in-process clients on EC2 with S3 weight round-trip
     \item \textbf{Randomization:} Fixed seed (42) for reproducibility
     \item \textbf{Repetitions:} Each configuration run once; convergence assessed via multi-round training
 \end{itemize}

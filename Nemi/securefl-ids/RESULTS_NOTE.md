@@ -38,10 +38,24 @@ Saklani et al. (2026) report ~91.8% accuracy on full UNSW-NB15. Literature aspir
 ✅ Synthetic PoC FL metrics still locked and reproducible  
 ✅ Tests include centralised unit coverage  
 
-❌ Improved arm does not beat baseline FL on the real sample  
-❌ No −45% communication win  
-❌ No live AWS / Docker / Kubernetes evidence  
+❌ Improved arm does not beat baseline FL on the 30-round real sample  
+❌ No −45% communication win on local campaigns  
+✅ Live AWS lite FL (EC2+S3+CW) measured then destroyed — `results/live/cloud_lite_summary.json`  
+❌ Docker/Kubernetes not executed (beyond-CA2)  
 ❌ Full 2.5M-flow corpus not run (optional depth)
+
+## Live cloud FL lite (2026-09-20)
+
+Authoritative file: `results/live/cloud_lite_summary.json`  
+Host: `t3.micro` `i-012ae234495584077` eu-west-1; 2 clients × 3 rounds × 2500 real-lite rows; S3 global-weight round-trip; CloudWatch `SecureFL-IDS`. Destroyed after round (9 Terraform resources).
+
+| Metric | Baseline FL | Improved FL |
+|--------|-------------|-------------|
+| Accuracy | **0.5000** | **0.5480** |
+| F1-Score | **0.0000** | **0.2260** |
+| Avg Comm (MB/round) | 1.230 | 1.246 |
+
+Lite 3-round cloud metrics are a **deployment evidence** path. They do not replace the 30-round local tables.
 
 ## Reproducing
 
@@ -49,4 +63,5 @@ Saklani et al. (2026) report ~91.8% accuracy on full UNSW-NB15. Literature aspir
 make centralised   # synthetic + merge into comparison/
 make unsw-real     # real training-partition sample
 make test
+# make live-cloud-fl   # Free-Tier EC2; destroys after round
 ```

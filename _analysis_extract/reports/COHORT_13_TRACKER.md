@@ -18,14 +18,16 @@
 | 5 | Chaitanya | 67% | proposal.docx | Yes |
 | 6 | Vikas | 68% | proposal.docx | Yes |
 | 7 | Venkat | 63% | venkat_ca2.txt | Yes |
-| 8 | Nemi | **~78%** | CA2.txt | Yes |
+| 8 | Nemi | **100%** | CA2.txt | Floor met |
 | 9 | Mehak | **~88%** | **NOT FOUND** → `CA2_COMMITMENTS.md` | Yes |
 | 10 | Pooja | **~85%** | **NOT FOUND** → `CA2_COMMITMENTS.md` | Yes |
 | 11 | Uday | **~56% vs formal MQTT** | `UdayKiranReddyDodda_X25166484_proposal.docx` | Yes |
 | 12 | Vishvaksen | **~86%** | **NOT FOUND** → `CA2_COMMITMENTS.md` | Yes |
 | 13 | Kasi | — | — | **EXCLUDED** |
 
-**None at 100% yet.**
+**Authoritative COMPLETE table:** `COHORT_COMPLETE_TABLE.md` (CA2 = floor). This file retains earlier iteration notes.
+
+- 2026-09-20i: Nemi live cloud FL lite EC2+S3+CW destroyed → **100%** floor COMPLETE
 
 
 ## Iteration log (alignment fixes, AWS still blocked)
@@ -50,3 +52,4 @@
 - 2026-09-20f: Anji live lite 4/4 folded → ~98%; SOLE_AWS_RESIDUAL=no; soft confirmatory $n>1$; NOT COMPLETE; no new AWS apply
 - 2026-09-20g: Nemi non-AWS raise → ~78%; centralised + real UNSW sample; SOLE_AWS_RESIDUAL=yes; no terraform apply
 - 2026-09-20h: Uday formal MQTT artefact `mqtt-qos-iot-core/` (mock dry-run + unapplied IoT Core TF); proxy quarantined; **~56%**; NOT COMPLETE; no AWS apply
+- 2026-09-20i: Nemi live cloud FL lite (`t3.micro` + S3 round-trip + CW) measured then destroyed; **100%** floor COMPLETE

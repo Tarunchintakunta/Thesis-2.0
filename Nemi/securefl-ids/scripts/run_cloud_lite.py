@@ -31,12 +31,12 @@ def _jsonable(obj: Any) -> Any:
         return {str(k): _jsonable(v) for k, v in obj.items()}
     if isinstance(obj, (list, tuple)):
         return [_jsonable(v) for v in obj]
+    if isinstance(obj, (np.bool_, bool)):
+        return bool(obj)
     if isinstance(obj, (np.floating, float)):
         return float(obj)
     if isinstance(obj, (np.integer, int)):
         return int(obj)
-    if isinstance(obj, (np.bool_, bool)):
-        return bool(obj)
     if isinstance(obj, np.ndarray):
         return obj.tolist()
     return obj

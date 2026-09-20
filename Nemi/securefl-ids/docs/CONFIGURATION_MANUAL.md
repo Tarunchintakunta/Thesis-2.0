@@ -151,13 +151,13 @@ Outputs to `figures/`:
 - `communication_cost.png`: Communication overhead
 - `comparison_bar.png`: Baseline vs improved comparison
 
-## Cloud / container deployment (not executed)
+## Cloud / container deployment
 
-**Honesty:** Evaluation is **local simulation only**.
+**Honesty:** 30-round PoC campaigns are local simulation. A **live AWS lite** FL round was executed (Free-Tier `t3.micro` + S3 + CloudWatch) and destroyed; see `results/live/cloud_lite_summary.json`.
 
-- No Docker Compose or Helm chart is committed in this repository.
-- `terraform/` under `securefl-ids/` exists as a research IaC scaffold but has **not** been applied (`terraform apply` forbidden until the alignment-first gate).
-- Do not treat ECS / Kubernetes / Docker steps as available or tested.
+- No Docker Compose or Helm chart is committed in this repository (beyond-CA2).
+- `terraform/` under `securefl-ids/` is the live-lite IaC; apply only via `make live-cloud-fl` (destroy-after-round).
+- Do not treat ECS / Kubernetes / Docker steps as tested.
 
 ## Troubleshooting
 

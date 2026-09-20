@@ -17,11 +17,11 @@ Differential Privacy & Opacus 1.4 \\
 Data Processing & NumPy, Pandas, scikit-learn \\
 Visualization & Matplotlib, Seaborn \\
 Testing & pytest, pytest-cov \\
-IaC (scaffold only) & Terraform (not applied) \\
+IaC (live lite + destroy) & Terraform (EC2+S3+CloudWatch) \\
 Version Control & Git \\
 \bottomrule
 \end{tabular}
-\caption{Technology stack for SecureFL-IDS (executed evaluation is local Python only)}
+\caption{Technology stack for SecureFL-IDS (30-round campaigns local; live lite on AWS)}
 \label{tab:tech_stack}
 \end{table}
 
@@ -278,10 +278,10 @@ make pilot
 \textbf{Implementation Limitations:}
 
 \begin{itemize}
-    \item Local simulation only (no live cloud deployment tested)
+    \item Local simulation for 30-round campaigns; live AWS lite FL on one \texttt{t3.micro} measured then destroyed
     \item Synthetic dataset when full UNSW-NB15 unavailable
     \item CPU-only testing (GPU optional but not required)
-    \item Single-machine multi-process (not distributed across nodes)
+    \item Lite cloud clients are in-process on one node (not WAN-distributed)
 \end{itemize}
 
 \textbf{Design Trade-offs:}

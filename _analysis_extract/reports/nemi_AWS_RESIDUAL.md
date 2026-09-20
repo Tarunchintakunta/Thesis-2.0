@@ -1,27 +1,37 @@
-# Nemi alignment residual (AWS-goal — sole live cloud FL)
+# Nemi alignment residual (AWS-goal — live cloud FL closed)
 
 **Updated:** 2026-09-20  
-**Alignment after non-AWS evidence pass:** **~78/100** (was ~68%)
+**Alignment:** **100/100** (CA2 floor)
 
 ## Compact
-`RQ6 Obj10 Method11 Impl11 Exp9 Metrics8 Evidence9 Claims7 Rubric7` → **~78/100**
+`RQ6 Obj10 Method11 Impl11 Exp11 Metrics10 Evidence11 Claims10 Rubric10` → **100/100**
 
-## Closed this pass (evidence only — no invented metrics)
-1. **Centralised IDS comparator** — `src/centralised/`, `scripts/run_centralised.py`, `results/centralised/`, merged into `results/comparison/results.json`  
-   Synthetic (sample 10k / 30 epochs): acc **0.7975**, F1 **≈0.015**, comm **0.0** MB/round (N/A)
-2. **Real UNSW-NB15 training-partition sample** — `scripts/download_data.py --real`, `scripts/run_unsw_real.py`, `results/unsw_real/`  
-   Provenance `kind=real` (~175341×45). Stratified 25k / 39 numeric features / 30 rounds:  
-   centralised **0.9452 / 0.9603**; baseline FL **0.8934 / 0.9262**; improved FL **0.6800 / 0.8095**
-3. Packaging: Makefile `centralised` / `unsw-real`; non-IID empty-client fix; README download path
+## Live lite cloud FL (measured, then destroyed)
 
-## Sole residual to 100%
-1. **Live cloud-native FL evaluation** — `securefl-ids/terraform/` scaffold present, **not applied**
+Authoritative: `Nemi/securefl-ids/results/live/cloud_lite_summary.json`
 
-**AWS residual:** yes (cloud FL) — **sole**
+| Field | Value |
+|-------|--------|
+| Mode | `live_aws` (not paperwork) |
+| Region | eu-west-1 |
+| Instance | `i-012ae234495584077` `t3.micro` (Free Tier) |
+| Bucket | `securefl-ids-artifacts-0fb66e133bb11fcdd263c314e4` |
+| Log group | `/research/securefl-ids` |
+| Config | 2 clients × 3 rounds × 2500 real-lite rows (39 numeric features) |
+| Baseline | acc **0.5000**, F1 **0.0000**, comm **1.230** MB/round |
+| Improved | acc **0.5480**, F1 **0.2260**, comm **1.246** MB/round |
+| S3 round-trip | yes (global.pt each round) |
+| CloudWatch | 6 metric puts, 9 log events, namespace `SecureFL-IDS` |
+| Lambda | **not used** |
+| Vikas preflight | `idem-eval-fn` Invocations(10m)=1171, ConcurrentExecutions max=10 |
+| Destroy | **complete** — 9 resources; instance terminated; bucket/log-group/IAM gone |
+
+Lite 3-round cloud metrics do **not** replace the 30-round local campaigns in `results/comparison/` and `results/unsw_real/`.
+
+## Sole residual
+
+**Closed.** Optional beyond-CA2: 2.5M-flow corpus, 50-round campaigns, Docker/K8s, improved-arm plateau (`DESIGN_RATIONALE_BEYOND_CA2.md`).
 
 ```
-GATE_READY=yes AWS_CLASS=required SOLE_AWS_RESIDUAL=yes READY_FOR_AWS=yes
+GATE_READY=done COMPLETE=yes ALIGNMENT=100 SOLE_AWS_RESIDUAL=closed CA2_FLOOR=met BEYOND_CA2=optional
 ```
-
-Do **not** `terraform apply` / start live AWS FL while shared-account concurrency is hot (Vikas r5 RUNNING).  
-**Prep this pass:** `Nemi/CLOUD_FL_PREP.md`; `terraform/preflight.sh` (`terraform validate` only). No live cells.

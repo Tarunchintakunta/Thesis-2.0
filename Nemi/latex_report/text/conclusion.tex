@@ -12,7 +12,7 @@ This research presented SecureFL-IDS, a privacy-preserving federated intrusion d
     
     \item \textbf{Honest Evaluation:} Synthetic PoC (\texttt{results/comparison/results.json}): centralised $0.7975$, baseline FL $0.793$, improved $0.800$ (F1 near zero). Real UNSW training-partition sample (\texttt{results/unsw\_real/results.json}): centralised $0.9452$ / F1 $0.9603$; baseline FL $0.8934$ / F1 $0.9262$; improved FL $0.6800$ / F1 $0.8095$.
     
-    \item \textbf{Open-Source Artefact:} Modular codebase (including centralised comparator), local simulation, tests, and a Terraform scaffold (\texttt{securefl-ids/terraform/}) that has \textbf{not} been applied. No Docker/Kubernetes/live-AWS execution is claimed.
+    \item \textbf{Open-Source Artefact:} Modular codebase (including centralised comparator), local simulation, tests, and a live AWS lite FL round on Free-Tier EC2+S3+CloudWatch (\texttt{results/live/cloud\_lite\_summary.json}) that was destroyed after measurement. Docker/Kubernetes remain beyond-CA2.
 \end{enumerate}
 
 \subsection{Research Question Answered (within PoC scope)}
@@ -29,27 +29,27 @@ Within the committed evidence:
     \item \textbf{Accuracy (synthetic):} Marginal FL change ($0.793 \rightarrow 0.800$); centralised $0.7975$.
     \item \textbf{Accuracy (real training-partition sample):} Centralised $0.9452$ leads; baseline FL $0.8934$; improved FL plateaus at $0.6800$ (honest underperformance).
     \item \textbf{Communication:} Improved arm used \emph{more} MB/round on both campaigns; the $-45\%$ efficiency claim is unsupported.
-    \item \textbf{Deployment:} Local simulation only; cloud-native orchestration not evaluated.
+    \item \textbf{Deployment:} Local 30-round campaigns plus a live AWS lite FL round (EC2 \texttt{t3.micro}, S3 round-trip, CloudWatch); Docker/K8s not evaluated.
 \end{itemize}
 
 \subsection{Implications for Practice}
 
-Practitioners should treat this artefact as a research prototype with a working centralised comparator and a real training-partition sample campaign. Improved-arm tuning and optional full-corpus runs remain open before any production integration narrative. Live AWS evaluation is the remaining CA2 residual (Terraform scaffold present, not applied).
+Practitioners should treat this artefact as a research prototype with a working centralised comparator, a real training-partition sample campaign, and a destroy-after-round AWS lite FL path. Improved-arm tuning and optional full-corpus runs remain open before any production integration narrative.
 
 \subsection{Limitations and Constraints}
 
 \begin{enumerate}
-    \item Local simulation only; Terraform present but not applied; no Docker/K8s evidence.
+    \item Local 30-round campaigns plus a live AWS lite FL round (destroyed after measurement); no Docker/K8s evidence.
     \item Synthetic data drives near-zero F1; real sample is not the full $2.5$M-flow corpus.
     \item Improved FL underperforms baseline FL on the real training-partition sample.
     \item Honest-but-curious threat model only.
-    \item No live metered cloud campaign.
+    \item No confirmatory multi-instance WAN / 50-round cloud campaign (lite only).
 \end{enumerate}
 
 \subsection{Future Work}
 
-Optional full-corpus / 50-round campaigns, improved-arm plateau remediation, multi-class detection, Byzantine-robust aggregation, and---as the sole remaining CA2 residual---live AWS evaluation using the existing Terraform scaffold (only when shared-account concurrency allows).
+Optional full-corpus / 50-round campaigns, improved-arm plateau remediation, multi-class detection, Byzantine-robust aggregation, and Docker/Kubernetes orchestration (beyond-CA2).
 
 \subsection{Closing Remarks}
 
-SecureFL-IDS contributes a reproducible FL+DP IDS codebase, a centralised comparator, and honest synthetic plus real training-partition results. Claimed metrics match committed JSON; inflated accuracy/F1/communication and Docker/K8s/AWS production claims are deliberately excluded. CA2 alignment remains incomplete pending live cloud-native FL evaluation.
+SecureFL-IDS contributes a reproducible FL+DP IDS codebase, a centralised comparator, honest synthetic plus real training-partition results, and a destroy-after-round AWS lite FL path. Claimed metrics match committed JSON; inflated accuracy/F1/communication and Docker/K8s production claims are deliberately excluded. CA2 floor is met.

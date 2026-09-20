@@ -50,8 +50,9 @@ securefl-ids/
 ├── docs/                 # Configuration manual, architecture
 ├── results/              # Experiment outputs (metrics, logs)
 │   ├── comparison/       # Synthetic PoC (incl. centralised arm)
-│   └── unsw_real/        # Real training-partition sample campaign
-├── terraform/            # AWS scaffold (NOT applied)
+│   ├── unsw_real/        # Real training-partition sample campaign
+│   └── live/             # Live AWS lite FL (`cloud_lite_summary.json`)
+├── terraform/            # AWS IaC (lite apply + destroy-after-round)
 └── figures/              # Evaluation plots
 ```
 
@@ -79,7 +80,8 @@ securefl-ids/
 - **Dataset:** UNSW-NB15 — real training-partition download via `scripts/download_data.py --real`, or `--synthetic` fallback
 - **Local Simulation:** Multi-process simulation of federated clients (no AWS required)
 - **Privacy:** Opacus-compatible DP helpers in code paths
-- **Deployment:** Local simulation only (no Docker/K8s/AWS executed)
+- **Deployment:** Local simulation for PoC/real-sample campaigns; **live AWS lite** on one Free-Tier `t3.micro` + S3 + CloudWatch (`results/live/`)
+- See `STATUS.md` and `RESULTS_NOTE.md` for honest PoC metrics (acc ~0.793/0.800, F1 near 0) and live-lite 3-round metrics
 
 ## Experiments
 
@@ -138,10 +140,10 @@ Tests include:
 
 ## Deployment Notes
 
-- **Local Simulation (Default / only executed):** No cloud resources needed
-- **Docker / Kubernetes / Helm:** Not present in this repo; do not claim container or K8s deployment
-- **AWS:** Not deployed. Terraform scaffold at `terraform/` exists but has **not** been applied
-- See `STATUS.md` and `RESULTS_NOTE.md` for honest PoC metrics (acc ~0.793/0.800, F1 near 0)
+- **Local Simulation (default PoC):** No cloud resources needed for synthetic / real-sample campaigns
+- **Docker / Kubernetes / Helm:** Not present; beyond-CA2 (do not claim container or K8s deployment)
+- **AWS live lite:** Executed 2026-09-20 on one Free-Tier `t3.micro` + S3 + CloudWatch, then destroyed. Metrics: `results/live/cloud_lite_summary.json`
+- See `STATUS.md` and `RESULTS_NOTE.md` for honest PoC metrics (acc ~0.793/0.800, F1 near 0) and live-lite 3-round metrics
 
 ## Privacy Guarantees
 
@@ -152,7 +154,7 @@ Tests include:
 ## Limitations and Future Work
 
 - Current implementation: Honest-but-curious threat model (no Byzantine resilience)
-- Local simulation only; Terraform at `terraform/` exists but is not applied; no Docker/K8s
+- Local simulation for 30-round campaigns; live AWS lite FL measured then destroyed; no Docker/K8s
 - Binary/limited multi-class classification (could extend to zero-day detection)
 - No concept drift handling (future: continuous learning mechanisms)
 
