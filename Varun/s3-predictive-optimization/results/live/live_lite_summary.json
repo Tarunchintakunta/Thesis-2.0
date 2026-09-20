@@ -1,0 +1,177 @@
+{
+  "round": "live_lite",
+  "mode": "live_aws",
+  "collected_at": "2026-09-20T12:05:10.139764+00:00",
+  "started_at": "2026-09-20T12:03:51.711183+00:00",
+  "elapsed_s": 78.428581,
+  "region": "eu-west-1",
+  "bucket": "s3-pred-opt-60d216643d19b67c00e7ffc8d0",
+  "log_group": "/research/s3-pred-opt",
+  "tags_policy": {
+    "project": "s3-predictive-optimization",
+    "managed_by": "terraform",
+    "purpose": "research-eval",
+    "data": "synthetic",
+    "note": "No personal name/ID tags applied by this round."
+  },
+  "s3": {
+    "prefix": "lite/20260920T120351Z/",
+    "objects_per_arm": 24,
+    "object_bytes": 163840,
+    "listed_key_count": 48,
+    "put_standard_ms": {
+      "n": 24,
+      "mean": 1008.3000780402168,
+      "stdev": 224.56180282012141,
+      "min": 824.4536669953959,
+      "max": 1829.121083006612
+    },
+    "put_standard_ia_ms": {
+      "n": 24,
+      "mean": 681.6165052514407,
+      "stdev": 213.91025576010915,
+      "min": 513.0415419989731,
+      "max": 1307.398375007324
+    },
+    "get_standard_ms": {
+      "n": 24,
+      "mean": 187.16872579231372,
+      "stdev": 14.740979253959765,
+      "min": 166.3617919984972,
+      "max": 234.54566700092983
+    },
+    "get_standard_ia_ms": {
+      "n": 24,
+      "mean": 524.1703090850933,
+      "stdev": 29.401353938330896,
+      "min": 491.25037499470636,
+      "max": 624.1933340061223
+    },
+    "sample_objects": [
+      {
+        "key_standard": "lite/20260920T120351Z/std/obj-000.bin",
+        "key_ia": "lite/20260920T120351Z/ia/obj-000.bin",
+        "size_bytes": 163840,
+        "storage_class_standard": "STANDARD",
+        "storage_class_ia": "STANDARD_IA"
+      },
+      {
+        "key_standard": "lite/20260920T120351Z/std/obj-001.bin",
+        "key_ia": "lite/20260920T120351Z/ia/obj-001.bin",
+        "size_bytes": 163840,
+        "storage_class_standard": "STANDARD",
+        "storage_class_ia": "STANDARD_IA"
+      },
+      {
+        "key_standard": "lite/20260920T120351Z/std/obj-002.bin",
+        "key_ia": "lite/20260920T120351Z/ia/obj-002.bin",
+        "size_bytes": 163840,
+        "storage_class_standard": "STANDARD",
+        "storage_class_ia": "STANDARD_IA"
+      }
+    ]
+  },
+  "pricing_api": {
+    "ok": true,
+    "price_list_count": 0,
+    "format_version": "aws_v1"
+  },
+  "cost_explorer": {
+    "ok": true,
+    "window": {
+      "start": "2026-09-13",
+      "end": "2026-09-20"
+    },
+    "daily": [
+      {
+        "start": "2026-09-13",
+        "unblended_usd": 0.0
+      },
+      {
+        "start": "2026-09-14",
+        "unblended_usd": 0.0
+      },
+      {
+        "start": "2026-09-15",
+        "unblended_usd": 0.0
+      },
+      {
+        "start": "2026-09-16",
+        "unblended_usd": 1.8e-09
+      },
+      {
+        "start": "2026-09-17",
+        "unblended_usd": 1.8e-09
+      },
+      {
+        "start": "2026-09-18",
+        "unblended_usd": 0.0
+      },
+      {
+        "start": "2026-09-19",
+        "unblended_usd": 0.0
+      }
+    ],
+    "sum_unblended_usd": 3.6e-09
+  },
+  "cloudwatch_metrics": {
+    "ok": true,
+    "list_metrics_count": 0,
+    "bucket_size_datapoints": [],
+    "note": "BucketSizeBytes often empty for brand-new buckets (daily lag)."
+  },
+  "cloudwatch_logs": {
+    "ok": true,
+    "log_group": "/research/s3-pred-opt",
+    "log_stream": "lite-20260920T120351Z",
+    "rejected_events": null
+  },
+  "storage_cost_model_usd_per_month": {
+    "rate_standard_gb_mo": 0.023,
+    "rate_ia_gb_mo": 0.0125,
+    "sum_standard": 8.4228515625e-05,
+    "sum_ia": 4.57763671875e-05,
+    "delta_standard_minus_ia": 3.8452148437499993e-05,
+    "note": "Modeled from live object sizes \u00d7 published list rates; not a settled Cost Explorer bill for this round."
+  },
+  "wilcoxon": {
+    "storage_cost_standard_vs_ia": {
+      "test": "wilcoxon",
+      "statistic": 0.0,
+      "p_value": 9.633570086430963e-07,
+      "alpha": 0.05,
+      "significant": true,
+      "n": 24
+    },
+    "get_latency_ms_standard_vs_ia": {
+      "test": "wilcoxon",
+      "statistic": 0.0,
+      "p_value": 1.1920928955078125e-07,
+      "alpha": 0.05,
+      "significant": true,
+      "n": 24
+    },
+    "put_latency_ms_standard_vs_ia": {
+      "test": "wilcoxon",
+      "statistic": 0.0,
+      "p_value": 1.1920928955078125e-07,
+      "alpha": 0.05,
+      "significant": true,
+      "n": 24
+    },
+    "note": "Cost Wilcoxon uses paired per-object modeled monthly storage; latency Wilcoxon uses live PUT/GET wall times. Not a multi-workload savings campaign."
+  },
+  "limitations": [
+    "Lite probe only: 24 objects \u00d7 2 storage classes; not multi-workload CA2 protocol.",
+    "Cost Explorer window reflects account S3 spend (often near-zero / lagged), not round savings.",
+    "CloudWatch BucketSizeBytes typically lags ~24h for new buckets.",
+    "src/metadata/ collector still absent; no S3 Inventory job in this round."
+  ],
+  "destroy_after": true,
+  "destroy_status": {
+    "terraform_destroy": "complete",
+    "resources_destroyed": 8,
+    "verified_bucket_absent": true,
+    "destroyed_at": "2026-09-20T12:05:30Z"
+  }
+}

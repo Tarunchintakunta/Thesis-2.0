@@ -1,0 +1,328 @@
+{
+  "put_standard_ms": [
+    1425.7788329996401,
+    877.3810409911675,
+    869.3072499881964,
+    856.6387080063578,
+    856.7024169897195,
+    896.4282910019392,
+    1017.7932500082534,
+    1094.9530830112053,
+    1829.121083006612,
+    882.5805829983437,
+    1046.5720840002177,
+    887.9012079996755,
+    1048.3776249893708,
+    882.0977919967845,
+    967.9173750046175,
+    862.765041005332,
+    1054.6036250016186,
+    880.7257919979747,
+    1102.0850829954725,
+    888.2357499969658,
+    824.4536669953959,
+    882.9541250015609,
+    1044.0512499917531,
+    1219.7769169870298
+  ],
+  "put_standard_ia_ms": [
+    524.0282500017202,
+    536.4931660005823,
+    698.5305000125663,
+    515.8179169957293,
+    513.0415419989731,
+    526.6708749986719,
+    894.9079169979086,
+    698.4432910103351,
+    1307.398375007324,
+    536.1220000049798,
+    526.4867079968099,
+    538.56004201225,
+    846.2217499909457,
+    537.4854170077015,
+    896.298209001543,
+    525.0759589980589,
+    684.8477500025183,
+    524.0033750014845,
+    981.1410830006935,
+    691.4583330071764,
+    527.0992919977289,
+    523.0581249925308,
+    755.7296250015497,
+    1049.8766249947948
+  ],
+  "get_standard_ms": [
+    174.0945420024218,
+    194.74404100037646,
+    191.6792499978328,
+    183.70320901158266,
+    202.62187499611173,
+    166.3617919984972,
+    178.02941700210795,
+    182.59900000703055,
+    174.1172910114983,
+    175.90770799142774,
+    179.10020900308155,
+    179.38245899858885,
+    202.4106250028126,
+    187.70349999249447,
+    179.45420900650788,
+    185.69704200490378,
+    191.13641600415576,
+    182.91091699211393,
+    208.65866699023172,
+    171.88358299608808,
+    200.49633299640846,
+    234.54566700092983,
+    177.5605419970816,
+    187.25112501124386
+  ],
+  "get_standard_ia_ms": [
+    530.5075409996789,
+    503.3545000042068,
+    513.8414579996606,
+    493.6089999973774,
+    526.8661670124857,
+    575.1327920006588,
+    508.8851250038715,
+    514.0315000026021,
+    491.5034169971477,
+    512.9655420023482,
+    538.4900409990223,
+    491.25037499470636,
+    536.2760000134585,
+    518.194250005763,
+    537.7426670020213,
+    523.3912499970756,
+    525.5000829929486,
+    520.6837919977261,
+    540.1770419994136,
+    540.7086250052089,
+    527.9102080094162,
+    491.37866699311417,
+    624.1933340061223,
+    493.49404200620484
+  ],
+  "cost_standard_usd_mo": [
+    3.5095214843749997e-06,
+    3.5095214843749997e-06,
+    3.5095214843749997e-06,
+    3.5095214843749997e-06,
+    3.5095214843749997e-06,
+    3.5095214843749997e-06,
+    3.5095214843749997e-06,
+    3.5095214843749997e-06,
+    3.5095214843749997e-06,
+    3.5095214843749997e-06,
+    3.5095214843749997e-06,
+    3.5095214843749997e-06,
+    3.5095214843749997e-06,
+    3.5095214843749997e-06,
+    3.5095214843749997e-06,
+    3.5095214843749997e-06,
+    3.5095214843749997e-06,
+    3.5095214843749997e-06,
+    3.5095214843749997e-06,
+    3.5095214843749997e-06,
+    3.5095214843749997e-06,
+    3.5095214843749997e-06,
+    3.5095214843749997e-06,
+    3.5095214843749997e-06
+  ],
+  "cost_ia_usd_mo": [
+    1.9073486328125e-06,
+    1.9073486328125e-06,
+    1.9073486328125e-06,
+    1.9073486328125e-06,
+    1.9073486328125e-06,
+    1.9073486328125e-06,
+    1.9073486328125e-06,
+    1.9073486328125e-06,
+    1.9073486328125e-06,
+    1.9073486328125e-06,
+    1.9073486328125e-06,
+    1.9073486328125e-06,
+    1.9073486328125e-06,
+    1.9073486328125e-06,
+    1.9073486328125e-06,
+    1.9073486328125e-06,
+    1.9073486328125e-06,
+    1.9073486328125e-06,
+    1.9073486328125e-06,
+    1.9073486328125e-06,
+    1.9073486328125e-06,
+    1.9073486328125e-06,
+    1.9073486328125e-06,
+    1.9073486328125e-06
+  ],
+  "objects": [
+    {
+      "key_standard": "lite/20260920T120351Z/std/obj-000.bin",
+      "key_ia": "lite/20260920T120351Z/ia/obj-000.bin",
+      "size_bytes": 163840,
+      "storage_class_standard": "STANDARD",
+      "storage_class_ia": "STANDARD_IA"
+    },
+    {
+      "key_standard": "lite/20260920T120351Z/std/obj-001.bin",
+      "key_ia": "lite/20260920T120351Z/ia/obj-001.bin",
+      "size_bytes": 163840,
+      "storage_class_standard": "STANDARD",
+      "storage_class_ia": "STANDARD_IA"
+    },
+    {
+      "key_standard": "lite/20260920T120351Z/std/obj-002.bin",
+      "key_ia": "lite/20260920T120351Z/ia/obj-002.bin",
+      "size_bytes": 163840,
+      "storage_class_standard": "STANDARD",
+      "storage_class_ia": "STANDARD_IA"
+    },
+    {
+      "key_standard": "lite/20260920T120351Z/std/obj-003.bin",
+      "key_ia": "lite/20260920T120351Z/ia/obj-003.bin",
+      "size_bytes": 163840,
+      "storage_class_standard": "STANDARD",
+      "storage_class_ia": "STANDARD_IA"
+    },
+    {
+      "key_standard": "lite/20260920T120351Z/std/obj-004.bin",
+      "key_ia": "lite/20260920T120351Z/ia/obj-004.bin",
+      "size_bytes": 163840,
+      "storage_class_standard": "STANDARD",
+      "storage_class_ia": "STANDARD_IA"
+    },
+    {
+      "key_standard": "lite/20260920T120351Z/std/obj-005.bin",
+      "key_ia": "lite/20260920T120351Z/ia/obj-005.bin",
+      "size_bytes": 163840,
+      "storage_class_standard": "STANDARD",
+      "storage_class_ia": "STANDARD_IA"
+    },
+    {
+      "key_standard": "lite/20260920T120351Z/std/obj-006.bin",
+      "key_ia": "lite/20260920T120351Z/ia/obj-006.bin",
+      "size_bytes": 163840,
+      "storage_class_standard": "STANDARD",
+      "storage_class_ia": "STANDARD_IA"
+    },
+    {
+      "key_standard": "lite/20260920T120351Z/std/obj-007.bin",
+      "key_ia": "lite/20260920T120351Z/ia/obj-007.bin",
+      "size_bytes": 163840,
+      "storage_class_standard": "STANDARD",
+      "storage_class_ia": "STANDARD_IA"
+    },
+    {
+      "key_standard": "lite/20260920T120351Z/std/obj-008.bin",
+      "key_ia": "lite/20260920T120351Z/ia/obj-008.bin",
+      "size_bytes": 163840,
+      "storage_class_standard": "STANDARD",
+      "storage_class_ia": "STANDARD_IA"
+    },
+    {
+      "key_standard": "lite/20260920T120351Z/std/obj-009.bin",
+      "key_ia": "lite/20260920T120351Z/ia/obj-009.bin",
+      "size_bytes": 163840,
+      "storage_class_standard": "STANDARD",
+      "storage_class_ia": "STANDARD_IA"
+    },
+    {
+      "key_standard": "lite/20260920T120351Z/std/obj-010.bin",
+      "key_ia": "lite/20260920T120351Z/ia/obj-010.bin",
+      "size_bytes": 163840,
+      "storage_class_standard": "STANDARD",
+      "storage_class_ia": "STANDARD_IA"
+    },
+    {
+      "key_standard": "lite/20260920T120351Z/std/obj-011.bin",
+      "key_ia": "lite/20260920T120351Z/ia/obj-011.bin",
+      "size_bytes": 163840,
+      "storage_class_standard": "STANDARD",
+      "storage_class_ia": "STANDARD_IA"
+    },
+    {
+      "key_standard": "lite/20260920T120351Z/std/obj-012.bin",
+      "key_ia": "lite/20260920T120351Z/ia/obj-012.bin",
+      "size_bytes": 163840,
+      "storage_class_standard": "STANDARD",
+      "storage_class_ia": "STANDARD_IA"
+    },
+    {
+      "key_standard": "lite/20260920T120351Z/std/obj-013.bin",
+      "key_ia": "lite/20260920T120351Z/ia/obj-013.bin",
+      "size_bytes": 163840,
+      "storage_class_standard": "STANDARD",
+      "storage_class_ia": "STANDARD_IA"
+    },
+    {
+      "key_standard": "lite/20260920T120351Z/std/obj-014.bin",
+      "key_ia": "lite/20260920T120351Z/ia/obj-014.bin",
+      "size_bytes": 163840,
+      "storage_class_standard": "STANDARD",
+      "storage_class_ia": "STANDARD_IA"
+    },
+    {
+      "key_standard": "lite/20260920T120351Z/std/obj-015.bin",
+      "key_ia": "lite/20260920T120351Z/ia/obj-015.bin",
+      "size_bytes": 163840,
+      "storage_class_standard": "STANDARD",
+      "storage_class_ia": "STANDARD_IA"
+    },
+    {
+      "key_standard": "lite/20260920T120351Z/std/obj-016.bin",
+      "key_ia": "lite/20260920T120351Z/ia/obj-016.bin",
+      "size_bytes": 163840,
+      "storage_class_standard": "STANDARD",
+      "storage_class_ia": "STANDARD_IA"
+    },
+    {
+      "key_standard": "lite/20260920T120351Z/std/obj-017.bin",
+      "key_ia": "lite/20260920T120351Z/ia/obj-017.bin",
+      "size_bytes": 163840,
+      "storage_class_standard": "STANDARD",
+      "storage_class_ia": "STANDARD_IA"
+    },
+    {
+      "key_standard": "lite/20260920T120351Z/std/obj-018.bin",
+      "key_ia": "lite/20260920T120351Z/ia/obj-018.bin",
+      "size_bytes": 163840,
+      "storage_class_standard": "STANDARD",
+      "storage_class_ia": "STANDARD_IA"
+    },
+    {
+      "key_standard": "lite/20260920T120351Z/std/obj-019.bin",
+      "key_ia": "lite/20260920T120351Z/ia/obj-019.bin",
+      "size_bytes": 163840,
+      "storage_class_standard": "STANDARD",
+      "storage_class_ia": "STANDARD_IA"
+    },
+    {
+      "key_standard": "lite/20260920T120351Z/std/obj-020.bin",
+      "key_ia": "lite/20260920T120351Z/ia/obj-020.bin",
+      "size_bytes": 163840,
+      "storage_class_standard": "STANDARD",
+      "storage_class_ia": "STANDARD_IA"
+    },
+    {
+      "key_standard": "lite/20260920T120351Z/std/obj-021.bin",
+      "key_ia": "lite/20260920T120351Z/ia/obj-021.bin",
+      "size_bytes": 163840,
+      "storage_class_standard": "STANDARD",
+      "storage_class_ia": "STANDARD_IA"
+    },
+    {
+      "key_standard": "lite/20260920T120351Z/std/obj-022.bin",
+      "key_ia": "lite/20260920T120351Z/ia/obj-022.bin",
+      "size_bytes": 163840,
+      "storage_class_standard": "STANDARD",
+      "storage_class_ia": "STANDARD_IA"
+    },
+    {
+      "key_standard": "lite/20260920T120351Z/std/obj-023.bin",
+      "key_ia": "lite/20260920T120351Z/ia/obj-023.bin",
+      "size_bytes": 163840,
+      "storage_class_standard": "STANDARD",
+      "storage_class_ia": "STANDARD_IA"
+    }
+  ]
+}
