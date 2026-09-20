@@ -131,13 +131,13 @@ Generate figures to communicate results:
 The experiment proceeds through seven phases:
 
 \begin{enumerate}
-    \item \textbf{Pilot (18 runs):} Small-scale trial with 3 configs × 3 repeats × 2 arms to validate repeatability, tune simulator parameters, and estimate variance for power analysis.
+    \item \textbf{Pilot (18 design runs; 36 on-disk with packaging twin):} Small-scale trial with 3 configs × 3 repeats × 2 arms to validate repeatability, tune simulator parameters, and estimate variance for power analysis.
     
-    \item \textbf{Baseline Replication (115 runs):} No fault injection; replicate Kyrychenko et al. steady-state conditions (6 VT × 4 batch × ~5 repeats) to confirm simulator fidelity.
+    \item \textbf{Baseline Replication (115 design / 230 on-disk):} No fault injection; replicate Kyrychenko et al. steady-state conditions (VT × batch × 5 repeats, plus delay cells) to confirm simulator fidelity.
     
     \item \textbf{Arms Comparison (10 runs):} Sync vs. queue under no fault and under one fault type to validate that control arm behaves as expected.
     
-    \item \textbf{Fault Campaigns A-E (~187 runs):} Systematic grid of VT × MRC × batch × fault type with sufficient repeats for hypothesis testing. Campaign A: consumer kill; B: unhandled error; C: datastore reject; D: datastore timeout; E: H3 grid (specific configs for steady-state optimum test).
+    \item \textbf{Fault Campaigns A--H (187 design / 374 on-disk):} Systematic grid of VT × MRC × batch × fault type with \texttt{repeats\_per\_cell: 5} (3 for H grid). Campaign A: consumer kill; B: unhandled error; C: datastore reject; D: datastore timeout; E: H3 grid; plus F arms-under-fault and H VT×MRC grid.
     
     \item \textbf{Burst Replication (20 runs):} Replicate key cells under burst load (higher message rate) to check if findings generalize beyond steady load.
     
@@ -146,7 +146,7 @@ The experiment proceeds through seven phases:
     \item \textbf{Figure Generation:} Produce all visualizations from aggregated results.
 \end{enumerate}
 
-Total: 350+ runs, all executed in the local simulator (DRY\_RUN=1). Each run is assigned a deterministic run ID (derived from config hash and seed) to enable reproducibility.
+Total: 350 unique design cells (690 on-disk manifests include adaptive\_vt packaging twins; analysis deduplicates), all executed in the local simulator (DRY\_RUN=1). Each run is assigned a deterministic run ID (derived from config hash and seed).
 
 \section{Simulator Rationale}
 
@@ -207,4 +207,4 @@ The study aligns with NCI Ethics Scenario 2 (own-account AWS use) and Scenario 3
 
 \section{Summary}
 
-This chapter establishes the experimental design: a controlled, two-arm comparison with systematic manipulation of SQS configuration and fault injection conditions. The simulator enables reproducible, cost-free execution of 350+ runs. Three pre-registered hypotheses are tested using non-parametric statistics with Holm-Bonferroni correction. Threats to validity are acknowledged and mitigated where possible. The next chapter describes the artefact's design and implementation in detail.
+This chapter establishes the experimental design: a controlled, two-arm comparison with systematic manipulation of SQS configuration and fault injection conditions. The simulator enables reproducible, cost-free execution of the 350 unique design cells. Three pre-registered hypotheses are tested using non-parametric statistics with Holm-Bonferroni correction. Threats to validity are acknowledged and mitigated where possible. The next chapter describes the artefact's design and implementation in detail.

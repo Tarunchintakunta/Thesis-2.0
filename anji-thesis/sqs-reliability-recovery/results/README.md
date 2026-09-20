@@ -10,15 +10,21 @@
 
 ## Layout
 
-| Folder | What | Runs |
-|--------|------|------|
-| `pilot/` | pilot (`configs/pilot.yaml`) | 18 |
-| `baseline/` | no-fault replication of Kyrychenko et al. (2025) (`configs/baseline_kyrchenko.yaml`, `--repeats 5`) | 115 |
-| `arms/` | sync vs queue arm, no fault (`configs/arms.yaml`) | 10 |
-| `campaigns/` | fault campaigns A-F and the H grid (`configs/fault_campaigns.yaml`) | 187 |
-| `burst/` | burst replication of key cells (`configs/key_cells.yaml`) | 20 |
-| `summary/` | `hypotheses.md`, `stats_*.json`, `power_from_pilot.json` | - |
-| `figures/` | all figures (`analysis/plot_results.py`) | - |
+| Folder | What | Design cells | On-disk manifests |
+|--------|------|-------------:|------------------:|
+| `pilot/` | pilot (`configs/pilot.yaml`) | 18 | 36 |
+| `baseline/` | no-fault replication of Kyrychenko et al. (2025) (`configs/baseline_kyrchenko.yaml`, `--repeats 5`) | 115 | 230 |
+| `arms/` | sync vs queue arm, no fault (`configs/arms.yaml`) | 10 | 10 |
+| `campaigns/` | fault campaigns A–H (`configs/fault_campaigns.yaml`) | 187 | 374 |
+| `burst/` | burst replication of key cells (`configs/key_cells.yaml`) | 20 | 40 |
+| `summary/` | `hypotheses.md`, `stats_*.json`, `power_from_pilot.json` | - | - |
+| `figures/` | all figures (`analysis/plot_results.py`) | - | - |
+| **Total** | unique `(campaign, cell, repeat)` after packaging-dedup | **350** | **690** |
+
+On-disk extras are **adaptive_vt packaging twins** (same seed/metrics; distinct
+`run_id` because `spec.adaptive_vt: false` was added later). Analysis
+(`analysis/load_results.py`) keeps one row per design cell. Do not treat 690
+as 690 independent repeats.
 
 Each step folder has `manifests/<RUN_ID>.json` (source of truth) and a
 `summary.csv` rebuilt from them. Raw per-run dumps (`raw/`) are gitignored;
@@ -38,17 +44,18 @@ Each step folder has `manifests/<RUN_ID>.json` (source of truth) and a
   visible-only measure says 0-24 s for all of them because the failed messages
   sit *in flight*, see `figures/timeline_visible_vs_backlog.png`.
 * **maxReceiveCount does not change recovery** after a transient fault
-  (~31-36 s at VT 30 for 1/3/5/10, H2 not rejected) but it decides where the
+  (~31-36 s at VT 30 for 1/3/5/10, H2 not rejected; H=2.43, p_adj=1.0 after dedup) but it decides where the
   failed messages end up: maxReceiveCount = 1 dead-letters ~29 % of all orders
   under unhandled_error (~17 % under datastore_reject) that would have succeeded
   on a retry; 3 or more sends almost nothing to the DLQ but brings duplicates
   (~0.14 per processed order).
-* **Steady-state optimum under fault (H3):** From `stats_H1_H2_H3.json`,
-  H3_loss is not estimable (loss identically 0). H3_recovery **rejects H0**
-  after Holm: Mann–Whitney U = 250, raw p = 0.000792, adjusted p = 0.00317,
-  rank-biserial r = 0.667; optimal (VT 600 / batch 50) mean recovery 600 s vs
-  alternatives mean 224 s (n_opt=10, n_rest=30). Earlier text citing adjusted
-  p = 0.084 is incorrect relative to committed stats.
+* **Steady-state optimum under fault (H3):** From packaging-deduped
+  `stats_H1_H2_H3.json` (`runs: 350`), H3_loss is not estimable (loss
+  identically 0). H3_recovery **fails to reject H0 after Holm**: Mann–Whitney
+  U = 62.5, raw p = 0.02106, adjusted p = 0.08425, rank-biserial r = 0.667;
+  optimal (VT 600 / batch 50) mean recovery 600 s vs alternatives mean 224 s
+  (n_opt=5, n_rest=15). Twin-inflated n=10 / U=250 / p_adj=0.003 drafts are
+  withdrawn.
 
 Full tables: `summary/hypotheses.md`; group means and 95 % bootstrap CIs:
 `summary/stats_H1_H2_H3.json`.

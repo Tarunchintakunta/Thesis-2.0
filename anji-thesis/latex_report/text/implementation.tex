@@ -105,7 +105,7 @@ Simulator behavior matches AWS SQS Developer Guide~\citep{AWSSQSGuide}:
     \item DynamoDB writes: \$1.25 per million.
 \end{itemize}
 
-Pilot (18 runs, 1000 messages each) estimated at \$0.10. Full experiments (350+ runs, 10,000 messages each) estimated at \$50-100 by \texttt{estimate\_cost.py}. These are \textbf{estimator projections only}---no live AWS spend occurred and no experimental cost DV is in \texttt{results/summary/}. Simulator avoids all charges.
+Pilot (18 design runs) estimated at \$0.10. Full design matrix (350 unique cells) estimated at \$50-100 by \texttt{estimate\_cost.py}. These are \textbf{estimator projections only}---no live AWS spend occurred and no experimental cost DV is in \texttt{results/summary/}. Simulator avoids all charges.
 
 \subsection{Free-Tier Guard}
 
@@ -158,7 +158,7 @@ Multiple definitions possible: (1) last message processed, (2) backlog returns t
 
 \begin{itemize}
     \item \textbf{Pre-register hypotheses:} Reduced temptation to p-hack; forced clarity about what the study tests.
-    \item \textbf{Simulator-first development:} Rapid iteration without AWS costs; enabled 350+ runs in minutes.
+    \item \textbf{Simulator-first development:} Rapid iteration without AWS costs; enabled the 350 unique design cells in minutes.
     \item \textbf{Manifests as source of truth:} JSON manifests enable reproducibility; analysis scripts rebuild summaries from manifests, ensuring consistency.
     \item \textbf{Incremental validation:} Unit tests → integration tests → pilot runs → full campaigns caught bugs early.
     \item \textbf{CI/CD discipline:} Automated testing on every push prevented regressions.

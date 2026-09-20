@@ -11,7 +11,7 @@
 
 | # | Thesis | Latest % | CA2 file | Need 100%? |
 |---|--------|---------:|----------|------------|
-| 1 | Anji | **~78%** | proposal.docx | Yes |
+| 1 | Anji | **~90%** | proposal.docx | Yes (sole hard) |
 | 2 | Varun | **~70%** | RIC_CA2.txt | Yes |
 | 3 | Yashaswini | **~75%** | proposal.docx | Yes |
 | 4 | Rasool | **~74%** | proposal.docx | Yes |
@@ -45,3 +45,4 @@
 - 2026-09-20b: Added `CA2_COMMITMENTS.md` for Mehak/Pooja/Uday/Vishvaksen (binding until real CA2 exists)
 - 2026-09-20c: Mehak/Pooja/Uday/Vishvaksen claim hygiene — STATUS &lt;100%, eval↔CSV, bib `note={doi:}`, residual notes; still NOT COMPLETE; no AWS
 - 2026-09-20d: Anji/Varun/Yashaswini/Rasool/Nemi claim hygiene raise — eval↔JSON, STATUS demote, DOI notes, residual notes; still NOT COMPLETE; no AWS
+- 2026-09-20e: Anji packaging-dedup + phase run-count reconcile → ~90%; READY_FOR_AWS=yes (sole=live SQS); no AWS

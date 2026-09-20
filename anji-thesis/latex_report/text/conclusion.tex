@@ -4,7 +4,7 @@ This chapter summarizes the research findings, discusses their implications for 
 
 \section{Research Summary}
 
-This research investigated the question: \textbf{How does Amazon SQS configuration affect message reliability and recovery under injected consumer and downstream failures?} A controlled experimental artefact was developed using AWS SAM, implementing a two-arm comparison (synchronous API vs. SQS queue) with in-process fault injection capable of triggering consumer kills, unhandled errors, datastore rejections, and datastore timeouts. A discrete-event simulator enabled reproducible execution of 350+ experimental runs without AWS costs.
+This research investigated the question: \textbf{How does Amazon SQS configuration affect message reliability and recovery under injected consumer and downstream failures?} A controlled experimental artefact was developed using AWS SAM, implementing a two-arm comparison (synchronous API vs. SQS queue) with in-process fault injection capable of triggering consumer kills, unhandled errors, datastore rejections, and datastore timeouts. A discrete-event simulator enabled reproducible execution of the 350 unique design-cell localsim runs (690 on-disk manifests include packaging twins; analysis deduplicates) without AWS costs.
 
 The study measured message loss, duplicate processing, DLQ traffic, recovery time, throughput, and latency across a systematic matrix of visibility timeout (30–900 seconds), maxReceiveCount (1–10), batch size (1–50), and four fault types. Three pre-registered hypotheses were tested using non-parametric statistics with Holm-Bonferroni correction for family-wise error rate control.
 
@@ -12,13 +12,13 @@ The study measured message loss, duplicate processing, DLQ traffic, recovery tim
 
 \subsection{Empirical Evidence on SQS Resilience Configuration}
 
-This is the first systematic, quantitative study of SQS configuration under controlled, reproducible fault injection. Prior work by \citet{Kyrychenko2025} established steady-state performance optima; this research extends that baseline to failure scenarios, revealing that:
+This work provides a systematic, quantitative localsim study of SQS configuration under controlled, reproducible fault injection (priority claim relative to the Kyrychenko steady-state baseline in this artefact; not a verified global ``first''). Prior work by \citet{Kyrychenko2025} established steady-state performance optima; this research extends that baseline to failure scenarios, revealing that:
 
 \begin{itemize}
     \item \textbf{Queue-arm loss floor is zero} under tested faults (campaign~A); H1 as a VT$\rightarrow$loss effect is \textbf{not estimable} (fail to reject; $p_{\mathrm{adj}}=1$)---zero loss is descriptive, not a supported VT effect.
     \item \textbf{Recovery time follows visibility timeout nearly 1:1} under consumer kill (exploratory; e.g., VT\,600 $\rightarrow$ mean recovery $600$\,s), identifying VT as a recovery time knob.
-    \item \textbf{MRC$\rightarrow$recovery H2:} fail to reject ($H=4.98$, $p_{\mathrm{adj}}=0.520$). Exploratory DLQ capture vs MRC is the clear signal (MRC\,1 mean $\approx0.294$ under unhandled\_error vs $\approx0$ at MRC$\ge5$).
-    \item \textbf{H3\_recovery rejects H0 after Holm} ($U=250$, $p_{\mathrm{adj}}=3.17\times10^{-3}$, $r=0.667$): throughput-favourable VT\,600/batch\,50 mean recovery $600$\,s vs alternatives mean $224$\,s. Do not cite withdrawn $p_{\mathrm{adj}}=0.084$ drafts.
+    \item \textbf{MRC$\rightarrow$recovery H2:} fail to reject ($H=2.43$, $p_{\mathrm{adj}}=1.0$). Exploratory DLQ capture vs MRC is the clear signal (MRC\,1 mean $\approx0.294$ under unhandled\_error vs $\approx0$ at MRC$\ge5$).
+    \item \textbf{H3\_recovery fails to reject after Holm} ($U=62.5$, raw $p=0.021$, $p_{\mathrm{adj}}=0.084$, $r=0.667$): throughput-favourable VT\,600/batch\,50 mean recovery $600$\,s vs alternatives mean $224$\,s (descriptive). Twin-inflated $n=10$/$U=250$/$p_{\mathrm{adj}}=0.003$ drafts are withdrawn.
 \end{itemize}
 
 \subsection{Reproducible Fault Injection Framework}
@@ -27,7 +27,7 @@ The artefact provides:
 \begin{itemize}
     \item A novel in-process fault switch for deterministic application-level fault injection in Lambda consumers.
     \item A discrete-event simulator validated against SQS documentation and steady-state baselines.
-    \item 350+ committed run manifests with seeds, configs, and metrics for replication and extension.
+    \item 350 unique design-cell manifests (plus packaging twin files on disk) with seeds, configs, and metrics for replication and extension.
 \end{itemize}
 
 Unlike infrastructure-focused tools~\citep{Gao2023CrashFuzz, Wu2024Legolas}, this framework targets message queue consumer failures specifically, filling a gap in fault injection literature.
@@ -45,7 +45,7 @@ Quantitative, statistically validated recommendations:
     
     \item[DLQ:] Always configure; it is the safety net. Monitor DLQ depth; spikes indicate config tuning needed (MRC too low) or systemic issues (repeated deterministic failures).
     
-    \item[Idempotency:] Mandatory for at-least-once delivery. Higher MRC amplifies duplicates (14\% additional at MRC 10); idempotent handlers neutralize this.
+    \item[Idempotency:] Mandatory for at-least-once delivery. Higher MRC amplifies duplicates (exploratory campaign~B excess $\approx0.136$ at MRC\,3/5/10 vs DLQ at MRC\,1); idempotent handlers neutralize this.
 \end{description}
 
 \section{Theoretical and Practical Implications}
@@ -156,7 +156,7 @@ The study validates simulation as a reproducible alternative to live experimenta
 
 \section{Final Reflection}
 
-This research demonstrates that systematic, reproducible fault injection combined with rigorous statistical analysis can provide actionable insights for cloud system configuration. The simulator-first approach enabled exploration of a 350-run parameter space at zero AWS cost, while maintaining scientific rigor through pre-registered hypotheses, non-parametric tests, and effect size reporting.
+This research demonstrates that systematic, reproducible fault injection combined with rigorous statistical analysis can provide actionable insights for cloud system configuration. The simulator-first approach enabled exploration of a 350 unique-cell parameter space at zero AWS cost, while maintaining scientific rigor through pre-registered hypotheses, non-parametric tests, and effect size reporting.
 
 The findings challenge the assumption that steady-state optima automatically transfer to failure scenarios. Visibility timeout, a parameter often treated as a performance tuning knob, emerges as the primary determinant of recovery time. This insight—grounded in empirical evidence and mechanistic explanation—should inform how practitioners configure SQS for resilience, not just throughput.
 

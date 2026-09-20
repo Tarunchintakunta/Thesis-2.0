@@ -19,7 +19,7 @@
 4. **Key Results (3 min):**
    - **Figure 1:** Duplicate Rate vs Visibility Timeout over a failure window (localsim).
    - **Figure 2:** Recovery Time vs Visibility Timeout / MRC (trade-off; recovery tracks VT).
-   - **Figure 3:** Guidance-transfer / H3 scatter (steady-state-favourable long VT lengthens recovery). **Do not claim DIVE results** — `adaptive_vt` was false in all committed runs.
+   - **Figure 3:** Guidance-transfer / H3 scatter (steady-state-favourable long VT lengthens mean recovery; H3_recovery fails to reject after Holm on deduped n=5). **Do not claim DIVE results** — `adaptive_vt` was false in all committed runs.
 5. **Implications for Practitioners (1 min):**
    - Advice on balancing static VT against recovery SLA using committed H1–H3/exploratory evidence.
    - Adaptive visibility (optional code path) is future work, not an evaluated contribution.

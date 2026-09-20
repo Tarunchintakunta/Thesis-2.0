@@ -78,13 +78,13 @@ All experimental results presented in this submission are generated from the loc
 This research makes the following contributions:
 
 \begin{enumerate}
-    \item \textbf{Empirical Evidence on SQS Resilience:} The first systematic, quantitative study of how SQS configuration parameters (visibility timeout, \texttt{maxReceiveCount}, batch size) interact with controlled consumer and downstream failures. Prior work evaluated steady-state performance~\citep{Kyrychenko2025} or compared systems without fault injection~\citep{DiasDeAssuncao2020MQComparison}; this work bridges that gap.
+    \item \textbf{Empirical Evidence on SQS Resilience:} A systematic, quantitative localsim study of how SQS configuration parameters (visibility timeout, \texttt{maxReceiveCount}, batch size) interact with controlled consumer and downstream failures. Prior work evaluated steady-state performance~\citep{Kyrychenko2025} or compared systems without fault injection~\citep{DiasDeAssuncao2020MQComparison}; this work bridges that gap for the present artefact (not a verified global priority claim).
     
     \item \textbf{Reproducible Fault Injection Framework:} A novel local simulator and in-process fault switch enabling deterministic, repeatable injection of application-level faults (consumer kill, unhandled error, datastore reject/timeout) at configurable times. Unlike infrastructure-focused tools~\citep{Gao2023CrashFuzz, Wu2024Legolas}, this approach targets message queue consumer failures specifically.
     
     \item \textbf{Quantitative Configuration Guidance:} Statistical hypothesis tests and effect size measurements provide actionable recommendations for practitioners: when to use short vs. long visibility timeout, how to set \texttt{maxReceiveCount} for transient vs. deterministic faults, and whether steady-state-optimal configurations remain optimal under failure.
     
-    \item \textbf{Open Artefact and Dataset:} The entire artefact (SAM template, simulator, experiment runner, analysis scripts, tests, manifests) is committed to the repository with reproducible build instructions. The 350+ experimental run manifests and 11 figures constitute a reusable dataset for validating alternative analysis approaches or extending to other fault types.
+    \item \textbf{Open Artefact and Dataset:} The entire artefact (SAM template, simulator, experiment runner, analysis scripts, tests, manifests) is committed to the repository with reproducible build instructions. The 350 unique design-cell manifests (690 on-disk files include packaging twins; analysis deduplicates) and 11 figures constitute a reusable dataset for validating alternative analysis approaches or extending to other fault types.
 \end{enumerate}
 
 \section{Scope and Limitations}

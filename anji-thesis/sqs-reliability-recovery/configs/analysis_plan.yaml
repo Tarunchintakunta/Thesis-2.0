@@ -77,6 +77,14 @@ exploratory:                # reported with effect sizes, not part of the family
   - {campaign: baseline_vt_batch, dv: throughput_msg_s, iv: visibility_timeout}
 
 amendments:
+  - date: 2026-09-20
+    what: >
+      Analysis loader deduplicates adaptive_vt packaging twins (same campaign,
+      cell, repeat, seed, and metrics; distinct run_id only because
+      spec.adaptive_vt:false was added later). Confirmatory n returns to
+      repeats_per_cell=5 / 350 unique design cells. Prior stats JSON that
+      reported n=10 / runs=670–690 double-counted packaging twins and is withdrawn.
+    why: claim↔evidence reconcile; do not invent independent repeats
   - date: 2026-09-11
     what: >
       Pilot power check now sizes the repeat count on the confirmatory DVs

@@ -19,7 +19,7 @@
 | Venkat | **yes** (EC2) | Terraform ready; CLI `--scheduler-address` wired; EC2 not applied | <100% | **NOT COMPLETE** |
 | Chaitanya | **yes** (Init Duration) | **Py+Node Init + H4-lite DONE**; Java/H3/ROI pending | <100% | **NOT COMPLETE** |
 | Vikas | **yes** (full campaign) | Campaign daemon workers=4 (~1.5/s; ETA hours) | <100% | **NOT COMPLETE** |
-| Anji | no (localsim + live SQS) | No | **~78%** | **NOT COMPLETE** |
+| Anji | **yes — sole hard (live SQS)** | No | **~90%** | **NOT COMPLETE** (READY_FOR_AWS=yes) |
 | Varun | no (beats_naive + live S3) | No | **~70%** | **NOT COMPLETE** |
 | Yashaswini | no (CausalRCA n=4 + Leg3) | No | **~75%** | **NOT COMPLETE** |
 | Rasool | no (fill cells + live DDB) | No | **~74%** | **NOT COMPLETE** |

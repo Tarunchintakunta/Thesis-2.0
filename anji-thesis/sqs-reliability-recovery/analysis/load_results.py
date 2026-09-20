@@ -2,11 +2,20 @@
 
 The manifests (``results/**/manifests/*.json``) are the only source of truth
 for the analysis. Nothing here reads a hand-edited CSV.
+
+Packaging note
+--------------
+Re-runs that only differ by whether ``spec.adaptive_vt: false`` is present
+produce distinct ``run_id`` / ``config_hash`` values but identical seeds and
+metrics. ``load_runs`` keeps **one** row per ``(campaign, cell, repeat)`` so
+confirmatory *n* matches ``analysis_plan.yaml`` ``repeats_per_cell: 5`` and the
+350 unique design cells (not the raw on-disk file count).
 """
 from __future__ import annotations
 
 import sys
 from pathlib import Path
+from typing import Any
 
 import numpy as np
 import pandas as pd
@@ -26,9 +35,42 @@ NUMERIC = [
 ]
 
 
-def load_runs(path: str | Path) -> pd.DataFrame:
+def _cell_key(cell: dict[str, Any]) -> tuple[tuple[str, str], ...]:
+    return tuple(sorted((str(k), str(v)) for k, v in (cell or {}).items()))
+
+
+def _packaging_score(manifest: dict[str, Any]) -> tuple[int, str]:
+    """Prefer the cohort that explicitly records ``adaptive_vt: false``."""
+    spec = manifest.get("spec") or {}
+    if spec.get("adaptive_vt") is False:
+        score = 2
+    elif "adaptive_vt" in spec:
+        score = 1
+    else:
+        score = 0
+    sha = (manifest.get("git") or {}).get("sha") or ""
+    return (score, sha)
+
+
+def dedupe_packaging_twins(manifests: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """One manifest per design cell+repeat (drop adaptive_vt packaging twins)."""
+    best: dict[tuple[Any, ...], dict[str, Any]] = {}
+    for m in manifests:
+        key = (m.get("campaign"), _cell_key(m.get("cell") or {}), m.get("repeat"))
+        prev = best.get(key)
+        if prev is None or _packaging_score(m) > _packaging_score(prev):
+            best[key] = m
+    return list(best.values())
+
+
+def load_runs(path: str | Path, *, dedupe_packaging: bool = True) -> pd.DataFrame:
+    manifests = read_manifests(path)
+    # Skip quarantined twin trees if present.
+    manifests = [m for m in manifests if "/_packaging_twins/" not in m.get("_path", "")]
+    if dedupe_packaging:
+        manifests = dedupe_packaging_twins(manifests)
     rows = []
-    for m in read_manifests(path):
+    for m in manifests:
         row = {
             "run_id": m["run_id"],
             "campaign": m["campaign"],

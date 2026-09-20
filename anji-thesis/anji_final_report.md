@@ -30,14 +30,14 @@ Source: `results/summary/stats_H1_H2_H3.json` / `hypotheses.md`.
 | Test | Decision | Key numbers |
 |------|----------|-------------|
 | H1 (VT→loss, campaign A) | fail to reject; not estimable | loss = 0.0 all VT; p_adj = 1 |
-| H2 (MRC→recovery, campaign B) | fail to reject | H=4.98, p=0.173, p_adj=0.520, ε²=0.128 |
+| H2 (MRC→recovery, campaign B) | fail to reject | H=2.43, p=0.489, p_adj=1.0, ε²=0.128 (n=5/cell after packaging-dedup) |
 | H3_loss | fail to reject; not estimable | loss = 0 |
-| H3_recovery | **reject H0** | U=250, p=7.92e-4, p_adj=3.17e-3, r=0.667; opt mean 600 s vs rest mean 224 s |
+| H3_recovery | **fail to reject** after Holm | U=62.5, p=0.021, p_adj=0.084, r=0.667; opt mean 600 s vs rest mean 224 s (n_opt=5); twin-inflated reject drafts withdrawn |
 
 Exploratory: DLQ capture vs MRC strong under unhandled_error (MRC1≈0.294 vs ≈0 at MRC≥5); recovery tracks VT 1:1 under consumer_kill.
 
 ## 6. Conclusions
-Static VT is a recovery knob under the tested faults; steady-state-favourable long VT lengthens recovery (H3_recovery). Do **not** claim DIVE beat static configs—that comparison was not run. Live AWS validation remains required for CA2 cloud evidence.
+Static VT is a recovery knob under the tested faults; steady-state-favourable long VT lengthens mean recovery (descriptive; H3_recovery fails to reject after Holm). Do **not** claim DIVE beat static configs—that comparison was not run. Live AWS validation remains required for CA2 cloud evidence.
 
 ## 7. References
 See `latex_report/refs.bib` (includes Kyrychenko2025, AlSaidAhmad2024Chaos, Bosilia2025AsyncResilience with `note={doi:…}`).
