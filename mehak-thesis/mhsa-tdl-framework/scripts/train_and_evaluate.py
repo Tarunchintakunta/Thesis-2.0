@@ -33,12 +33,12 @@ parent_dir = os.path.dirname(current_dir)
 sys.path.append(parent_dir)
 
 from src.data.telemetry_simulator import TelemetrySimulator, TelemetryDataset, METRIC_NAMES
-from src.data.gct_loader import LAST_LOAD_META, GCT_METRIC_NAMES, load_gct_windows, require_gct
+from src.data.gct_loader import GCT_METRIC_NAMES, load_gct_bundle, require_gct
 import src.data.gct_loader as gct_loader_mod
 from src.models.mhsa_model import MHSAPerHead, MHSAFused
 from src.models.baseline import ThresholdBaseline
 from src.models.classical_baselines import run_classical_baselines
-from src.models.aldomi_hybrid import AldomiStyleHybrid
+from src.models.aldomi_hybrid import run_aldomi_hybrid
 
 SEEDS = [42, 43, 44, 45, 46]
 SEQ_LENGTH = 10
@@ -180,7 +180,8 @@ def _split(X, y, is_transient, seed):
         X[idx_test],
         y[idx_test],
         is_transient[idx_test],
-        y[idx_test],
+        idx_train,
+        idx_test,
     )
 
 
@@ -195,7 +196,8 @@ def _write_provenance(results_dir, dataset, extra_lines):
         "- Formal metric suite columns present: Accuracy, Precision, Recall, "
         "Macro-F1, ROC-AUC, Latency (ms), plus Fail-* binary (EVICT∪FAIL vs healthy).\n",
         "- Classical RF/KNN/SVM rows are scaffold monitors on the same feature matrix.\n",
-        "- Aldomi-style GRU+feature-gate is a **family scaffold**, not a paper clone.\n",
+        "- Aldomi path is SelectKBest + GRU extractor + RF/KNN (paper family; not a hyperparameter clone).\n",
+        "- 2011 `net` channel is sampled CPU, **not** network bytes (`CHANNEL_HONESTY.md`).\n",
     ]
     body.extend(extra_lines)
     path = os.path.join(results_dir, "RESULTS_PROVENANCE.md")
@@ -227,13 +229,16 @@ def main():
     if args.dataset == "gct":
         require_gct()
         print("Loading GCT windows (task_usage ↔ task_events join)...")
-        X_gct, y_gct, fail_gct = load_gct_windows(
+        gct_bundle = load_gct_bundle(
             seq_length=SEQ_LENGTH, horizon=5, max_windows=args.max_windows, seed=42
         )
-        gct_bundle = (X_gct, y_gct, fail_gct)
+        X_gct, y_gct, fail_gct = gct_bundle["X"], gct_bundle["y"], gct_bundle["is_transient"]
         print(
-            f"GCT X={X_gct.shape} fail_rate={fail_gct.mean():.4f} "
-            f"classes={np.bincount(y_gct[:, 0], minlength=3).tolist()} meta={gct_loader_mod.LAST_LOAD_META}"
+            f"GCT X={X_gct.shape} Xe={gct_bundle['X_expanded'].shape} "
+            f"fail_rate={fail_gct.mean():.4f} "
+            f"classes={np.bincount(y_gct[:, 0], minlength=3).tolist()} "
+            f"net_is_bytes={gct_loader_mod.LAST_LOAD_META.get('net_channel_is_network_bytes')} "
+            f"meta={gct_loader_mod.LAST_LOAD_META}"
         )
 
     print(f"Device: {DEVICE}")
@@ -242,18 +247,24 @@ def main():
     fused_model_for_export = None
     fused_model_meta = None
     last_fused_cm = None
+    last_aldomi_cm = None
 
     for seed in SEEDS:
         print(f"\n=== Seed {seed} ===")
         if args.dataset == "gct":
-            X, y, is_transient = gct_bundle
+            X, y, is_transient = gct_bundle["X"], gct_bundle["y"], gct_bundle["is_transient"]
+            X_exp = gct_bundle["X_expanded"]
         else:
             sim = TelemetrySimulator(
                 num_samples=20000, seq_length=SEQ_LENGTH, transient_ratio=0.4, seed=seed
             )
             X, y, is_transient = sim.generate_data()
+            X_exp = X
 
-        X_train, y_train, X_test, y_test, transient_test, _ = _split(X, y, is_transient, seed)
+        X_train, y_train, X_test, y_test, transient_test, idx_train, idx_test = _split(
+            X, y, is_transient, seed
+        )
+        X_train_exp, X_test_exp = X_exp[idx_train], X_exp[idx_test]
 
         def _record(name, preds, scores, latency):
             s = score_model(y_test, preds, transient_test, y_score=scores)
@@ -296,11 +307,24 @@ def main():
         _record("MHSA-Fused", fused_preds, fused_score, fused_latency)
 
         if not args.skip_aldomi:
-            print("Training Aldomi-style GRU+FS hybrid scaffold...")
-            _, aldomi_preds, aldomi_score, aldomi_latency = train_model(
-                AldomiStyleHybrid, X_train, y_train, X_test, seed, epochs, SEQ_LENGTH
-            )
-            _record("Aldomi-style GRU+FS (scaffold)", aldomi_preds, aldomi_score, aldomi_latency)
+            print("Training Aldomi SelectKBest+GRU+RF/KNN hybrid...")
+            aldomi_epochs = min(epochs, 12)
+            for name, (preds, scores, lat, info) in run_aldomi_hybrid(
+                X_train_exp,
+                y_train,
+                X_test_exp,
+                k=14,
+                seed=seed,
+                epochs=aldomi_epochs,
+            ).items():
+                print(f"    {name} selected_k={info.get('k_used')} idx={info.get('selected_channel_indices')}")
+                _record(name, preds, scores, lat)
+                if name == "Aldomi GRU-RF":
+                    last_aldomi_cm = confusion_matrix(
+                        (y_test.max(axis=1) > 0).astype(int),
+                        (preds.max(axis=1) > 0).astype(int),
+                        labels=[0, 1],
+                    )
 
         fused_model_for_export = fused_model
         metric_names = list(GCT_METRIC_NAMES) if args.dataset == "gct" else list(METRIC_NAMES)
@@ -348,7 +372,11 @@ def main():
         extra.append(f"- GCT load meta: `{json.dumps(gct_loader_mod.LAST_LOAD_META, default=str)}`\n")
         extra.append("- GCT CSVs live under `results/gct/` so synthetic CSVs are not overwritten.\n")
         extra.append("- 2011 channel 3 (`net`) is sampled CPU — ClusterData 2011 has no network-byte column.\n")
-        extra.append("- Subset: ≥1 task_events part + ≥1 task_usage part + machine_events; not the full 29-day trace.\n")
+        extra.append("- `net_channel_is_network_bytes=false` (see `data/gct/CHANNEL_HONESTY.md`).\n")
+        extra.append("- Aldomi uses expanded usage columns + history-only SCHEDULE/UPDATE counts.\n")
+        extra.append(
+            "- Subset: landed 2011 parts listed in load meta; not the full 29-day / 2019 Borg cells.\n"
+        )
     _write_provenance(results_dir, args.dataset, extra)
 
     if args.dataset == "gct":
@@ -356,6 +384,11 @@ def main():
             cm_path = os.path.join(results_dir, "confusion_mhsa_fused_last_seed.csv")
             pd.DataFrame(last_fused_cm, index=["true_healthy", "true_unhealthy"], columns=["pred_healthy", "pred_unhealthy"]).to_csv(
                 cm_path
+            )
+        if last_aldomi_cm is not None:
+            cm_a = os.path.join(results_dir, "confusion_aldomi_gru_rf_last_seed.csv")
+            pd.DataFrame(last_aldomi_cm, index=["true_healthy", "true_unhealthy"], columns=["pred_healthy", "pred_unhealthy"]).to_csv(
+                cm_a
             )
         with open(os.path.join(results_dir, "gct_load_meta.json"), "w") as f:
             json.dump(gct_loader_mod.LAST_LOAD_META, f, indent=2, default=str)

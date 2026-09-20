@@ -24,12 +24,15 @@ SCHEMA_DOC = (
     "https://github.com/google/cluster-data/blob/master/ClusterData2011_2.md"
 )
 
-# Minimum viable subset (DATA_GAPS.md): ≥1 task_events + ≥1 task_usage + machine_events.
+# Expanded 2011 subset (DATA_GAPS.md): extra usage/events parts beyond MV.
 OBJECTS = (
     "machine_events/part-00000-of-00001.csv.gz",
     "task_events/part-00000-of-00500.csv.gz",
     "task_events/part-00001-of-00500.csv.gz",
+    "task_events/part-00002-of-00500.csv.gz",
+    "task_events/part-00003-of-00500.csv.gz",
     "task_usage/part-00000-of-00500.csv.gz",
+    "task_usage/part-00001-of-00500.csv.gz",
 )
 
 ROOT = Path(__file__).resolve().parents[1] / "data" / "gct" / "2011"

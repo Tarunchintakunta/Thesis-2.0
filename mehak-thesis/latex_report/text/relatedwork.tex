@@ -55,7 +55,7 @@ Alaa'anzy and Othman~\cite{MultiModelDL19} evaluate multiple deep learning model
 
 The baseline family committed by formal CA2 is hybrid deep learning and traditional monitoring for cloud task/cluster failure prediction -- notably Aldomi et al.~\cite{Aldomi26} (SelectKBest feature selection + GRU temporal extraction + ML classifiers on Google Cluster Trace) and related RF/KNN/SVM/GRU monitors. Thapliyal~\cite{Thapliyal26} (per-metric multi-head SLA monitoring) is retained only as \textbf{related architecture} for the MHSA encoder; it is \textbf{not} the binding CA2 baseline.
 
-This project's formal evaluation target remains GCT-backed Acc/Prec/Rec/F1/ROC-AUC/latency against that hybrid/traditional family. The present artefact still lacks GCT files, so literature claims about GCT performance in prior work are cited for context only and are not reproduced here.
+This project's formal evaluation target remains GCT-backed Acc/Prec/Rec/F1/ROC-AUC/latency against that hybrid/traditional family. A 2011 subset is scored in Section~\ref{sec:Evaluation}; 2019 Borg cells used by Aldomi et al.\ are not in this repository.
 
 The paper encodes SLA rules as structured JSON objects to generate training labels without manual annotation, trains a multi-head transformer model where each head specializes in one SLA rule, and deploys the trained model as a streaming inference service that emits structured prediction events. These events are transformed into three role-specific views: finance schemas exposing credit liability, operations schemas surfacing risk scores and recommended interventions, and compliance schemas bundling predictions with immutable telemetry signatures for audit.
 
@@ -66,4 +66,4 @@ Critically, the paper's own reported results expose a specific weakness of the s
 
 Because each head in a strict per-metric design can be trained and read out independently, a head may under-use another metric's precursor signal. Thapliyal~\cite{Thapliyal26} reports such underprediction on SLA telemetry; the artefact optionally adds a cross-head fusion layer as an architectural experiment on synthetic data. That experiment is orthogonal to -- and does not satisfy -- the formal CA2 requirement to score MHSA-TDL on Google Cluster Trace against Aldomi-style and classical monitors.
 
-Traditional reactive threshold monitoring is retained as a non-learned monitor. Classical RF/KNN/SVM scaffold baselines are wired in the eval harness. The Google Borg traces~\cite{Tirmazi20,Liu12} remain the formal dataset; they are cited here as the missing evidence source, not as data already evaluated in this repository.
+Traditional reactive threshold monitoring is retained as a non-learned monitor. Classical RF/KNN/SVM and an Aldomi SelectKBest+GRU+RF path are scored on the same GCT splits. The Google Borg traces~\cite{Tirmazi20,Liu12} are the formal dataset; this artefact uses a 2011 time-sliced subset, not the full 2019 eight-cell dump.

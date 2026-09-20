@@ -80,7 +80,7 @@ Five random seeds (42, 43, 44, 45, 46) are used to regenerate the dataset and re
 \subsection{Evaluation Metrics}
 \label{subsec:metrics}
 
-\textbf{Formal CA2 suite} (required on GCT; wired here on synthetic features for harness completeness):
+\textbf{Formal CA2 suite} (measured on GCT 2011 windows):
 \begin{itemize}
   \item \textbf{Accuracy}, \textbf{Precision}, \textbf{Recall}, \textbf{Macro-F1}: per-metric macro-averaged classification scores, then averaged across metrics.
   \item \textbf{ROC-AUC}: one-vs-rest macro AUC from class scores/probabilities when available (NaN for hard threshold rules).
@@ -93,5 +93,5 @@ Five random seeds (42, 43, 44, 45, 46) are used to regenerate the dataset and re
   \item \textbf{Transient Underprediction Bias}: mean$(y_{\text{true}} - y_{\text{pred}})$ on that same subset.
 \end{itemize}
 
-Classical RF/KNN/SVM monitors are fit on flattened history windows as scaffold traditional baselines. A full Aldomi-style~\cite{Aldomi26} SelectKBest+GRU hybrid on GCT feature schemas remains blocked on missing traces. All reported scalars are mean $\pm$ std across seeds 42--46 on synthetic data only.
+Classical RF/KNN/SVM monitors are fit on flattened MHSA history windows. The Aldomi-style~\cite{Aldomi26} path uses SelectKBest on expanded 2011 usage columns plus history-only SCHEDULE/UPDATE counts, a GRU extractor, and RF/KNN heads on GRU embeddings (same GCT splits). All GCT scalars are mean $\pm$ std across seeds 42--46. The 2011 \texttt{net} channel is sampled CPU, not network bytes.
 

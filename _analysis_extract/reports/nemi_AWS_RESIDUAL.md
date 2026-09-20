@@ -23,5 +23,5 @@
 GATE_READY=yes AWS_CLASS=required SOLE_AWS_RESIDUAL=yes READY_FOR_AWS=yes
 ```
 
-Do **not** `terraform apply` / start live AWS FL while shared-account concurrency is hot (Vikas+Rasool).  
-Optional depth (not sole blockers): full 2.5M-flow corpus; 50-round campaigns; improved-arm plateau fix.
+Do **not** `terraform apply` / start live AWS FL while shared-account concurrency is hot (Vikas r5 RUNNING).  
+**Prep this pass:** `Nemi/CLOUD_FL_PREP.md`; `terraform/preflight.sh` (`terraform validate` only). No live cells.

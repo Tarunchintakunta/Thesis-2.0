@@ -6,13 +6,13 @@
 \label{sec:Conclusion}
 %% ==================
 
-Formal CA2 asks whether MHSA-TDL improves cluster-health / failure prediction on Google Cluster Trace versus hybrid and traditional monitors, under Acc/Prec/Rec/F1/ROC-AUC/latency. This artefact provides an MHSA implementation, a five-seed synthetic harness with that formal metric suite and classical RF/KNN/SVM monitors, and an explicit GCT absence gate (\texttt{DATA\_GAPS.md}, \texttt{gct\_loader.py}). It does \textbf{not} yet answer the formal research question: synthetic scores are development evidence only.
+Formal CA2 asks whether MHSA-TDL improves cluster-health / failure prediction on Google Cluster Trace versus hybrid and traditional monitors, under Acc/Prec/Rec/F1/ROC-AUC/latency. On a disclosed 2011 subset, classical RF and Aldomi GRU-RF lead accuracy and Macro-F1; MHSA-Fused is \textbf{not} claimed to outperform those monitors here. That comparison is the evidence.
 
-\textbf{Remaining blockers to formal alignment:}
+\textbf{Remaining residuals:}
 \begin{itemize}
-  \item Ingest Google Cluster Trace (2011 and/or 2019) per \texttt{DATA\_GAPS.md} and implement the reviewed usage$\leftrightarrow$event window join.
-  \item Re-run the metric suite with \texttt{--dataset gct}; report confusion-matrix FN/FP analysis on GCT splits.
-  \item Complete Aldomi-style~\cite{Aldomi26} hybrid comparison on the same GCT features (beyond scaffold RF/KNN/SVM).
+  \item Remaining 2011 parts and 2019 Borg cells (Aldomi's generation).
+  \item True network-byte telemetry (absent in 2011; do not invent).
+  \item Optional multi-day temporal holdout.
 \end{itemize}
 
-AWS live deploy is \textbf{not} required for alignment. Optional Colab/EC2 GPU training remains a resource choice after GCT data exists.
+AWS live deploy is \textbf{not} required. See \texttt{DESIGN\_RATIONALE\_BEYOND\_CA2.md}.

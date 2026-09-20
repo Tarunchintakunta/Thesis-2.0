@@ -11,7 +11,7 @@
       "url": "https://storage.googleapis.com/clusterdata-2011-2/machine_events/part-00000-of-00001.csv.gz",
       "path": "/Users/valletivarish/Documents/Thesis-2.0/mehak-thesis/mhsa-tdl-framework/data/gct/2011/machine_events/part-00000-of-00001.csv.gz",
       "expected_bytes": 347211,
-      "action": "downloaded",
+      "action": "skipped_exists",
       "sha256": "fc44b8d2b33a96a261382488789855be7a0ce338888c99930ff45cb592249664",
       "bytes": 347211
     },
@@ -20,7 +20,7 @@
       "url": "https://storage.googleapis.com/clusterdata-2011-2/task_events/part-00000-of-00500.csv.gz",
       "path": "/Users/valletivarish/Documents/Thesis-2.0/mehak-thesis/mhsa-tdl-framework/data/gct/2011/task_events/part-00000-of-00500.csv.gz",
       "expected_bytes": 4139742,
-      "action": "downloaded",
+      "action": "skipped_exists",
       "sha256": "eae977d521bc6ed5d8deef56f1e06009d41844d4eb9a7e308e610d68e1b10f18",
       "bytes": 4139742
     },
@@ -29,18 +29,45 @@
       "url": "https://storage.googleapis.com/clusterdata-2011-2/task_events/part-00001-of-00500.csv.gz",
       "path": "/Users/valletivarish/Documents/Thesis-2.0/mehak-thesis/mhsa-tdl-framework/data/gct/2011/task_events/part-00001-of-00500.csv.gz",
       "expected_bytes": 924634,
-      "action": "downloaded",
+      "action": "skipped_exists",
       "sha256": "c122f250cf1f9817dc722a5b7457eb5caf122619accfada078de66d40f311501",
       "bytes": 924634
+    },
+    {
+      "object": "task_events/part-00002-of-00500.csv.gz",
+      "url": "https://storage.googleapis.com/clusterdata-2011-2/task_events/part-00002-of-00500.csv.gz",
+      "path": "/Users/valletivarish/Documents/Thesis-2.0/mehak-thesis/mhsa-tdl-framework/data/gct/2011/task_events/part-00002-of-00500.csv.gz",
+      "expected_bytes": 1821031,
+      "action": "downloaded",
+      "sha256": "3534b71a7c6a3952f192485c4726119ff8d904fc2d7b828b8d96987db4aab767",
+      "bytes": 1821031
+    },
+    {
+      "object": "task_events/part-00003-of-00500.csv.gz",
+      "url": "https://storage.googleapis.com/clusterdata-2011-2/task_events/part-00003-of-00500.csv.gz",
+      "path": "/Users/valletivarish/Documents/Thesis-2.0/mehak-thesis/mhsa-tdl-framework/data/gct/2011/task_events/part-00003-of-00500.csv.gz",
+      "expected_bytes": 1335641,
+      "action": "downloaded",
+      "sha256": "23b3df1b0e6c06d56c0cb28359635931bd0bbb7e584423537e23104580c56740",
+      "bytes": 1335641
     },
     {
       "object": "task_usage/part-00000-of-00500.csv.gz",
       "url": "https://storage.googleapis.com/clusterdata-2011-2/task_usage/part-00000-of-00500.csv.gz",
       "path": "/Users/valletivarish/Documents/Thesis-2.0/mehak-thesis/mhsa-tdl-framework/data/gct/2011/task_usage/part-00000-of-00500.csv.gz",
       "expected_bytes": 91723415,
-      "action": "downloaded",
+      "action": "skipped_exists",
       "sha256": "841254d3bc4199c26c82890dcd6bc87fcfb1ff23d75be8e39f0337f0ed1c6e28",
       "bytes": 91723415
+    },
+    {
+      "object": "task_usage/part-00001-of-00500.csv.gz",
+      "url": "https://storage.googleapis.com/clusterdata-2011-2/task_usage/part-00001-of-00500.csv.gz",
+      "path": "/Users/valletivarish/Documents/Thesis-2.0/mehak-thesis/mhsa-tdl-framework/data/gct/2011/task_usage/part-00001-of-00500.csv.gz",
+      "expected_bytes": 87188987,
+      "action": "downloaded",
+      "sha256": "1fa83e39536baac92a1646dbe750541c6504e4c26a85b7f45d9259fd16d3919c",
+      "bytes": 87188987
     }
   ]
 }

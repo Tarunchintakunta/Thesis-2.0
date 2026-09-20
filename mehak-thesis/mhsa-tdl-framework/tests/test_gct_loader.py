@@ -10,7 +10,13 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from src.data.gct_loader import inventory, load_gct_windows, require_gct
+from src.data.gct_loader import (
+    EXPANDED_FEATURE_NAMES,
+    inventory,
+    load_gct_bundle,
+    load_gct_windows,
+    require_gct,
+)
 
 PERIOD_US = 300_000_000
 
@@ -91,6 +97,26 @@ def test_gzip_fixture_healthy_usage_labels(tmp_path):
     assert X.shape[0] == 1
     assert np.all(y == 0)
     assert bool(is_transient[0]) is False
+
+
+def test_gzip_bundle_expanded_and_net_honesty(tmp_path):
+    root = tmp_path / "gct"
+    te = root / "2011" / "task_events"
+    tu = root / "2011" / "task_usage"
+    te.mkdir(parents=True)
+    tu.mkdir(parents=True)
+    t0 = 600_000_000
+    lines = [_usage_line(t0 + i * PERIOD_US, 33, 0, 0.2, 0.2, 0.001, 0.4) for i in range(15)]
+    with gzip.open(tu / "part-00000-of-00001.csv.gz", "wt") as fh:
+        fh.writelines(lines)
+    with gzip.open(te / "part-00000-of-00001.csv.gz", "wt") as fh:
+        fh.write(_event_line(t0, 33, 0, 1))  # SCHEDULE in history
+    bundle = load_gct_bundle(root=str(root), seq_length=10, horizon=5, max_windows=8, seed=0)
+    assert bundle["X"].shape[-1] == 4
+    assert bundle["X_expanded"].shape[-1] == len(EXPANDED_FEATURE_NAMES)
+    assert bundle["meta"]["net_channel_is_network_bytes"] is False
+    # 4th MHSA channel equals sampled CPU from the fixture (0.4)
+    assert abs(float(bundle["X"][0, 0, 3]) - 0.4) < 1e-5
 
 
 def test_inventory_keys():

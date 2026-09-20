@@ -2,7 +2,7 @@
 
 **Binding CA2:** `MAHEK NAAZ.docx`  
 **Required dataset:** Google Cluster Trace (GCT) — CPU, memory, disk I/O, network, scheduling/machine events  
-**Status in this repo (2026-09-20):** **PARTIAL** — minimum viable **2011** subset landed under `mhsa-tdl-framework/data/gct/2011/` (see `data/gct/PROVENANCE.md`). Full 41 GB trace not downloaded; expand `task_usage`/`task_events` parts for stronger coverage.
+**Status in this repo (2026-09-20):** **PARTIAL+** — 2011 subset under `mhsa-tdl-framework/data/gct/2011/`: 4 `task_events` parts + 2 `task_usage` parts + `machine_events`. Full 41 GB trace not downloaded. 2011 **network-byte** channel does not exist (`CHANNEL_HONESTY.md`).
 
 Formal CA2 does **not** pin a GCT generation. 2011 MV subset is present; 2019 cells remain absent.
 
@@ -45,8 +45,9 @@ Formal evaluation is **healthy vs unhealthy / failure** classification with Acc,
 
 ## Baselines on this GCT subset
 
-RF / KNN / SVM and an Aldomi-style GRU+feature-gate **scaffold** are scored on the
-same GCT windows (`results/gct/`). That is **not** a paper-faithful Aldomi clone.
+RF / KNN / SVM and an Aldomi **SelectKBest + GRU extractor + RF/KNN** hybrid are scored on the
+same GCT windows (`results/gct/`). That is **not** a hyperparameter-identical clone of
+Aldomi et al. (2026) (their paper uses 2019 Borg cells; we use 2011 expanded usage columns).
 Synthetic `results/results_*.csv` remain artefact-as-built only.
 
 ## Loader contract
@@ -57,7 +58,7 @@ Synthetic `results/results_*.csv` remain artefact-as-built only.
 
 | Artefact | Path | Formal CA2 role |
 |----------|------|-----------------|
-| GCT 2011 MV subset | `mhsa-tdl-framework/data/gct/2011/` | **Landed** — 1 usage part + 2 event parts + machine_events (`data/gct/PROVENANCE.md`) |
+| GCT 2011 subset | `mhsa-tdl-framework/data/gct/2011/` | **Landed** — 2 usage parts + 4 event parts + machine_events |
 | GCT 5-seed metrics | `mhsa-tdl-framework/results/gct/` | Formal-path evidence on this subset (`dataset=gct`) |
 | Synthetic telemetry | `src/data/telemetry_simulator.py` | Proxy / development only |
 | Synthetic 5-seed CSVs | `results/results_*.csv` | **Not** GCT evidence |
@@ -65,8 +66,8 @@ Synthetic `results/results_*.csv` remain artefact-as-built only.
 
 ## Still missing
 
-- Remaining 2011 `task_events` / `task_usage` parts 00002–00499 (~41 GB full trace)
+- Remaining 2011 `task_events` / `task_usage` parts (~41 GB full trace)
 - `job_events`, `machine_attributes`
-- 2011 **network-byte** channel (schema has none; 4th MHSA channel = sampled CPU)
-- Entire 2019 Borg eight-cell family
-- Paper-faithful Aldomi architecture / hyperparams (scaffold only)
+- 2011 **network-byte** channel (schema has none; 4th MHSA channel = sampled CPU — do not invent)
+- Entire 2019 Borg eight-cell family (Aldomi paper's generation)
+- Line-by-line Aldomi 2019 preprocessing / k=14 search on that schema

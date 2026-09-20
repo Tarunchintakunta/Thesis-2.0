@@ -6,52 +6,54 @@
 \label{sec:Evaluation}
 %% ==================
 
-\textbf{Scope.} Table~\ref{tab:results} reports mean $\pm$ standard deviation across 5 seeds (42--46) on held-out \textbf{synthetic} telemetry, bound to \texttt{mhsa-tdl-framework/results/results\_summary.csv} (per-seed rows in \texttt{results\_per\_seed.csv}; provenance in \texttt{RESULTS\_PROVENANCE.md}). Formal CA2 requires the same metric suite on Google Cluster Trace; GCT files are absent (\texttt{DATA\_GAPS.md}), so these numbers are \textbf{artefact-as-built only} and are not claimed as formal GCT outcomes.
+\textbf{Scope.} Table~\ref{tab:results} reports mean $\pm$ standard deviation across 5 seeds (42--46) on held-out \textbf{Google Cluster Trace 2011} windows, bound to \texttt{mhsa-tdl-framework/results/gct/results\_summary.csv}. Loader meta: $N{=}12000$, 981 FAIL-forced windows, 4 event parts + 2 usage parts, \texttt{net\_channel\_is\_network\_bytes=false}. Synthetic CSVs under \texttt{results/} are \textbf{not} these numbers.
 
 \begin{table}[htp]
 \centering
-\caption{Synthetic artefact results across 5 seeds (mean $\pm$ std). Formal CA2 metric suite; \textbf{not} GCT.}
+\caption{GCT 2011 results across 5 seeds (mean $\pm$ std). Formal CA2 metric suite. Fourth channel = sampled CPU, not network bytes.}
 \label{tab:results}
 \begin{tabular}{lcccccc}
 \hline
 Model & Acc & Prec & Rec & Macro-F1 & ROC-AUC & Lat (ms) \\
 \hline
-Threshold Baseline & 0.847 $\pm$ 0.002 & 0.301 $\pm$ 0.002 & 0.330 $\pm$ 0.002 & 0.313 $\pm$ 0.002 & --- & 0.0001 \\
-RF (classical) & 0.953 $\pm$ 0.001 & 0.548 $\pm$ 0.003 & 0.507 $\pm$ 0.003 & 0.523 $\pm$ 0.002 & 0.903 $\pm$ 0.013 & 0.383 \\
-KNN (classical) & 0.930 $\pm$ 0.001 & 0.540 $\pm$ 0.003 & 0.452 $\pm$ 0.001 & 0.478 $\pm$ 0.001 & 0.784 $\pm$ 0.010 & 0.064 \\
-SVM (classical) & 0.944 $\pm$ 0.001 & 0.533 $\pm$ 0.004 & 0.490 $\pm$ 0.002 & 0.506 $\pm$ 0.001 & --- & 0.045 \\
-MHSA-PerHead & 0.873 $\pm$ 0.008 & 0.556 $\pm$ 0.011 & 0.719 $\pm$ 0.026 & 0.564 $\pm$ 0.009 & 0.924 $\pm$ 0.008 & 0.006 \\
-MHSA-Fused & 0.857 $\pm$ 0.026 & 0.550 $\pm$ 0.009 & 0.720 $\pm$ 0.018 & 0.557 $\pm$ 0.012 & 0.922 $\pm$ 0.011 & 0.006 \\
+Threshold Baseline & 0.921 $\pm$ 0.001 & 0.495 $\pm$ 0.003 & 0.475 $\pm$ 0.001 & 0.467 $\pm$ 0.002 & --- & 0.0001 \\
+RF (classical) & 0.944 $\pm$ 0.002 & 0.881 $\pm$ 0.009 & 0.609 $\pm$ 0.011 & 0.670 $\pm$ 0.013 & 0.812 $\pm$ 0.052 & 0.276 \\
+KNN (classical) & 0.932 $\pm$ 0.003 & 0.824 $\pm$ 0.024 & 0.551 $\pm$ 0.012 & 0.594 $\pm$ 0.017 & 0.701 $\pm$ 0.071 & 0.048 \\
+SVM (classical) & 0.923 $\pm$ 0.001 & 0.718 $\pm$ 0.031 & 0.505 $\pm$ 0.007 & 0.522 $\pm$ 0.012 & --- & 0.112 \\
+MHSA-PerHead & 0.921 $\pm$ 0.002 & 0.678 $\pm$ 0.011 & 0.584 $\pm$ 0.005 & 0.615 $\pm$ 0.006 & 0.571 $\pm$ 0.110 & 0.005 \\
+MHSA-Fused & 0.922 $\pm$ 0.002 & 0.684 $\pm$ 0.008 & 0.581 $\pm$ 0.006 & 0.613 $\pm$ 0.006 & 0.617 $\pm$ 0.105 & 0.005 \\
+Aldomi GRU-RF & 0.943 $\pm$ 0.001 & 0.833 $\pm$ 0.009 & 0.620 $\pm$ 0.006 & 0.676 $\pm$ 0.005 & 0.753 $\pm$ 0.128 & 0.291 \\
+Aldomi GRU-KNN & 0.940 $\pm$ 0.001 & 0.828 $\pm$ 0.015 & 0.607 $\pm$ 0.009 & 0.662 $\pm$ 0.009 & 0.724 $\pm$ 0.072 & 0.047 \\
 \hline
 \end{tabular}
 \end{table}
 
-ROC-AUC is omitted (---) where class scores are unavailable (hard threshold rules; LinearSVC without calibrated probabilities). Legacy transient-recall / underprediction columns remain in the CSV for continuity with earlier artefact runs; they are not formal CA2 primary endpoints.
+ROC-AUC is omitted (---) where class scores are unavailable. MHSA is \textbf{not} claimed to beat RF or Aldomi GRU-RF on accuracy on this subset.
 
 %% ===============================
-\subsection{Experiment 1: Formal metric suite on synthetic harness}
+\subsection{Experiment 1: Formal metric suite on GCT}
 \label{sec:evalOne}
 %% ===============================
 
-The evaluation harness emits Accuracy, Precision, Recall, Macro-F1, ROC-AUC and prediction latency for MHSA variants, the reactive threshold monitor, and classical RF/KNN/SVM monitors on the same synthetic feature matrix. This closes the \emph{metric-column} gap in the artefact relative to formal CA2 wording, but \textbf{does not} close the dataset gap: scores are not transferable to GCT without re-running on real traces.
+Windows join \texttt{task\_usage} to \texttt{task\_events} on $(\mathrm{job\_id},\mathrm{task\_index})$ with a 10-step history and 5-step horizon. FAIL/EVICT/KILL/LOST in the future window force L2 on all heads. Extra 2011 parts plus fail-series-first sampling raise fail-forced windows from 489 (MV subset) to 981.
 
 %% ===============================
-\subsection{Experiment 2: Classical monitors (scaffold)}
+\subsection{Experiment 2: Classical and Aldomi hybrids}
 \label{sec:evalTwo}
 %% ===============================
 
-RF, KNN and linear SVM monitors are fit on flattened history windows as traditional baselines named in the formal proposal. On synthetic data, RF reaches the highest accuracy (0.953) while MHSA variants achieve higher macro recall ($\sim$0.72) and ROC-AUC ($\sim$0.92). These comparisons are scaffold-only. A faithful Aldomi et al.~\cite{Aldomi26} SelectKBest+GRU hybrid on GCT task/usage features remains blocked until \texttt{DATA\_GAPS.md} files are present.
+RF/KNN/SVM use flattened 4-channel histories. Aldomi~\cite{Aldomi26} uses SelectKBest ($k{=}12$ of 13 expanded columns on this run) + GRU embeddings + RF/KNN. That is the paper's \emph{family} (SelectKBest, GRU extractor, GRU-RF best), not their 2019 Borg preprocessing.
 
 %% ===============================
-\subsection{Experiment 3: MHSA variants (architecture only)}
+\subsection{Experiment 3: FN/FP (last seed)}
 \label{sec:evalThree}
 %% ===============================
 
-MHSA-PerHead and MHSA-Fused share the artefact encoder; fusion is an optional architectural refinement. Synthetic differences between them are small relative to seed noise and are \textbf{not} framed as formal CA2 success. Thapliyal~\cite{Thapliyal26} is related architecture context only; the binding baseline family is hybrid/traditional monitors on GCT.
+Last-seed binary unhealthy CMs ($n_{\mathrm{test}}{=}2400$): MHSA-Fused TN=2144, FP=49, FN=144, TP=63; Aldomi GRU-RF TN=2185, FP=8, FN=133, TP=74. Both miss a large fraction of fail-horizon windows (FN). Aldomi GRU-RF has fewer false positives on this seed.
 
 %% ===============================
 \subsection{Discussion}
 \label{sec:discussion}
 %% ===============================
 
-No GCT Accuracy/ROC-AUC claim is made. AWS Lambda/Kinesis deploy stubs in the repo are unused and \textbf{not required} by formal CA2 (Colab/EC2 are listed only as optional training compute). Next evidence step is ingesting a minimal GCT subset per \texttt{DATA\_GAPS.md} and implementing the usage$\leftrightarrow$event join before \texttt{python scripts/train\_and\_evaluate.py --dataset gct}.
+No live AWS numbers are claimed. The 2011 schema cannot supply a true network-byte channel; 2019 cells are not in-tree. See \texttt{DESIGN\_RATIONALE\_BEYOND\_CA2.md}.

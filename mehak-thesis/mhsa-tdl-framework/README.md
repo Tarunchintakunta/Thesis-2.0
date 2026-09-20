@@ -5,9 +5,10 @@ MSc Cloud Computing thesis codebase for **formal CA2** (`MAHEK NAAZ.docx`): MHSA
 ## Alignment honesty
 | Formal CA2 | This repo today |
 |------------|-----------------|
-| Google Cluster Trace | **2011 MV subset landed** (`data/gct/2011/`, `data/gct/PROVENANCE.md`); not the full 41 GB dump |
-| Acc/Prec/Rec/F1/ROC-AUC/latency | **Wired**; GCT 5-seed CSVs under `results/gct/` (`dataset=gct`) |
-| Aldomi / RF·KNN·SVM·GRU | RF/KNN/SVM + Aldomi-style GRU+FS **scaffold on GCT splits**; not a paper clone |
+| Google Cluster Trace | **2011 subset** (4 event + 2 usage parts); not the full 41 GB / 2019 dump |
+| Acc/Prec/Rec/F1/ROC-AUC/latency | **Measured on GCT** (`results/gct/`, `dataset=gct`) |
+| Aldomi / RF·KNN·SVM·GRU | RF/KNN/SVM + **SelectKBest+GRU-RF/KNN** on GCT; not a 2019 hyperparameter clone |
+| Network channel | **Honest:** 2011 has no network bytes; MHSA `net` = sampled CPU |
 | Thapliyal underprediction proxy | **Superseded** — related architecture only |
 
 Synthetic 5-seed CSVs under `results/` are **artefact-as-built**, not formal GCT evidence (`results/RESULTS_PROVENANCE.md`).
@@ -18,8 +19,9 @@ Synthetic 5-seed CSVs under `results/` are **artefact-as-built**, not formal GCT
 - `src/models/mhsa_model.py` — MHSA-PerHead / MHSA-Fused
 - `src/models/baseline.py` — reactive threshold monitor
 - `src/models/classical_baselines.py` — RF / KNN / SVM scaffold
-- `src/models/aldomi_hybrid.py` — Aldomi-family GRU+feature-gate scaffold
-- `scripts/download_gct_2011.py` — official HTTPS fetch of the MV subset
+- `src/models/aldomi_hybrid.py` — SelectKBest + GRU extractor + RF/KNN
+- `scripts/download_gct_2011.py` — official HTTPS fetch (expanded 2011 subset)
+- `data/gct/CHANNEL_HONESTY.md` — 2011 net channel is sampled CPU
 - `scripts/train_and_evaluate.py` — 5-seed eval; `--dataset synthetic|gct`
 - `template.yaml` / Lambda — **optional; not required by formal CA2**
 

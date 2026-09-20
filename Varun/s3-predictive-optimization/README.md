@@ -50,34 +50,39 @@ s3-predictive-optimization/
 ├── pyproject.toml                    # Project metadata
 ├── .env.example                      # Example environment variables
 ├── src/
+│   ├── metadata/                     # Lite JSON + Inventory CSV + Boto3 listing
 │   ├── recommendation/               # TierBase rules + XGBoost recommender
 │   ├── forecasting/                  # Prophet + naive persistence baseline
 │   ├── savings/                      # Delta-pricing savings estimator
 │   ├── pricing/                      # Local list-price loader (`pricing.json`)
-│   ├── evaluation/                   # Allocation / MAPE metrics
+│   ├── evaluation/                   # Allocation / MAPE / Wilcoxon helpers
 │   ├── simulator/                    # Synthetic S3 + workload generator
 │   ├── runner/                       # Experiment orchestration
 │   └── s3_storage_optimizer.py
 ├── configs/                          # pilot / baseline / improved YAML + pricing.json
-├── tests/                            # 20 pytest tests (pricing, rec, forecast, savings, integration)
+├── tests/                            # pytest (pricing, rec, forecast, savings, metadata, stats)
 ├── analysis/
-│   └── plotting.py                   # Figures only (no Wilcoxon module on disk)
-├── terraform/                        # Scaffold — **not applied**
+│   ├── plotting.py
+│   └── statistics.py                 # lite Wilcoxon re-export + 3-workload protocol
+├── terraform/                        # Applied for live lite, then destroyed
 ├── docs/
 │   ├── ARCHITECTURE.md
 │   └── CONFIGURATION_MANUAL.md
 └── results/
     ├── data/{pilot,baseline,improved}_results.json
+    ├── data/multi_workload_wilcoxon.json
+    ├── live/live_lite_{summary,raw}.json
     └── figures/*.png
 ```
 
-**Not present (do not claim):** `src/metadata/collector.py`, `analysis/statistics.py`, live Boto3 Inventory path.
+**Present:** `src/metadata/` (lite JSON, Inventory CSV parser, Boto3 listing) and `analysis/statistics.py` (local 3-workload Wilcoxon). **Not present:** a live S3 Inventory *job* or CE-settled campaign cells.
 
 ## Features (dry-run evidenced)
 
-### 1. Local metadata / workload path
-- Synthetic object features from `simulator/` (`DRY_RUN=1` only in committed runs)
-- Live Boto3 metadata collector **not implemented** on disk
+### 1. Metadata / workload path
+- Synthetic object features from `simulator/` (`DRY_RUN=1` in committed dry-runs)
+- Boto3 `ListObjectsV2` collector with injected client (moto unit test)
+- S3 Inventory CSV parser (local files; not an Inventory configuration API call)
 
 ### 2. Baseline Recommendation (TierBase-inspired)
 - Rule-based storage-class selection (age, access frequency, size)

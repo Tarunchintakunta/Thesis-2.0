@@ -2,19 +2,20 @@
 
 **Source bucket:** `gs://clusterdata-2011-2` (Google Cluster Data 2011 / ClusterData2011_2)  
 **License:** CC-BY 4.0 (see google/cluster-data)  
-**Downloaded:** 2026-09-20 via `gsutil cp`  
+**Downloaded:** 2026-09-20 via HTTPS `storage.googleapis.com/clusterdata-2011-2`  
 **Layout:** `data/gct/2011/{machine_events,task_events,task_usage}/`
 
-## Files landed (minimum viable subset)
+## Files landed
 
-| Local path | Remote object | Role |
-|------------|---------------|------|
-| `2011/machine_events/part-00000-of-00001.csv.gz` | same | Machine capacity / failure events |
-| `2011/task_events/part-00000-of-00500.csv.gz` | same | Task lifecycle / FAIL labels |
-| `2011/task_events/part-00001-of-00500.csv.gz` | same | Extra events coverage |
-| `2011/task_usage/part-00000-of-00500.csv.gz` | same | CPU/mem/disk telemetry features |
+| Local path | Role |
+|------------|------|
+| `2011/machine_events/part-00000-of-00001.csv.gz` | Machine capacity / failure events |
+| `2011/task_events/part-00000` … `part-00003-of-00500.csv.gz` | Task lifecycle / FAIL labels (4 parts) |
+| `2011/task_usage/part-00000` and `part-00001-of-00500.csv.gz` | CPU/mem/disk telemetry (2 parts) |
 
-**Not downloaded:** remaining 498 `task_events` / `task_usage` parts (~41 GB full trace). Formal first-run uses this time-sliced subset; expand parts for stronger coverage.
+SHA-256: `2011/DOWNLOAD_PROVENANCE.json`. Network bytes: **absent** in 2011 schema (`CHANNEL_HONESTY.md`).
+
+**Not downloaded:** remaining 496 `task_events` / 498 `task_usage` parts (~41 GB full trace); 2019 Borg cells.
 
 ## Join contract
 

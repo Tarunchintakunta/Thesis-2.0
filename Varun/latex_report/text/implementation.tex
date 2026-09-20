@@ -16,8 +16,11 @@ The implementation lives under \texttt{Varun/s3-predictive-optimization/} and is
           live lite probe, then \textbf{destroyed} (8 resources; empty state retained).
     \item \texttt{scripts/live\_lite\_round.py} --- measured S3/CE/CW/Wilcoxon lite probe
           writing \texttt{results/live/live\_lite\_\{summary,raw\}.json}.
+    \item \texttt{src/metadata/} --- lite JSON parser, S3 Inventory CSV parser, Boto3
+          \texttt{ListObjectsV2} listing (injected client; moto-tested). Not a live Inventory job.
+    \item \texttt{analysis/statistics.py} --- live-lite Wilcoxon re-export plus local
+          three-workload Wilcoxon vs Lifecycle / Intelligent-Tiering.
 \end{itemize}
 
-No \texttt{src/metadata/} collector and no dedicated multi-workload
-\texttt{analysis/statistics.py} campaign module are committed; do not claim them.
-The lite Wilcoxon calls are probe-scoped ($n{=}24$), not a full FinOps campaign.
+The lite Wilcoxon calls are probe-scoped ($n{=}24$). The three-workload protocol uses
+simulator trial-buckets, not live S3.

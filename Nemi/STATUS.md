@@ -113,4 +113,4 @@ make test
 ```
 
 **Last Updated:** 2026-09-20  
-**Status:** Non-AWS gaps closed with evidence (~78%); SOLE_AWS_RESIDUAL=yes; CA2 **not** 100%
+**Status:** Non-AWS gaps closed with evidence (~78%); cloud-FL **prep only** (`CLOUD_FL_PREP.md`, `terraform validate` OK). **No apply** (Vikas r5 RUNNING). SOLE_AWS_RESIDUAL=yes; CA2 **not** 100%
