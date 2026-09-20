@@ -1,3 +1,8 @@
+"""PROXY / unused: Kinesis+Lambda inference stub.
+
+Formal CA2 AWS method is Kubernetes on EC2 + S3 + CloudWatch, not this stack.
+This handler is not invoked this pass and must not be deployed as PAKS evidence.
+"""
 import base64
 import json
 import os

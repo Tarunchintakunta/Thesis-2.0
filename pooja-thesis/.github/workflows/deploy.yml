@@ -1,4 +1,7 @@
-name: Train, Evaluate, Deploy Stability-Aware PAKS
+# PROXY / unused. Formal CA2 AWS method is Kubernetes on EC2+S3+CloudWatch,
+# not SAM/Kinesis/Lambda. This workflow must not be treated as PAKS evidence.
+# This pass does not deploy.
+name: Train, Evaluate, Deploy Stability-Aware PAKS (PROXY unused)
 
 on:
   push:

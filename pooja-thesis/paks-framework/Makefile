@@ -1,15 +1,17 @@
-.PHONY: help install test run clean all
+.PHONY: help install test run run-formal fetch clean all
 
 # Default target
 help:
-	@echo "Stability-Aware PAKS Framework - Build Automation"
+	@echo "PAKS Framework - Build Automation"
 	@echo ""
 	@echo "Available targets:"
-	@echo "  make install    - Install dependencies from requirements.txt"
-	@echo "  make test       - Run test suite with pytest"
-	@echo "  make run        - Execute train_and_evaluate.py to reproduce results"
-	@echo "  make clean      - Remove generated files and caches"
-	@echo "  make all        - Run install, test, and run in sequence"
+	@echo "  make install     - Install dependencies from requirements.txt"
+	@echo "  make test        - Run test suite with pytest"
+	@echo "  make run-formal  - LSTM + GCT v1 + K8s dry-run vs HPA (formal CA2 path)"
+	@echo "  make fetch       - Download/verify GCT v1 public slice and re-aggregate"
+	@echo "  make run         - PROXY synthetic MLP driver (not formal evidence)"
+	@echo "  make clean       - Remove generated files and caches"
+	@echo "  make all         - Run install, test, and run-formal in sequence"
 	@echo ""
 
 # Install dependencies
@@ -24,11 +26,22 @@ test:
 	pytest tests/ -v --tb=short
 	@echo "✓ All tests passed"
 
-# Run experiments
+# Formal CA2 path (no AWS / no live K8s apply)
+run-formal:
+	@echo "Running train_lstm_and_evaluate.py (formal, dry-run)..."
+	python scripts/train_lstm_and_evaluate.py --dataset gct2010
+	@echo "✓ Formal results generated in results/"
+
+fetch:
+	@echo "Fetching/aggregating public GCT v1 slice..."
+	python scripts/fetch_public_trace_slice.py
+	@echo "✓ traces updated"
+
+# PROXY experiments (not formal CA2 evidence)
 run:
-	@echo "Running train_and_evaluate.py..."
+	@echo "PROXY: Running train_and_evaluate.py (synthetic MLP)..."
 	python scripts/train_and_evaluate.py
-	@echo "✓ Results generated in results/"
+	@echo "✓ Proxy results generated in results/"
 
 # Clean generated files
 clean:
@@ -36,12 +49,13 @@ clean:
 	rm -rf __pycache__ .pytest_cache .coverage htmlcov
 	rm -rf src/__pycache__ src/data/__pycache__ src/models/__pycache__ src/lambda_handler/__pycache__
 	rm -rf tests/__pycache__
-	rm -rf results/*.csv
+	rm -f results/results_per_seed.csv results/results_summary.csv
+	# keep formal_*.csv / RESULTS_PROVENANCE.md / PROXY_NIMBUSGUARD.md
 	rm -rf src/lambda_handler/model/*.joblib
 	find . -type f -name "*.pyc" -delete
 	find . -type d -name "__pycache__" -delete
 	@echo "✓ Cleanup complete"
 
 # Run full pipeline
-all: install test run
-	@echo "✓ Full pipeline complete"
+all: install test run-formal
+	@echo "✓ Full formal pipeline complete (still NOT live AWS/K8s)"

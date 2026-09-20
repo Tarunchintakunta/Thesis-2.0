@@ -6,31 +6,25 @@
 \label{sec:Design}
 %% ==============================
 
-This section presents the detailed design specifications for the three scaling policies evaluated in this project. The design deliberately isolates the effect of the scaling policy from the underlying predictor by using the same forecasting model (where applicable) across both proactive policies.
+This section presents design specifications for the formal PAKS vs HPA control loop, then (labelled) the proxy MLP policies.
 
 \subsection{Design Goals}
 
-The design aims to achieve three objectives:
-
 \begin{enumerate}
-  \item \textbf{Reproducibility}: Use a simple, fully-specified feed-forward predictor rather than a complex DQN+LSTM+LLM pipeline, enabling exact reproduction without hyperparameter tuning guesswork.
-  \item \textbf{Controlled Comparison}: Ensure that Aggressive PAKS and Stability-Aware PAKS differ \emph{only} in the filtering/control logic applied to predictions, not in the predictions themselves, so any performance difference cleanly attributes to the stability mechanism.
-  \item \textbf{Minimal Intervention}: Implement stability mechanisms (smoothing, hysteresis, cooldown) as simple, interpretable rules with explicit parameters rather than as a second learned model, making the trade-offs transparent.
+  \item \textbf{Formal comparison}: Reactive HPA (observed CPU utilization $\rightarrow$ replica formula $\rightarrow$ Scale subresource) versus PAKS (LSTM forecast $\rightarrow$ same Scale subresource).
+  \item \textbf{API fidelity}: Emit Kubernetes object shapes (\texttt{autoscaling/v2} HPA, \texttt{autoscaling/v1} Scale) even when the client is dry-run-only.
+  \item \textbf{Honesty}: Do not treat simulated util/cost/latency as CloudWatch; do not treat GCT v1 as GCT 2011/Alibaba.
 \end{enumerate}
+
+The proxy design below isolates filtering logic on a shared MLP for the superseded NimbusGuard-framed experiment.
 
 \subsection{System Architecture}
 
-All three policies operate in a simulated discrete-time loop with 1-second timesteps. At each timestep $t$:
-\begin{enumerate}
-  \item The true workload $W(t)$ arrives.
-  \item The policy computes a target pod count $\text{pods}(t)$ based on observed/predicted workload.
-  \item Resources are allocated accordingly.
-  \item Metrics (SLA violations, over-provisioning, scaling events, volatility) are recorded.
-\end{enumerate}
+Formal path: discrete bins from the GCT v1 cluster series (300\,s). At each bin $t$ HPA observes $W(t)$ and PATCHes desired replicas; PAKS predicts $\hat W(t)$ from a lookback window and PATCHes. Apply is simulated as one-bin delay. Live kubelet is out of scope this pass.
 
-The three policies differ only in how they compute $\text{pods}(t)$.
+Proxy path: 1-second synthetic timesteps as previously specified.
 
-\subsection{Reactive HPA (Baseline 1)}
+\subsection{Reactive HPA (Binding Baseline)}
 
 \paragraph{Design Rationale} This policy mimics the Kubernetes Horizontal Pod Autoscaler's core behavior: it scales strictly on the currently-observed workload with a one-step reaction delay, representing the industry-standard reactive baseline that NimbusGuard itself compares against.
 

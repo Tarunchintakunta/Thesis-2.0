@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
-Description: Stability-Aware Predictive Autoscaling Pipeline - Kinesis and Lambda
+Description: PROXY unused Kinesis/Lambda SAM stub — NOT the formal CA2 AWS method (K8s on EC2+S3+CloudWatch). Do not deploy this pass.
 
 Resources:
   WorkloadTelemetryStream:

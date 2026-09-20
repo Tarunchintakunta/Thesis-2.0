@@ -6,13 +6,14 @@
 \label{sec:Conclusion}
 %% ==================
 
-This project asked whether a proactive Kubernetes autoscaler could keep most of its SLA-violation advantage over reactive HPA while substantially reducing the instability that Wanigasooriya \& Ekanayake's (2026) NimbusGuard exhibits and names but does not fix. Across 5 seeds, a stability-aware controller (exponential smoothing + hysteresis/cooldown, applied to the same forecasting model as an unfiltered baseline) cut scaling events by 57\% and pod-count volatility by 32\%, while still beating reactive HPA on SLA violations -- though giving back roughly half of the SLA-violation advantage the unfiltered proactive policy achieves.
+Formal CA2 asks whether PAKS (LSTM workload prediction + adaptive Kubernetes scaling) improves resource management versus reactive HPA on Google / Alibaba traces, on a Kubernetes cluster hosted on AWS, under MAE/RMSE, utilisation, latency, throughput, cost, and SLA. This artefact does \textbf{not} yet answer that question on a live cluster.
 
-The honest finding is a trade-off surface, not a single winning configuration: the smoothing factor and hysteresis/cooldown thresholds used here (0.4, 1 pod, 2 steps) are one point on a continuum between "aggressive and unstable" and "calm but slower to react," and were not exhaustively tuned.
+This pass: (i)~states HPA as the binding baseline and quarantines the NimbusGuard MLP simulator as proxy; (ii)~ingests a public GCT v1 (2010) slice with SHA1 provenance and trains a NumPy LSTM (TensorFlow fail-closed); (iii)~emits dry-run Kubernetes Scale patches versus an HPA v2 schema; (iv)~wires the formal metric columns with TRACE vs SIMULATED tags. GCT 2011/2019 and Alibaba remain absent. AWS was not deployed.
 
-\textbf{Future work:}
+\textbf{Blockers (not complete):}
 \begin{itemize}
-  \item Sweep the smoothing/hysteresis/cooldown parameters to map the full SLA-vs-stability trade-off curve, rather than reporting one configuration.
-  \item Evaluate on a real Kubernetes testbed with real workload traces, as NimbusGuard itself does, rather than a synthetic generator.
-  \item Explore whether the cooldown/hysteresis rule could itself be learned (e.g. as a second, small model deciding \emph{when} to trust the predictor) rather than fixed, closing the gap to NimbusGuard's own RL-based approach while keeping the simplicity of not requiring a full DQN pipeline.
+  \item Ingest GCT 2011/2019 and/or Alibaba \texttt{machine\_usage} and re-run LSTM MAE/RMSE on those traces.
+  \item Apply Scale patches on kind/minikube or an AWS Kubernetes cluster and measure kubelet scaling latency, request latency, and CloudWatch/billing cost (live, not simulated).
+  \item Host the experimental environment on AWS EC2 with S3-backed datasets as specified.
+  \item Soft: add the missing Gantt figure from the formal CA2 week grid; optional TensorFlow runtime on Python 3.10--3.12.
 \end{itemize}

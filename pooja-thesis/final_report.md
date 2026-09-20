@@ -1,28 +1,41 @@
-# Final Report: Stability-Aware Predictive Kubernetes Scaling
+# Final report: PAKS (formal CA2) — not submission-ready
 
-## Abstract
-Wanigasooriya & Ekanayake (2026), "NimbusGuard: A Novel Framework for Proactive Kubernetes Autoscaling Using Deep Q-Networks" (IEEE ICOIN 2026, DOI 10.1109/ICOIN68469.2026.11480646), show a DQN+LSTM proactive autoscaler beating reactive HPA/KEDA on SLA compliance, but their own results table names the cost: NimbusGuard was "the most agile and least stable system" — highest average replica count, double the scaling events. This project reproduces that trade-off with a simpler feed-forward predictor (`AggressivePAKS`: acts immediately on every raw forecast) and builds the stability fix the paper names as future work but doesn't build (`StabilityAwarePAKS`: exponential smoothing + hysteresis/cooldown on the same predictor). Across 5 seeds: Aggressive PAKS roughly halves SLA violations vs. reactive HPA (11.0 vs. 20.0) at higher over-provisioning (45.8% vs. 40.9%); Stability-Aware PAKS cuts scaling events by 57% (384.4→165.8) and volatility by 32% (2.86→1.95) vs. Aggressive, while still beating HPA on SLA violations (18.0 vs. 20.0) — though by less than the unfiltered policy does. A genuine trade-off, reported honestly rather than as a clean win.
+Formal CA2 asks whether **predictive workload forecasting + adaptive Kubernetes
+scaling (PAKS)** improves resource management versus **reactive HPA**, using
+LSTM (TensorFlow named) on Google / Alibaba cluster traces, evaluated on a
+Kubernetes cluster hosted on **AWS EC2 + S3 + CloudWatch**, with MAE/RMSE,
+utilisation, response/throughput/scaling latency, cost, and SLA.
 
-## 1. Introduction
-See `latex_report/text/introduction.tex` for the full introduction, research question, and objectives.
+This artefact is **NOT COMPLETE**. AWS/K8s were **not** deployed this pass.
 
-## 2. Literature Review Summary
-(Refers to `/latex_report/text/relatedwork.tex`.) Baseline paper: Wanigasooriya, C., Ekanayake, I. (2026). *NimbusGuard: A Novel Framework for Proactive Kubernetes Autoscaling Using Deep Q-Networks.* IEEE ICOIN 2026. DOI: 10.1109/ICOIN68469.2026.11480646 (preprint: arXiv:2604.11017). DQN+LSTM proactive autoscaler vs. reactive HPA/KEDA; names instability/over-provisioning as an explicit, unresolved trade-off.
+## Formal path (this pass)
 
-## 3. Methodology
-Synthetic cyclical workload generator (`src/data/workload_simulator.py`, 500 steps, sine-wave base + periodic spikes + noise). A scikit-learn `MLPRegressor` (replacing the original scaffold's TensorFlow model — same 2-hidden-layer design, no heavy DL dependency) forecasts next-step workload from a 10-step lookback window. `run_reactive_hpa` (baseline reactive), `run_aggressive_paks` (baseline reproduction, unfiltered proactive), `StabilityAwareController`/`run_stability_aware_paks` (improvement: EMA smoothing + hysteresis/cooldown). 5 seeds (42-46), fresh workload + predictor per seed, all 3 policies evaluated on the identical workload per seed.
+- Public **Google Cluster Data v1 (2010, CC-BY)** 7-hour sample fetched and
+  SHA1-verified; derived cluster/job CPU series in
+  `paks-framework/data/traces/` (`PROVENANCE.md`). **Not** GCT 2011/2019 or
+  Alibaba (`DATA_GAPS.md`; those loaders fail closed).
+- Vanilla **LSTM** (NumPy BPTT). TensorFlow backend fail-closed on CPython 3.14.
+- Adaptive scaler emits Kubernetes `apps/v1` Scale PATCH bodies with
+  `dryRun=All` versus an `autoscaling/v2` HPA metrics schema.
+- Metrics suite wired with TRACE vs SIMULATED tags
+  (`paks-framework/results/formal_*.csv`, `RESULTS_PROVENANCE.md`).
 
-## 4. Experimental Results
-| Model | SLA Violations | Over-provisioning % | Scaling Events | Pod Count Volatility |
-|---|---|---|---|---|
-| Reactive HPA | 20.0 ± 2.7 | 40.92 ± 0.19 | 407.4 ± 4.9 | 3.32 ± 0.25 |
-| Aggressive PAKS (baseline reproduction) | 11.0 ± 2.2 | 45.80 ± 2.23 | 384.4 ± 9.1 | 2.86 ± 0.36 |
-| Stability-Aware PAKS (improved) | 18.0 ± 2.7 | 46.52 ± 2.16 | 165.8 ± 5.3 | 1.95 ± 0.17 |
+Reproduce: `python scripts/train_lstm_and_evaluate.py --dataset gct2010`
+inside `paks-framework/`.
 
-Raw per-seed and summary CSVs: `paks-framework/results/results_per_seed.csv`, `results_summary.csv`. Reproduce with `python scripts/train_and_evaluate.py` inside `paks-framework/`.
+## Proxy path (quarantined; not binding)
 
-## 5. Conclusion
-The stability-aware controller substantially recovers the specific weakness NimbusGuard's own results name (agility/instability), at a partial, disclosed cost to the SLA-violation benefit that motivated proactive scaling in the first place. See `latex_report/text/conclusion.tex` for full discussion and future work (parameter sweeps, real testbed evaluation, learned cooldown policy).
+NimbusGuard-framed MLP + EMA/hysteresis on **synthetic** sine/spikes
+(`src/proxy/`, `results/results_*.csv`). Those numbers (HPA SLA 20.0 ± 2.7,
+etc.) are **artefact-as-built proxy only**. NimbusGuard is related work, not
+the CA2 baseline.
 
-## Bibliography
-See `latex_report/refs.bib` (`Wanigasooriya26` entry).
+## Blockers to 100%
+
+1. GCT 2011 / 2019 and/or Alibaba (v1 slice ≠ named 2011/Alibaba dumps)
+2. Live Kubernetes (kind/minikube or AWS) — dry-run JSON ≠ kubelet apply
+3. AWS EC2 + S3 + CloudWatch experimental environment
+4. TensorFlow runtime (optional vs NumPy LSTM) as named in the resources table
+5. Soft: Gantt figure missing in formal CA2 docx
+
+Do not mark COMPLETE.

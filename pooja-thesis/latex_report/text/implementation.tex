@@ -6,37 +6,36 @@
 \label{sec:Implementation}
 %% ==============================
 
-This section describes the implementation of the three scaling policies, the experimental framework, and the deployment infrastructure. All code is implemented in Python 3.9+ and is available in the \texttt{paks-framework/} directory.
+This section describes the formal PAKS path (trace loader, LSTM, dry-run Kubernetes client, metric harness) and the quarantined proxy. All code is Python 3.9+ in \texttt{paks-framework/}. Live AWS deploy was not run.
 
 \subsection{Technology Stack}
 
 \paragraph{Core Dependencies}
 \begin{itemize}
-  \item \textbf{Python 3.9+}: Primary implementation language
-  \item \textbf{NumPy 1.21+}: Numerical computing and array operations
-  \item \textbf{Pandas 1.3+}: Data manipulation and CSV export
-  \item \textbf{scikit-learn 1.4+}: MLPRegressor for workload prediction
-  \item \textbf{joblib 1.3+}: Model serialization and persistence
+  \item \textbf{Python 3.9+}: Primary implementation language (evaluation host used CPython 3.14)
+  \item \textbf{NumPy 1.21+ / Pandas 1.3+}: Arrays, GCT aggregation, CSV export
+  \item \textbf{scikit-learn 1.4+}: PROXY MLPRegressor only
+  \item \textbf{joblib 1.3+}: PROXY model serialization
+  \item \textbf{pytest 7.4+ / Make}: Tests and workflow
 \end{itemize}
 
-\paragraph{Testing and Build Tools}
+\paragraph{Formal extras (not silently faked)}
 \begin{itemize}
-  \item \textbf{pytest 7.4+}: Unit and integration testing
-  \item \textbf{Make}: Build automation and workflow orchestration
+  \item \textbf{TensorFlow}: Named in CA2 resources; \texttt{require\_tensorflow()} raises if missing
+  \item \textbf{kubernetes} Python client: optional; this pass records dry-run JSON only
 \end{itemize}
 
-\paragraph{Deployment (Optional)}
-\begin{itemize}
-  \item \textbf{AWS Lambda}: Serverless function runtime for real-time inference
-  \item \textbf{AWS Kinesis}: Stream processing for workload telemetry
-  \item \textbf{AWS SAM}: Infrastructure-as-code for deployment
-\end{itemize}
+\paragraph{Deployment (formal vs unused proxy)}
+Formal AWS method is Kubernetes on EC2, datasets on S3, metrics on CloudWatch --- \textbf{not deployed}. The Kinesis + Lambda SAM stub is proxy infrastructure and is not CA2 evidence.
 
-The minimal core dependencies (NumPy, Pandas, scikit-learn, joblib) keep the project lightweight and reproducible. TensorFlow, which was in the original scaffold, has been removed entirely -- the same feed-forward architecture is achievable with scikit-learn's \texttt{MLPRegressor} without the 500MB+ dependency overhead.
+The formal driver implements LSTM in NumPy because TensorFlow has no supported wheel on CPython 3.14, and refuses to pretend MLP is LSTM when \texttt{--backend tensorflow} is set.
 
 \subsection{Module Structure}
 
-\subsubsection{\texttt{src/data/workload\_simulator.py}}
+\subsubsection{\texttt{src/data/trace\_loader.py} / \texttt{lstm\_predictor.py} / \texttt{src/k8s/} / \texttt{src/eval/metrics.py}}
+Fail-closed GCT 2011/2019 and Alibaba inventory; GCT v1 derived series; vanilla LSTM; HPA v2 + Scale dry-run; TRACE/SIMULATED metric tags.
+
+\subsubsection{\texttt{src/data/workload\_simulator.py} (PROXY)}
 
 Implements the synthetic workload generator described in Section~\ref{sec:Methodology}. Key functions:
 
@@ -47,7 +46,7 @@ Implements the synthetic workload generator described in Section~\ref{sec:Method
 
 The implementation uses \texttt{numpy.random.default\_rng(seed)} for reproducibility -- given the same seed, the exact same workload is generated.
 
-\subsubsection{\texttt{src/models/scalers.py}}
+\subsubsection{\texttt{src/models/scalers.py} (PROXY)}
 
 Implements all three scaling policies and the shared predictor training function. Key components:
 

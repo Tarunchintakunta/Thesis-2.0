@@ -6,11 +6,34 @@
 \label{sec:Methodology}
 %% ==============================
 
-This section describes the experimental methodology, including the synthetic workload generation, the three scaling policies under comparison, the predictor training procedure, and the evaluation metrics.
+This section describes the experimental methodology. Formal CA2 specifies GCT/Alibaba LSTM training, a Kubernetes-API adaptive scaler, and evaluation on AWS-hosted Kubernetes with the metric suite in Table~\ref{tab:formal-metrics-intent}. \textbf{Live AWS Kubernetes is not run this pass.} The runnable formal path uses a public Google Cluster Data v1 (2010) slice (CC-BY; SHA1-verified) for LSTM windows, a NumPy LSTM, and a dry-run \texttt{apps/v1} Scale client versus an \texttt{autoscaling/v2} HPA object. GCT 2011/2019 and Alibaba requests fail closed (\texttt{DATA\_GAPS.md}). A synthetic sine-spike generator remains as an explicit \textbf{proxy} only.
 
-\subsection{Synthetic Workload Generation}
+\begin{table}[htp]
+\centering
+\caption{Formal CA2 metrics and evidence in this artefact}
+\label{tab:formal-metrics-intent}
+\begin{tabular}{lp{8cm}}
+\hline
+\textbf{Metric} & \textbf{This pass} \\
+\hline
+Prediction MAE, RMSE & TRACE on GCT v1 job-held-out windows; cluster series is short ($\sim$7\,h / 5\,min) \\
+CPU / memory utilisation & SIMULATED from load / (replicas $\times$ assumed capacity) \\
+Response time, throughput & SIMULATED queue / cap model; not live RPS traces \\
+Scaling latency & SIMULATED as one control interval (300\,s bins); not kubelet Ready time \\
+Infrastructure cost & SIMULATED (assumed \$0.04/pod-hour); not AWS billing \\
+SLA / availability & SIMULATED from capacity mapping \\
+\hline
+\end{tabular}
+\end{table}
 
-A synthetic cyclical workload (\texttt{src/data/workload\_simulator.py}) of 500 timesteps is generated to simulate the kind of bursty, partially-predictable demand pattern that proactive scaling is meant to handle better than reactive thresholds. The workload combines three components:
+\subsection{Trace-derived workload (formal path)}
+
+The committed public slice is Google Cluster Data version 1~\cite{GCT2010} (7-hour Borg cell). Rows are 5-minute task reports of normalised CPU and memory. Aggregation (no imputed gaps): cluster CPU is $\sum$ \texttt{NrmlTaskCores} per \texttt{Time}; LSTM windows are per-job series with at least 12 bins (\texttt{data/traces/PROVENANCE.md}). This is cluster-trace data. It is not the 2011 29-day cell, the 2019 eight-cell Borg traces, or Alibaba.
+
+\subsection{Synthetic Workload Generation (PROXY only)}
+
+
+A synthetic cyclical workload (\texttt{src/data/workload\_simulator.py}) of 500 timesteps is generated for the \textbf{proxy} NimbusGuard-framed experiment only. It is not a silent fallback for \texttt{--dataset gct*} or \texttt{alibaba}. The workload combines three components:
 
 \paragraph{Base Load} A sinusoidal pattern with amplitude 20 and period 100 timesteps, representing diurnal or weekly usage cycles common in cloud applications:
 \[
@@ -29,9 +52,11 @@ The floor of 5 ensures that workload never drops below a minimal baseline.
 
 \subsection{Predictor Architecture and Training}
 
-All proactive policies (both Aggressive PAKS and Stability-Aware PAKS) share the same underlying predictor: a scikit-learn \texttt{MLPRegressor} with two hidden layers of 64 and 32 neurons respectively, ReLU activation, and Adam optimizer. This is a simple feed-forward architecture chosen for reproducibility and to avoid the complexity of a full DQN+LSTM pipeline while still demonstrating the core proactive-vs-reactive trade-off.
+\paragraph{Formal path} A univariate LSTM (lookback 12, hidden 16) is trained on GCT v1 job-level CPU windows with a held-out-job split (no window leakage). Runtime is NumPy BPTT; TensorFlow is fail-closed if requested. Cluster-level walk-forward MAE/RMSE is also reported but $n$ is small (76 five-minute bins).
 
-\paragraph{Training Procedure} For each random seed $s \in \{42, 43, 44, 45, 46\}$:
+\paragraph{Proxy path} Proactive proxy policies share a scikit-learn \texttt{MLPRegressor} (64/32). This is not the binding LSTM.
+
+\paragraph{Proxy training procedure} For each random seed $s \in \{42, 43, 44, 45, 46\}$:
 \begin{enumerate}
   \item Generate a fresh 500-step workload $W_s(t)$ using seed $s$.
   \item Construct a supervised training dataset from the first 300 timesteps: for each timestep $t \in [10, 300]$, the input is the 10-step lookback window $[W_s(t-10), \ldots, W_s(t-1)]$ and the target is $W_s(t)$.
@@ -48,11 +73,13 @@ This setup ensures that:
 
 \subsection{Scaling Policies}
 
-\paragraph{Reactive HPA (Baseline 1)} Mimics the Kubernetes Horizontal Pod Autoscaler's core logic: at each timestep $t$, compute the required pod count based on the \emph{currently observed} workload $W(t)$ with a one-step reaction delay. The target is:
-\[
-\text{pods}_{\text{HPA}}(t) = \left\lceil \frac{W(t-1)}{\text{capacity\_per\_pod}} \right\rceil
-\]
-where \texttt{capacity\_per\_pod} = 10. This represents the industry-standard reactive baseline that NimbusGuard compares against.
+\paragraph{Reactive HPA (binding baseline)} Matches the Kubernetes Horizontal Pod Autoscaler v2 CPU-utilization replica formula on \emph{observed} load, emitting \texttt{autoscaling/v2} status objects and \texttt{PATCH} \texttt{apps/v1} \texttt{/scale?dryRun=All}. One simulated control-interval delay. Not a live metrics-server scrape.
+
+\paragraph{PAKS adaptive engine (formal stub)} Uses the LSTM next-step forecast, converts predicted load to a replica count, and emits the same Scale subresource shape (dry-run). Replica application in the loop is simulated (no kubelet).
+
+The following three policies are the \textbf{proxy} simulator (MLP, synthetic load) and are not the CA2 comparison contract.
+
+\paragraph{Reactive HPA (proxy discrete-time mimic)} Mimics HPA with a one-step delay on synthetic load (\texttt{capacity\_per\_pod} = 100 in code; older draft text used 10 --- the CSV is bound to the code).
 
 \paragraph{Aggressive PAKS (Baseline 2)} At each timestep $t$, use the predictor to forecast $\hat{W}(t+1)$. Apply a 5\% safety buffer and convert directly to a target pod count with no smoothing or cooldown:
 \[

@@ -2,7 +2,7 @@
 
 **Source:** Derived from formal CA2 file `pooja-thesis/Pooja_25120921_CA2.docx` (PAKS proposal).  
 **Note:** Week-grid timeline table is present; **Gantt chart figure is MISSING** (note only — not a primary alignment blocker).  
-**Status:** Binding research contract = **formal CA2**, not the prior NimbusGuard-proxy. Current artefact is a **stability-aware simulator** framed on NimbusGuard — only partially overlaps formal PAKS.  
+**Status:** Binding research contract = **formal CA2**, not the prior NimbusGuard-proxy. This pass: GCT v1 public slice + NumPy LSTM + K8s dry-run vs HPA schema; NimbusGuard MLP simulator **quarantined as PROXY**. Still **not** live K8s-on-AWS; GCT 2011/2019 and Alibaba still absent (`DATA_GAPS.md`). **NOT COMPLETE.**  
 **AWS:** Formal method places the experimental environment on **AWS EC2 + S3 + CloudWatch** with a real Kubernetes cluster. AWS is **required for full CA2 method fidelity**. This agent pass does **not** deploy.
 
 ## Research question (formal)

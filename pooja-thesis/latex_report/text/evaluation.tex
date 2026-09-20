@@ -6,7 +6,15 @@
 \label{sec:Evaluation}
 %% ==================
 
-This section presents the experimental results from evaluating all three scaling policies (Reactive HPA, Aggressive PAKS, Stability-Aware PAKS) across 5 independent random seeds (42--46). Each seed generates a different synthetic workload realization and trains a fresh predictor, so results represent performance averaged over different demand patterns.
+This section presents two layers of evidence that must not be mixed.
+
+\paragraph{Formal (this pass)} LSTM MAE/RMSE on the public GCT v1 slice (TRACE) and a dry-run HPA vs PAKS scaling loop whose util/latency/cost/SLA columns are \textbf{SIMULATED}. Bound to \texttt{paks-framework/results/formal\_prediction\_metrics.csv} and \texttt{formal\_scaling\_metrics.csv}. No live kubelet, no CloudWatch.
+
+On held-out GCT v1 \emph{jobs}, last-value persistence MAE (0.034) is \textbf{lower} than the NumPy LSTM (0.106): many jobs are near-constant. On the 75-bin cluster aggregate, LSTM test MAE (16.8) is slightly below persistence (19.9) with $n_{\text{test}}\approx 19$ --- too small to treat as a 2011-trace result. Simulated-loop SLA compliance is 0.987 for both HPA and PAKS on this short series (one violation each); those util/cost figures are not billing or CloudWatch.
+
+\paragraph{Proxy (not formal CA2)} The table below is the NimbusGuard-framed MLP simulator on synthetic load (seeds 42--46), bound to \texttt{results/results\_summary.csv}. It does not report MAE/RMSE on traces.
+
+This section presents the \textbf{proxy} experimental results from evaluating three scaling policies (Reactive HPA, Aggressive PAKS, Stability-Aware PAKS) across 5 independent random seeds (42--46) on \textbf{synthetic} demand. Each seed generates a different synthetic workload realization and trains a fresh MLP, so results represent proxy performance only.
 
 \subsection{Overall Results}
 
@@ -14,7 +22,7 @@ Table~\ref{tab:results} reports mean $\pm$ standard deviation across all 5 seeds
 
 \begin{table}[htp]
 \centering
-\caption{Autoscaling performance across 5 seeds (mean $\pm$ std)}
+\caption{PROXY autoscaling performance across 5 synthetic seeds (mean $\pm$ std). Not GCT; not live K8s.}
 \label{tab:results}
 \begin{tabular}{lcccc}
 \hline
@@ -154,7 +162,7 @@ However, the \emph{qualitative} findings align:
   \item Stability mechanisms can mitigate this instability at a cost (\checkmark demonstrated: Stability-Aware PAKS cuts events by 57\% but adds 7 SLA violations).
 \end{itemize}
 
-The contribution is not in matching NimbusGuard's exact numbers, but in \emph{reproducing the trade-off structure} with a simpler, fully-specified approach and \emph{building the stability fix NimbusGuard names as future work}.
+The contribution of the \emph{proxy} experiment is not in matching NimbusGuard's exact numbers, but in documenting a stability trade-off on synthetic load. That proxy is \textbf{not} the formal CA2 evaluation. Formal remaining work is GCT 2011/Alibaba LSTM, live Kubernetes apply, and AWS EC2+S3+CloudWatch.
 
 %% ===============================
 \subsection{Threats to Validity}

@@ -1,0 +1,3 @@
+n_train_windows,n_test_windows,lookback,hidden_size,backend,mae_train,rmse_train,mae_test,rmse_test,mae_persistence_test,rmse_persistence_test,evidence,split,policy,dataset,note
+3000,9685,12,16,numpy-lstm,0.054453303744454236,0.6639420122909057,0.1064228333334907,1.0410364265292633,0.033747096024780585,0.3740346767504099,TRACE,held-out jobs (no window leakage),lstm-job-windows,gct2010,
+44,19,12,16,numpy-lstm,,,16.797555148379125,20.644300572725758,19.948190789473674,24.75240436595118,TRACE,last 30% of cluster bins,lstm-cluster-series,gct2010,Cluster series is short (GCT v1 ~7h / 5min). Job-split MAE/RMSE is the primary prediction evidence.

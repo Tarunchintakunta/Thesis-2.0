@@ -6,17 +6,18 @@
 \label{sec:Introduction}
 %% ==============================
 
-Kubernetes' built-in autoscalers -- the Horizontal Pod Autoscaler (HPA) and the event-driven KEDA -- are reactive: they scale only once a resource metric has already crossed a threshold, which under bursty, cyclical workloads causes either SLA-violating under-provisioning during the delay or costly over-provisioning afterward. Proactive, ML-based forecasting is a natural fix, but it introduces a new risk: acting on every noisy prediction can make the system more agile at the cost of being less stable.
+Kubernetes' built-in Horizontal Pod Autoscaler (HPA) is reactive: it scales after a resource metric has already crossed a target, which under bursty workloads can cause SLA-violating under-provisioning during the control delay or costly over-provisioning afterward. Formal CA2 asks whether \textbf{predictive} workload forecasting combined with \textbf{adaptive} Kubernetes scaling (PAKS) improves cloud resource management under dynamic workloads versus that reactive HPA baseline.
 
-Wanigasooriya \& Ekanayake \cite{Wanigasooriya26} demonstrate exactly this with NimbusGuard, a Deep Q-Network + LSTM proactive autoscaler evaluated against reactive HPA and KEDA on a real Kubernetes testbed. NimbusGuard wins on responsiveness, but their own results table shows it running with the highest average replica count and double the total scaling events of either reactive baseline -- described in their own words as ``the most agile and least stable system.'' They name addressing this stability cost as future work.
+\textbf{Research question (formal CA2):} Can predictive workload forecasting combined with adaptive Kubernetes scaling (PAKS) improve cloud resource management under dynamic workloads versus traditional reactive Kubernetes HPA?
 
-\textbf{Research question:} can a proactive autoscaler keep most of its SLA-violation advantage over reactive HPA while substantially reducing the instability (scaling-event frequency, pod-count volatility) that an unfiltered, DQN-style proactive policy exhibits?
-
-\textbf{Objectives:}
+\textbf{Objectives (formal):}
 \begin{itemize}
-  \item Reproduce the trade-off NimbusGuard reports -- proactive scaling beats reactive HPA on SLA compliance, at a cost in over-provisioning and instability -- with a simpler, fully reproducible feed-forward predictor rather than a full DQN+LSTM+LLM pipeline.
-  \item Design and build the stability fix NimbusGuard names but does not build: smoothing and hysteresis applied to the same underlying forecast.
-  \item Quantify the trade-off honestly across multiple metrics and multiple random seeds, rather than reporting only the metrics that favour the new design.
+  \item Preprocess public cloud workload data (Google Cluster Trace / Alibaba Cluster Trace) and train a workload prediction model (LSTM / TensorFlow as named in the CA2 resources table).
+  \item Build an adaptive scaling engine that acts on predictions via the Kubernetes API rather than HPA-default alone.
+  \item Implement and evaluate on a Kubernetes cluster hosted on AWS (EC2 compute, S3 datasets, CloudWatch metrics).
+  \item Compare PAKS versus reactive HPA across varied workload intensities, reporting MAE/RMSE, utilisation, response time, throughput, scaling latency, cost, and SLA/availability.
 \end{itemize}
 
-The remainder of this report is structured as follows: Section~\ref{sec:rw} reviews the baseline paper and the gap it names; Section~\ref{sec:Design} describes the three scaling policies compared; Section~\ref{sec:Implementation} describes the workload simulator, training pipeline, and deployment; Section~\ref{sec:Evaluation} reports results across 5 seeds; Section~\ref{sec:Conclusion} discusses the trade-off and future work.
+\textbf{Honesty about the current artefact.} The binding baseline is Kubernetes HPA, not NimbusGuard. A superseded proxy framed the work as reproducing Wanigasooriya \& Ekanayake's~\cite{Wanigasooriya26} agility--stability trade-off with an MLP on synthetic cyclical loads; that code remains labelled proxy (\texttt{paks-framework/src/proxy/}) and is not the CA2 contract. This pass adds a public Google Cluster Data v1 (2010) slice, a NumPy LSTM, fail-closed 2011/2019/Alibaba loaders, a dry-run Kubernetes Scale client, and the formal metric suite. It does \textbf{not} deploy AWS or a live cluster. GCT 2011/2019 and Alibaba files are still absent (\texttt{DATA\_GAPS.md}). TensorFlow is not importable on the CPython 3.14 evaluation host and is fail-closed rather than silently replaced by MLP on the formal path.
+
+The remainder of this report is structured as follows: Section~\ref{sec:rw} reviews reactive HPA and predictive autoscaling literature (NimbusGuard as related work); Section~\ref{sec:Design} describes HPA versus PAKS control; Section~\ref{sec:Implementation} describes the trace loader, LSTM, dry-run engine, and the quarantined proxy; Section~\ref{sec:Evaluation} reports TRACE prediction metrics on GCT v1 and SIMULATED scaling-loop metrics, with proxy tables labelled as such; Section~\ref{sec:Conclusion} states remaining blockers. The work is \textbf{not} marked complete.

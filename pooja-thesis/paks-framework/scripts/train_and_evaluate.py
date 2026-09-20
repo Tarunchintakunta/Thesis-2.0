@@ -1,3 +1,8 @@
+"""PROXY driver (synthetic MLP / NimbusGuard-framed policies).
+
+Formal PAKS: ``scripts/train_lstm_and_evaluate.py``. Do not treat this CSV
+as MAE/RMSE, cost, or live Kubernetes evidence.
+"""
 import os
 import sys
 import numpy as np
@@ -34,6 +39,7 @@ def evaluate(workload, pods):
 
 
 def main():
+    print("PROXY mode: synthetic MLP vs HPA (NimbusGuard-framed). Not formal CA2.")
     all_runs = []
     exported_model = None
 

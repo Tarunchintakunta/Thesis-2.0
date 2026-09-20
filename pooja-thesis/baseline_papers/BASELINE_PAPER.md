@@ -1,26 +1,29 @@
-# Baseline paper — Pooja (CA2-mapped)
+# Baseline — Pooja (formal CA2)
 
 **Student folder:** `pooja-thesis`  
-**Citation:** Wanigasooriya & Ekanayake (2026) — *NimbusGuard… DQN* — IEEE ICOIN 2026  
-**Identifier:** `doi: 10.1109/ICOIN68469.2026.11480646` / arXiv:2604.11017
+**Binding baseline (formal CA2):** Kubernetes **Horizontal Pod Autoscaler (HPA)**
+(`autoscaling/v2` CPU utilization), not NimbusGuard.
 
-## File
-- `PRESENT: Wanigasooriya_Ekanayake_2026_NimbusGuard_baseline.pdf`
+## Related literature (not the CA2 contract)
 
-## Problem → CA2 commitment
-Proactive K8s autoscaling improves SLA vs reactive HPA/KEDA but is **most agile and least stable** (high replica count / scaling events). Authors name stability as future work.
+- Wanigasooriya & Ekanayake (2026) — *NimbusGuard… DQN* — IEEE ICOIN 2026  
+  `doi: 10.1109/ICOIN68469.2026.11480646` / arXiv:2604.11017  
+- File: `PRESENT: Wanigasooriya_Ekanayake_2026_NimbusGuard_baseline.pdf`
 
-## Solution (paper)
-DQN + LSTM (+ LLM elements) proactive autoscaler on a real Kubernetes testbed.
+NimbusGuard is a proactive DQN+LSTM autoscaler vs HPA/KEDA that names an
+agility–stability trade-off. The **proxy** artefact reproduced that niche with
+an MLP simulator (`paks-framework/src/proxy/`). That proxy is **superseded** as
+the binding story.
 
-## Gap
-Stability cost not fixed. Our commitments reproduce the **trade-off** with a **simpler MLP simulator** (intentional method simplification) and add EMA + hysteresis/cooldown.
+## Formal CA2 mapping
 
-## Metrics mapped to eval
-| Paper emphasis | Ours (CSV) |
-|----------------|------------|
-| Responsiveness / SLA | SLA Violations |
-| Resource cost | Over-provisioning % |
-| Instability | Scaling Events, Pod Count Volatility |
+| Formal commitment | Artefact now | Evidence tag |
+|-------------------|--------------|--------------|
+| LSTM / TF on GCT or Alibaba | NumPy LSTM on **GCT v1 (2010)** public slice; TF fail-closed; 2011/2019/Alibaba absent | TRACE (v1) / GAP |
+| Adaptive scaler via K8s API | Dry-run `PATCH .../scale?dryRun=All` | SIMULATED / dry-run |
+| Reactive HPA comparison | HPA v2 replica formula + same dry-run schema | SIMULATED loop |
+| MAE, RMSE | Job-split + cluster-split LSTM | TRACE on v1 |
+| Util, latency, throughput, cost, SLA | Wired in `src/eval/metrics.py` | SIMULATED (not CloudWatch) |
+| K8s on AWS EC2+S3+CloudWatch | **Not deployed** | LIVE missing |
 
-Evidence: `paks-framework/results/results_summary.csv`. Do **not** claim identical DQN agent metrics.
+Do **not** treat proxy `results_summary.csv` as formal HPA-vs-PAKS-on-AWS numbers.

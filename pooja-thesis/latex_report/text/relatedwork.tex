@@ -29,11 +29,13 @@ In multi-cloud environments, DRL-based dynamic resource allocation frameworks us
 
 DRL has also been applied to specialized domains. Deep recurrent-reinforcement learning for serverless function autoscaling \cite{DeepRecurrentRL24} and RL-based vertical memory scaling for HPC workloads in Kubernetes (VERA) \cite{VERA26} demonstrate that observation-driven RL recommenders can outperform retrospective heuristics, reclaiming significantly more memory headroom while avoiding out-of-memory events.
 
-\subsection{Baseline: Proactive Autoscaling with Deep Q-Networks}
+\subsection{Binding baseline: Kubernetes HPA}
 
-The direct baseline for this project is Wanigasooriya \& Ekanayake \cite{Wanigasooriya26}, ``NimbusGuard: A Novel Framework for Proactive Kubernetes Autoscaling Using Deep Q-Networks'' (IEEE ICOIN 2026, DOI: 10.1109/ICOIN68469.2026.11480646). NimbusGuard combines a Deep Q-Network scaling agent with an LSTM workload forecaster and an optional LLM validation layer, evaluated against reactive HPA and event-driven KEDA on a real KinD Kubernetes testbed under a phased load pattern (ramp-up, sustained load, peak load, cooldown). Their results show NimbusGuard reduces responsiveness metrics, outperforming both reactive baselines.
+The binding CA2 baseline is traditional Kubernetes Horizontal Pod Autoscaler (CPU utilization, \texttt{autoscaling/v2}), not NimbusGuard. HPA is reactive: it scales after a metric already exceeds a target. Formal comparison is PAKS (forecast + Kubernetes API scale) versus that HPA control loop.
 
-However, the same results table exposes the cost of that responsiveness. NimbusGuard runs with the highest average replica count (5.44 vs. 3.05 for HPA and 2.93 for KEDA) and double the total scaling events of either reactive baseline (8 vs. 4). The paper states this directly: ``NimbusGuard was the most agile and least stable system... these findings highlight a fundamental trade-off: the proactive, performance-focused scaling of NimbusGuard versus the reactive, cost-efficient stability of traditional autoscalers.'' Their own future-work section gestures at addressing this (expanding the action space, hybridizing with Vertical Pod Autoscaling) but does not build or evaluate a fix.
+\subsection{Related: Proactive Autoscaling with Deep Q-Networks}
+
+Wanigasooriya \& Ekanayake \cite{Wanigasooriya26}, ``NimbusGuard: A Novel Framework for Proactive Kubernetes Autoscaling Using Deep Q-Networks'' (IEEE ICOIN 2026), is \textbf{related literature}. NimbusGuard combines a Deep Q-Network scaling agent with an LSTM workload forecaster, evaluated against HPA and KEDA. Their results name an agility--stability trade-off. A superseded proxy in this repository reproduced that niche with an MLP simulator; it is not the binding CA2 contract.
 
 \subsection{Stability, Oscillation Mitigation, and Hysteresis}
 
@@ -49,6 +51,5 @@ A comprehensive Kubernetes autoscaling review \cite{K8sAutoscalingReview26} summ
 
 \subsection{The Gap This Project Targets}
 
-Despite extensive research on proactive forecasting and RL-based autoscaling, there is a gap between aggressive proactive policies that act on every prediction (like NimbusGuard) and the stability mechanisms documented in the literature. NimbusGuard's own DQN+LSTM pipeline acts on every raw forecast without smoothing or hysteresis, resulting in the instability their own results table documents. The literature on smoothing, cooldown, and hysteresis exists largely separately from the proactive ML-based autoscaling literature.
+Formal CA2 targets the gap between reactive HPA and a predictive, Kubernetes-API-driven scaler (PAKS) under trace-driven LSTM forecasts. Literature on LSTM/HPA hybrids and on NimbusGuard-style RL agents informs design but does not replace the formal datasets (GCT/Alibaba), AWS testbed, or metric suite. The proxy MLP experiment addresses a narrower stability trade-off on synthetic load and is labelled as such.
 
-This project bridges that gap by: (1) reproducing the aggressive, unfiltered proactive-scaling trade-off NimbusGuard reports with a simpler feed-forward predictor, and (2) applying smoothing and hysteresis rules on top of the same underlying predictive signal to test whether stability can be recovered without sacrificing the SLA benefit of forecasting. This directly addresses NimbusGuard's named but unimplemented future work on stability.
