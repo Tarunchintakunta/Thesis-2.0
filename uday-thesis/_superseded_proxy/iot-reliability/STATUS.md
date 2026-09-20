@@ -1,3 +1,9 @@
+# QUARANTINED — not the formal CA2 artefact
+
+**This tree is the federated-RF / Et-Tousy proxy.** Formal artefact: `../../mqtt-qos-iot-core/`. Do not revive as evidence.
+
+---
+
 # Project Status: uday-thesis (iot-reliability)
 
 **Last Updated:** 2026-09-20  

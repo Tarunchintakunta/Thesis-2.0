@@ -1,7 +1,9 @@
 # CA2 Commitments — Uday (formal)
 
 **Source:** Derived from formal CA2 file `uday-thesis/UdayKiranReddyDodda_X25166484_proposal.docx` (*Evaluating MQTT Quality-of-Service Reliability in AWS IoT Core…*).  
-**Status:** Binding research contract = **formal CA2**. Current `iot-reliability/` artefact implements a **different thesis** (federated RF vs Et-Tousy OneM2M) and does **not** satisfy this CA2.  
+**Status:** Binding research contract = **formal CA2**.  
+**Artefact:** `uday-thesis/mqtt-qos-iot-core/` (this pass: Terraform + mock dry-run; **not** live AWS).  
+**Quarantine:** `uday-thesis/_superseded_proxy/iot-reliability/` — federated RF vs Et-Tousy; **not** this CA2; do not revive as evidence.  
 **AWS:** **Required.** Formal experiment is a live (account-owned) **AWS IoT Core** campaign with rules → Lambda → DynamoDB matching. Synthetic device telemetry is **explicitly allowed**. This agent pass does **not** deploy.
 
 ## Research question (formal)
@@ -34,3 +36,4 @@ Shvaika et al. (2025) managed/self-hosted MQTT broker characterisation — contr
 - Prior proxy “federated RF recovers centralized Et-Tousy accuracy” is **not** this CA2.
 - Synthetic telemetry is **not** a blocker (formal commits to synthetic).
 - QoS 2, multi-region, physical radios: deferred in formal CA2.
+- Mock dry-run in `mqtt-qos-iot-core/results/mock/` is **harness proof**, not IoT Core evidence.

@@ -30,10 +30,10 @@
 
 | Thesis | Align | AWS by formal? | **Status** |
 |--------|------:|:--------------:|------------|
-| Mehak | **~64%** | no | **NOT COMPLETE** |
-| Pooja | **~48%** | yes (not sole) | **NOT COMPLETE** |
-| Uday | **~18%** | yes (not sole) | **NOT COMPLETE** |
-| Vishvaksen | **~28%** | no | **NOT COMPLETE** |
+| Mehak | **~82%** | no | **NOT COMPLETE** |
+| Pooja | **~62%** | yes (not sole) | **NOT COMPLETE** |
+| Uday | **~56%** | yes (not sole) | **NOT COMPLETE** |
+| Vishvaksen | **~62%** | no | **NOT COMPLETE** |
 
 ## Credits
 ~$131. Destroy-after-round. ConcurrentExecutions=**10**.

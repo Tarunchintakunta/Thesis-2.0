@@ -1,0 +1,25 @@
+name: MQTT QoS harness tests (no AWS)
+
+on:
+  push:
+    paths:
+      - "uday-thesis/mqtt-qos-iot-core/**"
+      - "uday-thesis/.github/workflows/ci.yml"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: uday-thesis/mqtt-qos-iot-core
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: pip install -r requirements.txt
+      - name: Unit tests
+        run: python -m pytest tests -q
+      - name: Free-tier guard (mock)
+        run: python scripts/assert_free_tier_guard.py --mode dry_run

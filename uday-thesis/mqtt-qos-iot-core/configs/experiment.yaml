@@ -1,0 +1,44 @@
+# Formal CA2 factorial (binding) plus the local mock dry-run scale.
+# Live AWS is NOT selected in this file. backend: mock only.
+name: mqtt-qos-iot-core
+backend: mock
+region: eu-west-1
+measurement_kind: "mock broker + in-memory DynamoDB — not an AWS measurement"
+
+formal:
+  devices: 5
+  messages: 1000
+  replications: 5
+  interval_s: 5.0
+  qos: [0, 1]
+  disconnect_s: [0, 15, 60, 300]
+  rate: [steady, bursty]
+  payload_bytes: 64
+
+# Reduced n so the harness can be proven without wall-clock 5 s waits
+# and without any AWS calls. Virtual clock; disconnect durations are simulated.
+dry_run:
+  devices: 5
+  messages: 40
+  replications: 2
+  interval_s: 5.0
+  qos: [0, 1]
+  disconnect_s: [0, 15, 60, 300]
+  rate: [steady, bursty]
+  payload_bytes: 64
+  seed: 42
+
+# Documented mock-only parameters. These are NOT IoT Core measurements.
+mock:
+  one_way_delay_ms: 25
+  delay_jitter_ms: 8
+  p_network_loss_connected: 0.002
+  p_rule_fail: 0.0
+  qos1_outbox_cap: 1000
+  inflight_window_s: 0.2
+  p_inflight_already_acked: 0.5
+  reconnect_delay_ms: 80
+  reconnect_jitter_ms: 40
+  # AWS IoT Core persistent-session queue is a subscriber property;
+  # publisher backlog here is client-side (documented mock assumption).
+  session_queue_note: "publisher outbox is client-local; not a managed-broker queue"

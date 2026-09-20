@@ -1,0 +1,50 @@
+# Pre-registered before live AWS data exist. Holm–Bonferroni over one campaign family.
+# α = 0.05. Mock dry-run executes the same tests; results are not confirmatory.
+alpha: 0.05
+adjustment: holm-bonferroni
+smallest_meaningful:
+  loss_percentage_points: 1.0
+  cost_relative: 0.05
+replication_formal: 5
+notes:
+  - Loss and duplication pairs are directional (protocol definition).
+  - Latency pair is two-sided (Ko & Lee 2025 vs Jeddou et al. 2022 disagree on sign under RTT).
+  - Delivery completeness recorded on the same terms as Shvaika et al. (2025).
+
+primary_family:
+  - id: loss_qos0_gt_qos1
+    dv: loss_rate
+    test: two_proportion_z
+    alternative: greater
+    for_each: [disconnect_s, rate_mode]
+    h0: "P(loss | QoS 0, d, rate) = P(loss | QoS 1, d, rate)"
+    h1: "P(loss | QoS 0, d, rate) > P(loss | QoS 1, d, rate)"
+  - id: loss_qos_x_disconnect
+    dv: loss_count
+    test: chi2_contingency
+    alternative: two-sided
+    h0: "loss counts independent of QoS × disconnect (pooled over rate)"
+    h1: "association between QoS × disconnect and loss"
+
+secondary_family:
+  - id: dup_qos1_gt_qos0
+    dv: duplicate_id_rate
+    test: two_proportion_z
+    alternative: greater
+    for_each: [disconnect_s, rate_mode]
+    h0: "P(dup | QoS 1, d, rate) = P(dup | QoS 0, d, rate)"
+    h1: "P(dup | QoS 1, d, rate) > P(dup | QoS 0, d, rate)"
+  - id: latency_qos_diff
+    dv: e2e_latency_ms
+    test: mannwhitney_u
+    alternative: two-sided
+    for_each: [disconnect_s, rate_mode]
+    h0: "latency distribution identical at QoS 0 and QoS 1"
+    h1: "latency distributions differ"
+
+recorded_not_tested_here:
+  - reconnection_time_ms
+  - backlog_queued
+  - backlog_survived
+  - rule_trigger_success_rate
+  - estimated_usd
