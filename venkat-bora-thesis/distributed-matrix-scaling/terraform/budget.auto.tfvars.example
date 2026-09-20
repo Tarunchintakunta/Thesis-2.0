@@ -1,0 +1,6 @@
+# Copy to budget.auto.tfvars for a short matched-vCPU round, then destroy.
+# region          = "eu-west-1"
+# ami_id          = "ami-0ee768eb261a01ed2"
+# scale_up_instance_type  = "t3.medium"   # 2 vCPU
+# scale_out_instance_type = "t3.small"    # 2 x 1 vCPU = 2 vCPU aggregate
+# scale_out_count = 2

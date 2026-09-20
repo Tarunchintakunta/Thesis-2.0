@@ -1,6 +1,6 @@
 ## Alignment note (2026-09-20)
 
-CA2 requires matched-vCPU **AWS EC2** crossover; practice is **local Dask `LocalCluster` only**. Evaluation narrative numbers must match `distributed-matrix-scaling/results/data/summary_statistics.json`. Alignment **< 100%** — AWS EC2 residual remains the hard blocker. No cloud results are claimed.
+CA2 matched-vCPU **AWS EC2** round-1 collected: `distributed-matrix-scaling/results/live/ec2_round1_summary.json`. Topology (experiment design): **1× t3.small** scale-up vs **2× t3.micro** scale-out (matched aggregate 2 vCPU; Terraform defaults). Scale-up numpy matmul n=500 ≈ **0.0067 s**; on-node Dask LocalCluster per micro ≈ **0.52 s** mean. Multi-instance Dask: 2 workers registered + futures smoke OK; `da.matmul` **timed out** (no completed multi-instance matmul cell). Local campaign remains in `results/data/`. Alignment **< 100%** until multi-instance matmul completes and eval is fully synced.
 
 ---
 # Project Status: Venkat Bora - Matrix Scaling Workloads
@@ -10,16 +10,16 @@ CA2 requires matched-vCPU **AWS EC2** crossover; practice is **local Dask `Local
 
 ## Execution Environment
 
-### ⚠️ LOCAL IMPLEMENTATION ONLY
+### Live EC2 (round-1) + local campaign
 
-This project was **completed entirely on a local development machine** using Dask local clusters, **not on AWS EC2**. The "distributed" results simulate scale-out architecture but run on a single machine with no real network overhead.
-
-**Why local:**
-- No AWS credentials required for reproduction
-- Cost-free development and testing
-- Academic focus on methodology demonstration
-
-**Key limitation:** Results do not reflect true cloud network latency or multi-node distributed overhead. The "distributed" mode runs Dask workers on the same machine. **Local Dask ≠ CA2 matched-vCPU AWS EC2.**
+- **Live topology:** matched 2-vCPU crossover — `1× t3.small` (scale-up) vs `2× t3.micro` (scale-out); see `terraform/variables.tf` defaults.
+- **Region:** `eu-west-1`; instances destroyed after round-1 (no lingering fleet).
+- **Artifacts:** `distributed-matrix-scaling/results/live/ec2_round1_summary.json`.
+- **Round-1 outcomes (evidence only):**
+  - Scale-up numpy matmul n=500: **0.006709 s**
+  - Scale-out on-node Dask LocalCluster (per micro, n=500, 1 worker): **0.5339 s** / **0.5166 s** (mean **0.5252 s**)
+  - Multi-instance: scheduler + 2 workers registered; `Client.submit` futures smoke OK (`[0,1,4,9]`); **`da.matmul` status = `timed_out`** — not a completed timing cell
+- **Local campaign:** Dask `LocalCluster` suite remains in `results/data/` for the offline study (90 configs × 3 iterations).
 
 ---
 
@@ -31,47 +31,48 @@ This project was **completed entirely on a local development machine** using Das
 - Matrix multiplication and LU factorization
 - Real benchmark data: completion time, memory (RSS), CPU utilization
 - Matrix sizes 200×200 to 2000×2000, worker counts 1–8
-- Committed campaign: **90 configs × 3 iterations** (`n_iterations: 3` in JSON)
+- Committed local campaign: **90 configs × 3 iterations** (`n_iterations: 3` in JSON)
 - Descriptive stats in `summary_statistics.json` (mean/std); inferential tests (t-test/Holm) **not implemented in code**
 - Full test suite: **20** `test_*` functions (`test_matrix_operations.py` 11 + `test_benchmark.py` 9)
 - Compiled PDF report (`latex_report/projectReport.pdf`)
 - Local configuration manual: `CONFIGURATION_MANUAL.md`
+- Terraform matched-vCPU stack (`t3.small` / `t3.micro` × 2); round-1 applied then destroyed
+- CLI exposes `--scheduler-address` for remote/EC2 Dask arm (`src/main.py`)
 
 ✅ **Baseline Reference:**
 - Sabir & Alebrahim (2025), DOI: 10.3390/math13020298
 - Extended their multi-threaded LU approach with Dask comparison
 
-⚠️ **What's Missing / Blocked:**
-- **No live EC2 execution** — all results are local/Dask
-- No actual multi-node cluster (would show real network overhead)
-- No AWS CloudWatch metrics / IaC provision-destroy campaign
-- CLI does **not** currently expose `--scheduler-address` (remote scheduler path not wired in `src/main.py`)
-- WhatsApp DOI `note = {doi: ...}` format not applied in bib
+⚠️ **What's Missing / Residual:**
+- **Multi-instance `da.matmul` did not complete** in round-1 (timed out after futures smoke)
+- Evaluation chapter still primarily narrates local JSON; live round-1 cells need full sync
+- No multi-round EC2 campaign (round-1 only)
+- Inferential stats code / WhatsApp DOI `note = {doi: ...}` hygiene as previously noted
 
 ---
 
-## AWS Deployment Path (Not Executed)
+## AWS Deployment Path (Round-1 partial)
 
-CA2 proposes AWS EC2 general-purpose instances with matched aggregate vCPUs and IaC provision/destroy. That campaign **was not run**. Conceptual path (for future work only):
+CA2 matched-vCPU EC2 via IaC: **round-1 executed** on `1× t3.small` vs `2× t3.micro`, then destroyed. Evidence in `results/live/ec2_round1_summary.json`.
 
-1. Launch matched-vCPU EC2 instances in the same VPC via IaC
-2. Install dependencies on each instance
-3. Start Dask scheduler on one instance, workers on others
-4. Wire remote scheduler support in the CLI (not present today), then run the distributed arm against that scheduler
-5. Compare against multi-threaded on a single instance with the same total vCPUs
+Completed in round-1:
+1. Provision matched-vCPU topology in `eu-west-1`
+2. Scale-up numpy matmul (n=500) on `t3.small`
+3. On-node Dask LocalCluster matmul on each `t3.micro`
+4. Multi-instance scheduler + 2 workers; futures smoke
 
-**Do not treat any local JSON times as EC2 results.**
+**Not completed:** multi-instance `da.matmul` wall-clock (timed out). Do **not** invent or backfill that cell. Do **not** treat local JSON times as EC2 results.
 
 ---
 
 ## Academic Integrity
 
-- All committed results are from **actual local runs**, not fabricated
-- Evaluation numbers must match `summary_statistics.json` exactly (absolute times, speedups, size range, `n_iterations: 3`)
-- Code is reproducible locally
-- Honest about local-only execution; no hallucinated AWS metrics
+- Local results are from **actual local runs**; live round-1 numbers are from **actual EC2** (`ec2_round1_summary.json`)
+- Evaluation numbers for the local suite must match `summary_statistics.json` exactly
+- Multi-instance matmul is reported as **timed out / partial**, not as a finished timing
+- Honest about residual: completed multi-instance matmul + eval sync still outstanding
 
-### Verified key JSON anchors (matmul)
+### Verified key JSON anchors (local matmul)
 
 | Config | mean_time | Note |
 |--------|-----------|------|
@@ -79,6 +80,15 @@ CA2 proposes AWS EC2 general-purpose instances with matched aggregate vCPUs and 
 | Threaded 1000×1000, 4 workers | ≈62.2 ms | Speedup ≈1.08× |
 | Distributed 1000×1000, 4 workers | ≈344.6 ms | ≈5.54× slower than threaded-4 |
 | Threaded vs Distributed through 2000 | Dist never faster | No local crossover |
+
+### Live round-1 anchors (EC2)
+
+| Arm | Mode | Result |
+|-----|------|--------|
+| 1× t3.small | numpy matmul n=500 | 0.006709 s |
+| 2× t3.micro (per node) | Dask LocalCluster n=500 | mean 0.5252 s |
+| Multi-instance | futures smoke | OK (2 workers) |
+| Multi-instance | da.matmul n=500 | **timed_out** |
 
 ---
 
@@ -88,14 +98,15 @@ CA2 proposes AWS EC2 general-purpose instances with matched aggregate vCPUs and 
 |------------|--------|-------|
 | Baseline comparison | ✅ | Sabir & Alebrahim (2025) |
 | Multi-threaded | ✅ | Threading + multiprocessing |
-| Distributed | ⚠️ | Dask **local cluster only** |
-| Metrics (time, memory, CPU) | ✅ | Real data collected |
-| Matrix sizes 200-2000 | ✅ | 200, 500, 1000, 1500, 2000 |
-| Iterations | ⚠️ | Committed **3**/config (plan text may say 5) |
+| Distributed (local) | ✅ | Dask LocalCluster campaign in JSON |
+| Distributed (EC2 multi-instance) | ⚠️ | Workers + futures OK; `da.matmul` timed out |
+| Metrics (time, memory, CPU) | ✅ | Local suite; live round-1 time cells partial |
+| Matrix sizes 200-2000 | ✅ | Local; live round-1 used n=500 |
+| Iterations | ⚠️ | Local committed **3**/config; live round-1 single-shot |
 | Inferential stats code | ❌ | Narrative only; no Shapiro/t-test/Holm artefacts |
 | Tests pass | ✅ | 20 pytest functions in tree |
-| Configuration Manual | ✅ | Local setup documented; EC2 not executed |
-| AWS infrastructure | ❌ | **Not executed** (CA2 residual) |
+| Configuration Manual | ✅ | Local setup documented |
+| AWS infrastructure | ⚠️ | Round-1 applied+destroyed; residual = multi-instance matmul + eval sync |
 
 ---
 

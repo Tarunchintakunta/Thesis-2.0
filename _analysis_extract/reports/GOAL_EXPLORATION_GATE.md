@@ -25,12 +25,17 @@
 - Report: `_analysis_extract/reports/venkat_alignment.md`
 - AWS_CLASS=required (EC2 matched-vCPU)
 - GATE_READY=yes for exploration completeness (not 100% CA2 alignment)
-- SOLE_AWS_RESIDUAL=yes (live matched-vCPU EC2 campaign; no invented EC2 metrics; Terraform not applied)
-- Alignment (explore): **63%**
+- SOLE_AWS_RESIDUAL=yes (**multi-instance `da.matmul` + eval sync**; round-1 saved; no invented matmul timing)
+- Alignment (explore): **63%** (live evidence folded into STATUS/LaTeX/residual; still <100%)
 - Residual: `_analysis_extract/reports/venkat_AWS_RESIDUAL.md` (`READY_FOR_AWS=yes`)
-- Agent: https://cursor.com/agents/bc-b2884607-423d-50e4-bbda-2913b8670837
+- Live: `results/live/ec2_round1_summary.json` — 1× t3.small vs 2× t3.micro; scale-up ~0.0067s; on-node ~0.52s; multi-instance matmul **timed_out**
+- Note: Terraform defaults already t3.small / t3.micro / count=2; fleet destroyed after round-1
 
-## Yashaswini exploration note (prior)
+## LIVE (READY subset) — 2026-09-20
+- Vikas: full campaign daemon in progress
+- Chaitanya: python Init Duration live cells collected (`data/processed/live/`)
+- Runbook research: [Chaitanya live Init path](bc-6db36ab1-f0a4-55ec-8e5c-1889de8454b8) (superseded by applied TF + live round)
+
 - Report: `_analysis_extract/reports/yashaswini_alignment.md`
 - AWS_CLASS=required (Lambda, API Gateway, DynamoDB, CloudWatch, X-Ray)
 - GATE_READY=yes for exploration completeness (not 100% CA2 alignment)

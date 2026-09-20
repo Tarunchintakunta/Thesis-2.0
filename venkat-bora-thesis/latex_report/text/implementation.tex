@@ -263,9 +263,9 @@ make benchmark
 
 Zero configuration beyond Python 3.12+ and pip.
 
-\subsection{AWS EC2 Deployment (Not Executed)}
+\subsection{AWS EC2 Deployment (Round-1 partial)}
 
-CA2 requires matched-vCPU multi-instance EC2 execution. That campaign was \textbf{not} run. A future path would need IaC provisioning plus CLI support for a remote Dask scheduler. Committed \texttt{src/main.py} does \textbf{not} expose \texttt{--scheduler-address}; older prose claiming that flag is incorrect for this tree. Local \texttt{LocalCluster} results must not be labelled as EC2 results.
+CA2 matched-vCPU multi-instance EC2: round-1 applied then destroyed (\texttt{t3.small} vs 2× \texttt{t3.micro}). Evidence: \texttt{results/live/ec2\_round1\_summary.json}. Scale-up numpy and on-node Dask cells completed at $n{=}500$; multi-instance workers registered and futures smoke OK; \texttt{da.matmul} \textbf{timed out}. Committed \texttt{src/main.py} exposes \texttt{--scheduler-address}. Local \texttt{LocalCluster} results must not be labelled as multi-instance EC2 matmul timings.
 
 \section{Lessons Learned}
 
@@ -283,4 +283,4 @@ Multiprocessing showed 10-15ms startup overhead even for tiny matrices. This is 
 
 \section{Summary}
 
-The implementation prioritizes correctness, reproducibility, and maintainability for the \textbf{local} harness. Cloud EC2 execution is documented as future CA2 work and is not delivered in this tree.
+The implementation prioritizes correctness, reproducibility, and maintainability for the local harness plus a partial live EC2 round-1. Completed multi-instance \texttt{da.matmul} remains the residual.
