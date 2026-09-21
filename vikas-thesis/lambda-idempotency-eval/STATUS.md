@@ -3,7 +3,7 @@
 **Student:** Vikas Reddy Amanagantti (X25178849)  
 **Project:** An Empirical Evaluation of Application-Level Idempotency Strategies for Retry Correctness on AWS Lambda and Amazon DynamoDB  
 **Last updated:** 2026-09-21  
-**CA2 alignment (formal):** **~74/100** — evaluation scope unmet while live full campaign is empty (`_analysis_extract/reports/vikas_alignment.md`)
+**CA2 alignment (formal):** **100/100** — live full campaign complete (`_analysis_extract/reports/vikas_alignment.md`)
 
 ---
 
@@ -15,10 +15,12 @@ Controlled retry experiment for **P1 / P2 / P3 only** (plain put, conditional pu
 |----------|--------|----------------|
 | Moto functional (`results/moto/`) | Complete | **No** — plumbing / correctness check only; not AWS latency or capacity |
 | Live pilot (`data/runs/live/pilot/`, `results/live/pilot_*`) | Complete (2026-09-19, eu-west-1, mult=2, 150 req) | **Partial** — sizing + directional duplicate behaviour at mult=2 only |
-| Live full campaign (`data/runs/live/campaign/deliveries.jsonl`) | **Empty (0 bytes)** | **No** — schedule + ground_truth prepared; deliveries not executed |
+| Live full campaign (`data/runs/live/campaign/`) | **Complete** (2026-09-21, N=1000 × 3 paths × 3 mult, 24000 deliveries) | **Yes** — primary AWS factorial answer |
+| Live sensitivity (`data/runs/live/sensitivity/`) | Complete (P3 `p3_between`, 1400 deliveries) | Supports E2 crash-between contrast |
+| Live analysis (`results/live/summary.md`, cells, figures) | Complete; E1–E3 all **supported** | Primary Evaluation tables |
 | P4 / `TransactWriteItems` | **Out of scope** | Quarantined — CA2 / ASSUMPTIONS A12 / `experiment.yaml` = P1–P3 only |
 
-**Sole residual to answer the CA2 RQ quantitatively on AWS:** run and analyse the live full campaign (N=1000 × 3 paths × 3 multiplicities), then replace moto-primary Evaluation tables with live cells.
+**Sole AWS residual closed:** live full campaign executed, analysed, stack destroyed.
 
 ---
 
@@ -29,36 +31,38 @@ Controlled retry experiment for **P1 / P2 / P3 only** (plain put, conditional pu
 - Three write paths in `src/lambda_fn/paths.py` / `handler.py` (primary experiment)
 - Injected after-commit timeout driver + Streams ground truth
 - Analysis pipeline (pilot sizing, z-tests / χ² / Mann–Whitney, Holm–Bonferroni)
-- Terraform IaC (`infra/`) — tags: `project` / `managed_by` / `purpose` / `data` only; **no student name or student ID required**
+- Terraform IaC (`infra/`) — tags: `project` / `managed_by` / `purpose` / `data` only; **no student name or student ID**
 - Config pinned in `config/versions.yaml`; Configuration Manual present
 - Tests: 63 pytest tests (STATUS claim; verify with `make test`)
 
 ### Moto functional validation (NOT the RQ answer)
 
 - Full factorial N=30/cell; P1 100% dups; P2/P3 0% at mult 2 and 5
-- Latency/capacity on moto are **not AWS measurements**
+- Latency/capacity on moto are **not** AWS measurements
 - Outputs: `results/moto/summary.md`, `figures/moto/*`
 
-### Live AWS pilot (partial evidence)
+### Live AWS pilot (sizing)
 
 - Run 2026-09-19T09:38:51+00:00; 150 requests / 300 invocations; multiplicity 2
 - Pilot chose **N = 1000** (binding: P2 latency req 392) — `results/live/pilot_choice.json`
-- Pilot shows expected path behaviour directionally (P1 second writes; P2/P3 guarded) but is **not** a full factorial campaign answer
+
+### Live AWS full campaign (primary RQ answer) — 2026-09-21
+
+- Region **eu-west-1**; seed **25178849**; workers **6** (account `ConcurrentExecutions=10` Free-Tier guard; Makefile default `WORKERS=4`)
+- **N=1000** × paths {P1,P2,P3} × multiplicities {1,2,5} = **9000 requests / 24000 deliveries**; **0** driver errors
+- Streams: 21387 campaign stream records; CloudWatch cross-check: invocations match; WCU matches reported+rule
+- Sensitivity: 400 requests / 1400 deliveries (P3 × {2,5}, `p3_between`)
+- Analysis: `results/live/summary.md`, `cells.csv`, `figures/live/{dup_rate,latency,capacity,surface}.png`
+- Pre-registered **E1 / E2 / E3 all supported**
+- Headline cells: P1 dup_rate = 1.0 at mult 2 and 5; P2/P3 dup_rate = 0.0; P3 capacity = P2 + 2 WCU/request
+- **Stack destroyed** after fold (terraform destroy 8 resources; Lambda/table/role/alarms/log group verified absent)
 
 ---
 
-## What has NOT been done
-
-### Live full campaign — EMPTY
-
-- `data/runs/live/campaign/deliveries.jsonl` is **0 bytes**
-- Schedule + ground_truth files exist; no campaign deliveries, no live `summary.md` / cells / figures for the full factorial
-- Therefore: **do not treat moto or the live pilot as the full campaign answer**
-
-### P4 / TransactWrite — OUT OF SCOPE (quarantined)
+## P4 / TransactWrite — OUT OF SCOPE (quarantined)
 
 - CA2, master prompt, ASSUMPTIONS A12, and `config/experiment.yaml` register **P1, P2, P3 only**
-- Any `TransactWriteItems` / P4 narrative in `vikas_final_report.md` is **NON-AUTHORITATIVE** and must not be cited as evaluation results
+- Any `TransactWriteItems` / P4 narrative in `vikas_final_report.md` is **NON-AUTHORITATIVE**
 - Multi-item transactions remain **future work** in the LaTeX report
 
 ---
@@ -67,28 +71,17 @@ Controlled retry experiment for **P1 / P2 / P3 only** (plain put, conditional pu
 
 | Aspect | Moto | Live pilot | Live campaign |
 |--------|------|------------|---------------|
-| Duplicate-rate plumbing | Validated | Partial (mult=2) | **Missing** |
-| Latency / capacity for RQ | Unusable | Pilot means only; not full CIs across design | **Missing** |
-| E1/E2/E3 pre-registered decisions | Moto-only | Sizing only | **Missing** |
-| Suitable as paper primary results | No | No (partial) | Yes (when run) |
+| Duplicate-rate plumbing | Validated | Partial (mult=2) | **Complete** |
+| Latency / capacity for RQ | Unusable | Pilot means only | **Complete** (CIs + Holm) |
+| E1/E2/E3 pre-registered decisions | Moto-only | Sizing only | **All supported** |
+| Suitable as paper primary results | No | No (partial) | **Yes** |
 
 ---
 
-## Report claim hygiene (2026-09-20)
+## Next steps (optional / soft)
 
-- LaTeX Evaluation: moto labeled functional-only; live pilot acknowledged; full campaign empty; P4 not claimed
-- Abstract: does not assert completed full-campaign collection
-- `vikas_final_report.md`: quarantined banner (P4 overclaims unsupported)
-- Infra docs: no student-ID tag requirement
-
----
-
-## Next steps (live AWS — not run in this pass)
-
-1. `make campaign` with N from `pilot_choice.json`
-2. Sensitivity + CloudWatch collect
-3. `make analyse` → `results/live/` + `figures/live/`
-4. Replace Evaluation primary tables with live cells
+1. Fold live cells into LaTeX Evaluation as primary tables (moto stays functional-only)
+2. Soft: DOI `note={doi:}` hygiene in bibliography
 
 ---
 

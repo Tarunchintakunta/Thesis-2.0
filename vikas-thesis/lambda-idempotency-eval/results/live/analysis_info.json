@@ -1,0 +1,8 @@
+{
+  "source": "live",
+  "campaign": "data/runs/live/campaign",
+  "sensitivity": "data/runs/live/sensitivity",
+  "alpha": 0.05,
+  "B": 2000,
+  "seed": 0
+}

@@ -1,0 +1,4 @@
+table,cells,chi2,p,dof,min_expected,note
+path x multiplicity,6,15000.000000000002,0.0,5,333.3333333333333,
+paths at multiplicity 2,3,3000.0000000000005,0.0,2,333.3333333333333,
+paths at multiplicity 5,3,12000.000000000002,0.0,2,1333.3333333333333,

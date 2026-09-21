@@ -1,0 +1,7 @@
+multiplicity,comparison,alternative,rate_a,rate_b,diff,ci_lo,ci_hi,z,p,p_holm,reject_h0
+2,P1 vs P2,one-sided (P1 higher),1.0,0.0,1.0,0.9945881462498017,1.0,44.721359549995796,0.0,0.0,True
+2,P1 vs P3,one-sided (P1 higher),1.0,0.0,1.0,0.9945881462498017,1.0,44.721359549995796,0.0,0.0,True
+2,P2 vs P3,two-sided (exploratory),0.0,0.0,0.0,-0.0038267584855551234,0.0038267584855551234,0.0,1.0,1.0,False
+5,P1 vs P2,one-sided (P1 higher),1.0,0.0,1.0,0.9986431422873764,1.0,89.44271909999159,0.0,0.0,True
+5,P1 vs P3,one-sided (P1 higher),1.0,0.0,1.0,0.9986431422873764,1.0,89.44271909999159,0.0,0.0,True
+5,P2 vs P3,two-sided (exploratory),0.0,0.0,0.0,-0.0009594432897014865,0.0009594432897014865,0.0,1.0,1.0,False

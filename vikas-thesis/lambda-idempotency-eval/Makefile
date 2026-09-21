@@ -4,7 +4,9 @@ export PYTHONPATH := src:.
 
 LIVE := data/runs/live
 MOTO := data/runs/moto
-WORKERS ?= 16
+# Free-Tier / account guard: ConcurrentExecutions often = 10 on new accounts.
+# Keep live workers modest (≤6) to avoid TooManyRequestsException throttling.
+WORKERS ?= 4
 # campaign N from the pilot rule (results/live/pilot_choice.json)
 N ?= $(shell $(PY) -c "import json;print(json.load(open('results/live/pilot_choice.json'))['N'])" 2>/dev/null)
 

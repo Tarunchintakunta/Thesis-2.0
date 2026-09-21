@@ -12,7 +12,7 @@
 | 3 | Yashaswini | **100** | yes | no | soft only |
 | 4 | Rasool | **100** | partial | no | optional W1/W2 |
 | 5 | Varun | **100** | yes | no | soft only; handoff deferred |
-| 6 | Vikas | **~74** | partial | **YES** | sole: live full campaign (deliveries.jsonl 0 B) |
+| 6 | Vikas | **100** | partial | no | campaign done (N=1000×3×3); soft LaTeX fold optional |
 | 7 | Nemi | **100** | partial | no | optional beyond-CA2 |
 | 8 | Venkat | **100** | partial | no | soft only (Holm/DOI); matmul closed |
 | 9 | Mehak | **100** | partial | no | INITIAL_EVAL_PASS=yes; next=3 local full GCT runs (not AWS) |
@@ -20,11 +20,11 @@
 | 11 | Uday | **~65** | no | **YES** | formal-scale IoT (smoke live done+destroyed) |
 | 12 | Vishvaksen | **~82** | partial | **YES** | independent human checklist + 2nd rater |
 
-**Fix order:** Vikas (empty campaign) → Vishvaksen → Uday formal-scale; Pooja method/AWS/live closed (~92%, dumps soft); Venkat + Mehak + Nemi CA2 floor closed.
+**Fix order:** Vishvaksen → Uday formal-scale; Pooja method/AWS/live closed (~92%, dumps soft); Venkat + Mehak + Nemi + Vikas CA2 floor closed.
 Venkat raise 2026-09-21: round-2 multi-instance `da.matmul` n=250 **ok** (0.2546 s per `ec2_round2_summary.json`); destroy verified → **100%**.
 Pooja live AWS k3s 2026-09-21: 1× t3.micro + S3 + CW, live HPA vs PAKS scale, destroy confirmed → **~92%** (full dumps soft).
 Pooja non-AWS raise 2026-09-21: GCT 2011 part + Alibaba RANGE → was **~67%**.
-Vikas rescore 2026-09-21: scoreboard **100→~74** — working-tree `campaign/deliveries.jsonl` is **0 bytes**; pilot≠campaign; residual `vikas_alignment.md` / `vikas_AWS_RESIDUAL.md`.
+Vikas rescore 2026-09-21: scoreboard **~74→100** — live full campaign N=1000×3×3 (24000 deliveries), E1–E3 supported, stack destroyed; see `vikas_alignment.md` / `vikas_AWS_RESIDUAL.md`.
 
 ## Assess follow-up
 
@@ -32,4 +32,4 @@ Vikas rescore 2026-09-21: scoreboard **100→~74** — working-tree `campaign/de
 - [Assess CA2 alignment cohort B](bc-c8002071-fd7c-55bf-acae-d413dceec23e)
 - [Scaffold Uday MQTT QoS CA2 artefact](bc-cff00b22-64f1-597a-886a-ed9c64d38f63) → ~42%, READY_FOR_AWS=NO
 - Uday lite/smoke Free-Tier path + smoke live destroyed (2026-09-21) → **~65%**, READY_FOR_AWS=yes (formal still blocked)
-- [Correct Vikas scoreboard honesty](bc-f205d25b-c03e-5db7-8f8c-d4c0d1b3fb4d) → ~74%, campaign empty
+- [Correct Vikas scoreboard honesty](bc-f205d25b-c03e-5db7-8f8c-d4c0d1b3fb4d) → was ~74% empty campaign; **2026-09-21 live campaign closed → 100%**

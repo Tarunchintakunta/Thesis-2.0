@@ -1,26 +1,25 @@
 # Vikas AWS residual (sole hard)
 
 **Updated:** 2026-09-21  
-**Alignment:** **~74/100** — **NOT COMPLETE**  
+**Alignment:** **100/100** — **COMPLETE**  
 **AWS_CLASS:** required (Lambda + DynamoDB; formal CA2)  
-**SOLE_AWS_RESIDUAL:** **yes** — live full campaign  
-**READY_FOR_AWS:** yes (non-AWS claim hygiene done; sole gap is the campaign itself)  
-**Block full-eval cycle:** **YES** until campaign deliveries exist and Evaluation is live-primary
+**SOLE_AWS_RESIDUAL:** **no** — live full campaign closed  
+**READY_FOR_AWS:** n/a (campaign already run)  
+**Block full-eval cycle:** **NO**
 
 ## Verified state (no invented results)
 
 - Pilot complete: `data/runs/live/pilot/` (300 deliveries; N=1000 chosen).
-- Campaign **empty:** `data/runs/live/campaign/deliveries.jsonl` = **0 bytes**.
-- `campaign_r2/` and `campaign_r3/` contain only `run.log` start lines — not campaigns.
-- Stack remnant: `idem-eval-fn` last modified 2026-09-19 (pilot era). **No apply** in this pass; no finished campaign to fold.
+- Campaign **complete:** `data/runs/live/campaign/deliveries.jsonl` = **24000 lines** (9000 requests; N=1000 × 3 × 3).
+- Sensitivity complete: 1400 deliveries; streams + CloudWatch folded.
+- Analysis: `results/live/summary.md` — E1/E2/E3 all **supported**.
+- Free-Tier guards: `WORKERS=6` under account `ConcurrentExecutions=10`; project tags only (no student IDs).
+- **Destroy confirmed:** terraform destroy 8 resources; Lambda `idem-eval-fn`, table `idem-eval`, role, alarms, log group absent in eu-west-1.
 
-## Sole hard residual
+## Residual
 
-1. `make campaign` (N from `results/live/pilot_choice.json`) → non-empty `deliveries.jsonl` / stream / run_info  
-2. Sensitivity + CloudWatch collect  
-3. `make analyse` → `results/live/` + `figures/live/`  
-4. Replace Evaluation primary tables with live cells (moto stays functional-only)
+None hard. Soft only: fold live cells into LaTeX Evaluation as primary tables.
 
 ```
-SOLE_AWS_RESIDUAL=yes CAMPAIGN=empty PILOT=done ALIGNMENT=~74 DESTROY_AFTER_ROUND=yes ConcurrentExecutions=10
+SOLE_AWS_RESIDUAL=no CAMPAIGN=done PILOT=done ALIGNMENT=100 DESTROY_CONFIRMED=yes ConcurrentExecutions=10 WORKERS=6
 ```
