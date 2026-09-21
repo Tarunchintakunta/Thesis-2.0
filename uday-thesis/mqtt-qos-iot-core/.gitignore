@@ -2,6 +2,7 @@ terraform/.terraform/
 terraform/build/
 terraform/*.tfstate*
 terraform/.terraform.lock.hcl
+.certs/
 .venv/
 __pycache__/
 *.pyc

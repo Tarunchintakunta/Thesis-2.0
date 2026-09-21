@@ -57,13 +57,14 @@ def test_device_log_written_for_every_intended_message():
     assert all(r["msg_id"].count(":") == 2 for r in run.device_log)
 
 
-def test_live_backend_blocked():
+def test_live_backend_requires_stack_meta():
     spec = _spec(backend="live")
     try:
         run_spec(spec)
-        raise AssertionError("should have blocked live")
-    except RuntimeError as exc:
-        assert "blocked" in str(exc).lower()
+        raise AssertionError("should have required applied stack")
+    except Exception as exc:
+        msg = str(exc).lower()
+        assert "stack_meta" in msg or "blocked" in msg or "enable_apply" in msg
 
 
 def test_qos1_connected_network_loss_is_retried():

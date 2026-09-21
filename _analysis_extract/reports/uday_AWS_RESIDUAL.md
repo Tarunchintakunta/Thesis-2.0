@@ -1,34 +1,37 @@
 # Uday — AWS residual gate note
 
-**Date:** 2026-09-20  
-**Branch:** `feature/aws-ca2-alignment`  
+**Date:** 2026-09-21  
+**Branch:** `main`  
 **Artefact:** `uday-thesis/mqtt-qos-iot-core/`
 
 ## Non-AWS alignment (evidence)
 - Formal RQ/method encoded: QoS × disconnect × rate factorial; device-side ID log; matcher; Holm–Bonferroni plan.
 - Local **mock** dry-run proves the harness (`results/mock/`). Mock ≠ IoT Core.
 - Terraform modules for IoT Core things/certs/policy + rule → Lambda → DynamoDB (`msg_id`,`delivery_id`). Names: `mqtt-qos-*` only.
-- Federated-RF proxy quarantined at `_superseded_proxy/iot-reliability/`.
-- Free-tier guard **blocks** the formal live 5×1000×16×5 message envelope.
+- Federated-RF proxy quarantined.
+- Free-tier guard **blocks** formal 5×1000×16×5; **allows** lite (~6k msgs, ~97.6% headroom) and smoke (~96 msgs).
 
-## Live AWS
-**Not applied this pass.** `scripts/run_live.py` exits 2. No IoT endpoint, no things, no billed messages.
+## Live AWS (smoke fold — 2026-09-21)
+- `READY_FOR_AWS=yes` after tags + destroy hook + cost plan.
+- Terraform apply `stage=smoke` `device_count=2` in `eu-west-1`.
+- `scripts/run_live.py --scale smoke` → `results/live/LIVE_EVIDENCE.json` (4 cells).
+- `scripts/destroy_stack.sh` → 25 resources destroyed; terraform state empty; `.certs` scrubbed.
 
-## Residuals (AWS is required and **not** sole)
-1. Authorised free-tier-safe **lite live fold** (documented: 16 cells × 5 devices × 50 msgs × 1 rep) then confirmatory scale if credits allow
-2. `terraform apply` / campaign / `terraform destroy` with manifests under `results/live/`
-3. Stats + cost surface on live counted ops; Shvaika contrast
-4. Report fold — still <100% until live evidence exists
+## Residuals (AWS still required for 100%; not sole)
+1. Formal-scale live (or multi-month staged formal) — free-tier blocked as single month
+2. Optional full lite 16-cell live fold
+3. Stats + Shvaika contrast in report
+4. Report fold
 
 ## READY_FOR_AWS_ALIGNMENT_PATH
-**partial** — harness + IaC ready; full-campaign apply **must not** proceed without lite fold / month-split because of IoT message free tier.
 
 ```
 AWS_CLASS=required
-READY_FOR_AWS=harness_only
+READY_FOR_AWS=yes
 SOLE_AWS_RESIDUAL=no
-LIVE_APPLIED=no
+LIVE_APPLIED=smoke_destroyed
+FORMAL_LIVE=blocked_free_tier
 ```
 
 ## Discipline
-Free Tier only; destroy after rounds; no student name/ID in resource names; no mock-as-live claims.
+Free Tier only for authorised scales; destroy after rounds; no student name/ID in resource names; no mock-as-live claims; smoke ≠ formal CA2 completion.

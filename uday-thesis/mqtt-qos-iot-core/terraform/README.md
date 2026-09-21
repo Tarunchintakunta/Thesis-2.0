@@ -1,27 +1,37 @@
-# Terraform — MQTT QoS IoT Core campaign stack
+# Terraform — MQTT QoS IoT Core campaign stack (lite / smoke)
 
-**Do not apply in this pass.** Modules are ready for a later free-tier-guarded live round.
+**Default:** `enable_apply=false` (scaffold / plan only).
+
+Apply only after `STATUS.md` says `READY_FOR_AWS: YES` and free-tier guard passes for `lite` or `smoke`.
 
 ## Layout
 
 | Path | What |
 |------|------|
-| `modules/iot_core` | 5 things, thing type, per-device certs, connect/publish policy |
-| `modules/ingest` | DynamoDB delivered table (msg_id, delivery_id), ingest Lambda, IoT topic rule `devices/+/telemetry` |
+| `modules/iot_core` | N things, thing type, per-device certs, connect/publish policy |
+| `modules/ingest` | DynamoDB delivered table, ingest Lambda, IoT topic rule `devices/+/telemetry` |
 
 Names use `mqtt-qos-<stage>-…` only. No student name or student ID.
 
-## Later apply / destroy (not this pass)
+## Tags (always)
+
+`Project=mqtt-qos-iot-core`, `Thesis=uday-mqtt-qos`, `Environment=research`, `ManagedBy=terraform`, `Campaign=lite`.
+
+## Apply / destroy (lite|smoke only)
 
 ```bash
-# only after free-tier guard and an explicit live-AWS decision
+# from artefact root, after READY_FOR_AWS
+python scripts/assert_free_tier_guard.py --mode smoke
+python scripts/check_ready_for_aws.py
+
+cd terraform
 terraform init
-terraform plan -out tfplan
-# terraform apply tfplan
-# … campaign …
-# terraform destroy
+terraform plan -var='enable_apply=true' -var='device_count=2' -out tfplan
+terraform apply tfplan
+# … scripts/run_live.py --scale smoke …
+../scripts/destroy_stack.sh
 ```
 
-Certificates created on apply land in state; destroy after the round.
+Certificates land under `../.certs/` (gitignored). Destroy removes AWS resources and local certs.
 
-Region default: `eu-west-1`. Device count default: 5 (formal CA2 constant).
+Region default: `eu-west-1`.

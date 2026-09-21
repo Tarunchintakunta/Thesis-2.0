@@ -17,7 +17,7 @@
 | 8 | Venkat | **63** | partial | **YES** | multi-instance matmul |
 | 9 | Mehak | **100** | partial | no | INITIAL_EVAL_PASS=yes; next=3 local full GCT runs (not AWS) |
 | 10 | Pooja | **67** | partial | **YES** | live K8s + AWS; full dumps soft |
-| 11 | Uday | **~42** | no | **YES** | live IoT Core (scaffold done) |
+| 11 | Uday | **~65** | no | **YES** | formal-scale IoT (smoke live done+destroyed) |
 | 12 | Vishvaksen | **~82** | partial | **YES** | independent human checklist + 2nd rater |
 
 **Fix order:** Vikas (empty campaign) → Vishvaksen → Pooja → Venkat; Mehak + Nemi CA2 floor closed (soft/beyond-CA2 optionals only).
@@ -29,4 +29,5 @@ Vikas rescore 2026-09-21: scoreboard **100→~74** — working-tree `campaign/de
 - [Assess CA2 alignment cohort A](bc-6dee112d-0199-5306-a490-49f520cd3aaa)
 - [Assess CA2 alignment cohort B](bc-c8002071-fd7c-55bf-acae-d413dceec23e)
 - [Scaffold Uday MQTT QoS CA2 artefact](bc-cff00b22-64f1-597a-886a-ed9c64d38f63) → ~42%, READY_FOR_AWS=NO
+- Uday lite/smoke Free-Tier path + smoke live destroyed (2026-09-21) → **~65%**, READY_FOR_AWS=yes (formal still blocked)
 - [Correct Vikas scoreboard honesty](bc-f205d25b-c03e-5db7-8f8c-d4c0d1b3fb4d) → ~74%, campaign empty

@@ -1,7 +1,9 @@
 # Formal CA2 factorial (source of truth: uday-thesis/CA2_COMMITMENTS.md)
 # Scales:
 #   dry_run — local mock only (no AWS). Small n for CI / harness proof.
-#   formal  — intended live campaign size. Do NOT deploy until READY_FOR_AWS.
+#   lite    — Free-Tier-safe live envelope (full 16 cells × 1 rep). Under monthly IoT budget with headroom.
+#   smoke   — one small live campaign inside the lite envelope (apply → measure → destroy).
+#   formal  — intended full live size. Do NOT deploy until credits / multi-month plan allow.
 
 project:
   name: mqtt-qos-iot-core
@@ -25,6 +27,34 @@ dry_run:
   payload_bytes: 64
   seed: 42
 
+lite:
+  backend: live
+  n_devices: 5
+  n_messages: 50
+  replications: 1
+  interval_s: 1.0
+  payload_bytes: 64
+  seed: 42
+  notes: >
+    Free-Tier-safe planning envelope: 2×4×2×1 = 16 cells; 5 devices × 50 msgs.
+    Upper-bound IoT messages ≈ 6 000 vs monthly free tier 250 000 (~2.4%, ~97.6% headroom).
+    Wall-clock interval shortened vs formal 5 s; factors unchanged. Formal scale still blocked.
+
+smoke:
+  backend: live
+  n_devices: 2
+  n_messages: 8
+  replications: 1
+  interval_s: 0.25
+  payload_bytes: 64
+  seed: 42
+  qos: [0, 1]
+  disconnect_s: [0, 15]
+  rate_modes: [steady]
+  notes: >
+    One small live campaign inside the lite free-tier envelope.
+    2×2×1×1 = 4 cells; upper-bound IoT messages ≈ 96. Destroy stack after collection.
+
 formal:
   backend: live
   n_devices: 5
@@ -35,8 +65,9 @@ formal:
   seed: 42
   notes: >
     Formal cell count = 2×4×2×5 = 80 runs; 5 devices × 1000 msgs.
-    Live AWS is BLOCKED until STATUS says READY_FOR_AWS and an operator
-    explicitly unblocks scripts/run_live.py.
+    Upper-bound IoT messages ≈ 600 000 — exceeds single-month free tier (250 000).
+    Do not terraform-apply formal until multi-month staging or accepted overage.
+    Live AWS only via scale=lite|smoke after READY_FOR_AWS gates pass.
 
 mock_params:
   description: Client-side disconnect model parameters (not AWS IoT Core).

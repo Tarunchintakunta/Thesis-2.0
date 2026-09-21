@@ -17,13 +17,13 @@ variable "name_prefix" {
 
 variable "stage" {
   type    = string
-  default = "dev"
+  default = "lite"
 }
 
 variable "device_count" {
   type        = number
   default     = 5
-  description = "Formal CA2 holds device count at five."
+  description = "Formal CA2 holds device count at five; smoke may use fewer via TF_VAR."
 }
 
 variable "lambda_memory_mb" {
@@ -45,4 +45,10 @@ variable "ttl_seconds" {
   type        = number
   default     = 1209600
   description = "DynamoDB TTL (14 days) so delivered rows expire after the campaign."
+}
+
+variable "enable_apply" {
+  description = "Safety latch. Must be true to create resources; default false."
+  type        = bool
+  default     = false
 }

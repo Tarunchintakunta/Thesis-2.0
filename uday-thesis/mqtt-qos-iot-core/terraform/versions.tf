@@ -9,7 +9,11 @@ terraform {
       source  = "hashicorp/archive"
       version = ">= 2.4"
     }
+    local = {
+      source  = "hashicorp/local"
+      version = ">= 2.4"
+    }
   }
 }
 
-# No backend. This stack is ready to apply in a later pass; this pass does not apply.
+# No remote backend. Local state only; destroy after each lite/smoke round.

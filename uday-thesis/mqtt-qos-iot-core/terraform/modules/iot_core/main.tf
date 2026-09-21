@@ -77,3 +77,13 @@ output "certificate_arns" {
   value     = [for c in aws_iot_certificate.device : c.arn]
   sensitive = true
 }
+
+output "certificate_pems" {
+  value     = [for c in aws_iot_certificate.device : c.certificate_pem]
+  sensitive = true
+}
+
+output "private_keys" {
+  value     = [for c in aws_iot_certificate.device : c.private_key]
+  sensitive = true
+}

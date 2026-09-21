@@ -31,6 +31,17 @@ resource "aws_dynamodb_table" "delivered" {
     type = "S"
   }
 
+  attribute {
+    name = "run_id"
+    type = "S"
+  }
+
+  global_secondary_index {
+    name            = "run_id-index"
+    hash_key        = "run_id"
+    projection_type = "ALL"
+  }
+
   ttl {
     attribute_name = "expires_at"
     enabled        = true

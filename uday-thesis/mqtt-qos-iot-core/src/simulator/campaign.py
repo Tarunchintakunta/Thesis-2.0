@@ -5,6 +5,7 @@ from __future__ import annotations
 import uuid
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
+from pathlib import Path
 from typing import Any
 
 import numpy as np
@@ -16,6 +17,7 @@ from simulator.mock_dynamodb import MockDynamoDB
 from simulator.schedule import publish_times
 
 MEASUREMENT_KIND = "mock broker + in-memory DynamoDB — not an AWS measurement"
+LIVE_MEASUREMENT_KIND = "AWS IoT Core rules → Lambda → DynamoDB (live)"
 
 
 def _utc_now() -> str:
@@ -128,8 +130,10 @@ class SpecRun:
 
 
 def run_spec(spec: ExperimentSpec, params: MockParams | None = None) -> SpecRun:
+    if spec.backend == "live":
+        return run_spec_live(spec)
     if spec.backend != "mock":
-        raise RuntimeError("live AWS backend is blocked in this pass")
+        raise RuntimeError(f"unknown backend: {spec.backend}")
     params = params or MockParams()
     rng = np.random.default_rng(spec.seed)
     table = MockDynamoDB()
@@ -190,6 +194,183 @@ def run_spec(spec: ExperimentSpec, params: MockParams | None = None) -> SpecRun:
         seed=spec.seed,
         region=spec.region,
         extra={"git_note": "local dry-run", "uuid_ns": str(uuid.uuid4())},
+    )
+    return SpecRun(
+        manifest=manifest,
+        device_log=[r.to_dict() for r in all_log],
+        delivered=delivered,
+        reconnect=recon_acc,
+        counters=dict(counter_sum),
+    )
+
+
+def run_spec_live(spec: ExperimentSpec, *, settle_s: float = 3.0) -> SpecRun:
+    """Wall-clock live publish to IoT Core; match via DynamoDB GSI."""
+    import time
+
+    from simulator.live_client import (
+        LiveAwsError,
+        LiveDeviceSession,
+        load_stack_meta,
+        new_run_id,
+        open_sessions,
+        query_delivered,
+    )
+
+    root = Path(__file__).resolve().parents[2]
+    certs_dir = root / ".certs"
+    meta = load_stack_meta(certs_dir)
+    region = str(meta.get("region") or spec.region)
+    thing_names = list(meta.get("thing_names") or [])
+    table_name = str(meta.get("delivered_table") or "")
+    if not table_name:
+        raise LiveAwsError("stack_meta missing delivered_table")
+
+    import boto3
+
+    endpoint = boto3.client("iot", region_name=region).describe_endpoint(
+        endpointType="iot:Data-ATS"
+    )["endpointAddress"]
+
+    run_id = new_run_id(spec.config_id, spec.seed)
+    started = _utc_now()
+    times = publish_times(spec.n_messages, spec.interval_s, spec.rate_mode)
+    window = DisconnectWindow.from_schedule(times, spec.disconnect_s)
+
+    sessions = open_sessions(
+        endpoint=endpoint,
+        thing_names=thing_names,
+        certs_dir=certs_dir,
+        n_devices=spec.n_devices,
+    )
+
+    all_log: list[DeviceLogRow] = []
+    recon_acc = ReconnectStats()
+    counter_sum = {
+        "publishes_attempted_connected": 0,
+        "pubacks": 0,
+        "reached_broker": 0,
+        "rule_invocations": 0,
+        "rule_failures": 0,
+        "ddb_puts": 0,
+        "qos0_dropped_disconnected": 0,
+        "qos1_queued": 0,
+        "qos1_dropped_cap": 0,
+        "duplicates_injected": 0,
+    }
+    reconnect_times: list[float] = []
+
+    def _run_one_device(i: int, sess: LiveDeviceSession) -> None:
+        device_id = f"device-{i + 1:02d}"
+        topic = f"devices/{sess.thing_name}/telemetry"
+        flushed = False
+        t0 = time.monotonic()
+
+        for seq, t_s in enumerate(times):
+            target = t0 + t_s
+            now = time.monotonic()
+            if target > now:
+                time.sleep(target - now)
+
+            if window.active() and not flushed and t_s >= window.end_s:
+                t_re_start = time.monotonic()
+                if not sess.connected:
+                    sess.connect()
+                queued, survived = sess.flush_outbox(topic)
+                recon_acc.backlog_queued += queued
+                recon_acc.backlog_survived += survived
+                counter_sum["qos1_queued"] += queued
+                rt = (time.monotonic() - t_re_start) * 1000.0
+                recon_acc.reconnect_time_ms = rt
+                reconnect_times.append(rt)
+                flushed = True
+
+            ts_ms = int(time.time() * 1000)
+            row = DeviceLogRow(
+                msg_id=f"{run_id}:{device_id}:{seq:04d}",
+                device_id=device_id,
+                seq=seq,
+                qos=spec.qos,
+                rate_mode=spec.rate_mode,
+                disconnect_s=spec.disconnect_s,
+                replication=spec.replication,
+                run_id=run_id,
+                config_id=spec.config_id,
+                ts_log_ms=ts_ms,
+                ts_intended_publish_ms=ts_ms,
+                payload_bytes=spec.payload_bytes,
+            )
+            all_log.append(row)
+            env = _envelope(row)
+
+            if window.disconnected_at(t_s):
+                if sess.connected:
+                    sess.disconnect()
+                    recon_acc.disconnect_events += 1
+                if spec.qos >= 1:
+                    sess.outbox.append((env, spec.qos))
+                    counter_sum["qos1_queued"] += 1
+                else:
+                    counter_sum["qos0_dropped_disconnected"] += 1
+                continue
+
+            if not sess.connected:
+                sess.connect()
+
+            counter_sum["publishes_attempted_connected"] += 1
+            ok = sess.publish(topic, env, spec.qos)
+            if ok:
+                counter_sum["reached_broker"] += 1
+                if spec.qos >= 1:
+                    counter_sum["pubacks"] += 1
+
+        if window.active() and not flushed:
+            if not sess.connected:
+                sess.connect()
+            queued, survived = sess.flush_outbox(topic)
+            recon_acc.backlog_queued += queued
+            recon_acc.backlog_survived += survived
+        elif sess.outbox:
+            queued, survived = sess.flush_outbox(topic)
+            recon_acc.backlog_queued += queued
+            recon_acc.backlog_survived += survived
+
+    try:
+        for i, sess in enumerate(sessions):
+            _run_one_device(i, sess)
+    finally:
+        for sess in sessions:
+            try:
+                sess.disconnect()
+            except Exception:  # noqa: BLE001
+                pass
+
+    time.sleep(float(settle_s))
+    delivered = query_delivered(table_name, run_id, region)
+    counter_sum["rule_invocations"] = len(delivered)
+    counter_sum["ddb_puts"] = len(delivered)
+
+    finished = _utc_now()
+    if reconnect_times:
+        recon_acc.reconnect_time_ms = float(np.mean(reconnect_times))
+
+    manifest = RunManifest(
+        run_id=run_id,
+        spec=spec.to_dict(),
+        backend="live",
+        measurement_kind=LIVE_MEASUREMENT_KIND,
+        n_device_log=len(all_log),
+        n_delivered_copies=len(delivered),
+        started_at=started,
+        finished_at=finished,
+        seed=spec.seed,
+        region=region,
+        extra={
+            "iot_endpoint": endpoint,
+            "table": table_name,
+            "uuid_ns": str(uuid.uuid4()),
+            "settle_s": settle_s,
+        },
     )
     return SpecRun(
         manifest=manifest,

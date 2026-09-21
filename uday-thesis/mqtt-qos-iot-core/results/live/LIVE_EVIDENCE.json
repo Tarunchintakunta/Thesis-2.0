@@ -1,0 +1,133 @@
+{
+  "scale": "smoke",
+  "backend": "live",
+  "measurement_kind": "AWS IoT Core rules \u2192 Lambda \u2192 DynamoDB (live)",
+  "n_runs": 4,
+  "n_cells": 4,
+  "run_ids": [
+    "live-qos0_d0_steady_r1-s42-31dc93eb",
+    "live-qos0_d15_steady_r1-s57-f0bcd90b",
+    "live-qos1_d0_steady_r1-s59-43976072",
+    "live-qos1_d15_steady_r1-s74-7b53c8c2"
+  ],
+  "cells": [
+    {
+      "cell_id": "qos0_d0_steady",
+      "qos": 0,
+      "disconnect_s": 0,
+      "rate_mode": "steady",
+      "n_runs": 1,
+      "n_published": 16,
+      "n_lost": 8,
+      "n_duplicate_ids": 0,
+      "loss_rate": 0.5,
+      "duplicate_id_rate": 0.0,
+      "latency_mean_ms": 1618.375,
+      "latency_p95_ms": 3662.5499999999997,
+      "latency_p99_ms": 3692.5099999999998,
+      "reconnect_time_ms_mean": 0.0,
+      "backlog_queued_sum": 0,
+      "backlog_survived_sum": 0,
+      "usd_est_sum": 6.0677334666666655e-05,
+      "backend": "live"
+    },
+    {
+      "cell_id": "qos0_d15_steady",
+      "qos": 0,
+      "disconnect_s": 15,
+      "rate_mode": "steady",
+      "n_runs": 1,
+      "n_published": 16,
+      "n_lost": 12,
+      "n_duplicate_ids": 0,
+      "loss_rate": 0.75,
+      "duplicate_id_rate": 0.0,
+      "latency_mean_ms": 225.25,
+      "latency_p95_ms": 244.8,
+      "latency_p99_ms": 245.76,
+      "reconnect_time_ms_mean": 0.0,
+      "backlog_queued_sum": 0,
+      "backlog_survived_sum": 0,
+      "usd_est_sum": 2.2344000666666668e-05,
+      "backend": "live"
+    },
+    {
+      "cell_id": "qos1_d0_steady",
+      "qos": 1,
+      "disconnect_s": 0,
+      "rate_mode": "steady",
+      "n_runs": 1,
+      "n_published": 16,
+      "n_lost": 0,
+      "n_duplicate_ids": 0,
+      "loss_rate": 0.0,
+      "duplicate_id_rate": 0.0,
+      "latency_mean_ms": 250.375,
+      "latency_p95_ms": 316.0,
+      "latency_p99_ms": 390.4,
+      "reconnect_time_ms_mean": 0.0,
+      "backlog_queued_sum": 0,
+      "backlog_survived_sum": 0,
+      "usd_est_sum": 8.934400266666667e-05,
+      "backend": "live"
+    },
+    {
+      "cell_id": "qos1_d15_steady",
+      "qos": 1,
+      "disconnect_s": 15,
+      "rate_mode": "steady",
+      "n_runs": 1,
+      "n_published": 16,
+      "n_lost": 0,
+      "n_duplicate_ids": 0,
+      "loss_rate": 0.0,
+      "duplicate_id_rate": 0.0,
+      "latency_mean_ms": 1496.875,
+      "latency_p95_ms": 2291.25,
+      "latency_p99_ms": 2313.45,
+      "reconnect_time_ms_mean": 0.0,
+      "backlog_queued_sum": 12,
+      "backlog_survived_sum": 12,
+      "usd_est_sum": 6.534400266666667e-05,
+      "backend": "live"
+    }
+  ],
+  "gates": {
+    "READY_FOR_AWS": true,
+    "failed_gates": [],
+    "gates": {
+      "tags": {
+        "ok": true,
+        "detail": "terraform default_tags present"
+      },
+      "destroy_hook": {
+        "ok": true,
+        "detail": "destroy_stack.sh present"
+      },
+      "cost_plan": {
+        "ok": true,
+        "detail": "lite upper=6000.0 headroom_pct=97.6 formal_blocked=True"
+      },
+      "status_latch": {
+        "ok": true,
+        "detail": "STATUS READY_FOR_AWS=YES"
+      }
+    },
+    "allowed_live_scales": [
+      "smoke",
+      "lite"
+    ],
+    "formal_live": "blocked (free tier)"
+  },
+  "destroy_required": true,
+  "destroy_hook": "scripts/destroy_stack.sh",
+  "destroy_status": {
+    "terraform_destroy": "complete",
+    "resources_destroyed": 25,
+    "certs_scrubbed": true,
+    "state_empty": true,
+    "verified_no_mqtt_qos_resources": true,
+    "destroyed_at": "2026-09-21T12:50:00Z"
+  },
+  "honesty": "Pilot smoke only — not formal 5×1000×16×5 CA2 completion."
+}

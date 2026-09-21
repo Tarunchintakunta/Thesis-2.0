@@ -2,10 +2,10 @@
 
 **Updated:** 2026-09-21  
 **Formal file:** `uday-thesis/UdayKiranReddyDodda_X25166484_proposal.docx`  
-**Alignment to formal CA2:** **~42/100** (was ~18 before `mqtt-qos-iot-core` scaffold; prior ~90 was vs superseded Et-Tousy federated proxy)
+**Alignment to formal CA2:** **~65/100** (was ~42 after scaffold; ~18 vs formal before MQTT artefact; prior ~90 was vs superseded Et-Tousy federated proxy)
 
 ## Compact
-`RQ5 Obj4 Method5 Impl6 Exp3 Metrics5 Evidence2 Claims4 Rubric3` → **~42/100**
+`RQ6 Obj6 Method7 Impl8 Exp6 Metrics6 Evidence5 Claims5 Rubric4` → **~65/100**
 
 ## Formal extract (binding)
 | Field | Formal CA2 |
@@ -18,15 +18,21 @@
 | AWS | **Required** (IoT Core + Lambda + DynamoDB IaC) |
 
 ## Artefact vs formal
-- **`mqtt-qos-iot-core/`** — formal CA2 artefact: mock dry-run harness + IaC scaffold + stats/cost scripts. **Live AWS not applied.**
-- **`iot-reliability/`** — **PROXY** (federated RF vs Et-Tousy). Quarantined in its `STATUS.md`.
+- **`mqtt-qos-iot-core/`** — formal CA2 artefact: mock harness + Free-Tier **lite/smoke** live path + IaC. **Smoke live applied, measured, destroyed** (2026-09-21). Formal-scale not run (free-tier exceedance).
+- **`iot-reliability/`** — **PROXY** (federated RF vs Et-Tousy). Quarantined.
+
+## Closed this pass
+1. Free-Tier reconciliation documented (`plan_free_tier.py`: lite ~6k / 250k; formal ~600k blocked).
+2. READY_FOR_AWS gates (tags, destroy hook, cost plan, STATUS latch) → **YES** for lite/smoke.
+3. Live IoT Core smoke evidence under `results/live/LIVE_EVIDENCE.json` (QoS1 loss 0; QoS0 loss higher under disconnect) — pilot N only.
+4. Stack destroyed completely after campaign.
 
 ## True blockers to 100% (vs formal)
-1. Live AWS IoT Core campaign per method (synthetic devices OK)
-2. Free-Tier / cost plan reconciled for formal message volume (or accepted overage)
-3. Formal-scale live evidence + Shvaika baseline contrast in report
-4. Soft: keep federated-RF claims quarantined (done in STATUS)
+1. Formal-scale live campaign (5×1000×16×5) or accepted multi-month / overage plan
+2. Shvaika et al. (2025) baseline contrast in report
+3. Report/config-manual rewrite against MQTT (federated RF remains quarantined)
 
-**AWS required:** **yes** — **not deployed** this pass  
-**READY_FOR_AWS:** **NO**  
+**AWS required:** **yes**  
+**READY_FOR_AWS:** **YES** (lite/smoke only)  
+**LIVE_APPLIED (smoke):** **yes → destroyed**  
 **Synthetic:** **not** a blocker (formal commits to synthetic)
