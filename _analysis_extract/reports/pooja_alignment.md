@@ -1,11 +1,11 @@
 # Pooja alignment residual (formal CA2)
 
-**Updated:** 2026-09-20  
+**Updated:** 2026-09-21  
 **Formal file:** `pooja-thesis/Pooja_25120921_CA2.docx`  
-**Alignment to formal CA2:** **~62/100** (was ~48 after proxy rescore; ~85 was vs superseded NimbusGuard)
+**Alignment to formal CA2:** **~67/100** (was ~62 after GCT-v1 pass; ~48 after proxy rescore; ~85 was vs superseded NimbusGuard)
 
 ## Compact
-`RQ8 Obj6 Method6 Impl10 Exp6 Metrics8 Evidence7 Claims8 Rubric3` → **~62/100**
+`RQ8 Obj8 Method6 Impl10 Exp6 Metrics9 Evidence8 Claims8 Rubric4` → **~67/100**
 
 ## Formal extract (binding)
 | Field | Formal CA2 |
@@ -20,14 +20,14 @@
 | Item | Status |
 |------|--------|
 | Binding baseline = HPA (not NimbusGuard) | Docs/code labelled; proxy quarantined (`src/proxy/`) |
-| GCT/Alibaba | **GCT v1 2010 public slice** TRACE (CC-BY, SHA1-verified). **2011/2019/Alibaba fail-closed** (`DATA_GAPS.md`) |
-| LSTM / TF | NumPy LSTM trained; `--backend tensorflow` fail-closed (no TF on CPython 3.14) |
-| K8s API scaler | Dry-run `PATCH .../scale?dryRun=All` vs HPA v2 schema — **not** live apply |
-| Formal metric columns | Wired; MAE/RMSE TRACE on v1 jobs; util/latency/cost/SLA **SIMULATED** |
+| GCT/Alibaba | **GCT v1** + **GCT 2011 part-00000** (SHA256) + **Alibaba v2018 64 MiB RANGE** (SHA256). Full 2011 cell / 2019 / full Alibaba dump still open (`DATA_GAPS.md`) |
+| LSTM / TF | NumPy LSTM TRACE MAE/RMSE on GCT 2011 jobs + Alibaba sample; `--backend tensorflow` fail-closed |
+| K8s API scaler | Dry-run `PATCH .../scale?dryRun=All` vs HPA v2 — **not** live apply. kind/minikube **unavailable** (`results/K8S_LOCAL_PROBE.md`) |
+| Formal metric columns | Wired; MAE/RMSE TRACE; util/mem/latency/cost/SLA **SIMULATED**; `live_k8s=false` |
 | AWS EC2/S3/CloudWatch | **Not deployed** |
 
 ## True blockers to 100% (vs formal)
-1. GCT 2011/2019 and/or Alibaba (v1 7-hour sample ≠ those dumps) + LSTM MAE/RMSE on them
+1. Full GCT 2011/2019 and/or full Alibaba dumps (samples ≠ those complete dumps) + stronger LSTM vs persistence
 2. Live K8s adaptive scaling (kind/minikube or AWS) beyond dry-run JSON
 3. AWS EC2/S3/CloudWatch experimental environment
 4. Soft: Gantt figure; TF runtime on supported CPython if resources table is strict

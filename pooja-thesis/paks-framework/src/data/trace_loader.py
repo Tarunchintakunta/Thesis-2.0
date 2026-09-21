@@ -19,16 +19,23 @@ DEFAULT_TRACES = FRAMEWORK_ROOT / "data" / "traces"
 DEFAULT_GCT_ROOT = FRAMEWORK_ROOT / "data" / "gct"
 DEFAULT_ALIBABA_ROOT = FRAMEWORK_ROOT / "data" / "alibaba"
 
-GCT2011_USAGE_GLOBS = ("2011/task_usage/part-*-of-*.csv.gz", "2011/task_usage/part-*-of-*.csv")
+GCT2011_USAGE_GLOBS = (
+    "2011/task_usage/part-*-of-*.csv.gz",
+    "2011/task_usage/part-*-of-*.csv",
+)
 GCT2019_USAGE_GLOBS = ("2019/*/instance_usage/*",)
 ALIBABA_USAGE_GLOBS = (
     "**/machine_usage*.csv*",
     "**/machine_usage*.csv.gz",
+    "**/machine_usage*.tar.gz*",
     "**/batch_task*.csv*",
 )
 
 GCT2010_CLUSTER = "gct2010_cluster_cpu.csv"
 GCT2010_JOBS = "gct2010_job_cpu_series.csv.gz"
+GCT2011_CLUSTER = "gct2011_part00000_cluster_cpu.csv"
+GCT2011_JOBS = "gct2011_part00000_job_cpu_series.csv.gz"
+ALIBABA_CLUSTER = "alibaba_v2018_machine_usage_sample_cluster_cpu.csv"
 
 DATA_GAPS_HINT = (
     "See pooja-thesis/DATA_GAPS.md and paks-framework/data/traces/PROVENANCE.md."
@@ -45,7 +52,13 @@ def _expand(root: Path, patterns: Iterable[str]) -> List[Path]:
 def gct2011_inventory(root: Optional[Path] = None) -> Dict[str, Any]:
     root = Path(root) if root else DEFAULT_GCT_ROOT
     hits = _expand(root, GCT2011_USAGE_GLOBS)
-    return {"root": str(root), "ready": bool(hits), "files": [str(p) for p in hits]}
+    derived = (DEFAULT_TRACES / GCT2011_CLUSTER).is_file() and (DEFAULT_TRACES / GCT2011_JOBS).is_file()
+    return {
+        "root": str(root),
+        "ready": bool(hits) or derived,
+        "files": [str(p) for p in hits],
+        "derived_ready": derived,
+    }
 
 
 def gct2019_inventory(root: Optional[Path] = None) -> Dict[str, Any]:
@@ -57,7 +70,13 @@ def gct2019_inventory(root: Optional[Path] = None) -> Dict[str, Any]:
 def alibaba_inventory(root: Optional[Path] = None) -> Dict[str, Any]:
     root = Path(root) if root else DEFAULT_ALIBABA_ROOT
     hits = _expand(root, ALIBABA_USAGE_GLOBS)
-    return {"root": str(root), "ready": bool(hits), "files": [str(p) for p in hits]}
+    derived = (DEFAULT_TRACES / ALIBABA_CLUSTER).is_file()
+    return {
+        "root": str(root),
+        "ready": bool(hits) or derived,
+        "files": [str(p) for p in hits],
+        "derived_ready": derived,
+    }
 
 
 def gct2010_paths(traces: Optional[Path] = None) -> Tuple[Path, Path]:
@@ -65,9 +84,28 @@ def gct2010_paths(traces: Optional[Path] = None) -> Tuple[Path, Path]:
     return traces / GCT2010_CLUSTER, traces / GCT2010_JOBS
 
 
+def gct2011_paths(traces: Optional[Path] = None) -> Tuple[Path, Path]:
+    traces = Path(traces) if traces else DEFAULT_TRACES
+    return traces / GCT2011_CLUSTER, traces / GCT2011_JOBS
+
+
+def alibaba_cluster_path(traces: Optional[Path] = None) -> Path:
+    traces = Path(traces) if traces else DEFAULT_TRACES
+    return traces / ALIBABA_CLUSTER
+
+
 def gct2010_ready(traces: Optional[Path] = None) -> bool:
     cluster, jobs = gct2010_paths(traces)
     return cluster.is_file() and jobs.is_file()
+
+
+def gct2011_derived_ready(traces: Optional[Path] = None) -> bool:
+    cluster, jobs = gct2011_paths(traces)
+    return cluster.is_file() and jobs.is_file()
+
+
+def alibaba_derived_ready(traces: Optional[Path] = None) -> bool:
+    return alibaba_cluster_path(traces).is_file()
 
 
 def missing_checklist(dataset: str) -> str:
@@ -75,32 +113,42 @@ def missing_checklist(dataset: str) -> str:
     g19 = gct2019_inventory()
     ali = alibaba_inventory()
     c2010, j2010 = gct2010_paths()
+    c2011, j2011 = gct2011_paths()
     lines = [
         f"Trace dataset '{dataset}' is not available (fail-closed; no synthetic fallback).",
         DATA_GAPS_HINT,
         "",
-        f"GCT 2011 task_usage ready={g11['ready']} root={g11['root']}",
+        f"GCT 2011 task_usage ready={g11['ready']} root={g11['root']} derived={g11.get('derived_ready')}",
         f"GCT 2019 instance_usage ready={g19['ready']} root={g19['root']}",
-        f"Alibaba machine_usage ready={ali['ready']} root={ali['root']}",
+        f"Alibaba machine_usage ready={ali['ready']} root={ali['root']} derived={ali.get('derived_ready')}",
         f"GCT 2010 public slice cluster={c2010.is_file()} jobs={j2010.is_file()}",
+        f"GCT 2011 derived cluster={c2011.is_file()} jobs={j2011.is_file()}",
+        f"Alibaba derived cluster={alibaba_cluster_path().is_file()}",
         "",
-        "Populate the paths in DATA_GAPS.md, or use --dataset gct2010 for the committed 2010 slice,",
+        "Populate the paths in DATA_GAPS.md, run scripts/fetch_extended_trace_samples.py,",
+        "or use --dataset gct2010 for the committed 2010 slice,",
         "or --dataset synthetic for the PROXY NimbusGuard simulator (not formal CA2 evidence).",
     ]
     return "\n".join(lines)
+
+
+def _require_cpu_column(df: pd.DataFrame, label: str) -> pd.DataFrame:
+    if "cpu_cores_sum" not in df.columns and "cpu_rate_sum" in df.columns:
+        df = df.rename(columns={"cpu_rate_sum": "cpu_cores_sum"})
+    if "cpu_cores_sum" not in df.columns and "cpu_util_mean" in df.columns:
+        df = df.rename(columns={"cpu_util_mean": "cpu_cores_sum"})
+    required = {"time_s", "cpu_cores_sum"}
+    missing = required - set(df.columns)
+    if missing:
+        raise ValueError(f"{label} missing columns {sorted(missing)}")
+    return df.sort_values("time_s").reset_index(drop=True)
 
 
 def load_gct2010_cluster(traces: Optional[Path] = None) -> pd.DataFrame:
     cluster, _ = gct2010_paths(traces)
     if not cluster.is_file():
         raise FileNotFoundError(missing_checklist("gct2010"))
-    df = pd.read_csv(cluster)
-    required = {"time_s", "cpu_cores_sum"}
-    missing = required - set(df.columns)
-    if missing:
-        raise ValueError(f"gct2010 cluster series missing columns {sorted(missing)}")
-    df = df.sort_values("time_s").reset_index(drop=True)
-    return df
+    return _require_cpu_column(pd.read_csv(cluster), "gct2010 cluster")
 
 
 def load_gct2010_jobs(traces: Optional[Path] = None) -> pd.DataFrame:
@@ -113,6 +161,32 @@ def load_gct2010_jobs(traces: Optional[Path] = None) -> pd.DataFrame:
     if missing:
         raise ValueError(f"gct2010 job series missing columns {sorted(missing)}")
     return df
+
+
+def load_gct2011_cluster(traces: Optional[Path] = None) -> pd.DataFrame:
+    cluster, _ = gct2011_paths(traces)
+    if not cluster.is_file():
+        raise FileNotFoundError(missing_checklist("gct2011"))
+    return _require_cpu_column(pd.read_csv(cluster), "gct2011 cluster")
+
+
+def load_gct2011_jobs(traces: Optional[Path] = None) -> pd.DataFrame:
+    _, jobs = gct2011_paths(traces)
+    if not jobs.is_file():
+        raise FileNotFoundError(missing_checklist("gct2011"))
+    df = pd.read_csv(jobs, compression="gzip")
+    required = {"job_id", "time_s", "cpu_cores_sum"}
+    missing = required - set(df.columns)
+    if missing:
+        raise ValueError(f"gct2011 job series missing columns {sorted(missing)}")
+    return df
+
+
+def load_alibaba_cluster(traces: Optional[Path] = None) -> pd.DataFrame:
+    path = alibaba_cluster_path(traces)
+    if not path.is_file():
+        raise FileNotFoundError(missing_checklist("alibaba"))
+    return _require_cpu_column(pd.read_csv(path), "alibaba cluster")
 
 
 def cluster_workload_from_frame(df: pd.DataFrame, drop_zero_tail: bool = True) -> np.ndarray:
@@ -142,7 +216,11 @@ def require_dataset(dataset: str) -> None:
         if key in {"gct2010", "gct-v1"} and not gct2010_ready():
             raise FileNotFoundError(missing_checklist(key))
         if key == "gct":
-            if gct2011_inventory()["ready"] or gct2019_inventory()["ready"] or gct2010_ready():
+            if (
+                gct2011_inventory()["ready"]
+                or gct2019_inventory()["ready"]
+                or gct2010_ready()
+            ):
                 return
             raise FileNotFoundError(missing_checklist(key))
     elif key in {"synthetic", "proxy"}:
@@ -164,13 +242,22 @@ def resolve_formal_source(dataset: str = "gct") -> Dict[str, Any]:
             "note": "NimbusGuard-framed sine/spike generator; not GCT/Alibaba.",
         }
     if key in {"gct2011", "google2011"}:
+        if not gct2011_derived_ready():
+            raise FileNotFoundError(
+                f"GCT 2011 raw part present but derived series missing. "
+                f"Run scripts/fetch_extended_trace_samples.py --aggregate-only. {DATA_GAPS_HINT}"
+            )
         return {
             "dataset": "gct2011",
             "family": "gct",
             "proxy": False,
             "evidence": "TRACE",
+            "generation": "GCT 2011 task_usage part-00000-of-00500 (single shard sample)",
+            "residual": "Full 500-part 29-day dump and GCT 2019 still absent; Alibaba is a separate --dataset.",
+            "note": "One public GCS shard (~87 MiB), SHA256-verified; not the full 29-day cell.",
+            "cluster_csv": str(gct2011_paths()[0]),
+            "jobs_csv": str(gct2011_paths()[1]),
             "files": gct2011_inventory()["files"],
-            "note": "GCT 2011 present; window join beyond presence-gate is still required.",
         }
     if key in {"gct2019", "borg2019"}:
         return {
@@ -182,16 +269,25 @@ def resolve_formal_source(dataset: str = "gct") -> Dict[str, Any]:
             "note": "GCT 2019 present; window join beyond presence-gate is still required.",
         }
     if key in {"alibaba", "ali"}:
+        if not alibaba_derived_ready():
+            raise FileNotFoundError(
+                f"Alibaba artefacts present but derived cluster series missing. "
+                f"Run scripts/fetch_extended_trace_samples.py --aggregate-only. {DATA_GAPS_HINT}"
+            )
         return {
             "dataset": "alibaba",
             "family": "alibaba",
             "proxy": False,
             "evidence": "TRACE",
+            "generation": "Alibaba cluster-trace-v2018 machine_usage RANGE sample (first 64 MiB of tar.gz)",
+            "residual": "Full 1.7 GiB machine_usage.tar.gz not downloaded; GCT 2019 still absent.",
+            "note": "Public OSS range sample, SHA256-verified; resampled to 300s mean CPU.",
+            "cluster_csv": str(alibaba_cluster_path()),
             "files": alibaba_inventory()["files"],
-            "note": "Alibaba files present; usage parser still required.",
+            "sample_kind": "HTTP_RANGE_64MiB",
         }
     # gct / gct2010: prefer 2011, then 2019, then committed 2010 slice
-    if key == "gct" and gct2011_inventory()["ready"]:
+    if key == "gct" and gct2011_inventory()["ready"] and gct2011_derived_ready():
         return resolve_formal_source("gct2011")
     if key == "gct" and gct2019_inventory()["ready"]:
         return resolve_formal_source("gct2019")
@@ -214,21 +310,32 @@ def load_scaling_workload(
     dataset: str = "gct",
     seed: int = 42,
     synthetic_steps: int = 500,
+    max_steps: Optional[int] = None,
 ) -> Tuple[np.ndarray, Dict[str, Any]]:
     meta = resolve_formal_source(dataset)
     if meta["proxy"]:
         return generate_workload(synthetic_steps, seed=seed), meta
-    if meta["dataset"] != "gct2010":
+    if meta["dataset"] == "gct2010":
+        df = load_gct2010_cluster()
+    elif meta["dataset"] == "gct2011":
+        df = load_gct2011_cluster()
+    elif meta["dataset"] == "alibaba":
+        df = load_alibaba_cluster()
+    else:
         raise FileNotFoundError(
             f"{meta['dataset']} files are listed present but a usage→series parser "
             f"is not implemented yet. {DATA_GAPS_HINT}"
         )
-    df = load_gct2010_cluster()
     series = cluster_workload_from_frame(df)
+    if max_steps is not None and series.size > max_steps:
+        series = series[: int(max_steps)]
     meta = dict(meta)
     meta["n_steps"] = int(series.size)
     meta["bin_seconds"] = 300
     meta["dropped_zero_tail"] = bool(df["cpu_cores_sum"].iloc[-1] == 0)
+    if "mem_sum" in df.columns:
+        mem = df["mem_sum"].to_numpy(dtype=float)[: series.size]
+        meta["mem_series"] = mem
     return series, meta
 
 

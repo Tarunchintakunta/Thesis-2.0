@@ -16,11 +16,12 @@
 | 7 | Nemi | **100** | partial | no | optional beyond-CA2 |
 | 8 | Venkat | **63** | partial | **YES** | multi-instance matmul |
 | 9 | Mehak | **100** | partial | no | soft: optional 2019/dump |
-| 10 | Pooja | **62** | partial | **YES** | GCT+live K8s |
+| 10 | Pooja | **67** | partial | **YES** | live K8s + AWS; full dumps soft |
 | 11 | Uday | **~42** | no | **YES** | live IoT Core (scaffold done) |
 | 12 | Vishvaksen | **~82** | partial | **YES** | independent human checklist + 2nd rater |
 
 **Fix order:** Vishvaksen → Pooja → Venkat; Mehak + Nemi CA2 floor closed (soft/beyond-CA2 optionals only).
+Pooja non-AWS raise 2026-09-21: GCT 2011 part + Alibaba RANGE → **~67%** (AWS/live K8s still block 100%).
 
 ## Assess follow-up
 

@@ -10,7 +10,7 @@
 - Drive theses (excluding Kasi unless re-included) to 100% CA2 research-scope alignment first.
 - Rubric JPEG + `master_rubric.md` = 70%+ quality check only (not a substitute for CA2 floor).
 - Full-scale final AWS evals (3–5) only after 100% CA2; destroy-after-round; ConcurrentExecutions=10.
-- `GENAI_HANDOFF.md` only after those 3–5 full evals are done.
+- `GENAI_HANDOFF.md` **not now** — only after thesis requirements are met **and** that thesis completes 3–5 full-scale final evals. When written, use the self-contained e2e structure in `GENAI_HANDOFF_TEMPLATE.md`.
 
 ## AWS
 - Free Tier–safe. Destroy stacks after each round. No endless lite campaigns.

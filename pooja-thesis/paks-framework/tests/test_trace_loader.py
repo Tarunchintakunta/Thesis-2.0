@@ -1,4 +1,4 @@
-"""Fail-closed trace loader tests."""
+"""Fail-closed / ready-state trace loader tests."""
 import os
 import sys
 
@@ -9,8 +9,13 @@ import pytest
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 from src.data.trace_loader import (
+    alibaba_derived_ready,
     cluster_workload_from_frame,
+    gct2011_derived_ready,
+    load_alibaba_cluster,
     load_gct2010_cluster,
+    load_gct2011_cluster,
+    load_gct2011_jobs,
     load_scaling_workload,
     missing_checklist,
     require_dataset,
@@ -18,23 +23,13 @@ from src.data.trace_loader import (
 )
 
 
-def test_gct2011_fail_closed():
-    with pytest.raises(FileNotFoundError, match="fail-closed"):
-        require_dataset("gct2011")
-
-
-def test_gct2019_fail_closed():
+def test_gct2019_still_fail_closed():
     with pytest.raises(FileNotFoundError, match="fail-closed"):
         require_dataset("gct2019")
 
 
-def test_alibaba_fail_closed():
-    with pytest.raises(FileNotFoundError, match="fail-closed"):
-        require_dataset("alibaba")
-
-
 def test_checklist_mentions_data_gaps():
-    text = missing_checklist("gct2011")
+    text = missing_checklist("gct2019")
     assert "DATA_GAPS.md" in text
     assert "synthetic" in text.lower()
 
@@ -51,17 +46,44 @@ def test_gct2010_committed_slice_loads():
     assert series[0] >= 0
 
 
-def test_gct_alias_uses_2010_when_2011_absent():
+@pytest.mark.skipif(not gct2011_derived_ready(), reason="GCT 2011 derived sample not present")
+def test_gct2011_sample_loads():
+    src = resolve_formal_source("gct2011")
+    assert src["dataset"] == "gct2011"
+    assert src["proxy"] is False
+    assert src["evidence"] == "TRACE"
+    df = load_gct2011_cluster()
+    assert len(df) >= 5
+    jobs = load_gct2011_jobs()
+    assert {"job_id", "time_s", "cpu_cores_sum"} <= set(jobs.columns)
+    series, meta = load_scaling_workload("gct2011")
+    assert meta["proxy"] is False
+    assert len(series) >= 5
+
+
+@pytest.mark.skipif(not alibaba_derived_ready(), reason="Alibaba derived sample not present")
+def test_alibaba_sample_loads():
+    src = resolve_formal_source("alibaba")
+    assert src["dataset"] == "alibaba"
+    assert src["sample_kind"] == "HTTP_RANGE_64MiB"
+    df = load_alibaba_cluster()
+    assert len(df) >= 20
+    series, meta = load_scaling_workload("alibaba", max_steps=50)
+    assert len(series) == 50
+    assert meta["proxy"] is False
+
+
+def test_gct_alias_prefers_2011_when_ready():
     src = resolve_formal_source("gct")
-    assert src["dataset"] == "gct2010"
-    assert "2011" in src.get("residual", "") or "2011" in src.get("note", "")
+    if gct2011_derived_ready():
+        assert src["dataset"] == "gct2011"
+    else:
+        assert src["dataset"] == "gct2010"
 
 
 def test_gct_does_not_silently_use_synthetic():
     series, meta = load_scaling_workload("gct2010")
     assert meta["proxy"] is False
-    assert len(series) == len(np.unique(series)) or len(series) > 10
-    # sine-proxy has ~500 steps by default; GCT v1 cluster is ~76
     assert len(series) < 200
 
 

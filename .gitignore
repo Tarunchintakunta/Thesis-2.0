@@ -32,6 +32,11 @@ mehak-thesis/mhsa-tdl-framework/data/gct/**/*.csv.gz
 mehak-thesis/mhsa-tdl-framework/data/gct/**/*.partial
 mehak-thesis/mhsa-tdl-framework/data/gct/**/*.gstmp
 mehak-thesis/mhsa-tdl-framework/data/gct/**/*.npz
+# Pooja GCT 2011 / Alibaba bulk (keep derived traces + *.sha256 sidecars)
+pooja-thesis/paks-framework/data/gct/**/*.csv.gz
+pooja-thesis/paks-framework/data/alibaba/**/*.tar.gz
+pooja-thesis/paks-framework/data/alibaba/**/*.partial*
+pooja-thesis/paks-framework/data/alibaba/**/_extract_*/
 # trained model pickles (re-created by the pipeline)
 **/results/models/
 *.joblib

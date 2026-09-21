@@ -1,8 +1,8 @@
 {
   "live_apply": false,
   "aws_deployed": false,
-  "hpa_ops": 75,
-  "paks_ops": 75,
+  "hpa_ops": 300,
+  "paks_ops": 300,
   "sample_hpa": [
     {
       "method": "PATCH",
@@ -15,10 +15,10 @@
           "namespace": "default"
         },
         "spec": {
-          "replicas": 1
+          "replicas": 21
         },
         "status": {
-          "replicas": 1,
+          "replicas": 21,
           "selector": "app=paks-demo"
         }
       },
@@ -26,7 +26,7 @@
       "source": "hpa",
       "step": 0,
       "predicted_load": null,
-      "observed_load": 5.965625,
+      "observed_load": 144.28055566666666,
       "extra": {
         "hpa_spec": {
           "apiVersion": "autoscaling/v2",
@@ -58,15 +58,15 @@
           }
         },
         "hpa_status": {
-          "currentReplicas": 1,
-          "desiredReplicas": 1,
+          "currentReplicas": 21,
+          "desiredReplicas": 21,
           "currentMetrics": [
             {
               "type": "Resource",
               "resource": {
                 "name": "cpu",
                 "current": {
-                  "averageUtilization": 60
+                  "averageUtilization": 69
                 }
               }
             }
@@ -85,10 +85,10 @@
           "namespace": "default"
         },
         "spec": {
-          "replicas": 56
+          "replicas": 38
         },
         "status": {
-          "replicas": 1,
+          "replicas": 21,
           "selector": "app=paks-demo"
         }
       },
@@ -96,7 +96,7 @@
       "source": "hpa",
       "step": 1,
       "predicted_load": null,
-      "observed_load": 390.628125,
+      "observed_load": 263.115079,
       "extra": {
         "hpa_spec": {
           "apiVersion": "autoscaling/v2",
@@ -128,15 +128,15 @@
           }
         },
         "hpa_status": {
-          "currentReplicas": 1,
-          "desiredReplicas": 56,
+          "currentReplicas": 21,
+          "desiredReplicas": 38,
           "currentMetrics": [
             {
               "type": "Resource",
               "resource": {
                 "name": "cpu",
                 "current": {
-                  "averageUtilization": 3906
+                  "averageUtilization": 125
                 }
               }
             }
@@ -155,10 +155,10 @@
           "namespace": "default"
         },
         "spec": {
-          "replicas": 55
+          "replicas": 37
         },
         "status": {
-          "replicas": 56,
+          "replicas": 38,
           "selector": "app=paks-demo"
         }
       },
@@ -166,7 +166,7 @@
       "source": "hpa",
       "step": 2,
       "predicted_load": null,
-      "observed_load": 379.04375,
+      "observed_load": 259.366799,
       "extra": {
         "hpa_spec": {
           "apiVersion": "autoscaling/v2",
@@ -198,8 +198,8 @@
           }
         },
         "hpa_status": {
-          "currentReplicas": 56,
-          "desiredReplicas": 55,
+          "currentReplicas": 38,
+          "desiredReplicas": 37,
           "currentMetrics": [
             {
               "type": "Resource",
@@ -227,21 +227,21 @@
           "namespace": "default"
         },
         "spec": {
-          "replicas": 1
+          "replicas": 22
         },
         "status": {
-          "replicas": 1,
+          "replicas": 21,
           "selector": "app=paks-demo"
         }
       },
       "dry_run": true,
       "source": "paks",
       "step": 0,
-      "predicted_load": 5.965625,
-      "observed_load": 5.965625,
+      "predicted_load": 144.28055566666666,
+      "observed_load": 144.28055566666666,
       "extra": {
         "pred_source": "warmup-observed",
-        "cpu_utilization_pct": 60
+        "cpu_utilization_pct": 69
       }
     },
     {
@@ -255,21 +255,21 @@
           "namespace": "default"
         },
         "spec": {
-          "replicas": 59
+          "replicas": 40
         },
         "status": {
-          "replicas": 1,
+          "replicas": 22,
           "selector": "app=paks-demo"
         }
       },
       "dry_run": true,
       "source": "paks",
       "step": 1,
-      "predicted_load": 390.628125,
-      "observed_load": 390.628125,
+      "predicted_load": 263.115079,
+      "observed_load": 263.115079,
       "extra": {
         "pred_source": "warmup-observed",
-        "cpu_utilization_pct": 3906
+        "cpu_utilization_pct": 120
       }
     },
     {
@@ -283,84 +283,106 @@
           "namespace": "default"
         },
         "spec": {
-          "replicas": 57
+          "replicas": 39
         },
         "status": {
-          "replicas": 59,
+          "replicas": 40,
           "selector": "app=paks-demo"
         }
       },
       "dry_run": true,
       "source": "paks",
       "step": 2,
-      "predicted_load": 379.04375,
-      "observed_load": 379.04375,
+      "predicted_load": 259.366799,
+      "observed_load": 259.366799,
       "extra": {
         "pred_source": "warmup-observed",
-        "cpu_utilization_pct": 64
+        "cpu_utilization_pct": 65
       }
     }
   ],
   "hpa_snapshot_tail": [
     {
-      "step": 73,
+      "step": 298,
       "policy": "reactive-hpa",
-      "observed_load": 417.146875,
-      "current_replicas": 61,
-      "desired_replicas": 60,
-      "cpu_utilization_pct": 68,
+      "observed_load": 293.039478,
+      "current_replicas": 40,
+      "desired_replicas": 42,
+      "cpu_utilization_pct": 73,
       "k8s_path": "/apis/apps/v1/namespaces/default/deployments/paks-demo/scale?dryRun=All",
       "evidence": "SIMULATED"
     },
     {
-      "step": 74,
+      "step": 299,
       "policy": "reactive-hpa",
-      "observed_load": 429.921875,
-      "current_replicas": 60,
-      "desired_replicas": 62,
-      "cpu_utilization_pct": 72,
+      "observed_load": 267.38282833333335,
+      "current_replicas": 42,
+      "desired_replicas": 39,
+      "cpu_utilization_pct": 64,
       "k8s_path": "/apis/apps/v1/namespaces/default/deployments/paks-demo/scale?dryRun=All",
       "evidence": "SIMULATED"
     }
   ],
   "paks_snapshot_tail": [
     {
-      "step": 73,
+      "step": 298,
       "policy": "paks-adaptive",
-      "observed_load": 417.146875,
-      "predicted_load": 401.53829345944536,
-      "current_replicas": 60,
-      "desired_replicas": 61,
-      "cpu_utilization_pct": 70,
+      "observed_load": 293.039478,
+      "predicted_load": 288.7782060568797,
+      "current_replicas": 44,
+      "desired_replicas": 44,
+      "cpu_utilization_pct": 67,
       "k8s_path": "/apis/apps/v1/namespaces/default/deployments/paks-demo/scale?dryRun=All",
       "pred_source": "lstm",
       "evidence": "SIMULATED"
     },
     {
-      "step": 74,
+      "step": 299,
       "policy": "paks-adaptive",
-      "observed_load": 429.921875,
-      "predicted_load": 401.9729637208845,
-      "current_replicas": 61,
-      "desired_replicas": 61,
-      "cpu_utilization_pct": 70,
+      "observed_load": 267.38282833333335,
+      "predicted_load": 292.97964206878316,
+      "current_replicas": 44,
+      "desired_replicas": 44,
+      "cpu_utilization_pct": 61,
       "k8s_path": "/apis/apps/v1/namespaces/default/deployments/paks-demo/scale?dryRun=All",
       "pred_source": "lstm",
       "evidence": "SIMULATED"
     }
   ],
   "dataset_meta": {
-    "dataset": "gct2010",
+    "dataset": "gct2011",
     "family": "gct",
     "proxy": false,
     "evidence": "TRACE",
-    "generation": "Google Cluster Data v1 (2010, ~7h)",
-    "residual": "GCT 2011/2019 and Alibaba still absent (DATA_GAPS.md)",
-    "note": "Public CC-BY 7-hour GCT sample; not the 29-day 2011 or 2019 traces.",
-    "cluster_csv": "gct2010_cluster_cpu.csv",
-    "jobs_csv": "gct2010_job_cpu_series.csv.gz",
-    "n_steps": 75,
+    "generation": "GCT 2011 task_usage part-00000-of-00500 (single shard sample)",
+    "residual": "Full 500-part 29-day dump and GCT 2019 still absent; Alibaba is a separate --dataset.",
+    "note": "One public GCS shard (~87 MiB), SHA256-verified; not the full 29-day cell.",
+    "cluster_csv": "gct2011_part00000_cluster_cpu.csv",
+    "jobs_csv": "gct2011_part00000_job_cpu_series.csv.gz",
+    "files": [
+      "/Users/valletivarish/Documents/Thesis-2.0/pooja-thesis/paks-framework/data/gct/2011/task_usage/part-00000-of-00500.csv.gz"
+    ],
+    "n_steps": 17,
     "bin_seconds": 300,
-    "dropped_zero_tail": true
+    "dropped_zero_tail": false,
+    "scale_dataset": "alibaba",
+    "scale_family": "alibaba",
+    "scale_proxy": false,
+    "scale_evidence": "TRACE",
+    "scale_generation": "Alibaba cluster-trace-v2018 machine_usage RANGE sample (first 64 MiB of tar.gz)",
+    "scale_residual": "Full 1.7 GiB machine_usage.tar.gz not downloaded; GCT 2019 still absent.",
+    "scale_note": "Public OSS range sample, SHA256-verified; resampled to 300s mean CPU. Scaling loop uses Alibaba RANGE sample (CPU%\u00d710 demand units) because primary GCT cluster bins were too few.",
+    "scale_cluster_csv": "alibaba_v2018_machine_usage_sample_cluster_cpu.csv",
+    "scale_files": [
+      "/Users/valletivarish/Documents/Thesis-2.0/pooja-thesis/paks-framework/data/alibaba/v2018/machine_usage.tar.gz.partial64m",
+      "/Users/valletivarish/Documents/Thesis-2.0/pooja-thesis/paks-framework/data/alibaba/v2018/machine_usage.tar.gz.partial64m.sha256"
+    ],
+    "scale_sample_kind": "HTTP_RANGE_64MiB",
+    "scale_n_steps": 300,
+    "scale_bin_seconds": 300,
+    "scale_dropped_zero_tail": false,
+    "scale_scaled_from_pct": true,
+    "scale_demand_scale": 10.0,
+    "pred_dataset": "gct2011"
   }
 }
