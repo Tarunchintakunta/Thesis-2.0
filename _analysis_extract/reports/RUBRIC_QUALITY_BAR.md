@@ -35,10 +35,16 @@ Lower bands (for gap diagnosis only): 60–69 = good/rigorous but less creative/
 
 ## How this gates AWS work
 
-1. Fix CA2 scope alignment to **100%** first.  
-2. Rubric 70%+ is a **quality check** on objectives/lit/method/artefact/eval writing and analysis — improve toward those traits without chasing fake perfect marks.  
-3. Only then 3–5 full-scale final evaluations → baseline compare → stats/critical analysis (pos+neg).  
-4. `GENAI_HANDOFF.md` **only after** 3–5 full evals for that thesis.
+1. Fix CA2 scope alignment to **100%** first (RQ/objectives/gap/method/artefact/eval — **not** perfect marks).  
+2. Rubric 70%+ (JPEG + `master_rubric.md`) is a **quality check** throughout — aim for 70%+ traits; include **negative results**; analyse vs RQ/baseline/previous research; appreciate limitations.  
+3. **Evaluation cycle (binding):**  
+   **100% CA2 → 1 evaluation → CA2 re-check → if needed fix → 1 evaluation → re-check → once still 100% → 3 full-scale final evaluations.**  
+4. Baseline compare on the final 3 (pos+neg, stats, consistency). Then RQ/objectives/limitations/conclusions.  
+5. `GENAI_HANDOFF.md` **only after** that thesis’s requirements + 3 finals are done (full e2e template).  
+
+**Sources kept open for every edit/eval:**  
+- `/Users/valletivarish/Downloads/WhatsApp Image 2026-09-17 at 7.23.54 PM.jpeg`  
+- `/Users/valletivarish/Downloads/master_rubric.md`
 
 ## Per-thesis Rubric70 notes (evidence fold)
 
