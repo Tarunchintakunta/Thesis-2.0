@@ -1,3 +1,7 @@
+**INITIAL_EVAL_PASS:** **yes** (live AWS k3s PAKS vs HPA; CA2 re-check still 100%)
+INITIAL_EVAL_PASS=yes
+Evidence: `paks-framework/results/formal_k8s_live_aws.json`. Final-3 not started.
+
 # Project Status: pooja-thesis
 
 **Last Updated:** 2026-09-21  

@@ -1,3 +1,7 @@
+**INITIAL_EVAL_PASS:** **yes** (local labelled-oracle full scan+evaluate; CA2 still 100%)
+INITIAL_EVAL_PASS=yes
+Evidence: `terraform-scanner-benchmark/results/initial_eval_1/`.
+
 # Project Status: vishvaksen-thesis
 
 **Last Updated:** 2026-09-21  

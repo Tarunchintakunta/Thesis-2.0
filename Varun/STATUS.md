@@ -1,3 +1,7 @@
+**INITIAL_EVAL_PASS:** **yes** (live e1 treated as initial eval; CA2 re-check still 100%)
+**Note:** `results/live/evaluation_r1|r2|r3` + BASELINE_COMPARE already present. Process gate: initial pass recorded; final-3 evidence pack exists (e1–e3) — handoff still deferred until cohort process confirms.
+INITIAL_EVAL_PASS=yes
+
 # Project Status: Varun Gampa — S3 Cost Optimization
 
 **Student:** Varun Gampa (23398639)  

@@ -1,3 +1,7 @@
+**INITIAL_EVAL_PASS:** **yes** (Free-Tier smoke live IoT; CA2 re-check still 100%)
+INITIAL_EVAL_PASS=yes
+Evidence: `results/live/LIVE_EVIDENCE.json`. Final-3 / formal volume optional beyond floor.
+
 # mqtt-qos-iot-core — formal CA2 artefact status
 
 **Last updated:** 2026-09-21  

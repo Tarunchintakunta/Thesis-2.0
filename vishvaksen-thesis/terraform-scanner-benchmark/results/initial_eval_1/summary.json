@@ -1,0 +1,14 @@
+{
+  "kind": "initial_eval_1",
+  "method": "labelled_oracle_benchmark",
+  "n_modules": 240,
+  "identified_pct": {
+    "checklist": 81.2,
+    "checkov": 56.2,
+    "tfsec": 61.8,
+    "union": 70.8,
+    "opa": 60.4
+  },
+  "ca2_recheck": 100,
+  "INITIAL_EVAL_PASS": true
+}

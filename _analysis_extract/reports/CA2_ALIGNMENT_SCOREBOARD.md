@@ -11,14 +11,14 @@
 | 2 | Chaitanya | **100** | partial | no | stale conclusion fold |
 | 3 | Yashaswini | **100** | yes | no | soft only |
 | 4 | Rasool | **100** | partial | no | optional W1/W2 |
-| 5 | Varun | **100** | yes | no | soft only; handoff deferred |
-| 6 | Vikas | **100** | partial | no | campaign done (N=1000×3×3); soft LaTeX fold optional |
+| 5 | Varun | **100** | yes | no | INITIAL_EVAL_PASS=yes; e1–e3 pack present; handoff deferred |
+| 6 | Vikas | **100** | partial | no | INITIAL_EVAL_PASS=yes; campaign pack present; soft LaTeX optional |
 | 7 | Nemi | **100** | partial | no | optional beyond-CA2 |
 | 8 | Venkat | **100** | partial | no | initial_eval_1 done; CA2 still 100 → INITIAL_EVAL_PASS=yes; final-3 not started |
 | 9 | Mehak | **100** | partial | no | INITIAL_EVAL_PASS=yes; next=3 local full GCT runs (not AWS) |
-| 10 | Pooja | **100** | partial | soft only | floor COMPLETE; optional dumps / larger live beyond floor |
-| 11 | Uday | **100** | partial | no | floor COMPLETE; optional formal volume beyond Free Tier |
-| 12 | Vishvaksen | **100** | partial | no | oracle-labelled method; soft Verdet/report polish |
+| 10 | Pooja | **100** | partial | soft only | INITIAL_EVAL_PASS=yes; optional dumps/larger live beyond floor |
+| 11 | Uday | **100** | partial | no | INITIAL_EVAL_PASS=yes; optional formal volume beyond Free Tier |
+| 12 | Vishvaksen | **100** | partial | no | INITIAL_EVAL_PASS=yes; soft Verdet/report polish |
 
 **Fix order:** All 12 CA2 floors closed (Kasi excluded); Pooja + Venkat + Mehak + Nemi + Vikas CA2 floor closed.
 Venkat raise 2026-09-21: round-2 multi-instance `da.matmul` n=250 **ok** (0.2546 s per `ec2_round2_summary.json`); destroy verified → **100%**.

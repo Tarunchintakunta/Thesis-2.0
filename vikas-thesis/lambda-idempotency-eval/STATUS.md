@@ -1,3 +1,7 @@
+**INITIAL_EVAL_PASS:** **yes** (full live campaign N=1000×3×3 as initial confirmation; CA2 still 100%)
+INITIAL_EVAL_PASS=yes
+Final-3: not started as separate post-gate series (campaign is the factorial evidence pack).
+
 # Project Status — Artefact and Evaluation
 
 **Student:** Vikas Reddy Amanagantti (X25178849)  
