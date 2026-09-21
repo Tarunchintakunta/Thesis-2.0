@@ -4,7 +4,8 @@
 **Branch:** `main`  
 **Research Alignment to CA2:** **100%** (formal `MAHEK NAAZ.docx`; research-scope floor — not perfect marks)  
 **Status:** **CA2 floor COMPLETE** — soft residuals (full 2011 dump / 2019 cells / true net-bytes) are **explicitly scoped out** with rationale in `DESIGN_RATIONALE_BEYOND_CA2.md`  
-**INITIAL_EVAL_PASS:** **yes** (one local GCT full run; path below)
+**INITIAL_EVAL_PASS:** **yes**
+**Final-3 progress:** `results/gct/final_1/` done (1/3). (one local GCT full run; path below)
 
 ## Summary
 
