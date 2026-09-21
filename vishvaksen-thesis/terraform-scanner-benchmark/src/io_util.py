@@ -29,7 +29,14 @@ def module_dir(row: dict[str, str]) -> Path:
     return CORPUS / row["category"] / row["module_id"]
 
 
-_META_KEYS = {"__start_line__", "__end_line__"}
+_META_KEYS = {"__start_line__", "__end_line__", "__is_block__"}
+
+
+def _strip_quotes(value: Any) -> Any:
+    """python-hcl2 ≥7 may leave JSON-style quotes on identifiers/literals."""
+    if isinstance(value, str) and len(value) >= 2 and value[0] == '"' and value[-1] == '"':
+        return value[1:-1]
+    return value
 
 
 def flatten_hcl_obj(node: Any) -> Any:
@@ -37,6 +44,8 @@ def flatten_hcl_obj(node: Any) -> Any:
 
     python-hcl2 wraps scalar attributes as one-element lists (acl = ["public-read"]).
     Those singletons are unwrapped so Rego can compare the HCL value directly.
+    Newer python-hcl2 releases may also quote block type/name keys; those quotes
+    are stripped so Rego can address input.resource.aws_s3_bucket_acl.this.
     """
     if isinstance(node, list):
         if node and all(isinstance(x, dict) for x in node):
@@ -45,7 +54,10 @@ def flatten_hcl_obj(node: Any) -> Any:
                 for key, val in item.items():
                     if key in _META_KEYS:
                         continue
-                    merged[key] = _merge(merged.get(key), flatten_hcl_obj(val))
+                    norm_key = _strip_quotes(key)
+                    merged[norm_key] = _merge(
+                        merged.get(norm_key), flatten_hcl_obj(val)
+                    )
             return merged
         unwrapped = [flatten_hcl_obj(x) for x in node]
         if len(unwrapped) == 1 and not isinstance(unwrapped[0], (dict, list)):
@@ -53,11 +65,11 @@ def flatten_hcl_obj(node: Any) -> Any:
         return unwrapped
     if isinstance(node, dict):
         return {
-            k: flatten_hcl_obj(v)
+            _strip_quotes(k): flatten_hcl_obj(v)
             for k, v in node.items()
             if k not in _META_KEYS
         }
-    return node
+    return _strip_quotes(node)
 
 
 def _merge(left: Any, right: Any) -> Any:

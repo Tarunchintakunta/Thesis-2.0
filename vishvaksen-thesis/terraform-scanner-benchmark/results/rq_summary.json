@@ -4,6 +4,6 @@
   "checkov_identified_pct": 56.25,
   "tfsec_identified_pct": 61.80555555555556,
   "static_union_identified_pct": 70.83333333333334,
-  "opa_identified_pct": 57.638888888888886,
+  "opa_identified_pct": 60.416666666666664,
   "checklist_identified_pct": 81.25
 }

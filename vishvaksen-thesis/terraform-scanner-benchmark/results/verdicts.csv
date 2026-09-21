@@ -201,9 +201,9 @@ log-019-log-alb-access-i02,weak_logging,insecure,MEDIUM,variable,1,0,1,0,1,0
 log-020-log-alb-access-i03,weak_logging,insecure,MEDIUM,alternate,1,1,1,0,1,1
 log-021-log-rds-cw-s01,weak_logging,secure,none,direct,0,0,0,1,1,0
 log-022-log-rds-cw-s02,weak_logging,secure,none,direct_alt,0,0,0,1,1,0
-log-023-log-rds-cw-i01,weak_logging,insecure,MEDIUM,direct,1,1,0,1,1,0
+log-023-log-rds-cw-i01,weak_logging,insecure,MEDIUM,direct,1,1,0,1,1,1
 log-024-log-rds-cw-i02,weak_logging,insecure,MEDIUM,variable,1,0,0,1,1,0
-log-025-log-rds-cw-i03,weak_logging,insecure,MEDIUM,alternate,1,1,0,1,1,0
+log-025-log-rds-cw-i03,weak_logging,insecure,MEDIUM,alternate,1,1,0,1,1,1
 log-026-log-apigw-s01,weak_logging,secure,none,direct,0,1,1,1,1,0
 log-027-log-apigw-s02,weak_logging,secure,none,direct_alt,0,1,1,1,1,0
 log-028-log-apigw-i01,weak_logging,insecure,MEDIUM,direct,1,1,1,1,1,1
@@ -211,9 +211,9 @@ log-029-log-apigw-i02,weak_logging,insecure,MEDIUM,variable,1,1,1,1,1,1
 log-030-log-apigw-i03,weak_logging,insecure,MEDIUM,alternate,1,1,1,1,1,1
 log-031-log-eks-control-s01,weak_logging,secure,none,direct,0,0,0,0,0,0
 log-032-log-eks-control-s02,weak_logging,secure,none,direct_alt,0,0,0,0,0,0
-log-033-log-eks-control-i01,weak_logging,insecure,MEDIUM,direct,1,1,0,1,1,0
+log-033-log-eks-control-i01,weak_logging,insecure,MEDIUM,direct,1,1,0,1,1,1
 log-034-log-eks-control-i02,weak_logging,insecure,MEDIUM,variable,1,0,0,1,1,0
-log-035-log-eks-control-i03,weak_logging,insecure,MEDIUM,alternate,1,1,0,1,1,0
+log-035-log-eks-control-i03,weak_logging,insecure,MEDIUM,alternate,1,1,0,1,1,1
 log-036-log-cloudtrail-missing-s01,weak_logging,secure,none,direct,0,0,1,1,1,0
 log-037-log-cloudtrail-missing-s02,weak_logging,secure,none,direct_alt,0,0,1,1,1,0
 log-038-log-cloudtrail-missing-i01,weak_logging,insecure,HIGH,direct,1,1,1,1,1,1

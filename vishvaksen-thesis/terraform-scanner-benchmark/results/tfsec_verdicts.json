@@ -2,7 +2,7 @@
   "tool": "tfsec",
   "version": "v1.28.14",
   "defaults": "shipped",
-  "batch_seconds": 0.7367802079970716,
+  "batch_seconds": 0.7665760419913568,
   "n_modules": 240,
   "verdicts": [
     {
@@ -2481,73 +2481,73 @@
       "module_id": "ps-003-ps-s3-acl-i01",
       "category": "public_storage",
       "label": "insecure",
-      "seconds": 0.26592466700822115
+      "seconds": 0.2660608750011306
     },
     {
       "module_id": "ps-004-ps-s3-acl-i02",
       "category": "public_storage",
       "label": "insecure",
-      "seconds": 0.27773650000744965
+      "seconds": 0.26502783299656585
     },
     {
       "module_id": "ps-001-ps-s3-acl-s01",
       "category": "public_storage",
       "label": "secure",
-      "seconds": 0.26652666700829286
+      "seconds": 0.2695803339884151
     },
     {
       "module_id": "oa-003-oa-sg-ssh-i01",
       "category": "overpermissive_access",
       "label": "insecure",
-      "seconds": 0.27251549999346025
+      "seconds": 0.2664077079971321
     },
     {
       "module_id": "oa-004-oa-sg-ssh-i02",
       "category": "overpermissive_access",
       "label": "insecure",
-      "seconds": 0.3073030410014326
+      "seconds": 0.27173675000085495
     },
     {
       "module_id": "oa-001-oa-sg-ssh-s01",
       "category": "overpermissive_access",
       "label": "secure",
-      "seconds": 0.26843812500010245
+      "seconds": 0.27946416701888666
     },
     {
       "module_id": "enc-003-enc-s3-sse-i01",
       "category": "encryption_at_rest",
       "label": "insecure",
-      "seconds": 0.2734008330007782
+      "seconds": 0.27257445800933056
     },
     {
       "module_id": "enc-004-enc-s3-sse-i02",
       "category": "encryption_at_rest",
       "label": "insecure",
-      "seconds": 0.2769919579877751
+      "seconds": 0.2855555830174126
     },
     {
       "module_id": "enc-001-enc-s3-sse-s01",
       "category": "encryption_at_rest",
       "label": "secure",
-      "seconds": 0.272549417000846
+      "seconds": 0.2712443339987658
     },
     {
       "module_id": "log-003-log-s3-access-i01",
       "category": "weak_logging",
       "label": "insecure",
-      "seconds": 0.26403283400577493
+      "seconds": 0.27529787499224767
     },
     {
       "module_id": "log-004-log-s3-access-i02",
       "category": "weak_logging",
       "label": "insecure",
-      "seconds": 0.2692456250078976
+      "seconds": 0.2730756250093691
     },
     {
       "module_id": "log-001-log-s3-access-s01",
       "category": "weak_logging",
       "label": "secure",
-      "seconds": 0.2745540829928359
+      "seconds": 0.26568899999256246
     }
   ]
 }

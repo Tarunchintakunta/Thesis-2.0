@@ -5,8 +5,13 @@ Gates for AWS Infrastructure-as-Code Misconfiguration Detection**.
 
 Implementation: `terraform-scanner-benchmark/`.  
 Numbers: `terraform-scanner-benchmark/results/METRICS.md` (N=240; Checkov
-recall 56.2%; tfsec 61.8%; union 70.8%; OPA 57.6%; scripted checklist 81.2%).
+recall 56.2%; tfsec 61.8%; union 70.8%; OPA 60.4%; scripted checklist 81.2%).
 
-War hybrid under `_superseded_proxy/` is **not** this CA2.
+War hybrid: `iac-security/STATUS.md` (PROXY) → `_superseded_proxy/iac-security/`
+— **not** this CA2.
 
-**Status:** NOT COMPLETE. Alignment ~62%. **Do not terraform apply.**
+Dual-review: provisional same-author subsample at
+`terraform-scanner-benchmark/results/second_review_subsample.json`.
+
+**Status:** NOT COMPLETE. Alignment **~72%**. AWS **not required**.
+**Do not terraform apply.**

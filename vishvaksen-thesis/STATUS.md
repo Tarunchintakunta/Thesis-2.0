@@ -1,19 +1,20 @@
 # Project Status: vishvaksen-thesis
 
-**Last Updated:** 2026-09-20  
-**Branch:** `cursor/vishvaksen-tf-scanner-c8e3`  
-**Research Alignment to CA2:** **~62%** (formal scanner/PaC CA2)  
+**Last Updated:** 2026-09-21  
+**Branch:** `cursor/vishvaksen-tf-scanner-ca2-8385`  
+**Research Alignment to CA2:** **~72%** (formal scanner/PaC CA2)  
 **Status:** **NOT COMPLETE** — **&lt;100%** (do **not** treat as SUBMIT-READY)
 
 ## Summary
 
-Formal artefact: `terraform-scanner-benchmark/` (N=240 labelled AWS
-Terraform modules; Checkov + tfsec + OPA). War hybrid quarantined at
-`_superseded_proxy/iac-security/`. Ethics: **no terraform apply**.
+Formal artefact: `terraform-scanner-benchmark/` (N=240 labelled AWS Terraform
+modules; Checkov + tfsec + OPA; scan time; remediation LOC; pinned versions).  
+War hybrid quarantined: `iac-security/STATUS.md` → `_superseded_proxy/iac-security/`
+(**PROXY — not evidence**). Ethics: **no terraform apply**. AWS **not required**.
 
 ## Evidence-bound scanner results
 
-`terraform-scanner-benchmark/results/metrics_per_category.csv`
+Source: `terraform-scanner-benchmark/results/metrics_per_category.csv`
 
 | Stage | Precision | Recall | F1 | Identified % of labelled defects |
 |-------|----------:|-------:|---:|---------------------------------:|
@@ -21,17 +22,18 @@ Terraform modules; Checkov + tfsec + OPA). War hybrid quarantined at
 | Checkov 3.3.19 | 0.771 | 0.562 | 0.651 | 56.2 |
 | tfsec v1.28.14 | 0.788 | 0.618 | 0.693 | 61.8 |
 | Static union | 0.729 | 0.708 | 0.718 | 70.8 |
-| OPA 1.4.2 gate | 1.000 | 0.576 | 0.731 | 57.6 |
+| OPA 1.4.2 gate | 1.000 | 0.604 | 0.753 | 60.4 |
 
-Do **not** cite `_superseded_proxy/iac-security/results/` as scanner recall.
+Dual-review: **provisional** same-author 20% subsample
+(`results/second_review_subsample.json`, κ≈0.775) — **not** an independent human.
 
 ## Blockers to 100%
 
-1. Human checklist (scripted regex is a procedure, not a rater)
-2. Dual-reviewer 20% subsample
-3. Verdet-aligned statistical write-up in the thesis text
+1. Independent **human** checklist (scripted regex ≠ human rater)
+2. Independent **second human** for 20% subsample (provisional dual-pass exists)
+3. Verdet-aligned statistical write-up in thesis prose (Holm–Bonferroni / McNemar)
 
 ## AWS
 
-**Not required** (do not apply). Residual:
+**Not required** (do not apply insecure modules). Residual:
 `_analysis_extract/reports/vishvaksen_alignment.md`.

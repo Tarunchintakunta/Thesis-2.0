@@ -1,2 +1,2 @@
-python-hcl2>=4.3.0
+python-hcl2>=4.3.0,<9
 pytest>=8.0.0

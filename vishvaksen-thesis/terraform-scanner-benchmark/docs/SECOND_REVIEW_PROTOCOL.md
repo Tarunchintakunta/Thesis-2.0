@@ -1,9 +1,9 @@
-# Second-reviewer protocol (not executed this pass)
+# Second-reviewer protocol
 
-Formal CA2: labels prepared before tools run; **20% subsample independently
-labelled** for inter-reviewer agreement.
+Formal CA2: labels prepared before tools run; **20% subsample** labelled for
+inter-reviewer agreement (Cohen’s κ).
 
-## Procedure (when a second reviewer is available)
+## Procedure (independent human — definitive)
 
 1. Draw a stratified random 20% sample (12 modules per category; 48 total)
    with seed recorded in `results/second_review_sample.csv`.
@@ -14,7 +14,20 @@ labelled** for inter-reviewer agreement.
 5. Disagreements go to a reconciliation log; original generator labels remain
    the scoring oracle unless a generator bug is proven.
 
-## This pass
+## Provisional same-author dual-pass (this raise)
 
-**NOT RUN.** No second human. `results/second_review_STATUS.md` records the
-gap. Do not invent κ.
+When no second human is available, `scripts/run_second_review.py` records a
+**provisional** dual-pass:
+
+| Role | Who | Method |
+|------|-----|--------|
+| Reviewer A | Generator oracle | `corpus/labels.csv` |
+| Reviewer B | Same author | Checklist heuristics on `main.tf` only (blind to CSV label) |
+
+Outputs:
+- `results/second_review_subsample.json`
+- `results/second_review_sample.csv`
+- `results/second_review_STATUS.md` (**PROVISIONAL**)
+
+**Honesty rule:** provisional κ must never be presented as independent human
+agreement. Replace with a second human before claiming definitive reliability.

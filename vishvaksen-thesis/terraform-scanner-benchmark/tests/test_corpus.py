@@ -48,6 +48,27 @@ def test_hcl_singleton_unwrap():
     assert out["resource"]["aws_s3_bucket_acl"]["this"]["block_public_acls"] is False
 
 
+def test_hcl_quoted_keys_from_python_hcl2_v8():
+    from src.io_util import flatten_hcl_obj
+
+    raw = {
+        "resource": {
+            '"aws_s3_bucket_acl"': {
+                '"this"': {
+                    "acl": '"public-read"',
+                    "block_public_acls": False,
+                    "__is_block__": True,
+                }
+            }
+        }
+    }
+    out = flatten_hcl_obj(raw)
+    node = out["resource"]["aws_s3_bucket_acl"]["this"]
+    assert node["acl"] == "public-read"
+    assert node["block_public_acls"] is False
+    assert "__is_block__" not in node
+
+
 def test_no_student_ids_in_module_ids():
     specs = build_specs()
     banned = ("25173421", "x25173421", "vishvaksen")
