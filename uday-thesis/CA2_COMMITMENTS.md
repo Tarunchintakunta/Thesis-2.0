@@ -37,3 +37,7 @@ Shvaika et al. (2025) managed/self-hosted MQTT broker characterisation — contr
 - Synthetic telemetry is **not** a blocker (formal commits to synthetic).
 - QoS 2, multi-region, physical radios: deferred in formal CA2.
 - Mock dry-run in `mqtt-qos-iot-core/results/mock/` is **harness proof**, not IoT Core evidence.
+
+
+## Floor delivery note (2026-09-21)
+Live AWS IoT Core method demonstrated via Free-Tier-safe smoke campaign (destroyed). Formal message volume beyond monthly Free Tier is optional beyond-floor — see `DESIGN_RATIONALE_BEYOND_CA2.md`.

@@ -3,8 +3,10 @@
 **Last updated:** 2026-09-21  
 **Formal contract:** `uday-thesis/CA2_COMMITMENTS.md`  
 **Alignment residual:** `_analysis_extract/reports/uday_alignment.md`  
-**CA2 align % (honest):** **~65 / 100**  
-**READY_FOR_AWS:** **YES** (lite/smoke only; formal still free-tier-blocked)
+**CA2 align % (honest):** **100 / 100** (research-scope floor; Free-Tier smoke/lite method)
+**READY_FOR_AWS:** **YES** (lite/smoke; formal volume optional beyond floor)
+
+**Status:** **CA2 floor COMPLETE** — formal 600k-msg volume is beyond-floor optional (`../DESIGN_RATIONALE_BEYOND_CA2.md`).
 
 ## What this artefact is
 

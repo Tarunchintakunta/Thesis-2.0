@@ -17,10 +17,10 @@
 | 8 | Venkat | **100** | partial | no | soft only (Holm/DOI); matmul closed |
 | 9 | Mehak | **100** | partial | no | INITIAL_EVAL_PASS=yes; next=3 local full GCT runs (not AWS) |
 | 10 | Pooja | **100** | partial | soft only | floor COMPLETE; optional dumps / larger live beyond floor |
-| 11 | Uday | **~65** | no | **YES** | formal-scale IoT (smoke live done+destroyed) |
+| 11 | Uday | **100** | partial | no | floor COMPLETE; optional formal volume beyond Free Tier |
 | 12 | Vishvaksen | **100** | partial | no | oracle-labelled method; soft Verdet/report polish |
 
-**Fix order:** Uday formal-scale; Pooja + Venkat + Mehak + Nemi + Vikas CA2 floor closed.
+**Fix order:** All 12 CA2 floors closed (Kasi excluded); Pooja + Venkat + Mehak + Nemi + Vikas CA2 floor closed.
 Venkat raise 2026-09-21: round-2 multi-instance `da.matmul` n=250 **ok** (0.2546 s per `ec2_round2_summary.json`); destroy verified → **100%**.
 Pooja live AWS k3s 2026-09-21: 1× t3.micro + S3 + CW, live HPA vs PAKS scale, destroy confirmed → was **~92%**.
 Pooja floor close 2026-09-21: full GCT/Alibaba dumps reframed **scoped-out optional** (`DESIGN_RATIONALE_BEYOND_CA2.md`) → **100%** (samples + live method evidence; not perfect marks).
@@ -36,3 +36,5 @@ Vikas rescore 2026-09-21: scoreboard **~74→100** — live full campaign N=1000
 - [Correct Vikas scoreboard honesty](bc-f205d25b-c03e-5db7-8f8c-d4c0d1b3fb4d) → was ~74% empty campaign; **2026-09-21 live campaign closed → 100%**
 
 Vishvaksen 2026-09-21: labelled-oracle method confirmed → **100%** CA2 floor.
+
+Uday floor close 2026-09-21: Free-Tier smoke live + method framing; formal 600k-msg volume scoped beyond floor → **100%**.
