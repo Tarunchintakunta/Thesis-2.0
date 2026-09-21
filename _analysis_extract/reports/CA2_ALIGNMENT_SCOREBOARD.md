@@ -11,7 +11,7 @@
 | 2 | Chaitanya | **100** | partial | no | stale conclusion fold |
 | 3 | Yashaswini | **100** | yes | no | soft only |
 | 4 | Rasool | **100** | partial | no | optional W1/W2 |
-| 5 | Varun | **100** | no | no | fold evaluation_r*; e3 in flight |
+| 5 | Varun | **100** | yes | no | soft only; handoff deferred |
 | 6 | Vikas | **100** | partial | no | conclusion still “pending” |
 | 7 | Nemi | **100** | partial | no | optional beyond-CA2 |
 | 8 | Venkat | **63** | partial | **YES** | multi-instance matmul |

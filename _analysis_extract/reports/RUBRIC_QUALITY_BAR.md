@@ -39,3 +39,9 @@ Lower bands (for gap diagnosis only): 60–69 = good/rigorous but less creative/
 2. Rubric 70%+ is a **quality check** on objectives/lit/method/artefact/eval writing and analysis — improve toward those traits without chasing fake perfect marks.  
 3. Only then 3–5 full-scale final evaluations → baseline compare → stats/critical analysis (pos+neg).  
 4. `GENAI_HANDOFF.md` **only after** 3–5 full evals for that thesis.
+
+## Per-thesis Rubric70 notes (evidence fold)
+
+| Thesis | Rubric70 | Evidence used (no invented metrics) | Next |
+|--------|----------|-------------------------------------|------|
+| Varun | **yes** | e1–e3 + `BASELINE_COMPARE.md` folded into STATUS + LaTeX eval/conclusion/limitations; high_churn little/no vs Lifecycle retained; RQ assessment evidence-bound; rebuild-identical e1–e3 vectors disclosed | soft only; **GENAI_HANDOFF deferred** |

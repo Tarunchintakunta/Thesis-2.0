@@ -1,16 +1,16 @@
 # Design rationale — beyond CA2 (Varun)
 
 **Policy:** CA2 is a floor (`_analysis_extract/reports/CA2_FLOOR_NOT_CEILING.md`).  
-**Live AWS this pass:** **not applied.** Vikas campaign r5 is RUNNING on the shared account (`ConcurrentExecutions=10`). Fuller live FinOps is Free-Tier-safe in design but **concurrency-blocked**.
+**Live AWS:** lite probe + **full evaluations e1–e3** are on main (`results/live/evaluation_r{1,2,3}/`, `BASELINE_COMPARE.md`). No new AWS from this note. **GENAI_HANDOFF deferred.**
 
 ## CA2 floor (met with evidence)
 
 | Commitment | Evidence |
 |------------|----------|
 | Five-module stack (recommend / forecast / savings) | Dry-run JSON `results/data/{pilot,baseline,improved}_results.json`; `beats_naive=true` on temporal holdout |
-| Live AWS evaluation | Lite round measured + destroyed (`results/live/live_lite_{summary,raw}.json`) — S3 PUT/GET, CE probe, CW, Wilcoxon n=24 |
+| Live AWS evaluation | Lite round + full e1–e3 three-workload Wilcoxon vs Lifecycle **and** IT; `meets_ca2_two_of_three=true` each eval |
 | Metadata module | `src/metadata/`: lite JSON parser **and** S3 Inventory CSV parser **and** Boto3 `ListObjectsV2` (moto-tested) |
-| Wilcoxon α=0.05 | Live-lite n=24 **and** local 3-workload protocol |
+| Wilcoxon α=0.05 | Live-lite n=24 **and** live e1–e3 n=10/workload (high_churn vs LC null retained) |
 
 ## Beyond-CA2 this pass (local fuller FinOps protocol)
 
