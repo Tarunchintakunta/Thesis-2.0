@@ -27,23 +27,17 @@ All models are implemented as PyTorch \texttt{nn.Module} subclasses with forward
 
 \textbf{Baseline:} \texttt{src/models/baseline.py} implements \texttt{ThresholdBaseline}, the reactive monitoring baseline described in Section~\ref{subsec:threshold}. This is a non-learning baseline: it computes the peak value over the last 3 timesteps of each metric and applies fixed thresholds to bucket into None/L1/L2.
 
-\textbf{Training and Evaluation:} \texttt{scripts/train\_and\_evaluate.py} orchestrates the full experimental pipeline:
+\textbf{Training and Evaluation:} \texttt{scripts/train\_and\_evaluate.py} orchestrates the formal GCT campaign (\texttt{--dataset gct}; optional \texttt{--out-dir}):
 \begin{enumerate}
+  \item Load GCT windows once via \texttt{gct\_loader} (fail-closed if 2011 parts are absent).
   \item For each of 5 seeds (42--46):
   \begin{itemize}
-    \item Generate 20,000 synthetic samples with the \texttt{TelemetrySimulator}, seeded with the current seed.
-    \item Split into 80/20 train/test sets, stratified on the transient flag.
-    \item Seed PyTorch's RNG (used for model initialization and DataLoader shuffling) with the current seed.
-    \item Train \texttt{ThresholdBaseline}, \texttt{MHSAPerHead}, and \texttt{MHSAFused} on the training set.
-    \item Evaluate all three models on the test set, computing Accuracy, Macro-F1, Transient Violation Recall, and Transient Underprediction Bias (Section~\ref{subsec:metrics}).
-    \item Record per-seed results and inference latency (milliseconds per sample).
+    \item Split windows 80/20 (seeded); seed PyTorch RNG for MHSA init/shuffle.
+    \item Fit threshold baseline, classical RF/KNN/SVM, MHSA-PerHead, MHSA-Fused (15 epochs on GCT), and Aldomi SelectKBest+GRU+RF/KNN.
+    \item Score Acc/Prec/Rec/Macro-F1/ROC-AUC/latency plus Fail-* binary diagnostics.
   \end{itemize}
-  \item Aggregate results across seeds, computing mean and standard deviation per model.
-  \item Write \texttt{results/results\_per\_seed.csv} (one row per model per seed) and \texttt{results/results\_summary.csv} (mean $\pm$ std per model).
-  \item Export the trained \texttt{MHSAFused} model from the final seed to \texttt{src/lambda\_handler/model/mhsa\_fused.pt} for deployment (Section~\ref{subsec:deployment}).
+  \item Write \texttt{results/gct/} (or \texttt{--out-dir}) CSVs, confusion matrices, and provenance; synthetic default still writes under \texttt{results/} and is not GCT evidence.
 \end{enumerate}
-
-The script completes in approximately 15--20 minutes on a laptop CPU (Intel i7, 16GB RAM), or 5--8 minutes on a GPU (NVIDIA RTX 3060).
 
 \textbf{Deployment Inference Handler:} \texttt{src/lambda\_handler/app.py} implements an AWS Lambda handler that loads the exported \texttt{MHSAFused} model and runs real (not mock) inference over telemetry records arriving on a Kinesis stream. The handler:
 \begin{enumerate}
@@ -91,19 +85,19 @@ Continuous integration and deployment are automated via \texttt{.github/workflow
   \end{itemize}
 \end{enumerate}
 
-The workflow is written to re-run evaluation and optionally invoke \texttt{sam deploy}, but \textbf{no staging or production AWS deploy was executed} for the results in Section~\ref{sec:Evaluation}. Reported metrics come exclusively from the local five-seed campaign.
+The workflow is written to re-run evaluation and optionally invoke \texttt{sam deploy}, but \textbf{no staging or production AWS deploy was executed} for the results in Section~\ref{sec:Evaluation}. Reported formal metrics come from the local five-seed GCT campaign (\texttt{results/gct/}).
 
 \subsection{Reproducibility}
 \label{subsec:reproducibility}
 
-Every result reported in Section~\ref{sec:Evaluation} is reproducible by running \texttt{python scripts/train\_and\_evaluate.py} (default \texttt{--dataset synthetic}) from \texttt{mhsa-tdl-framework/}. Formal CA2 reproduction requires \texttt{--dataset gct} after placing files listed in \texttt{DATA\_GAPS.md}; that path fails closed when traces are absent and does not invent windows.
+Every result reported in Section~\ref{sec:Evaluation} is reproducible by running \texttt{python scripts/train\_and\_evaluate.py --dataset gct} from \texttt{mhsa-tdl-framework/} with the landed 2011 parts (seeds 42--46; 15 epochs). The path fails closed when traces are absent and does not invent windows. The default \texttt{--dataset synthetic} harness remains for development only.
 
-Reproducibility for the synthetic harness:
+Reproducibility:
 \begin{itemize}
-  \item \textbf{Data generation}: NumPy RNG seeded per run (42--46).
+  \item \textbf{GCT windows}: loader seed 42 for window construction; train/test split seed per run (42--46).
   \item \textbf{Model initialization and training}: PyTorch RNG seeded before model instantiation.
   \item \textbf{Environment}: \texttt{requirements.txt} lists runtime dependencies.
 \end{itemize}
 
-Reported metrics come exclusively from the local five-seed synthetic campaign. Optional SAM/Lambda paths were not executed and are not required by formal CA2.
+Reported formal metrics come from the local five-seed GCT campaign. Optional SAM/Lambda paths were not executed and are not required by formal CA2.
 

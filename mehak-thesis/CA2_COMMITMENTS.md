@@ -24,7 +24,7 @@ Aldomi et al. (2026) and related hybrid/attention failure-prediction literature 
 | Dataset | Google Cluster Trace |
 
 ## Floor status (2026-09-21)
-**Research-scope CA2 = 100%.** Evidence on disclosed 2011 GCT subset + classical/Aldomi monitors + full metric suite. See `DESIGN_RATIONALE_BEYOND_CA2.md`. Full dump / 2019 / true net-bytes are optional beyond-CA2, not open objectives.
+**Research-scope CA2 = 100%.** Evidence on disclosed 2011 GCT subset + classical/Aldomi monitors + full metric suite. See `DESIGN_RATIONALE_BEYOND_CA2.md`. Full dump / 2019 / true net-bytes are optional beyond-CA2, not open objectives. **INITIAL_EVAL_PASS=yes** (`mhsa-tdl-framework/results/gct/initial_eval_1/`).
 
 ## Non-goals / honesty
 - Live Kinesis/Lambda inference campaign is **not** the CA2 experiment.

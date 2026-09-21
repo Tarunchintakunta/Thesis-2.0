@@ -15,7 +15,7 @@
 | 6 | Vikas | **~74** | partial | **YES** | sole: live full campaign (deliveries.jsonl 0 B) |
 | 7 | Nemi | **100** | partial | no | optional beyond-CA2 |
 | 8 | Venkat | **63** | partial | **YES** | multi-instance matmul |
-| 9 | Mehak | **100** | partial | no | soft: optional 2019/dump |
+| 9 | Mehak | **100** | partial | no | INITIAL_EVAL_PASS=yes; next=3 local full GCT runs (not AWS) |
 | 10 | Pooja | **67** | partial | **YES** | live K8s + AWS; full dumps soft |
 | 11 | Uday | **~42** | no | **YES** | live IoT Core (scaffold done) |
 | 12 | Vishvaksen | **~82** | partial | **YES** | independent human checklist + 2nd rater |

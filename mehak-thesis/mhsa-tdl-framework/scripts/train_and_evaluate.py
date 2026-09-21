@@ -221,9 +221,15 @@ def main():
     parser.add_argument("--epochs", type=int, default=None)
     parser.add_argument("--max-windows", type=int, default=12000)
     parser.add_argument("--skip-aldomi", action="store_true")
+    parser.add_argument(
+        "--out-dir",
+        default=None,
+        help="Optional results directory (default: results/gct for gct, results/ for synthetic)",
+    )
     args = parser.parse_args()
 
-    epochs = args.epochs if args.epochs is not None else (20 if args.dataset == "gct" else EPOCHS)
+    # GCT policy (STATUS): 15 epochs; synthetic harness keeps EPOCHS=30.
+    epochs = args.epochs if args.epochs is not None else (15 if args.dataset == "gct" else EPOCHS)
 
     gct_bundle = None
     if args.dataset == "gct":
@@ -359,7 +365,13 @@ def main():
     with pd.option_context("display.max_columns", None, "display.width", 220):
         print(summary)
 
-    if args.dataset == "gct":
+    if args.out_dir:
+        results_dir = (
+            args.out_dir
+            if os.path.isabs(args.out_dir)
+            else os.path.join(parent_dir, args.out_dir)
+        )
+    elif args.dataset == "gct":
         results_dir = os.path.join(parent_dir, "results", "gct")
     else:
         results_dir = os.path.join(parent_dir, "results")

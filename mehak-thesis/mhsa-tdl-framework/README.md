@@ -29,8 +29,10 @@ Synthetic 5-seed CSVs under `results/` are **artefact-as-built**, not formal GCT
 ```bash
 python -m venv .venv && .venv/bin/pip install -r requirements.txt
 .venv/bin/python scripts/train_and_evaluate.py              # synthetic harness
-.venv/bin/python scripts/train_and_evaluate.py --dataset gct # requires DATA_GAPS files
+.venv/bin/python scripts/train_and_evaluate.py --dataset gct # formal CA2 (requires DATA_GAPS files)
+# Optional: --epochs 15 --out-dir results/gct/initial_eval_1
 ```
 
+Seeds policy (STATUS): **42–46**; GCT default epochs **15**.
 ## AWS
 Formal resources list Colab **or** EC2 GPU as training compute alternatives. **Do not deploy** Lambda/SAM for alignment.

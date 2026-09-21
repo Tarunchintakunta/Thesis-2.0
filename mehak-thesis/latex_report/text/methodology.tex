@@ -6,12 +6,17 @@
 \label{sec:Methodology}
 %% ==============================
 
-Formal CA2 requires a Google Cluster Trace pipeline with Acc/Prec/Rec/F1/ROC-AUC/latency against hybrid and traditional monitors. That GCT pipeline is \textbf{not} available in this repository yet (\texttt{DATA\_GAPS.md}; loader gate in \texttt{src/data/gct\_loader.py}). The methodology below therefore documents the \textbf{artefact-as-built} synthetic experiment used for development and metric-suite wiring only. Section~\ref{subsec:synth} specifies the synthetic generator; Section~\ref{subsec:window} the forecasting window; Section~\ref{subsec:transient} transient bursts; Section~\ref{subsec:training} training; Section~\ref{subsec:metrics} metrics (formal suite + legacy transient diagnostics).
+Formal CA2 requires a Google Cluster Trace pipeline with Acc/Prec/Rec/F1/ROC-AUC/latency against hybrid and traditional monitors. That pipeline is delivered via \texttt{src/data/gct\_loader.py} on a disclosed 2011 subset (fail-closed if parts are missing; see \texttt{DATA\_GAPS.md} and \texttt{DESIGN\_RATIONALE\_BEYOND\_CA2.md}). Section~\ref{subsec:gct} summarises the GCT windowing used for formal scores; Section~\ref{subsec:synth} documents the synthetic generator retained only for development. Sections~\ref{subsec:window}--\ref{subsec:training} describe the shared history/future forecasting design (originally exercised on synthetic data; GCT uses the same 10+5 window lengths). Section~\ref{subsec:metrics} lists the formal metric suite.
 
-\subsection{Synthetic Telemetry Generator (artefact-only; GCT gap)}
+\subsection{Google Cluster Trace (formal CA2)}
+\label{subsec:gct}
+
+Official ClusterData 2011 parts under \texttt{data/gct/2011/} (4 event + 2 usage parts in the scored subset) are joined on $(\mathrm{job\_id},\mathrm{task\_index})$. Windows use a 10-step history and 5-step horizon; FAIL/EVICT/KILL/LOST in the future window force unhealthy labels. Fail-series-first sampling yields 981 FAIL-forced windows of $N{=}12000$. The MHSA fourth channel is \textbf{sampled CPU}: ClusterData 2011 has no network-byte field (\texttt{CHANNEL\_HONESTY.md}; not invented). Expanded Aldomi features add usage columns plus history-only SCHEDULE/UPDATE counts. Full remaining 2011 parts and 2019 Borg cells are scoped-out optionals, not floor blockers.
+
+\subsection{Synthetic Telemetry Generator (artefact-only harness)}
 \label{subsec:synth}
 
-Formal CA2 names the Google Cluster Trace~\cite{Tirmazi20,Liu12} as the evaluation dataset. Those files are \textbf{absent} from this artefact, so no GCT-derived labels or windows are used. A synthetic telemetry generator (\texttt{src/data/telemetry\_simulator.py}) remains for local, reproducible development. It is \textbf{not} a formal substitute: synthetic-only evaluation is an open alignment blocker. The generator produces controlled multivariate series with known cross-metric burst precursors so the MHSA code path and metric harness can be exercised before GCT lands.
+A synthetic telemetry generator (\texttt{src/data/telemetry\_simulator.py}) remains for local, reproducible development of the MHSA code path. It is \textbf{not} formal CA2 evidence: binding scores use \texttt{--dataset gct}. The generator produces controlled multivariate series with known cross-metric burst precursors so architecture and metric wiring can be exercised offline.
 
 The generator produces sequences of 15 timesteps for four metrics: CPU utilization, memory utilization, disk I/O throughput, and network throughput. Each metric is represented as a normalized value in the range [0, 1]. The 15-step sequence is partitioned into a 10-step \emph{history window} (timesteps 0--9, the only input the models see) and a 5-step \emph{future window} (timesteps 10--14, used only to compute ground-truth labels, never shown to the models). This design makes the task a genuine forecasting problem: the model must predict future violations (timesteps 10--14) based solely on observed history (timesteps 0--9).
 
@@ -58,7 +63,7 @@ Figure~\ref{fig:transient_example} illustrates a transient sample where a networ
 \subsection{Training Procedure}
 \label{subsec:training}
 
-Both attention models (MHSA-PerHead and MHSA-Fused) are trained with the Adam optimizer (learning rate 0.001, default $\beta_1 = 0.9$, $\beta_2 = 0.999$) for 30 epochs on 20,000 samples per seed. The dataset is split 80/20 into train and test sets, stratified on the transient flag to ensure both sets contain the same 40\% transient ratio.
+Both attention models (MHSA-PerHead and MHSA-Fused) are trained with the Adam optimizer (learning rate 0.001, default $\beta_1 = 0.9$, $\beta_2 = 0.999$). On formal GCT runs: 15 epochs, $N{=}12000$ windows, seeds 42--46. The synthetic harness (development only) uses 30 epochs on 20,000 samples per seed. Splits are 80/20 train/test.
 
 The loss function is a summed per-metric cross-entropy loss with inverse-frequency class weights. Let $y_i^{(m)} \in \{0, 1, 2\}$ be the true label for metric $m$ on sample $i$, and let $\hat{p}_i^{(m)}$ be the predicted probability distribution over classes. The loss for metric $m$ is:
 \begin{equation}
