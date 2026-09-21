@@ -12,7 +12,7 @@
 | 3 | Yashaswini | **100** | yes | no | soft only |
 | 4 | Rasool | **100** | partial | no | optional W1/W2 |
 | 5 | Varun | **100** | yes | no | soft only; handoff deferred |
-| 6 | Vikas | **100** | partial | no | conclusion still “pending” |
+| 6 | Vikas | **~74** | partial | **YES** | sole: live full campaign (deliveries.jsonl 0 B) |
 | 7 | Nemi | **100** | partial | no | optional beyond-CA2 |
 | 8 | Venkat | **63** | partial | **YES** | multi-instance matmul |
 | 9 | Mehak | **100** | partial | no | soft: optional 2019/dump |
@@ -20,11 +20,13 @@
 | 11 | Uday | **~42** | no | **YES** | live IoT Core (scaffold done) |
 | 12 | Vishvaksen | **~82** | partial | **YES** | independent human checklist + 2nd rater |
 
-**Fix order:** Vishvaksen → Pooja → Venkat; Mehak + Nemi CA2 floor closed (soft/beyond-CA2 optionals only).
+**Fix order:** Vikas (empty campaign) → Vishvaksen → Pooja → Venkat; Mehak + Nemi CA2 floor closed (soft/beyond-CA2 optionals only).
 Pooja non-AWS raise 2026-09-21: GCT 2011 part + Alibaba RANGE → **~67%** (AWS/live K8s still block 100%).
+Vikas rescore 2026-09-21: scoreboard **100→~74** — working-tree `campaign/deliveries.jsonl` is **0 bytes**; pilot≠campaign; residual `vikas_alignment.md` / `vikas_AWS_RESIDUAL.md`.
 
 ## Assess follow-up
 
 - [Assess CA2 alignment cohort A](bc-6dee112d-0199-5306-a490-49f520cd3aaa)
 - [Assess CA2 alignment cohort B](bc-c8002071-fd7c-55bf-acae-d413dceec23e)
 - [Scaffold Uday MQTT QoS CA2 artefact](bc-cff00b22-64f1-597a-886a-ed9c64d38f63) → ~42%, READY_FOR_AWS=NO
+- [Correct Vikas scoreboard honesty](bc-f205d25b-c03e-5db7-8f8c-d4c0d1b3fb4d) → ~74%, campaign empty

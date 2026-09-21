@@ -31,8 +31,8 @@
 - Live: `results/live/ec2_round1_summary.json` — 1× t3.small vs 2× t3.micro; scale-up ~0.0067s; on-node ~0.52s; multi-instance matmul **timed_out**
 - Note: Terraform defaults already t3.small / t3.micro / count=2; fleet destroyed after round-1
 
-## LIVE (READY subset) — 2026-09-20
-- Vikas: full campaign daemon in progress
+## LIVE (READY subset) — 2026-09-20 / corrected 2026-09-21
+- Vikas: campaign **not** finished — working-tree `campaign/deliveries.jsonl` is **0 bytes** (r2/r3 = `run.log` start only). Alignment **~74%**; sole residual = full campaign. See `vikas_AWS_RESIDUAL.md`.
 - Chaitanya: python Init Duration live cells collected (`data/processed/live/`)
 - Runbook research: [Chaitanya live Init path](bc-6db36ab1-f0a4-55ec-8e5c-1889de8454b8) (superseded by applied TF + live round)
 

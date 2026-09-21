@@ -2,7 +2,8 @@
 
 **Student:** Vikas Reddy Amanagantti (X25178849)  
 **Project:** An Empirical Evaluation of Application-Level Idempotency Strategies for Retry Correctness on AWS Lambda and Amazon DynamoDB  
-**Last updated:** 2026-09-20
+**Last updated:** 2026-09-21  
+**CA2 alignment (formal):** **~74/100** — evaluation scope unmet while live full campaign is empty (`_analysis_extract/reports/vikas_alignment.md`)
 
 ---
 

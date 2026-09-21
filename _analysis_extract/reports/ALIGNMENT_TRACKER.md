@@ -16,7 +16,7 @@
 | Venkat | 63% | **DOI + READY_FOR_AWS=yes** | Soft: scheduler CLI **wired** (`--scheduler-address`) | **Yes — sole hard (EC2)** |
 | Rasool | 62% | **~74% moto+DOI+K4** | Fill cells still open | Yes (live DDB) — not sole |
 | Chaitanya | 67% | **Proxy-only eval; ROI not measured** | Soft: DOI notes | **Yes — sole hard (Lambda Init)** — **live python Init round RUNNING** |
-| Vikas | 68% | **Pilot≠campaign; P4 quarantined** | Soft: DOI notes | **Yes — sole hard (full campaign)** — **live campaign RUNNING** |
+| Vikas | 68% | **~74% Pilot≠campaign; P4 quarantined; campaign deliveries 0 B** | Soft: DOI notes | **Yes — sole hard (full campaign)** — **NOT running** (r2/r3 = run.log only) |
 | Mehak | 80% | **100% CA2 floor (2011 GCT + scoped residuals)** | Soft only: optional dump/2019/net-bytes | **No** |
 | Pooja | 77% | **~48% vs formal `Pooja_25120921_CA2.docx`** | Traces+LSTM+K8s metrics; AWS EC2/S3/CW (NimbusGuard proxy superseded); Gantt missing | **Yes** (not sole) |
 | Uday | 83% | **~18% vs formal MQTT/IoT Core proposal** | Artefact≠CA2 (federated RF); need MQTT disconnect campaign | **Yes** (not sole) |
@@ -39,3 +39,4 @@
 14. **2026-09-20 — Varun live lite fold-in:** measured S3/CE/CW/Wilcoxon ($n{=}24$) into STATUS + LaTeX; residual/cohort **~90%**; SOLE_AWS_RESIDUAL still **yes** (full FinOps campaign); stack destroyed.
 15. **2026-09-21 — Nemi live cloud FL lite closed:** `cloud_lite_summary.json` verified (baseline 0.5000 / improved 0.5480; destroy complete, 9 resources); scoreboard/cohort/tracker → **100% COMPLETE**; `SOLE_AWS_RESIDUAL=closed`; block-full-eval=no. No new AWS runs.
 16. **2026-09-21 — Vishvaksen checklist protocol + Verdet Holm/McNemar prose:** human-executable sheet + NON-INDEPENDENT scripted samples; `holm_bonferroni.csv` + `docs/VERDET_COMPARISON.md` / `latex/verdet_comparison.tex`; alignment **~82%** (not 100% — independent humans still missing). No AWS apply.
+17. **2026-09-21 — Vikas CA2 honesty rescore:** working-tree verify — pilot `deliveries.jsonl` 300 lines; campaign `deliveries.jsonl` **0 bytes**; r2/r3 start logs only. Scoreboard **100→~74**; `vikas_alignment.md` + `vikas_AWS_RESIDUAL.md`; block-full-eval=yes. **No campaign invented; no AWS apply.**

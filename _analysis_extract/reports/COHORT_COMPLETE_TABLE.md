@@ -11,7 +11,7 @@
 | Exploration (8) | **COMPLETE** |
 | Terraform (8, no personal IDs) | **READY** |
 | Alignment-first | Open |
-| Live AWS | **IN PROGRESS** — Vikas r5; Yash Leg3 lite **CLOSED**+destroyed; concurrency=10 |
+| Live AWS | Yash Leg3 lite **CLOSED**+destroyed; Vikas campaign **empty** (not running); concurrency=10 |
 
 ## AWS-goal (8)
 
@@ -22,7 +22,7 @@
 | Rasool | soft (W1/W2) | Live 12/12 destroyed; exploratory n=1 stats | **~94%** | **NOT COMPLETE** |
 | Varun | **yes** (fuller FinOps) | Lite done destroyed; metadata module | **~93%** | **NOT COMPLETE** |
 | Nemi | **no** (closed) | Lite EC2+S3+CW destroyed | **100%** | **CA2 floor COMPLETE** |
-| Vikas | **yes** (campaign) | r5 RUNNING (~0.5k+/24k) | **~74%** | **NOT COMPLETE** |
+| Vikas | **yes** (campaign) | **empty** (`deliveries.jsonl` 0 B; pilot done) | **~74%** | **NOT COMPLETE** |
 | Yashaswini | **no** (Leg3 closed) | Lite 3/3 destroyed; learned-LB subset | **~97%** | **NOT COMPLETE** |
 | Venkat | **yes** (matmul) | Round-1; matmul timeout | <100% | **NOT COMPLETE** |
 

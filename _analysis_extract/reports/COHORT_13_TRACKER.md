@@ -16,7 +16,7 @@
 | 3 | Yashaswini | **~88%** | proposal.docx | Yes |
 | 4 | Rasool | **~74%** | proposal.docx | Yes |
 | 5 | Chaitanya | 67% | proposal.docx | Yes |
-| 6 | Vikas | 68% | proposal.docx | Yes |
+| 6 | Vikas | **~74%** (campaign empty; was falsely 100 on scoreboard) | proposal.docx | Yes |
 | 7 | Venkat | 63% | venkat_ca2.txt | Yes |
 | 8 | Nemi | **~64%** | CA2.txt | Yes |
 | 9 | Mehak | **~88%** | **NOT FOUND** → `CA2_COMMITMENTS.md` | Yes |
