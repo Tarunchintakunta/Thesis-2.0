@@ -1,0 +1,12 @@
+/usr/bin/python3.11
+{
+  "role": "scale-up",
+  "mode": "numpy_matmul",
+  "size": 150,
+  "workers": 2,
+  "elapsed_s": 0.0006175469999902816,
+  "checksum": 37.24892781731416,
+  "hostname": "ip-172-31-3-104.eu-west-1.compute.internal"
+}
+
+

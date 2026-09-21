@@ -8,12 +8,12 @@
 **SOLE_AWS_RESIDUAL:** **closed** (multi-instance `da.matmul` ok in round-2; fleets destroyed)
 
 **CA2 / proposal status:** PRESENT — `_handoff/venkat_ca2.txt`.  
-Scored **vs CA2 commitments**. Binding live numbers are only those in `results/live/ec2_round2_summary.json`.
+Scored **vs CA2 commitments**. Binding floor live numbers: `results/live/ec2_round2_summary.json`. Confirmatory gate: `results/live/initial_eval_1/summary.json` (still 100%; `INITIAL_EVAL_PASS=yes`; final-3 not started).
 
 Sources used (verified in-tree):
 - CA2 text: `_handoff/venkat_ca2.txt`
 - STATUS: `venkat-bora-thesis/STATUS.md` (updated 2026-09-21)
-- Live: `results/live/ec2_round1_summary.json`, `ec2_round2_summary.json`
+- Live: `results/live/ec2_round1_summary.json`, `ec2_round2_summary.json`, `initial_eval_1/summary.json`
 - Local: `results/data/summary_statistics.json`
 - Residual note: `_analysis_extract/reports/venkat_AWS_RESIDUAL.md`
 
@@ -71,6 +71,10 @@ Live evidence: 1× `t3.small` vs 2× `t3.micro` (aggregate 2 vCPU) in `eu-west-1
 | Multi-instance `da.matmul` n=250 | **ok — 0.2546 s** |
 
 ---
+
+### initial_eval_1 gate (2026-09-21)
+
+ONE confirmatory matched Free-Tier run after CA2 100%. Topology identical; n=250; multi-instance `da.matmul` **ok** 0.2737 s; destroy confirmed. CA2 re-check **still 100%** → `INITIAL_EVAL_PASS=yes`. Final-3 **not** started.
 
 **Final verdict:** CA2 matched-vCPU EC2 method **satisfied**. Research Alignment **100%**. Soft packaging/inferential/multi-order items remain optional beyond floor.
 

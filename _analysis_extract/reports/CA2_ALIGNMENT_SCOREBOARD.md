@@ -14,7 +14,7 @@
 | 5 | Varun | **100** | yes | no | soft only; handoff deferred |
 | 6 | Vikas | **100** | partial | no | campaign done (N=1000×3×3); soft LaTeX fold optional |
 | 7 | Nemi | **100** | partial | no | optional beyond-CA2 |
-| 8 | Venkat | **100** | partial | no | soft only (Holm/DOI); matmul closed |
+| 8 | Venkat | **100** | partial | no | initial_eval_1 done; CA2 still 100 → INITIAL_EVAL_PASS=yes; final-3 not started |
 | 9 | Mehak | **100** | partial | no | INITIAL_EVAL_PASS=yes; next=3 local full GCT runs (not AWS) |
 | 10 | Pooja | **100** | partial | soft only | floor COMPLETE; optional dumps / larger live beyond floor |
 | 11 | Uday | **100** | partial | no | floor COMPLETE; optional formal volume beyond Free Tier |
@@ -22,6 +22,7 @@
 
 **Fix order:** All 12 CA2 floors closed (Kasi excluded); Pooja + Venkat + Mehak + Nemi + Vikas CA2 floor closed.
 Venkat raise 2026-09-21: round-2 multi-instance `da.matmul` n=250 **ok** (0.2546 s per `ec2_round2_summary.json`); destroy verified → **100%**.
+Venkat initial_eval_1 2026-09-21: matched Free-Tier 1×t3.small vs 2×t3.micro, n=250 matmul **ok** 0.2737 s; destroy confirmed; CA2 re-check still **100%** → `INITIAL_EVAL_PASS=yes`; final-3 **not** started.
 Pooja live AWS k3s 2026-09-21: 1× t3.micro + S3 + CW, live HPA vs PAKS scale, destroy confirmed → was **~92%**.
 Pooja floor close 2026-09-21: full GCT/Alibaba dumps reframed **scoped-out optional** (`DESIGN_RATIONALE_BEYOND_CA2.md`) → **100%** (samples + live method evidence; not perfect marks).
 Pooja non-AWS raise 2026-09-21: GCT 2011 part + Alibaba RANGE → was **~67%**.

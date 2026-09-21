@@ -1,6 +1,28 @@
-## Alignment note (2026-09-21)
+## Alignment note (2026-09-21 — initial_eval_1 gate)
 
-CA2 matched-vCPU **AWS EC2** round-2 completed multi-instance `da.matmul`: `distributed-matrix-scaling/results/live/ec2_round2_summary.json`. Topology (same as round-1): **1× t3.small** vs **2× t3.micro** (matched aggregate 2 vCPU), `eu-west-1`, fleet **destroyed** after. At **n=250**: scale-up numpy ≈ **0.00156 s**; on-node Dask LocalCluster mean ≈ **0.550 s**; multi-instance (2 workers) `da.matmul` ≈ **0.255 s** (`status=ok`). Round-1 residual (`da.matmul` timed_out at n=500) **closed**. Local campaign remains in `results/data/`. Soft residuals (beyond CA2 floor): multi-order live crossover sweep, live RSS/CPU, inferential stats, DOI `note={doi:}` hygiene. Alignment **100%** CA2 floor (was 63%; hard multi-instance matmul residual closed).
+**CA2 research alignment = 100% (floor).** Re-checked after **ONE** live initial evaluation (`results/live/initial_eval_1/`); still **100** → `INITIAL_EVAL_PASS=yes`. Final-3 **not** started.
+
+Matched Free-Tier topology: **1× t3.small** vs **2× t3.micro** (aggregate 2 vCPU), `eu-west-1`, `n=250`. Fleet **destroyed** after (`destroy_confirmed=yes`; 0 running project instances).
+
+| Arm | Mode | Result |
+|-----|------|--------|
+| 1× t3.small | numpy matmul n=250 | **0.001745 s** |
+| 2× t3.micro (per node) | Dask LocalCluster n=250 | mean **0.5679 s** |
+| Multi-instance | futures smoke | OK (2 workers; private-IP addrs) |
+| Multi-instance | da.matmul n=250 | **ok — 0.2737 s** |
+
+Evidence: `distributed-matrix-scaling/results/live/initial_eval_1/summary.json` (+ outs, `run.log`, `destroy_confirmed.txt`). Runner: `scripts/run_ec2_initial_eval_1.sh`. Prior round-1/2 artefacts retained. Soft residuals unchanged (Holm/DOI/multi-order sweep).
+
+```
+COMPLETE=yes ALIGNMENT=100 CA2_FLOOR=met
+INITIAL_EVAL_PASS=yes
+FINAL3=not_started
+SOLE_AWS_RESIDUAL=closed
+AWS_CLASS=required
+GATE_READY=yes
+LIVE_INITIAL_EVAL_1=yes
+DESTROY_CONFIRMED=yes
+```
 
 ---
 # Project Status: Venkat Bora - Matrix Scaling Workloads
@@ -17,6 +39,7 @@ CA2 matched-vCPU **AWS EC2** round-2 completed multi-instance `da.matmul`: `dist
 - **Artifacts:**
   - Round-1: `distributed-matrix-scaling/results/live/ec2_round1_summary.json` (multi-instance matmul **timed_out** at n=500)
   - Round-2: `distributed-matrix-scaling/results/live/ec2_round2_summary.json` (multi-instance matmul **ok** at n=250)
+  - **initial_eval_1 gate:** `distributed-matrix-scaling/results/live/initial_eval_1/summary.json` (matmul **ok** 0.2737 s; destroyed)
 - **Round-2 outcomes (evidence only):**
   - Scale-up numpy matmul n=250: **0.001562 s**
   - Scale-out on-node Dask LocalCluster (per micro, n=250, 1 worker): **0.5342 s** / **0.5653 s** (mean **0.5497 s**)

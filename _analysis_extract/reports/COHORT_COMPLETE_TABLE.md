@@ -24,7 +24,7 @@
 | Nemi | **no** (closed) | Lite EC2+S3+CW destroyed | **100%** | **CA2 floor COMPLETE** |
 | Vikas | **yes** (campaign) | **empty** (`deliveries.jsonl` 0 B; pilot done) | **~74%** | **NOT COMPLETE** |
 | Yashaswini | **no** (Leg3 closed) | Lite 3/3 destroyed; learned-LB subset | **~97%** | **NOT COMPLETE** |
-| Venkat | **no** (closed) | Round-1+2 destroyed; matmul ok n=250 | **100%** | **CA2 floor COMPLETE** |
+| Venkat | **no** (closed) | Round-1+2 + initial_eval_1 destroyed; matmul ok n=250 | **100%** | **CA2 floor COMPLETE**; INITIAL_EVAL_PASS=yes |
 
 ## Formal-CA2 (4)
 

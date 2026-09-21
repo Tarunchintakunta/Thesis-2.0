@@ -35,3 +35,7 @@
 
 ## Discipline
 Prefer least-privilege IAM; Free-Tier–safe types; destroy after rounds; no hallucinated timings.
+
+## initial_eval_1 gate (2026-09-21)
+
+Confirmatory matched Free-Tier cell under `results/live/initial_eval_1/summary.json` (n=250 matmul ok 0.2737 s). Destroy confirmed. Does not reopen SOLE_AWS_RESIDUAL. `INITIAL_EVAL_PASS=yes`; final-3 not started.

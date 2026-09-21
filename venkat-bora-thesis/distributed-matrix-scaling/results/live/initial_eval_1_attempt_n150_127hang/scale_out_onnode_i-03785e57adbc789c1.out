@@ -1,0 +1,12 @@
+/usr/bin/python3.11
+{
+  "role": "scale-out",
+  "mode": "dask_localcluster_on_node",
+  "size": 150,
+  "workers": 1,
+  "elapsed_s": 0.5570684850000021,
+  "checksum": 42.08392488955881,
+  "hostname": "ip-172-31-13-98.eu-west-1.compute.internal"
+}
+
+

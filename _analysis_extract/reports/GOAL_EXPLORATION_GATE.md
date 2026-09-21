@@ -28,7 +28,7 @@
 - SOLE_AWS_RESIDUAL=**closed** (round-2 multi-instance `da.matmul` ok)
 - Alignment: **100%** CA2 floor
 - Residual: `_analysis_extract/reports/venkat_AWS_RESIDUAL.md` (`SOLE_AWS_RESIDUAL=closed`)
-- Live: round-1 timed_out at n=500; round-2 `ec2_round2_summary.json` matmul **0.2546 s** at n=250; fleets destroyed
+- Live: round-1 timed_out at n=500; round-2 matmul **0.2546 s**; initial_eval_1 matmul **0.2737 s** at n=250; fleets destroyed; INITIAL_EVAL_PASS=yes
 
 ## LIVE (READY subset) — 2026-09-20 / corrected 2026-09-21
 - Vikas: campaign **not** finished — working-tree `campaign/deliveries.jsonl` is **0 bytes** (r2/r3 = `run.log` start only). Alignment **~74%**; sole residual = full campaign. See `vikas_AWS_RESIDUAL.md`.
