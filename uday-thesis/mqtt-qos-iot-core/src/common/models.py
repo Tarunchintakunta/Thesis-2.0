@@ -1,12 +1,13 @@
 """Shared experiment types. Formal factorial is the source of truth."""
+
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass, field
 from typing import Any, Iterable
 
-QOS_LEVELS = (0, 1)
-DISCONNECT_S = (0, 15, 60, 300)
-RATE_MODES = ("steady", "bursty")
+QOS_LEVELS: tuple[int, ...] = (0, 1)
+DISCONNECT_S: tuple[int, ...] = (0, 15, 60, 300)
+RATE_MODES: tuple[str, ...] = ("steady", "bursty")
 
 
 @dataclass(frozen=True)
@@ -21,7 +22,7 @@ class FormalScale:
 FORMAL = FormalScale()
 
 
-@dataclass(frozen=True)
+@dataclass
 class ExperimentSpec:
     qos: int
     disconnect_s: int
@@ -61,11 +62,10 @@ class ExperimentSpec:
 
 
 def factorial(
-    *,
     qos: Iterable[int] = QOS_LEVELS,
     disconnect_s: Iterable[int] = DISCONNECT_S,
     rate: Iterable[str] = RATE_MODES,
-    replications: int = 1,
+    replications: int = FORMAL.replications,
     n_devices: int = FORMAL.devices,
     n_messages: int = FORMAL.messages,
     interval_s: float = FORMAL.interval_s,
@@ -73,22 +73,25 @@ def factorial(
     seed: int = 42,
     backend: str = "mock",
 ) -> list[ExperimentSpec]:
+    """Expand QoS × disconnect × rate × replication with deterministic seeds."""
     specs: list[ExperimentSpec] = []
-    for qos_i in qos:
-        for disc in disconnect_s:
-            for rate_i in rate:
-                for rep in range(1, replications + 1):
+    for q in qos:
+        for d in disconnect_s:
+            for r in rate:
+                for rep in range(1, int(replications) + 1):
+                    burst_offset = 7 if str(r) == "bursty" else 0
+                    cell_seed = int(seed) + int(q) * 17 + int(d) + burst_offset + (rep - 1) * 1000
                     specs.append(
                         ExperimentSpec(
-                            qos=int(qos_i),
-                            disconnect_s=int(disc),
-                            rate_mode=str(rate_i),
-                            n_devices=n_devices,
-                            n_messages=n_messages,
+                            qos=int(q),
+                            disconnect_s=int(d),
+                            rate_mode=str(r),
+                            n_devices=int(n_devices),
+                            n_messages=int(n_messages),
                             replication=rep,
-                            interval_s=interval_s,
-                            payload_bytes=payload_bytes,
-                            seed=seed + 1000 * (rep - 1) + 17 * int(qos_i) + int(disc) + (0 if rate_i == "steady" else 7),
+                            interval_s=float(interval_s),
+                            payload_bytes=int(payload_bytes),
+                            seed=cell_seed,
                             backend=backend,
                         )
                     )

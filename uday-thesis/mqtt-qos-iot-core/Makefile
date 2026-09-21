@@ -1,24 +1,16 @@
-.PHONY: test dry-run analyse terraform-validate cost guard live
+.PHONY: test dry-run analyse plan-ft live
 
 test:
-	python3 -m pytest tests -q
+	cd $(CURDIR) && PYTHONPATH=src pytest -q
 
 dry-run:
-	python3 scripts/dry_run.py --out results/mock --scale dry_run
+	PYTHONPATH=src python scripts/run_dry_run.py --plots
 
 analyse:
-	python3 scripts/analyse.py --in results/mock --out results/mock/summary
+	PYTHONPATH=src python scripts/analyse.py --plots
 
-terraform-validate:
-	cd terraform && terraform init -backend=false -input=false && terraform validate
-
-cost:
-	python3 scripts/estimate_cost.py --mode dry_run
-	python3 scripts/estimate_cost.py --mode formal
-
-guard:
-	python3 scripts/assert_free_tier_guard.py --mode dry_run
-	python3 scripts/assert_free_tier_guard.py --mode live_lite
+plan-ft:
+	PYTHONPATH=src python scripts/plan_free_tier.py
 
 live:
-	python3 scripts/run_live.py
+	PYTHONPATH=src python scripts/run_live.py

@@ -1,4 +1,5 @@
 """One factorial cell: N simulated devices, device-side log, mock match backend."""
+
 from __future__ import annotations
 
 import uuid
@@ -13,7 +14,6 @@ from simulator.disconnect import DisconnectWindow
 from simulator.mock_broker import MockBroker, MockParams
 from simulator.mock_dynamodb import MockDynamoDB
 from simulator.schedule import publish_times
-
 
 MEASUREMENT_KIND = "mock broker + in-memory DynamoDB — not an AWS measurement"
 
@@ -46,8 +46,8 @@ def _run_device(
     times = publish_times(spec.n_messages, spec.interval_s, spec.rate_mode)
     window = DisconnectWindow.from_schedule(times, spec.disconnect_s)
     broker = MockBroker(table, rng, params)
+    recon = ReconnectStats()
     log: list[DeviceLogRow] = []
-    recon = ReconnectStats(disconnect_events=1 if window.active() else 0)
     flushed = False
 
     def maybe_flush(t_s: float) -> None:
@@ -63,6 +63,7 @@ def _run_device(
         flushed = True
 
     for seq, t_s in enumerate(times):
+        maybe_flush(t_s)
         ts_ms = int(t_s * 1000)
         row = DeviceLogRow(
             msg_id=f"{run_id}:{device_id}:{seq:04d}",
@@ -78,28 +79,41 @@ def _run_device(
             ts_intended_publish_ms=ts_ms,
             payload_bytes=spec.payload_bytes,
         )
-        # Ground truth is written *before* publish.
         log.append(row)
         env = _envelope(row)
+
         if window.disconnected_at(t_s):
             broker.publish_disconnected(env)
             continue
-        maybe_flush(t_s)
-        next_t = times[seq + 1] if seq + 1 < len(times) else None
-        cut_next = next_t is not None and window.disconnected_at(next_t)
-        inflight = window.in_inflight_cut(t_s, params.inflight_window_s) or cut_next
+
+        inflight = window.in_inflight_cut(t_s, params.inflight_window_s)
         broker.publish_connected(env, ts_ms, maybe_inflight_cut=inflight)
 
-    maybe_flush(window.end_s if window.active() else (times[-1] if times else 0.0))
-    # QoS 1 retries queued from connected-path loss must still flush at end-of-run.
-    if broker.outbox_depth():
-        end_ms = int((times[-1] if times else 0.0) * 1000) + int(window.end_s * 1000)
-        queued, survived, delay = broker.flush_on_reconnect(end_ms)
-        if window.active() and not flushed:
+    # End-of-run flush if disconnect ended after last message time.
+    if window.active() and not flushed:
+        end_t = max(times[-1] if times else 0.0, window.end_s)
+        maybe_flush(end_t)
+        if not flushed:
+            queued, survived, delay = broker.flush_on_reconnect(int(window.end_s * 1000))
             recon.backlog_queued += queued
             recon.backlog_survived += survived
             recon.reconnect_time_ms = float(delay)
             flushed = True
+
+    # QoS 1 connected-path retries (network loss) still sit in the outbox when
+    # there was no disconnect window; flush once at end of the device schedule.
+    if broker.outbox_depth() > 0:
+        t_end_ms = int((times[-1] if times else 0.0) * 1000) + 1
+        queued, survived, delay = broker.flush_on_reconnect(t_end_ms)
+        recon.backlog_queued += queued
+        recon.backlog_survived += survived
+        if not recon.reconnect_time_ms:
+            recon.reconnect_time_ms = float(delay)
+
+    if window.active():
+        recon.disconnect_events = 1
+
+    # Attach broker counters onto reconnect stats object for aggregation.
     recon._counters = broker.counters  # type: ignore[attr-defined]
     return log, recon
 
@@ -109,7 +123,7 @@ class SpecRun:
     manifest: RunManifest
     device_log: list[dict[str, Any]]
     delivered: list[dict[str, Any]]
-    reconnect: dict[str, Any]
+    reconnect: ReconnectStats
     counters: dict[str, Any]
 
 
@@ -121,6 +135,7 @@ def run_spec(spec: ExperimentSpec, params: MockParams | None = None) -> SpecRun:
     table = MockDynamoDB()
     run_id = f"mock-{spec.config_id}-s{spec.seed}"
     started = _utc_now()
+
     all_log: list[DeviceLogRow] = []
     recon_acc = ReconnectStats()
     counter_sum = {
@@ -136,21 +151,31 @@ def run_spec(spec: ExperimentSpec, params: MockParams | None = None) -> SpecRun:
         "duplicates_injected": 0,
     }
     reconnect_times: list[float] = []
+
     for i in range(spec.n_devices):
         device_id = f"device-{i + 1:02d}"
         log, recon = _run_device(
-            spec=spec, run_id=run_id, device_id=device_id, table=table, rng=rng, params=params
+            spec=spec,
+            run_id=run_id,
+            device_id=device_id,
+            table=table,
+            rng=rng,
+            params=params,
         )
         all_log.extend(log)
         recon_acc.backlog_queued += recon.backlog_queued
         recon_acc.backlog_survived += recon.backlog_survived
         recon_acc.disconnect_events += recon.disconnect_events
-        if recon.disconnect_events:
-            reconnect_times.append(recon.reconnect_time_ms)
-        c = recon._counters  # type: ignore[attr-defined]
-        for k in counter_sum:
-            counter_sum[k] += int(getattr(c, k))
-    recon_acc.reconnect_time_ms = float(np.mean(reconnect_times)) if reconnect_times else 0.0
+        if recon.reconnect_time_ms:
+            reconnect_times.append(float(recon.reconnect_time_ms))
+        c = getattr(recon, "_counters", None)
+        if c is not None:
+            for k in counter_sum:
+                counter_sum[k] += int(getattr(c, k, 0))
+
+    if reconnect_times:
+        recon_acc.reconnect_time_ms = float(np.mean(reconnect_times))
+
     finished = _utc_now()
     delivered = table.query_run(run_id)
     manifest = RunManifest(
@@ -170,10 +195,10 @@ def run_spec(spec: ExperimentSpec, params: MockParams | None = None) -> SpecRun:
         manifest=manifest,
         device_log=[r.to_dict() for r in all_log],
         delivered=delivered,
-        reconnect=asdict(recon_acc),
-        counters=counter_sum,
+        reconnect=recon_acc,
+        counters=dict(counter_sum),
     )
 
 
 def run_campaign(specs: list[ExperimentSpec], params: MockParams | None = None) -> list[SpecRun]:
-    return [run_spec(spec, params=params) for spec in specs]
+    return [run_spec(s, params=params) for s in specs]

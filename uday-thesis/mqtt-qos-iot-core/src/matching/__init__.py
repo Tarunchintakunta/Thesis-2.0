@@ -1,3 +1,3 @@
-from .matcher import MatchResult, match_logs
+from .matcher import match_logs
 
-__all__ = ["MatchResult", "match_logs"]
+__all__ = ["match_logs"]

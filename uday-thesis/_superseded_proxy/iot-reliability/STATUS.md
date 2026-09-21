@@ -1,21 +1,21 @@
-# QUARANTINED — not the formal CA2 artefact
+# Project Status: uday-thesis / iot-reliability
 
-**This tree is the federated-RF / Et-Tousy proxy.** Formal artefact: `../../mqtt-qos-iot-core/`. Do not revive as evidence.
+**Last Updated:** 2026-09-21  
+**Research Alignment to formal CA2:** **~18% as a stand-alone tree** — this directory does **not** implement formal CA2.  
+**Status:** **QUARANTINED (PROXY)** — **not** formal CA2 fulfilment.
 
----
+## Quarantine note (binding)
 
-# Project Status: uday-thesis (iot-reliability)
+Formal CA2 is **MQTT QoS 0 vs 1 reliability under controlled disconnect on AWS IoT Core**
+(`uday-thesis/CA2_COMMITMENTS.md`). The **formal artefact** is:
 
-**Last Updated:** 2026-09-20  
-**Branch:** `feature/aws-ca2-alignment`  
-**Research Alignment to CA2:** **~18%** (formal `UdayKiranReddyDodda_X25166484_proposal.docx`; prior ~90% was vs superseded Et-Tousy federated proxy)  
-**Status:** **NOT COMPLETE** — **&lt;100%** (do **not** treat as SUBMIT-READY)
+`uday-thesis/mqtt-qos-iot-core/`
 
-## Summary
+This `iot-reliability/` tree implements **federated RF vs Et-Tousy OneM2M** — a **different research question**. Shared surface is only “IoT” + an old SAM scaffold. Treat all accuracy/F1 tables below as **PROXY-era evidence**, not MQTT/IoT Core CA2 results.
 
-Formal CA2 is **MQTT QoS 0 vs 1 reliability under controlled disconnect on AWS IoT Core** (Lambda + DynamoDB matching; synthetic devices allowed). Current tree still implements **federated RF vs Et-Tousy** — a **different** research question. **AWS IoT Core required by formal CA2; not deployed this pass.**
+**Federated RF is PROXY, not formal CA2.**
 
-## Evidence-bound results (seeds 42–46) — artefact as-built (federated RF; not formal MQTT)
+## Evidence-bound results (seeds 42–46) — artefact as-built (PROXY; not formal MQTT)
 
 Source: `results/results_summary.csv` (+ `results_per_seed.csv`).
 
@@ -27,14 +27,6 @@ Source: `results/results_summary.csv` (+ `results_per_seed.csv`).
 
 These numbers do **not** answer the formal MQTT/IoT Core CA2.
 
-## What is done
-- Federated RF code + seeds (proxy-era); root `CA2_COMMITMENTS.md` rewritten from formal MQTT proposal
-
-## Blockers to 100% (vs formal)
-1. Implement MQTT QoS disconnection experiment (or explicitly change CA2 — out of scope here)
-2. Live AWS IoT Core + rules/Lambda/DynamoDB campaign
-3. Loss/dup/latency/cost metrics + pre-registered stats plan
-4. Soft: STATUS/report claims must not present federated RF as formal CA2 fulfilment
-
 ## AWS
-**Required.** Residual: `_analysis_extract/reports/uday_alignment.md`. **Not deployed.** Synthetic devices: **allowed**.
+
+Formal CA2 **requires** AWS IoT Core. Live campaign lives under `mqtt-qos-iot-core/` and is **not deployed** this pass. See `mqtt-qos-iot-core/STATUS.md` (`READY_FOR_AWS: NO`).

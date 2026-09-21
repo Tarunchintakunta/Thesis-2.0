@@ -1,26 +1,23 @@
 #!/usr/bin/env python3
-"""Recompute metrics + Holm–Bonferroni tests from a results directory.
+"""Analyse loss / dup / latency / cost surface / Holm tests from saved run artifacts."""
 
-    python scripts/analyse.py --in results/mock --out results/mock/summary
-"""
 from __future__ import annotations
 
 import argparse
-import csv
 import json
 import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / "src"))
+SRC = ROOT / "src"
+sys.path.insert(0, str(SRC))
 
 from analysis.metrics import cell_rows  # noqa: E402
 from analysis.plot_results import plot_cells  # noqa: E402
 from analysis.stats_tests import run_confirmatory  # noqa: E402
-from matching.matcher import match_logs  # noqa: E402
 
 
-def _jsonl(path: Path) -> list[dict]:
+def _load_jsonl(path: Path) -> list[dict]:
     rows = []
     with path.open(encoding="utf-8") as fh:
         for line in fh:
@@ -30,65 +27,97 @@ def _jsonl(path: Path) -> list[dict]:
     return rows
 
 
-def main(argv=None) -> int:
-    p = argparse.ArgumentParser(description=__doc__)
-    p.add_argument("--in", dest="inp", default=str(ROOT / "results" / "mock"))
-    p.add_argument("--out", default="")
-    args = p.parse_args(argv)
-    inp = Path(args.inp)
-    out = Path(args.out) if args.out else inp / "summary"
-    out.mkdir(parents=True, exist_ok=True)
+def main() -> int:
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument("--results", type=Path, default=ROOT / "results" / "mock")
+    ap.add_argument("--out", type=Path, default=ROOT / "results" / "analysis")
+    ap.add_argument("--alpha", type=float, default=0.05)
+    ap.add_argument("--plots", action="store_true")
+    args = ap.parse_args()
 
-    run_rows = []
-    for man in sorted((inp / "manifests").glob("*.json")):
-        if man.name.endswith(".metrics.json"):
-            continue
-        payload = json.loads(man.read_text())
-        run_id = payload["run_id"]
-        log = _jsonl(inp / "device_log" / f"{run_id}.jsonl")
-        delivered = _jsonl(inp / "delivered" / f"{run_id}.jsonl")
-        matched = match_logs(log, delivered)
-        spec = payload["spec"]
-        metrics_path = man.with_name(f"{run_id}.metrics.json")
-        extra = json.loads(metrics_path.read_text()) if metrics_path.exists() else {}
-        run_rows.append(
-            {
-                "run_id": run_id,
-                "backend": payload["backend"],
-                "measurement_kind": payload["measurement_kind"],
-                "qos": spec["qos"],
-                "disconnect_s": spec["disconnect_s"],
-                "rate_mode": spec["rate_mode"],
-                "replication": spec["replication"],
-                "cell_id": spec["cell_id"],
-                "n_published": matched.n_published,
-                "n_lost": matched.n_lost,
-                "n_duplicate_ids": matched.n_duplicate_ids,
-                "loss_rate": matched.loss_rate,
-                "duplicate_id_rate": matched.duplicate_id_rate,
-                "latency_mean_ms": matched.latency_mean_ms,
-                "latency_p95_ms": matched.latency_p95_ms,
-                "latency_p99_ms": matched.latency_p99_ms,
-                "latencies_ms": matched.latencies_ms,
-                "reconnect_time_ms": extra.get("reconnect_time_ms", 0),
-                "backlog_queued": extra.get("backlog_queued", 0),
-                "backlog_survived": extra.get("backlog_survived", 0),
-                "usd_est": extra.get("usd_est", 0),
-            }
+    manifests = sorted((args.results / "manifests").glob("*.metrics.json"))
+    if not manifests:
+        # Rebuild metrics from raw logs if only manifests exist.
+        raw = sorted(
+            p for p in (args.results / "manifests").glob("*.json") if not p.name.endswith(".metrics.json")
         )
+        if not raw:
+            print("No metrics/manifests found", file=sys.stderr)
+            return 1
+        sys.path.insert(0, str(SRC))
+        from analysis.metrics import run_metrics  # noqa: E402
+        from common.models import ReconnectStats  # noqa: E402
+        from simulator.campaign import SpecRun  # noqa: E402
+        from common.models import RunManifest  # noqa: E402
+
+        run_rows = []
+        for mpath in raw:
+            man = json.loads(mpath.read_text())
+            rid = man["run_id"]
+            device_log = _load_jsonl(args.results / "device_log" / f"{rid}.jsonl")
+            delivered = _load_jsonl(args.results / "delivered" / f"{rid}.jsonl")
+            metrics_path = args.results / "manifests" / f"{rid}.metrics.json"
+            if metrics_path.exists():
+                row = json.loads(metrics_path.read_text())
+                # reattach latencies via matcher
+                from matching.matcher import match_logs
+
+                matched = match_logs(device_log, delivered)
+                row["latencies_ms"] = matched.latencies_ms
+                run_rows.append(row)
+            else:
+                run = SpecRun(
+                    manifest=RunManifest(**{k: man[k] for k in RunManifest.__dataclass_fields__ if k in man}),
+                    device_log=device_log,
+                    delivered=delivered,
+                    reconnect=ReconnectStats(),
+                    counters={},
+                )
+                run_rows.append(run_metrics(run))
+    else:
+        run_rows = []
+        for mp in manifests:
+            row = json.loads(mp.read_text())
+            rid = row["run_id"]
+            device_log = _load_jsonl(args.results / "device_log" / f"{rid}.jsonl")
+            delivered = _load_jsonl(args.results / "delivered" / f"{rid}.jsonl")
+            from matching.matcher import match_logs
+
+            matched = match_logs(device_log, delivered)
+            row["latencies_ms"] = matched.latencies_ms
+            if "n_lost" not in row:
+                row.update(
+                    {
+                        "n_published": matched.n_published,
+                        "n_lost": matched.n_lost,
+                        "n_duplicate_ids": matched.n_duplicate_ids,
+                        "loss_rate": matched.loss_rate,
+                        "duplicate_id_rate": matched.duplicate_id_rate,
+                    }
+                )
+            run_rows.append(row)
+
     cells = cell_rows(run_rows)
-    stats = run_confirmatory(cells, run_rows)
-    (out / "stats.json").write_text(json.dumps(stats, indent=2) + "\n")
-    if cells:
-        with (out / "cells.csv").open("w", newline="", encoding="utf-8") as fh:
-            w = csv.DictWriter(fh, fieldnames=list(cells[0].keys()))
-            w.writeheader()
-            w.writerows(cells)
-        plot_cells(cells, inp / "figures")
-    print(f"analysed {len(run_rows)} runs -> {out}")
-    print("If backend=mock, this is not AWS evidence.")
+    args.out.mkdir(parents=True, exist_ok=True)
+    cells_out = [{k: v for k, v in c.items() if k != "latencies_ms"} for c in cells]
+    (args.out / "cells.json").write_text(json.dumps(cells_out, indent=2) + "\n")
+    conf = run_confirmatory(cells, run_rows, alpha=args.alpha)
+    (args.out / "confirmatory.json").write_text(json.dumps(conf, indent=2) + "\n")
+
+    if args.plots:
+        plot_cells(cells, args.out / "figures", backend=str(run_rows[0].get("backend", "mock")))
+
+    summary = {
+        "n_runs": len(run_rows),
+        "n_cells": len(cells),
+        "adjustment": conf["adjustment"],
+        "n_tests": conf["n_tests"],
+        "alpha": args.alpha,
+        "note": conf["note"],
+    }
+    print(json.dumps(summary, indent=2))
     return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    raise SystemExit(main())

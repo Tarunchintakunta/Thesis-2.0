@@ -1,4 +1,5 @@
 """Match device-side ID log against delivered DynamoDB (or mock) rows."""
+
 from __future__ import annotations
 
 from collections import defaultdict
@@ -28,8 +29,8 @@ class MatchResult:
     def to_dict(self) -> dict[str, Any]:
         d = asdict(self)
         d.pop("latencies_ms", None)
-        d.pop("lost_ids", None)
         d["n_latency_samples"] = len(self.latencies_ms)
+        d.pop("lost_ids", None)
         return d
 
 
@@ -40,37 +41,49 @@ def _pct(values: list[float], q: float) -> float:
 
 
 def match_logs(device_log: list[dict[str, Any]], delivered: list[dict[str, Any]]) -> MatchResult:
-    intended = {row["msg_id"]: row for row in device_log}
-    copies: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    by_id: dict[str, list[dict[str, Any]]] = defaultdict(list)
     for row in delivered:
-        copies[str(row["msg_id"])].append(row)
+        by_id[str(row["msg_id"])].append(row)
 
-    lost_ids = [mid for mid in intended if mid not in copies]
-    extra_ids = [mid for mid in copies if mid not in intended]
-    dup_ids = [mid for mid, rows in copies.items() if mid in intended and len(rows) > 1]
-
+    lost_ids: list[str] = []
     latencies: list[float] = []
-    for mid, rows in copies.items():
-        src = intended.get(mid)
-        if src is None:
-            continue
-        first = min(rows, key=lambda r: int(r["ts_ingest_ms"]))
-        latencies.append(float(int(first["ts_ingest_ms"]) - int(src["ts_log_ms"])))
+    n_dup = 0
+    n_copies = 0
+    n_unique = 0
 
-    n = len(intended)
-    n_copies = sum(len(v) for v in copies.values())
-    unique = n - len(lost_ids)
-    extra_copies = max(0, n_copies - unique)
+    published_ids = [str(r["msg_id"]) for r in device_log]
+    log_ts = {str(r["msg_id"]): float(r.get("ts_log_ms", 0.0)) for r in device_log}
+
+    for msg_id in published_ids:
+        copies = by_id.get(msg_id, [])
+        n_copies += len(copies)
+        if not copies:
+            lost_ids.append(msg_id)
+            continue
+        n_unique += 1
+        if len(copies) > 1:
+            n_dup += 1
+        first = min(copies, key=lambda r: int(r.get("ts_ingest_ms", 0)))
+        latencies.append(float(first.get("ts_ingest_ms", 0)) - float(log_ts.get(msg_id, 0.0)))
+
+    delivered_ids = set(by_id)
+    extra = len(delivered_ids - set(published_ids))
+    n_pub = len(published_ids)
+    n_lost = len(lost_ids)
+    loss_rate = (n_lost / n_pub) if n_pub else float("nan")
+    dup_rate = (n_dup / n_pub) if n_pub else float("nan")
+    extra_copy_rate = ((n_copies - n_unique) / n_pub) if n_pub else float("nan")
+
     return MatchResult(
-        n_published=n,
-        n_lost=len(lost_ids),
-        n_delivered_unique=unique,
-        n_duplicate_ids=len(dup_ids),
+        n_published=n_pub,
+        n_lost=n_lost,
+        n_delivered_unique=n_unique,
+        n_duplicate_ids=n_dup,
         n_delivery_copies=n_copies,
-        n_extra_ids=len(extra_ids),
-        loss_rate=(len(lost_ids) / n) if n else 0.0,
-        duplicate_id_rate=(len(dup_ids) / n) if n else 0.0,
-        extra_copy_rate=(extra_copies / n) if n else 0.0,
+        n_extra_ids=extra,
+        loss_rate=float(loss_rate),
+        duplicate_id_rate=float(dup_rate),
+        extra_copy_rate=float(extra_copy_rate),
         latency_mean_ms=float(np.mean(latencies)) if latencies else float("nan"),
         latency_p95_ms=_pct(latencies, 95),
         latency_p99_ms=_pct(latencies, 99),
