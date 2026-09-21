@@ -44,7 +44,10 @@ set -euxo pipefail
 exec > >(tee /var/log/paks-k3s-bootstrap.log | logger -t paks-k3s -s 2>/dev/console) 2>&1
 
 dnf -y update || true
-dnf -y install python3 python3-pip jq curl tar gzip awscli || yum -y install python3 python3-pip jq curl tar gzip awscli
+# AL2023 ships curl-minimal; do not install conflicting `curl` package.
+dnf -y install python3 python3-pip python3-numpy jq tar gzip || true
+command -v aws >/dev/null 2>&1 || pip3 install --quiet awscli || true
+command -v curl >/dev/null 2>&1 || dnf -y install curl-minimal || true
 
 # Lightweight single-node k3s (no traefik / servicelb — save RAM on t3.micro).
 export INSTALL_K3S_SKIP_SELINUX_RPM=true
@@ -61,37 +64,11 @@ for i in $(seq 1 60); do
 done
 
 mkdir -p /opt/paks
-cat > /opt/paks/paks-demo.yaml <<'YAML'
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: paks-demo
-  namespace: default
-  labels:
-    app: paks-demo
-    project: paks-k8s-live
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: paks-demo
-  template:
-    metadata:
-      labels:
-        app: paks-demo
-    spec:
-      containers:
-        - name: pause
-          image: registry.k8s.io/pause:3.9
-          resources:
-            requests:
-              cpu: "10m"
-              memory: "16Mi"
-            limits:
-              cpu: "50m"
-              memory: "32Mi"
-YAML
-kubectl apply -f /opt/paks/paks-demo.yaml
+# Prefer imperative create (no fragile YAML heredoc under cloud-init).
+kubectl delete deploy paks-demo --ignore-not-found || true
+kubectl create deployment paks-demo --image=registry.k8s.io/pause:3.9 --replicas=1
+kubectl label deploy paks-demo app=paks-demo project=paks-k8s-live --overwrite
+kubectl patch deploy paks-demo --type=strategic -p '{"spec":{"template":{"metadata":{"labels":{"app":"paks-demo"}},"spec":{"containers":[{"name":"pause","image":"registry.k8s.io/pause:3.9","resources":{"requests":{"cpu":"10m","memory":"16Mi"},"limits":{"cpu":"50m","memory":"32Mi"}}}]}}}}'
 kubectl rollout status deployment/paks-demo --timeout=180s || true
 
 # Marker for SSM wait loops

@@ -25,7 +25,8 @@ output "project_tag" {
 }
 
 output "ami_id" {
-  value = local.ami_id
+  value     = local.ami_id
+  sensitive = true
 }
 
 output "destroy_hint" {

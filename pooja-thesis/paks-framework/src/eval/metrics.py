@@ -133,5 +133,5 @@ def evaluate_policy(
 EVIDENCE_GLOSSARY: Mapping[str, str] = {
     "TRACE": "Computed from public cluster-trace-derived series (see PROVENANCE.md).",
     "SIMULATED": "Discrete-time model (capacity mapping / queue proxy / unit price). Not kubelet, not billing, not CloudWatch.",
-    "LIVE": "Would require a running Kubernetes cluster and CloudWatch/Prometheus scrape. Not collected this pass.",
+    "LIVE": "Collected from a running Kubernetes cluster and/or CloudWatch (see formal_k8s_live_aws.json).",
 }

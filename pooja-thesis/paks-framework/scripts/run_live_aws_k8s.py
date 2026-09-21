@@ -290,7 +290,11 @@ def main() -> int:
                 "rm -rf /opt/paks/paks-framework",
                 "mkdir -p /opt/paks/paks-framework",
                 "tar -xzf /opt/paks/paks-live.tgz -C /opt/paks/paks-framework",
-                "python3 -m pip install --quiet numpy 2>/dev/null || true",
+                "python3 -m ensurepip --user 2>/dev/null || true",
+                "python3 -m pip install --user --quiet numpy pandas "
+                "|| dnf -y install python3-numpy",
+                "export PYTHONPATH=\"/root/.local/lib/python3.9/site-packages:${PYTHONPATH:-}\"",
+                "python3 -c 'import numpy, pandas; print(numpy.__version__, pandas.__version__)'",
                 "export PAKS_K8S_APPLY=1",
                 "export KUBECONFIG=/etc/rancher/k3s/k3s.yaml",
                 f"export PAKS_LIVE_STEPS={args.steps}",

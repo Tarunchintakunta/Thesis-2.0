@@ -1,0 +1,11 @@
+{
+  "pooja_ec2_leftover": [],
+  "pooja_s3_leftover": [],
+  "pooja_logs_leftover": [],
+  "venkat_still_present": [],
+  "destroy_confirmed": true,
+  "pooja_destroyed_instance": "i-09ff2992cab1414bf",
+  "pooja_project_tag": "paks-k8s-live",
+  "terraform_destroy_scope": "only terraform state resources under paks-framework/terraform (project=paks-k8s-live)",
+  "venkat_note": "At verify time, project=distributed-matrix-scaling instances were already terminated (CloudTrail TerminateInstances ~2026-09-21T17:56:55+05:30 by root, before this terraform destroy). This Pooja destroy plan listed only paks-k8s-live resources; it did not target Venkat instance IDs."
+}

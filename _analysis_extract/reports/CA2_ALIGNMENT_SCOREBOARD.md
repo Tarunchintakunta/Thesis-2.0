@@ -16,13 +16,14 @@
 | 7 | Nemi | **100** | partial | no | optional beyond-CA2 |
 | 8 | Venkat | **100** | partial | no | soft only (Holm/DOI); matmul closed |
 | 9 | Mehak | **100** | partial | no | INITIAL_EVAL_PASS=yes; next=3 local full GCT runs (not AWS) |
-| 10 | Pooja | **67** | partial | **YES** | live K8s + AWS; full dumps soft |
+| 10 | Pooja | **~92** | partial | soft | full dumps soft; optional larger live campaign |
 | 11 | Uday | **~65** | no | **YES** | formal-scale IoT (smoke live done+destroyed) |
 | 12 | Vishvaksen | **~82** | partial | **YES** | independent human checklist + 2nd rater |
 
-**Fix order:** Vikas (empty campaign) → Vishvaksen → Pooja; Venkat + Mehak + Nemi CA2 floor closed (soft/beyond-CA2 optionals only).
+**Fix order:** Vikas (empty campaign) → Vishvaksen → Uday formal-scale; Pooja method/AWS/live closed (~92%, dumps soft); Venkat + Mehak + Nemi CA2 floor closed.
 Venkat raise 2026-09-21: round-2 multi-instance `da.matmul` n=250 **ok** (0.2546 s per `ec2_round2_summary.json`); destroy verified → **100%**.
-Pooja non-AWS raise 2026-09-21: GCT 2011 part + Alibaba RANGE → **~67%** (AWS/live K8s still block 100%).
+Pooja live AWS k3s 2026-09-21: 1× t3.micro + S3 + CW, live HPA vs PAKS scale, destroy confirmed → **~92%** (full dumps soft).
+Pooja non-AWS raise 2026-09-21: GCT 2011 part + Alibaba RANGE → was **~67%**.
 Vikas rescore 2026-09-21: scoreboard **100→~74** — working-tree `campaign/deliveries.jsonl` is **0 bytes**; pilot≠campaign; residual `vikas_alignment.md` / `vikas_AWS_RESIDUAL.md`.
 
 ## Assess follow-up

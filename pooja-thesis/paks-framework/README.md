@@ -6,8 +6,9 @@ Binding research contract: `../CA2_COMMITMENTS.md` (formal `Pooja_25120921_CA2.d
 scaling (PAKS) improve cloud resource management under dynamic workloads versus
 traditional **reactive Kubernetes HPA**?
 
-This artefact is **NOT COMPLETE**. No live AWS EC2/S3/CloudWatch Kubernetes
-cluster is deployed in this pass.
+This artefact is **NOT COMPLETE** (~92% CA2). Formal AWS EC2/S3/CloudWatch + live
+k3s Scale vs HPA was run and destroyed (`results/formal_k8s_live_aws.json`).
+Full GCT/Alibaba dumps remain open.
 
 ## What is formal vs proxy
 
@@ -17,7 +18,7 @@ cluster is deployed in this pass.
 | `src/models/lstm_predictor.py` | Vanilla LSTM (NumPy BPTT). `--backend tensorflow` **fail-closed** (no TF on CPython 3.14) |
 | `src/data/trace_loader.py` | GCT/Alibaba loader; **no synthetic fallback** for `gct*` / `alibaba` |
 | `data/traces/` | Public **Google Cluster Data v1 (2010, CC-BY)** derived series + `PROVENANCE.md` |
-| `src/k8s/` | Adaptive engine emitting `autoscaling/v2` HPA schema + `apps/v1` Scale PATCH (`dryRun=All`) |
+| `src/k8s/` | Adaptive engine + dry-run client + **live kubectl** client for AWS k3s |
 | `src/eval/metrics.py` | MAE/RMSE, util, response, throughput, scaling latency, cost, SLA — tagged SIMULATED vs TRACE |
 | `src/proxy/` + `scripts/train_and_evaluate.py` | **PROXY** NimbusGuard-framed MLP on synthetic sine/spikes. Not binding CA2. |
 | `src/lambda_handler/` + `template.yaml` | **PROXY / unused** Kinesis+Lambda SAM. Formal AWS method is K8s on EC2, not this. |
@@ -57,10 +58,10 @@ pytest tests/ -v
 
 | Metric | This pass |
 |--------|-----------|
-| LSTM MAE / RMSE on GCT v1 job windows | **TRACE** (public GCT sample, not 2011/2019, not Alibaba) |
-| CPU util, response, throughput, cost, SLA, scaling latency | **SIMULATED** (capacity mapping / queue proxy / assumed $/pod-hour) |
-| K8s Scale / HPA objects | **Dry-run JSON** — no kubelet, no kind/minikube apply |
-| CloudWatch / EC2 / S3 | **Not collected** |
+| LSTM MAE / RMSE on GCT samples | **TRACE** (public samples, not full dumps) |
+| K8s Scale apply latency on AWS k3s | **LIVE** (`formal_k8s_live_aws.json`) |
+| CPU util, response, throughput, cost, SLA | **SIMULATED** capacity model (live replica cap = 3) |
+| CloudWatch / EC2 / S3 | **LIVE** then destroyed (`project=paks-k8s-live`) |
 
 Proxy CSVs (`results/results_*.csv`) answer a stability trade-off on synthetic
 load only. See `results/RESULTS_PROVENANCE.md`.

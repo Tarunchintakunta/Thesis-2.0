@@ -2,7 +2,10 @@
 
 **Binding CA2:** `Pooja_25120921_CA2.docx` (formal PAKS)  
 **Required datasets:** Google Cluster Trace **and/or** Alibaba Cluster Trace, used to train a workload **LSTM** (TensorFlow named in the CA2 resources table).  
-**AWS / K8s:** Formal method is a Kubernetes cluster on **AWS EC2 + S3 + CloudWatch**. **Not deployed this pass.**
+**AWS / K8s:** Formal method is a Kubernetes cluster on **AWS EC2 + S3 + CloudWatch**.
+**Satisfied this pass** with Free-Tier 1× t3.micro + k3s (`project=paks-k8s-live`), then destroyed.
+Evidence: `paks-framework/results/formal_k8s_live_aws.json`, `aws_destroy_verify.json`.
+Full GCT/Alibaba dumps remain the primary data residual below.
 
 ## What is present
 
@@ -75,6 +78,8 @@ MLP `MLPRegressor` remains only on the **proxy** path (`src/proxy/`).
 - `--dataset gct2019`: **raise** until files exist.
 - `--dataset synthetic`: explicit proxy only; `meta["proxy"]=True`.
 
-## Not a substitute for live K8s-on-AWS
+## Not a substitute for full dumps
 
-Dry-run `apps/v1` Scale patches and simulated util/latency/cost **do not** close the formal AWS EC2+S3+CloudWatch Kubernetes experiment. Local kind/minikube were **unavailable** this pass (`results/K8S_LOCAL_PROBE.md`).
+Live k3s-on-AWS (Free-Tier single node) **does** close the formal EC2+S3+CloudWatch
+Kubernetes experiment for method fidelity. It does **not** replace full GCT 2011/2019
+or full Alibaba dumps. Local kind/minikube remain optional (`results/K8S_LOCAL_PROBE.md`).

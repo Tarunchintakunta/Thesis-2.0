@@ -1,0 +1,14 @@
+{
+  "wrote": "/Users/valletivarish/Documents/Thesis-2.0/pooja-thesis/paks-framework/results/formal_k8s_live_aws.json",
+  "live_apply": true,
+  "destroyed": true,
+  "destroy_report": {
+    "pooja_ec2_leftover": [],
+    "pooja_s3_leftover": [],
+    "pooja_logs_leftover": [],
+    "venkat_still_present": [],
+    "destroy_confirmed": true
+  },
+  "hpa_scaling_latency_mean_s": 0.34884293492307106,
+  "paks_scaling_latency_mean_s": 0.33522758099995653
+}
