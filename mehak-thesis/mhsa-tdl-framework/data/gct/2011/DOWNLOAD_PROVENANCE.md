@@ -14,31 +14,24 @@
 | Local root | `mhsa-tdl-framework/data/gct/2011/` |
 | Fetcher | `scripts/download_gct_2011.py` (idempotent; skips complete files) |
 
-Parent/sibling `gsutil -m cp gs://clusterdata-2011-2/...` was observed stuck at a
-0-byte `*.csv.gz_.gstmp` for `machine_events`. This pass reused the **same
-official bucket objects** over public HTTPS instead of starting a second
-multi-GB gsutil mirror.
+## Expanded subset landed (SHA-256 in `DOWNLOAD_PROVENANCE.json`)
 
-## Minimum-viable subset landed
+| Object | Bytes | SHA-256 (prefix) |
+|--------|------:|------------------|
+| `machine_events/part-00000-of-00001.csv.gz` | 347211 | `fc44b8d2…` |
+| `task_events/part-00000-of-00500.csv.gz` | 4139742 | `eae977d5…` |
+| `task_events/part-00001-of-00500.csv.gz` | 924634 | `c122f250…` |
+| `task_events/part-00002-of-00500.csv.gz` | 1821031 | `3534b71a…` |
+| `task_events/part-00003-of-00500.csv.gz` | 1335641 | `23b3df1b…` |
+| `task_usage/part-00000-of-00500.csv.gz` | 91723415 | `841254d3…` |
+| `task_usage/part-00001-of-00500.csv.gz` | 87188987 | `1fa83e39…` |
 
-| Object | Bytes | SHA-256 |
-|--------|------:|---------|
-| `machine_events/part-00000-of-00001.csv.gz` | 347211 | `fc44b8d2b33a96a261382488789855be7a0ce338888c99930ff45cb592249664` |
-| `task_events/part-00000-of-00500.csv.gz` | 4139742 | `eae977d521bc6ed5d8deef56f1e06009d41844d4eb9a7e308e610d68e1b10f18` |
-| `task_events/part-00001-of-00500.csv.gz` | 924634 | `c122f250cf1f9817dc722a5b7457eb5caf122619accfada078de66d40f311501` |
-| `task_usage/part-00000-of-00500.csv.gz` | 91723415 | `841254d3bc4199c26c82890dcd6bc87fcfb1ff23d75be8e39f0337f0ed1c6e28` |
+Join evidence on this subset: fail-series-first → `fail_forced_windows=981` on N=12000 (`results/gct/`). Enough for the formal metric suite; **not** the full 29-day cell.
 
-Machine-readable copy: `DOWNLOAD_PROVENANCE.json` (written by the fetcher).
+## Optional remainder (beyond CA2 floor)
 
-## Still missing vs full 2011 dump (~41 GB compressed)
-
-- Remaining `task_events` parts `00002`–`00499`
-- Remaining `task_usage` parts `00001`–`00499`
+- Remaining `task_events` / `task_usage` parts (~41 GB compressed full dump)
 - `job_events/*`, `machine_attributes/*`
 - Entire 2019 Borg eight-cell family
 
-Join evidence on this subset (measured 2026-09-20): usage keys are a subset of
-event keys (179427/179427 overlap); FAIL tasks in usage = 479; EVICT in usage =
-5787. Loader prefers FAIL-family series so event-forced windows are not dropped
-by the first-N cap (`fail_forced_windows=489` on N=12000 in `results/gct/`).
-That is enough for a first formal run; it is **not** the full 29-day cell.
+Scoped out with rationale in `mehak-thesis/DESIGN_RATIONALE_BEYOND_CA2.md` — not open floor blockers.

@@ -56,4 +56,4 @@ Last-seed binary unhealthy CMs ($n_{\mathrm{test}}{=}2400$): MHSA-Fused TN=2144,
 \label{sec:discussion}
 %% ===============================
 
-No live AWS numbers are claimed. The 2011 schema cannot supply a true network-byte channel; 2019 cells are not in-tree. See \texttt{DESIGN\_RATIONALE\_BEYOND\_CA2.md}.
+Against the formal RQ, classical RF and Aldomi GRU-RF outperform MHSA-Fused on accuracy and Macro-F1 on this subset; that \textbf{negative} MHSA result is retained rather than omitted. Both learned detectors still miss many fail-horizon windows (FN$\gg$TP on the last-seed CMs), so high accuracy alone is a weak operational signal under class imbalance. Limitations: random seed splits (not multi-day holdout); 2011 \texttt{net} is sampled CPU, not bytes; 2019 Borg cells and the full 29-day dump are out of research scope for this artefact (\texttt{DESIGN\_RATIONALE\_BEYOND\_CA2.md}). No live AWS numbers are claimed.

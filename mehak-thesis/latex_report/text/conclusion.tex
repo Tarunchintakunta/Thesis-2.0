@@ -6,13 +6,6 @@
 \label{sec:Conclusion}
 %% ==================
 
-Formal CA2 asks whether MHSA-TDL improves cluster-health / failure prediction on Google Cluster Trace versus hybrid and traditional monitors, under Acc/Prec/Rec/F1/ROC-AUC/latency. On a disclosed 2011 subset, classical RF and Aldomi GRU-RF lead accuracy and Macro-F1; MHSA-Fused is \textbf{not} claimed to outperform those monitors here. That comparison is the evidence.
+Formal CA2 asks whether MHSA-TDL improves cluster-health / failure prediction on Google Cluster Trace versus hybrid and traditional monitors, under Acc/Prec/Rec/F1/ROC-AUC/latency. On a disclosed 2011 subset, classical RF and Aldomi GRU-RF lead accuracy and Macro-F1; MHSA-Fused is \textbf{not} claimed to outperform those monitors here. High FN counts further caution against treating accuracy as success. That comparison --- including the negative MHSA outcome --- is the evidence that answers the RQ.
 
-\textbf{Remaining residuals:}
-\begin{itemize}
-  \item Remaining 2011 parts and 2019 Borg cells (Aldomi's generation).
-  \item True network-byte telemetry (absent in 2011; do not invent).
-  \item Optional multi-day temporal holdout.
-\end{itemize}
-
-AWS live deploy is \textbf{not} required. See \texttt{DESIGN\_RATIONALE\_BEYOND\_CA2.md}.
+\textbf{Scoped-out optionals} (do not invent; not floor blockers): remaining 2011 parts / 2019 Borg cells; a true network-byte channel (absent in 2011); multi-day temporal holdout. AWS live deploy is \textbf{not} required. See \texttt{DESIGN\_RATIONALE\_BEYOND\_CA2.md}.

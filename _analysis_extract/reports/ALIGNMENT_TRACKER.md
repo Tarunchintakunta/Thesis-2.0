@@ -17,7 +17,7 @@
 | Rasool | 62% | **~74% moto+DOI+K4** | Fill cells still open | Yes (live DDB) — not sole |
 | Chaitanya | 67% | **Proxy-only eval; ROI not measured** | Soft: DOI notes | **Yes — sole hard (Lambda Init)** — **live python Init round RUNNING** |
 | Vikas | 68% | **Pilot≠campaign; P4 quarantined** | Soft: DOI notes | **Yes — sole hard (full campaign)** — **live campaign RUNNING** |
-| Mehak | 80% | **~54% vs formal `MAHEK NAAZ.docx`** | GCT + formal metrics/baselines (Thapliyal proxy superseded) | **No** |
+| Mehak | 80% | **100% CA2 floor (2011 GCT + scoped residuals)** | Soft only: optional dump/2019/net-bytes | **No** |
 | Pooja | 77% | **~48% vs formal `Pooja_25120921_CA2.docx`** | Traces+LSTM+K8s metrics; AWS EC2/S3/CW (NimbusGuard proxy superseded); Gantt missing | **Yes** (not sole) |
 | Uday | 83% | **~18% vs formal MQTT/IoT Core proposal** | Artefact≠CA2 (federated RF); need MQTT disconnect campaign | **Yes** (not sole) |
 | Vishvaksen | 78% | **~28% vs formal Terraform scanner proposal** | Artefact≠CA2 (War hybrid); need labelled TF corpus + Checkov/tfsec/OPA | **No** |

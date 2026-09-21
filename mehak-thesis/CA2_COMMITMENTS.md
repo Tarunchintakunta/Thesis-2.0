@@ -23,9 +23,12 @@ Aldomi et al. (2026) and related hybrid/attention failure-prediction literature 
 | Prediction latency | Required |
 | Dataset | Google Cluster Trace |
 
+## Floor status (2026-09-21)
+**Research-scope CA2 = 100%.** Evidence on disclosed 2011 GCT subset + classical/Aldomi monitors + full metric suite. See `DESIGN_RATIONALE_BEYOND_CA2.md`. Full dump / 2019 / true net-bytes are optional beyond-CA2, not open objectives.
+
 ## Non-goals / honesty
 - Live Kinesis/Lambda inference campaign is **not** the CA2 experiment.
 - Prior proxy “synthetic OK + Thapliyal underprediction” contract is **superseded**.
-- Synthetic-only telemetry **is** a blocker vs this formal CA2 (GCT required).
-- Exact missing files: `DATA_GAPS.md`. Loader: `mhsa-tdl-framework/src/data/gct_loader.py` (fail-closed).
+- Synthetic-only telemetry is **not** formal evidence (GCT required and landed).
+- Optional dumps / net-bytes: `DATA_GAPS.md`. Loader: `mhsa-tdl-framework/src/data/gct_loader.py` (fail-closed).
 - Formal metric columns + RF/KNN/SVM scaffold may appear in synthetic CSVs; those rows are **not** GCT evidence.

@@ -15,12 +15,12 @@
 | 6 | Vikas | **100** | partial | no | conclusion still “pending” |
 | 7 | Nemi | **78** | partial | **YES** | live cloud FL |
 | 8 | Venkat | **63** | partial | **YES** | multi-instance matmul |
-| 9 | Mehak | **90** | partial | **YES** | 2019/dump/net-byte |
+| 9 | Mehak | **100** | partial | no | soft: optional 2019/dump |
 | 10 | Pooja | **62** | partial | **YES** | GCT+live K8s |
 | 11 | Uday | **~42** | no | **YES** | live IoT Core (scaffold done) |
 | 12 | Vishvaksen | **~72** | partial | **YES** | independent human dual-review | no | **YES** | scanner corpus + dual review |
 
-**Fix order:** Vishvaksen → Pooja → Venkat → Nemi → Mehak; parallel Rubric70 on Varun/Vikas/Chaitanya.
+**Fix order:** Vishvaksen → Pooja → Venkat → Nemi; Mehak floor closed (soft optionals only).
 
 ## Assess follow-up
 

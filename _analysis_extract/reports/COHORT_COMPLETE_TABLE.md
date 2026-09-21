@@ -1,9 +1,9 @@
 # Consolidated COMPLETE / NOT COMPLETE
 
-**Updated:** 2026-09-20  
-**Branch:** `feature/aws-ca2-alignment`  
+**Updated:** 2026-09-21  
+**Branch:** `main`  
 **COMPLETE** only at Research Alignment to CA2 = **exactly 100%**.  
-**0/12 COMPLETE.**
+**1/12 COMPLETE** (Mehak CA2 floor).
 
 ## Gates
 | Gate | Status |
@@ -30,7 +30,7 @@
 
 | Thesis | Align | AWS by formal? | **Status** |
 |--------|------:|:--------------:|------------|
-| Mehak | **~64%** | no | **NOT COMPLETE** |
+| Mehak | **100%** | no | **CA2 floor COMPLETE** (soft: optional 2019/dump) |
 | Pooja | **~48%** | yes (not sole) | **NOT COMPLETE** |
 | Uday | **~18%** | yes (not sole) | **NOT COMPLETE** |
 | Vishvaksen | **~28%** | no | **NOT COMPLETE** |

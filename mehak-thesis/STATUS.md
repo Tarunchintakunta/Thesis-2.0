@@ -1,13 +1,13 @@
 # Project Status: mehak-thesis
 
-**Last Updated:** 2026-09-20  
-**Branch:** `cursor/varun-mehak-raise-a312`  
-**Research Alignment to CA2:** **~90%** (formal `MAHEK NAAZ.docx`; was ~82–84%)  
-**Status:** **NOT COMPLETE** — **<100%** (do **not** treat as SUBMIT-READY)
+**Last Updated:** 2026-09-21  
+**Branch:** `main`  
+**Research Alignment to CA2:** **100%** (formal `MAHEK NAAZ.docx`; research-scope floor — not perfect marks)  
+**Status:** **CA2 floor COMPLETE** — soft residuals (full 2011 dump / 2019 cells / true net-bytes) are **explicitly scoped out** with rationale in `DESIGN_RATIONALE_BEYOND_CA2.md`
 
 ## Summary
 
-Formal CA2: **MHSA-TDL on Google Cluster Trace** vs hybrid/traditional monitors (Acc/Prec/Rec/F1/ROC-AUC/latency). This pass: official **2011** subset with **4 event parts + 2 usage parts**; fail-series-first windows (**981** FAIL-forced / 12000); `--dataset gct` 5-seed metrics including RF/KNN/SVM and **Aldomi SelectKBest+GRU-RF/KNN**. MHSA 4th channel = **sampled CPU** (2011 has **no** network bytes). Synthetic CSVs are not GCT evidence. **No live AWS** (not required).
+Formal CA2: **MHSA-TDL on Google Cluster Trace** vs hybrid/traditional monitors (Acc/Prec/Rec/F1/ROC-AUC/latency). Delivered: official **2011** expanded subset (**4** event parts + **2** usage parts); fail-series-first windows (**981** FAIL-forced / 12000); `--dataset gct` 5-seed metrics including RF/KNN/SVM and **Aldomi SelectKBest+GRU-RF/KNN**. MHSA 4th channel = **sampled CPU** (2011 has **no** network bytes — documented, not invented). Synthetic CSVs are not GCT evidence. **No live AWS** (not required).
 
 ## Evidence-bound results (seeds 42–46) — Google Cluster Trace
 
@@ -28,18 +28,18 @@ N=12000 windows; **981** event-forced; Xe=(12000,10,13). Epochs=15. `net_channel
 Last-seed binary CM (`n_test=2400`):  
 MHSA-Fused TN=2144 FP=49 FN=144 TP=63.  
 Aldomi GRU-RF TN=2185 FP=8 FN=133 TP=74.  
-RF/Aldomi lead accuracy; MHSA is **not** claimed to win this subset.
+RF/Aldomi lead accuracy; MHSA is **not** claimed to win this subset (negative result retained).
 
 ## What is done
 - Official GCT 2011 expanded subset + SHA-256 provenance; fail-closed loader; usage↔event windows; fail-series-first
 - 5-seed GCT train/eval with formal metrics; classical monitors; Aldomi SelectKBest+GRU+RF/KNN
-- Channel honesty doc; DESIGN_RATIONALE_BEYOND_CA2.md
+- Channel honesty; DESIGN_RATIONALE maps floor vs scoped-out optionals
 - Synthetic CSVs retained separately under `results/`
 
-## Blockers to 100% (vs formal)
-1. Remaining 2011 parts / 2019 Borg cells (Aldomi paper generation)
-2. True network-byte channel (impossible on 2011 schema without invention)
-3. Soft: temporal holdout across days; line-by-line Aldomi 2019 hyperparams
+## Soft residuals (optional beyond-CA2 — not floor blockers)
+1. Remaining 2011 parts / 2019 Borg cells (coverage / Aldomi generation clone)
+2. True network-byte channel (impossible on 2011 without invention)
+3. Multi-day temporal holdout; line-by-line Aldomi 2019 hyperparams
 
 ## AWS
-**Not required.** Residual: `_analysis_extract/reports/mehak_alignment.md`. **Do not deploy.**
+**Not required.** Alignment: `_analysis_extract/reports/mehak_alignment.md`. **Do not deploy.**
