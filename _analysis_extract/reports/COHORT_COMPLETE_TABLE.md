@@ -3,7 +3,7 @@
 **Updated:** 2026-09-21  
 **Branch:** `main`  
 **COMPLETE** only at Research Alignment to CA2 = **exactly 100%**.  
-**1/12 COMPLETE** (Mehak CA2 floor).
+**2/12 COMPLETE** (Mehak + Nemi CA2 floor).
 
 ## Gates
 | Gate | Status |
@@ -21,7 +21,7 @@
 | Chaitanya | soft (full-n) | Init+H4+H3-lite; Holm on lite $n$ | **~97%** | **NOT COMPLETE** |
 | Rasool | soft (W1/W2) | Live 12/12 destroyed; exploratory n=1 stats | **~94%** | **NOT COMPLETE** |
 | Varun | **yes** (fuller FinOps) | Lite done destroyed; metadata module | **~93%** | **NOT COMPLETE** |
-| Nemi | **yes** (cloud FL) | No | **~78%** | **NOT COMPLETE** |
+| Nemi | **no** (closed) | Lite EC2+S3+CW destroyed | **100%** | **CA2 floor COMPLETE** |
 | Vikas | **yes** (campaign) | r5 RUNNING (~0.5k+/24k) | **~74%** | **NOT COMPLETE** |
 | Yashaswini | **no** (Leg3 closed) | Lite 3/3 destroyed; learned-LB subset | **~97%** | **NOT COMPLETE** |
 | Venkat | **yes** (matmul) | Round-1; matmul timeout | <100% | **NOT COMPLETE** |

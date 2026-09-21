@@ -3,13 +3,13 @@
 **Rule:** No AWS deploy until Research Alignment to CA2 = **100%** per thesis (or sole remaining gaps are the live-AWS experiments CA2 requires).  
 **Branch:** `main` only (no new `cursor/*` agent branches/worktrees).  
 **Exploration gate:** COMPLETE (all 8) — `GOAL_EXPLORATION_GATE.md`.  
-**Consolidated table:** `COHORT_COMPLETE_TABLE.md` — all **NOT COMPLETE**.
+**Consolidated table:** `COHORT_COMPLETE_TABLE.md` — Mehak + Nemi **CA2 floor COMPLETE**; others open.
 
 ## Current explore baselines → iteration status
 
 | Thesis | Explore % | After claim hygiene | Blockers to 100% (non-AWS first) | AWS residual? |
 |--------|----------:|--------------------:|----------------------------------|---------------|
-| Nemi | 44% | **~64% PoC+DOI+README** | Centralised baseline; UNSW | Yes (cloud FL) — not sole |
+| Nemi | 44% | **100% CA2 floor** (centralised + UNSW sample + live lite FL destroyed) | Soft/beyond-CA2 only (2.5M-flow, 50-round, Docker/K8s) | **No — sole AWS residual closed** |
 | Varun | 58% | **~90% live lite S3/CE/CW/Wilcoxon (destroyed)** | Soft: ML alloc 0.178; full FinOps campaign open | **Yes — sole hard (full live S3 FinOps)** |
 | Anji | 58–72% | **~90% run-count+dedup** | Soft: optional DIVE campaign | **Yes — sole hard (live SQS)** |
 | Yashaswini | 62% | **~88% CausalRCA quarantine + READY_FOR_AWS** | Soft: optional CausalRCA 90 / PDF | **Yes — sole hard (Leg3)** |
@@ -37,3 +37,4 @@
 12. **2026-09-20 — Varun + Yashaswini non-AWS raise toward sole-AWS:** Varun forecast temporal-holdout fix (all arms `beats_naive=true`); Yashaswini CausalRCA quarantined + final_report hygiene; both `READY_FOR_AWS=yes`. **No terraform apply.**
 13. **2026-09-20 — Mehak/Pooja/Uday/Vishvaksen formal-CA2 rescore.** Formal docx now binding; proxy extras dropped. Scores: Mehak ~54%, Pooja ~48%, Uday ~18%, Vishvaksen ~28%. Synthetic OK for Uday/Vish; GCT required for Mehak/Pooja. AWS required: Pooja+Uday yes (not deployed); Mehak+Vish no. **No AWS deploy; no invented results.**
 14. **2026-09-20 — Varun live lite fold-in:** measured S3/CE/CW/Wilcoxon ($n{=}24$) into STATUS + LaTeX; residual/cohort **~90%**; SOLE_AWS_RESIDUAL still **yes** (full FinOps campaign); stack destroyed.
+15. **2026-09-21 — Nemi live cloud FL lite closed:** `cloud_lite_summary.json` verified (baseline 0.5000 / improved 0.5480; destroy complete, 9 resources); scoreboard/cohort/tracker → **100% COMPLETE**; `SOLE_AWS_RESIDUAL=closed`; block-full-eval=no. No new AWS runs.
