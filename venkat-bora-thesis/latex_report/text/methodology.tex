@@ -173,12 +173,12 @@ In the committed local JSON, this condition is \textbf{never} met for matmul thr
 \begin{itemize}
     \item \textbf{Local campaign:} full factorial suite on one host with Dask \texttt{LocalCluster} (\texttt{results/data/summary\_statistics.json}).
     \item \textbf{Live EC2 round-1:} matched 2-vCPU topology — \textbf{1× t3.small} vs \textbf{2× t3.micro} in \texttt{eu-west-1}; \texttt{ec2\_round1\_summary.json}; multi-instance \texttt{da.matmul} timed out at $n{=}500$; fleet destroyed.
-    \item \textbf{Live EC2 round-2:} same topology; \texttt{ec2\_round2\_summary.json}; multi-instance \texttt{da.matmul} completed at $n{=}250$ (0.01824\,s); fleet destroyed.
+    \item \textbf{Live EC2 round-2:} same topology; \texttt{ec2\_round2\_summary.json}; multi-instance \texttt{da.matmul} completed at $n{=}250$ (0.2546\,s); fleet destroyed.
 \end{itemize}
 
 Local matched cores on one host are still \textbf{not} a substitute for multi-instance network cost. Live round-1+2 evidence:
     \item Scale-up numpy and on-node Dask cells at $n{=}500$ (round-1) and $n{=}250$ (round-2)
-    \item Multi-instance: round-1 futures smoke OK / \texttt{da.matmul} timed out; round-2 \texttt{da.matmul} \textbf{0.01824\,s} at $n{=}250$
+    \item Multi-instance: round-1 futures smoke OK / \texttt{da.matmul} timed out; round-2 \texttt{da.matmul} \textbf{0.2546\,s} at $n{=}250$
 
 \begin{itemize}
     \item Scale-up numpy matmul ($n{=}500$): $\approx$0.0067\,s on \texttt{t3.small}
