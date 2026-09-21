@@ -2,9 +2,9 @@
 
 **Source:** Derived from formal CA2 file `uday-thesis/UdayKiranReddyDodda_X25166484_proposal.docx` (*Evaluating MQTT Quality-of-Service Reliability in AWS IoT Core…*).  
 **Status:** Binding research contract = **formal CA2**.  
-**Artefact:** `uday-thesis/mqtt-qos-iot-core/` (this pass: Terraform + mock dry-run; **not** live AWS).  
+**Artefact:** `uday-thesis/mqtt-qos-iot-core/` (mock + lite live destroyed 2026-09-21; formal beyond floor).  
 **Quarantine:** `uday-thesis/_superseded_proxy/iot-reliability/` — federated RF vs Et-Tousy; **not** this CA2; do not revive as evidence.  
-**AWS:** **Required.** Formal experiment is a live (account-owned) **AWS IoT Core** campaign with rules → Lambda → DynamoDB matching. Synthetic device telemetry is **explicitly allowed**. This agent pass does **not** deploy.
+**AWS:** **Required.** Formal experiment is a live (account-owned) **AWS IoT Core** campaign with rules → Lambda → DynamoDB matching. Synthetic device telemetry is **explicitly allowed**. **Lite live (16 cells) completed and destroyed 2026-09-21**; formal-scale remains Free-Tier-blocked as a single-month apply (beyond-floor staging).
 
 ## Research question (formal)
 To what extent does publishing at MQTT QoS level 1 rather than level 0 reduce telemetry message loss in AWS IoT Core when the publishing device undergoes controlled disconnections of varying duration?

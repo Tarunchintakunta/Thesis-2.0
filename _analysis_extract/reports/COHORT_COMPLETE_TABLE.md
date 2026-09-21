@@ -3,7 +3,7 @@
 **Updated:** 2026-09-21  
 **Branch:** `main`  
 **COMPLETE** only at Research Alignment to CA2 = **exactly 100%**.  
-**3/12 COMPLETE** (Mehak + Nemi + Venkat CA2 floor).
+**4/12 COMPLETE** (Mehak + Nemi + Venkat + Uday CA2 floor).
 
 ## Gates
 | Gate | Status |
@@ -11,7 +11,7 @@
 | Exploration (8) | **COMPLETE** |
 | Terraform (8, no personal IDs) | **READY** |
 | Alignment-first | Open |
-| Live AWS | Yash Leg3 lite **CLOSED**+destroyed; Vikas campaign **empty** (not running); concurrency=10 |
+| Live AWS | Yash Leg3 lite **CLOSED**+destroyed; Uday lite **CLOSED**+destroyed; Vikas campaign **empty** (not running); concurrency=10 |
 
 ## AWS-goal (8)
 
@@ -32,7 +32,7 @@
 |--------|------:|:--------------:|------------|
 | Mehak | **100%** | no | **CA2 floor COMPLETE** (soft: optional 2019/dump) |
 | Pooja | **~48%** | yes (not sole) | **NOT COMPLETE** |
-| Uday | **~65%** | yes (not sole) | **NOT COMPLETE** (smoke live done+destroyed; formal free-tier-blocked) |
+| Uday | **100%** | yes (closed at floor) | **CA2 floor COMPLETE** (lite 16-cell destroyed; formal beyond-floor) |
 | Vishvaksen | **100%** | no | **NOT COMPLETE** |
 
 ## Credits

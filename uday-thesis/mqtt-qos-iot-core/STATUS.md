@@ -1,16 +1,11 @@
-**INITIAL_EVAL_PASS:** **yes** (Free-Tier smoke live IoT; CA2 re-check still 100%)
-INITIAL_EVAL_PASS=yes
-Evidence: `results/live/LIVE_EVIDENCE.json`. Final-3 / formal volume optional beyond floor.
-
 # mqtt-qos-iot-core — formal CA2 artefact status
 
 **Last updated:** 2026-09-21  
 **Formal contract:** `uday-thesis/CA2_COMMITMENTS.md`  
 **Alignment residual:** `_analysis_extract/reports/uday_alignment.md`  
-**CA2 align % (honest):** **100 / 100** (research-scope floor; Free-Tier smoke/lite method)
-**READY_FOR_AWS:** **YES** (lite/smoke; formal volume optional beyond floor)
-
-**Status:** **CA2 floor COMPLETE** — formal 600k-msg volume is beyond-floor optional (`../DESIGN_RATIONALE_BEYOND_CA2.md`).
+**Design rationale:** `uday-thesis/DESIGN_RATIONALE_BEYOND_CA2.md`  
+**CA2 align % (honest):** **100 / 100** (research-scope floor)  
+**READY_FOR_AWS:** **YES** (lite/smoke only; formal still free-tier-blocked as single-month apply)
 
 ## What this artefact is
 
@@ -27,23 +22,33 @@ Formal CA2: **MQTT QoS 0 vs 1 message loss under controlled publisher disconnect
 
 Check: `python scripts/check_ready_for_aws.py`
 
-## Live smoke (2026-09-21) — done & destroyed
+## Live campaigns (eu-west-1) — done & destroyed
 
-| Item | Value |
-|------|-------|
-| Scale | `smoke` (4 cells × 2 devices × 8 msgs; inside lite envelope) |
-| Region | `eu-west-1` |
-| Stack | `mqtt-qos-smoke-*` applied then **destroyed** (25 resources; state empty; `.certs` scrubbed) |
-| Evidence | `results/live/LIVE_EVIDENCE.json` |
-| Directional result | QoS1 loss 0.0 (d=0 and d=15); QoS0 loss 0.5 (d=0) / 0.75 (d=15) — **pilot only**, not formal N |
+| Scale | Cells | Devices × msgs | IoT msgs upper | Stack | Evidence |
+|-------|------:|----------------|----------------|-------|----------|
+| smoke | 4 | 2 × 8 | ~96 | applied → **destroyed** (25) | `results/live/archive/smoke-2026-09-21/` |
+| **lite** | **16** | **5 × 50** | **~6 000 (~2.4% FT)** | applied → **destroyed** (43) | `results/live/LIVE_EVIDENCE.json` |
+
+### Lite directional result (bound; n=1 rep/cell)
+
+| QoS | disconnect | loss (steady / bursty) | note |
+|-----|------------|------------------------|------|
+| 0 | 0 | 0.00 / 0.00 | connected path |
+| 0 | 15 s | 0.30 / 0.30 | drops during cut |
+| 0 | 60 s / 300 s | 0.68 / 0.68 | **identical under lite schedule** (cut covers remaining publishes; see limitations) |
+| 1 | all disconnects | **0.00 / 0.00** | backlog flush survives; **latency cost** mean ~3–14 s under disconnect cells |
+
+**Negatives / limitations retained (rubric honesty):** d60≡d300 QoS0 loss under lite wall-clock; n=1 replication (no Holm power claim); QoS1 reliability is paid in latency/backlog — not free.
 
 ## Free-tier reconciliation
 
 | Scale | IoT msgs upper | vs 250 000 free | Headroom |
 |-------|----------------|-----------------|----------|
-| formal | ~600 000 | **exceeds** | blocked |
+| formal | ~600 000 | **exceeds** | blocked (single month) |
 | lite | ~6 000 | ok (~2.4%) | ~97.6% |
 | smoke | ~96 | ok | ~99.96% |
+
+Formal **80 cells / ~600 000 msgs** is **beyond CA2 floor** — multi-month staged campaign or accepted overage (`DESIGN_RATIONALE_BEYOND_CA2.md`). Research-scope MQTT QoS IoT method is satisfied by **lite** (full 16-cell live factorial + destroy).
 
 ## What is done
 
@@ -55,19 +60,18 @@ Check: `python scripts/check_ready_for_aws.py`
 | Metrics + Holm on mock | Done |
 | IaC modules + tags + `enable_apply` | Done |
 | `run_live.py` smoke/lite after gates | Done (formal blocked) |
-| One live smoke campaign + destroy | **Done** |
+| Live smoke + **full lite 16-cell** + destroy | **Done** |
 
-## What still blocks 100% CA2
+## Soft / beyond-floor (not floor blockers)
 
-1. **Formal-scale** live campaign (5×1000×16×5) — exceeds single-month IoT free tier.
-2. Full **lite** 16-cell live factorial (optional next fold; smoke was the authorised first fold).
-3. Shvaika et al. (2025) baseline contrast in the report.
-4. Report/config-manual rewrite against MQTT (not federated RF).
+1. Multi-month **formal-scale** live (5×1000×16×5) for power + separating long disconnects.
+2. Shvaika et al. (2025) **prose** contrast in the final report (mapping already in `baseline_papers/BASELINE_PAPER.md` + lite numbers bound).
+3. Report / config-manual polish (MQTT, not federated RF).
 
 ## Measurement honesty
 
 - `results/mock/` — **not** AWS measurements.
-- `results/live/` — AWS IoT Core smoke evidence; **not** formal-scale CA2 completion.
+- `results/live/` — AWS IoT Core **lite** evidence (16 cells); **not** formal-scale N.
 
 ## Quarantine
 

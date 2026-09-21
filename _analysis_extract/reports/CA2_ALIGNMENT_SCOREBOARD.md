@@ -17,10 +17,10 @@
 | 8 | Venkat | **100** | partial | no | initial_eval_1 done; CA2 still 100 → INITIAL_EVAL_PASS=yes; final-3 not started |
 | 9 | Mehak | **100** | partial | no | INITIAL_EVAL_PASS=yes; next=3 local full GCT runs (not AWS) |
 | 10 | Pooja | **100** | partial | soft only | INITIAL_EVAL_PASS=yes; optional dumps/larger live beyond floor |
-| 11 | Uday | **100** | partial | no | INITIAL_EVAL_PASS=yes; optional formal volume beyond Free Tier |
+| 11 | Uday | **100** | partial | no | CA2 floor COMPLETE — lite 16-cell live destroyed; formal 600k beyond-floor; soft Shvaika prose |
 | 12 | Vishvaksen | **100** | partial | no | INITIAL_EVAL_PASS=yes; soft Verdet/report polish |
 
-**Fix order:** All 12 CA2 floors closed (Kasi excluded); Pooja + Venkat + Mehak + Nemi + Vikas CA2 floor closed.
+**Fix order:** cohort floors largely closed; soft/beyond-floor polish remains (Uday Shvaika prose; formal volume optional).
 Venkat raise 2026-09-21: round-2 multi-instance `da.matmul` n=250 **ok** (0.2546 s per `ec2_round2_summary.json`); destroy verified → **100%**.
 Venkat initial_eval_1 2026-09-21: matched Free-Tier 1×t3.small vs 2×t3.micro, n=250 matmul **ok** 0.2737 s; destroy confirmed; CA2 re-check still **100%** → `INITIAL_EVAL_PASS=yes`; final-3 **not** started.
 Pooja live AWS k3s 2026-09-21: 1× t3.micro + S3 + CW, live HPA vs PAKS scale, destroy confirmed → was **~92%**.
@@ -34,8 +34,9 @@ Vikas rescore 2026-09-21: scoreboard **~74→100** — live full campaign N=1000
 - [Assess CA2 alignment cohort B](bc-c8002071-fd7c-55bf-acae-d413dceec23e)
 - [Scaffold Uday MQTT QoS CA2 artefact](bc-cff00b22-64f1-597a-886a-ed9c64d38f63) → ~42%, READY_FOR_AWS=NO
 - Uday lite/smoke Free-Tier path + smoke live destroyed (2026-09-21) → **~65%**, READY_FOR_AWS=yes (formal still blocked)
+- Uday **lite 16-cell live** apply→collect→destroy (2026-09-21) + DESIGN_RATIONALE beyond-floor formal → **100%** CA2 floor
 - [Correct Vikas scoreboard honesty](bc-f205d25b-c03e-5db7-8f8c-d4c0d1b3fb4d) → was ~74% empty campaign; **2026-09-21 live campaign closed → 100%**
 
 Vishvaksen 2026-09-21: labelled-oracle method confirmed → **100%** CA2 floor.
 
-Uday floor close 2026-09-21: Free-Tier smoke live + method framing; formal 600k-msg volume scoped beyond floor → **100%**.
+Uday floor close 2026-09-21: Free-Tier **lite 16-cell** live apply→collect→destroy + DESIGN_RATIONALE; formal 600k-msg volume scoped beyond floor → **100%**.

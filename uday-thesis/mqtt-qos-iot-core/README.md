@@ -40,3 +40,7 @@ Formal scale remains **blocked** (exceeds monthly IoT free tier).
 ## Honesty
 
 Mock results are **not** AWS measurements. Live smoke evidence (if present under `results/live/`) is a Free-Tier pilot, **not** formal-scale CA2 completion. Destroy after every apply.
+
+## Live status (2026-09-21)
+
+**Lite** (16 cells) ran in `eu-west-1` and was **destroyed**. Evidence: `results/live/LIVE_EVIDENCE.json`. Formal-scale remains Free-Tier-blocked (beyond floor).

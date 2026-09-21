@@ -1,24 +1,24 @@
-**Research Alignment to CA2:** **100%** (Free-Tier smoke/lite live method; formal volume optional beyond floor)
-
 # Uday thesis — status (root)
 
 **Last updated:** 2026-09-21  
 **Formal CA2:** MQTT QoS 0 vs 1 loss under controlled disconnect on AWS IoT Core  
 **Formal artefact:** `uday-thesis/mqtt-qos-iot-core/`  
-**CA2 align %:** **~42 / 100** (see `mqtt-qos-iot-core/STATUS.md`)  
-**READY_FOR_AWS:** **NO** — live AWS not applied; free-tier plan not reconciled.
+**CA2 align %:** **100 / 100** (research-scope floor; see `DESIGN_RATIONALE_BEYOND_CA2.md`)  
+**READY_FOR_AWS:** **YES** (lite/smoke only; formal single-month blocked)
 
 ## Pointers
 
 | Path | Role |
 |------|------|
 | `CA2_COMMITMENTS.md` | Binding formal research contract |
-| `mqtt-qos-iot-core/` | **Formal** CA2 artefact (mock harness + IaC scaffold) |
+| `DESIGN_RATIONALE_BEYOND_CA2.md` | Floor vs multi-month formal depth |
+| `mqtt-qos-iot-core/` | **Formal** CA2 artefact (mock + live lite evidence + IaC) |
 | `iot-reliability/` | **PROXY only** — federated RF vs Et-Tousy; not formal CA2 |
 | `_analysis_extract/reports/uday_alignment.md` | Alignment residual tracker |
 
 ## This pass
 
-- Rebuilt / completed Free-Tier-safe `mqtt-qos-iot-core` skeleton with local dry-run (no AWS deploy).
-- Quarantined federated-RF claims in `iot-reliability/STATUS.md`.
-- Did **not** create `GENAI_HANDOFF.md` (evals not complete; standing rules).
+- Ran **lite** live (16 cells, ~6 k IoT msgs upper) in `eu-west-1`: apply → collect → **destroy** (43 resources).
+- Smoke archived under `mqtt-qos-iot-core/results/live/archive/smoke-2026-09-21/`.
+- Formal 80-cell / ~600 k msgs scoped **beyond floor** (free-tier exceedance).
+- Did **not** create `GENAI_HANDOFF.md`.

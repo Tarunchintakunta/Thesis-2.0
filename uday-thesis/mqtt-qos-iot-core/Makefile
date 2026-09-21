@@ -1,4 +1,4 @@
-.PHONY: test dry-run analyse plan-ft guard-lite guard-formal ready live live-dry destroy
+.PHONY: test dry-run analyse plan-ft guard-lite guard-formal ready live live-lite live-dry destroy
 
 test:
 	cd $(CURDIR) && PYTHONPATH=src pytest -q
@@ -26,6 +26,9 @@ live-dry:
 
 live:
 	PYTHONPATH=src python scripts/run_live.py --scale smoke
+
+live-lite:
+	PYTHONPATH=src python scripts/run_live.py --scale lite
 
 destroy:
 	bash scripts/destroy_stack.sh

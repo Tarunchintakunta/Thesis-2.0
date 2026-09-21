@@ -52,3 +52,4 @@ Lower bands (for gap diagnosis only): 60–69 = good/rigorous but less creative/
 |--------|----------|-------------------------------------|------|
 | Anji | **yes** | `initial_eval_1` live lite 4/4 + prior `key_cells`; loss=0; MRC=1 DLQ pos; **neg:** VT→recovery non-monotone n=1; MRC=1 success 0.805; vs Kyrychenko: fault reliability ≠ steady-state guidance; limitations disclosed; H1–H3 stay localsim | final-3 later; **GENAI_HANDOFF deferred** |
 | Varun | **yes** | e1–e3 + `BASELINE_COMPARE.md` folded into STATUS + LaTeX eval/conclusion/limitations; high_churn little/no vs Lifecycle retained; RQ assessment evidence-bound; rebuild-identical e1–e3 vectors disclosed | soft only; **GENAI_HANDOFF deferred** |
+| Uday | **partial** | lite LIVE_EVIDENCE 16/16; QoS1 loss=0; **neg:** d60≡d300 under lite schedule; QoS1 latency cost; n=1; vs Shvaika: managed+disconnect gap (not TBMQ clone); formal 600k beyond-floor | soft prose/report; **GENAI_HANDOFF deferred** |
