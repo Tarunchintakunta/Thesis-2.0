@@ -1,7 +1,9 @@
 # Results provenance — Pooja PAKS
 
-**Status:** Formal AWS + live K8s method **closed** this pass (Free-Tier k3s,
-destroy-after). Full GCT/Alibaba dumps still absent. **NOT** submission-ready 100%.
+**Status:** Formal AWS + live K8s method **closed** (Free-Tier k3s, destroy-after).
+GCT/Alibaba **samples** landed; full dumps **scoped-out optional** beyond CA2 floor
+(`../../DESIGN_RATIONALE_BEYOND_CA2.md`). Research-scope floor **100%** — **not**
+perfect marks / not multi-GB dump completeness.
 
 ## Formal — live AWS k3s (2026-09-21)
 

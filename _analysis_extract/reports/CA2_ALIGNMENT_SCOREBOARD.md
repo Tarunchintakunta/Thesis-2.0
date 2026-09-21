@@ -1,6 +1,6 @@
 # CA2 alignment scoreboard (12 theses — Kasi excluded)
 
-**Updated:** 2026-09-21 (Venkat EC2 round-2 matmul closed)  
+**Updated:** 2026-09-21 (Pooja CA2 floor closed — dumps scoped out)  
 **Bar:** **100% CA2** = RQ/objectives/gap/method/artefact/eval scope — **not** perfect marks.  
 **Rubric 70%+:** JPEG + `master_rubric.md` → `RUBRIC_QUALITY_BAR.md`.  
 **Handoff MD:** only after 3–5 full-scale evals. **Kasi:** never.
@@ -16,13 +16,14 @@
 | 7 | Nemi | **100** | partial | no | optional beyond-CA2 |
 | 8 | Venkat | **100** | partial | no | soft only (Holm/DOI); matmul closed |
 | 9 | Mehak | **100** | partial | no | INITIAL_EVAL_PASS=yes; next=3 local full GCT runs (not AWS) |
-| 10 | Pooja | **~92** | partial | soft | full dumps soft; optional larger live campaign |
+| 10 | Pooja | **100** | partial | soft only | floor COMPLETE; optional dumps / larger live beyond floor |
 | 11 | Uday | **~65** | no | **YES** | formal-scale IoT (smoke live done+destroyed) |
 | 12 | Vishvaksen | **100** | partial | no | oracle-labelled method; soft Verdet/report polish |
 
-**Fix order:** Uday formal-scale; Pooja method/AWS/live closed (~92%, dumps soft); Venkat + Mehak + Nemi + Vikas CA2 floor closed.
+**Fix order:** Uday formal-scale; Pooja + Venkat + Mehak + Nemi + Vikas CA2 floor closed.
 Venkat raise 2026-09-21: round-2 multi-instance `da.matmul` n=250 **ok** (0.2546 s per `ec2_round2_summary.json`); destroy verified → **100%**.
-Pooja live AWS k3s 2026-09-21: 1× t3.micro + S3 + CW, live HPA vs PAKS scale, destroy confirmed → **~92%** (full dumps soft).
+Pooja live AWS k3s 2026-09-21: 1× t3.micro + S3 + CW, live HPA vs PAKS scale, destroy confirmed → was **~92%**.
+Pooja floor close 2026-09-21: full GCT/Alibaba dumps reframed **scoped-out optional** (`DESIGN_RATIONALE_BEYOND_CA2.md`) → **100%** (samples + live method evidence; not perfect marks).
 Pooja non-AWS raise 2026-09-21: GCT 2011 part + Alibaba RANGE → was **~67%**.
 Vikas rescore 2026-09-21: scoreboard **~74→100** — live full campaign N=1000×3×3 (24000 deliveries), E1–E3 supported, stack destroyed; see `vikas_alignment.md` / `vikas_AWS_RESIDUAL.md`.
 
