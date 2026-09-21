@@ -1,19 +1,41 @@
-## Alignment note (2026-09-20 — beyond-CA2 confirmatory)
+## Alignment note (2026-09-21 — initial_eval_1 gate)
 
-**CA2 research alignment = 100% (floor).** **COMPLETE.** Beyond-CA2 live $n{=}3$ was **gated off** (Vikas holding ConcurrentExecutions). Localsim $n{=}3$ on the same 4 lite cells **was executed**.
+**CA2 research alignment = 100% (floor).** **COMPLETE.** Re-checked after **ONE** live initial evaluation; still 100 → `INITIAL_EVAL_PASS=yes`. Final-3 **not** started.
 
-Authoritative confirmatory stats remain packaging-deduped localsim: `results/summary/stats_H1_H2_H3.json` (`runs: 350`, `backend: localsim`). Live evidence is still the **lite 4-cell × n=1** smoke under `results/live/key_cells/` (stack destroyed). No live $n{>}1$ numbers exist.
+Authoritative confirmatory stats remain packaging-deduped localsim: `results/summary/stats_H1_H2_H3.json` (`runs: 350`, `backend: localsim`). Live smoke: prior `results/live/key_cells/` plus **initial_eval_1** under `results/live/initial_eval_1/` (both destroyed after round). No live $n{>}1$ numbers exist.
 
 | Issue | Status |
 |-------|--------|
 | Phase run-count table (350 vs 690) | **Reconciled** — design vs on-disk; analysis dedupes |
 | H1–H3 claim↔JSON | Localsim-only; twin-inflated drafts withdrawn |
-| Live AWS SQS key-cell lite round | **4/4 cells measured** (n=1); stack **destroyed** after round |
-| Beyond-CA2 live $n{=}3$ (same 4 cells) | **Not run** — probe `results/beyond_ca2/concurrency_probe_2026-09-20.json` (limit=10, observed max=4 on `idem-eval-fn`, Anji ESM=5 → 1 spare) |
+| Live AWS SQS key-cell lite (2026-09-20) | **4/4** n=1; destroyed — `results/live/key_cells/` |
+| **Initial live eval gate (2026-09-21)** | **4/4** n=1; destroyed — `results/live/initial_eval_1/`; **CA2 still 100** |
+| Beyond-CA2 live $n{=}3$ (same 4 cells) | **Not run** — keep concurrency low; protocol in `configs/live_key_cells_n3.yaml` |
 | Beyond-CA2 localsim $n{=}3$ (same 4 cells) | **12/12 localsim** — `results/localsim/key_cells_n3/` |
 | Beyond-CA2 poller sensitivity (conc 2 vs 5) | **8/8 localsim** — `results/localsim/key_cells_concurrency/` |
 
-### Live lite round (measured; n=1 each; eu-west-1)
+### initial_eval_1 (measured; n=1 each; eu-west-1; ESM max_concurrency=2)
+
+| Campaign | Fault | VT | MRC | loss | dup | DLQ | recovery_s | thr msg/s | usd |
+|----------|-------|---:|----:|-----:|----:|----:|-----------:|----------:|----:|
+| L_vt_consumer_kill | consumer_kill | 30 | 5 | 0.0 | 0.025 | 0.0 | 3.123 | 2.979 | 0.000335 |
+| L_vt_consumer_kill | consumer_kill | 90 | 5 | 0.0 | 0.015 | 0.0 | 2.609 | 1.530 | 0.000354 |
+| L_mrc_unhandled_error | unhandled_error | 30 | 1 | 0.0 | 0.0 | 0.23 | — (censored) | 4.688 | 0.000278 |
+| L_mrc_unhandled_error | unhandled_error | 30 | 5 | 0.0 | 0.08 | 0.0 | 39.329 | 2.313 | 0.000352 |
+
+- Wall: **793.0 s**; measured cost sum **≈ $0.00132**
+- Evidence: `results/live/initial_eval_1/` (`summary.json`, manifests, raw, `run.log`)
+- Destroy: **0** TF resources; Lambda/SQS/DynamoDB absent (`results/teardown_log.txt` 2026-09-21)
+- Tags: `project=sqs-reliability-recovery` only (no student name/ID)
+
+### Rubric70 notes (honest pos/neg vs prior lite + baseline framing)
+
+- **Pos:** loss=0 all cells; MRC=1 again shows DLQ capture (0.23 vs prior lite 0.16).
+- **Neg/mixed:** VT→recovery **not** monotone this round (VT30 3.12s vs VT90 2.61s; prior lite 2.34 vs 7.53) — lite protocol does not recover campaign-A 1:1 VT law; MRC=1 success 0.805 (prior 0.91).
+- **vs Kyrychenko steady-state baseline:** under fault, aggressive MRC=1 trades success for DLQ — reliability under failure is not implied by no-fault throughput guidance (Obj 3). Confirmatory H1–H3 remain localsim-only.
+- **Limitations:** n=1 smoke; 200 orders; concurrency=2; underpowered for new Holm tests.
+
+### Prior live lite round (2026-09-20; n=1; eu-west-1)
 
 | Campaign | Fault | VT | MRC | loss | dup | DLQ | recovery_s | thr msg/s | usd |
 |----------|-------|---:|----:|-----:|----:|----:|-----------:|----------:|----:|
@@ -22,9 +44,7 @@ Authoritative confirmatory stats remain packaging-deduped localsim: `results/sum
 | L_mrc_unhandled_error | unhandled_error | 30 | 1 | 0.0 | 0.0 | 0.16 | — (censored) | 7.122 | 0.000311 |
 | L_mrc_unhandled_error | unhandled_error | 30 | 5 | 0.0 | 0.05 | 0.0 | 28.506 | 2.920 | 0.000362 |
 
-- Wall: **772.3 s** (`run.log`); measured cost sum **≈ $0.00144**
 - Evidence: `results/live/key_cells/`
-- Destroy: Terraform state serial 43, **0 resources**; names = `sqs-rr-*` (no student IDs)
 
 ### Beyond-CA2 localsim n=3 (same 4 cells; not AWS)
 
@@ -41,30 +61,31 @@ Authoritative confirmatory stats remain packaging-deduped localsim: `results/sum
 
 ```
 COMPLETE=yes ALIGNMENT=100 CA2_FLOOR=met
+INITIAL_EVAL_PASS=yes
+FINAL3=not_started
 READY_FOR_AWS=done_lite_round
 SOLE_AWS_RESIDUAL=closed
 AWS_CLASS=required
 GATE_READY=yes
 LIVE_LITE_COMPLETE=yes
-LIVE_CONFIRMATORY=blocked_concurrency
+LIVE_INITIAL_EVAL_1=yes
+LIVE_CONFIRMATORY=not_run
 LOCALSIM_N3=yes
 DESTROY_AFTER_ROUND=yes
-BEYOND_CA2=localsim_n3_done_live_n3_blocked
+BEYOND_CA2=localsim_n3_done_live_n3_deferred
 ```
-
 ---
 # Project Status: Simulation vs Live AWS
 
 **Student:** Anjaneya Reddy Gurram (24288853)  
 **Project:** Reliability and Recovery of Amazon SQS Messaging under Injected Consumer and Downstream Failures  
-**Last Updated:** September 20, 2026
+**Last Updated:** September 21, 2026
 
 ## Executive Summary
 
-Primary experimental evidence is the **local simulator** (350 packaging-deduplicated design cells). A **live AWS lite key-cell round (4/4, n=1)** was executed on eu-west-1 and archived under `results/live/key_cells/`. Live numbers are directional smoke only; confirmatory hypothesis tests remain localsim-only. Stack was **destroyed after the round** (evidence files kept). **DIVE/adaptive_vt was not enabled** in the committed experiment matrix.
+Primary experimental evidence is the **local simulator** (350 packaging-deduplicated design cells). Live AWS lite key-cell smoke: prior `results/live/key_cells/` plus gate **`results/live/initial_eval_1/`** (both 4/4, n=1, eu-west-1, destroyed after round). Live numbers are directional smoke only; confirmatory hypothesis tests remain localsim-only. **DIVE/adaptive_vt was not enabled** in the committed experiment matrix.
 
-Beyond-CA2 (2026-09-20): confirmatory live $n{=}3$ was **not** applied (Vikas `idem-eval-fn` holding ConcurrentExecutions max=4 of 10). Localsim $n{=}3$ on the same four lite cells **was** run (`results/localsim/key_cells_n3/`).
-
+**2026-09-21:** ONE initial live evaluation completed; CA2 re-check still **100%** → `INITIAL_EVAL_PASS=yes`. Final-3 not started. Beyond-CA2 live $n{=}3$ still deferred (keep concurrency low on shared account).
 ## Implementation Status
 
 ### Completed (Simulated)
@@ -79,16 +100,17 @@ Beyond-CA2 (2026-09-20): confirmatory live $n{=}3$ was **not** applied (Vikas `i
 
 ### Completed (Live — lite only)
 
-1. **Terraform-backed live stack** applied in eu-west-1 for the lite round
-2. **4/4 live key cells** in `configs/live_key_cells.yaml` with manifests + raw samples
-3. **Teardown** — `terraform destroy` after round; evidence retained under `results/live/`
+1. **Terraform-backed live stack** applied in eu-west-1 (project tags only)
+2. **4/4 live key cells** prior round — `results/live/key_cells/`
+3. **initial_eval_1 (CA2 gate)** — same lite config, ESM concurrency=2 — `results/live/initial_eval_1/`
+4. **Teardown** — destroy verified after each round; evidence retained under `results/live/`
 
-### Partial / open (beyond CA2, not floor gates)
+### Partial / open (beyond CA2 / later gates)
 
-1. **Confirmatory live $n{=}3$** — protocol ready (`configs/live_key_cells_n3.yaml`); blocked by shared-account concurrency
-2. **Live↔sim fidelity** statistical comparison — not run
-3. **Dedicated adaptive_vt / DIVE campaign** (optional; matrix disabled)
-
+1. **Final-3 full-scale live evaluations** — next after `INITIAL_EVAL_PASS=yes` (not started this step)
+2. **Confirmatory live $n{=}3$** — protocol ready (`configs/live_key_cells_n3.yaml`); deferred for concurrency budget
+3. **Live↔sim fidelity** statistical comparison — not run
+4. **Dedicated adaptive_vt / DIVE campaign** (optional; matrix disabled)
 ## Simulation Validity
 
 ### Known Simulator Limitations
@@ -114,8 +136,8 @@ Two git cohorts differ only by whether `spec.adaptive_vt: false` is present. Met
 
 ## Conclusion
 
-Localsim evidence is reconciled to the 350-cell design. Live lite key-cells are **measured (4/4, n=1)** but **not confirmatory**. CA2 **floor = 100% COMPLETE**. Beyond-CA2 live $n{=}3$ remains the preferred AWS next step when the account has headroom; this pass recorded localsim $n{=}3$ instead of inventing live repeats.
+Localsim evidence is reconciled to the 350-cell design. Live lite key-cells are **measured** (prior + `initial_eval_1`, each 4/4 n=1) but **not confirmatory**. CA2 **floor = 100% COMPLETE**; post-eval re-check **still 100** → `INITIAL_EVAL_PASS=yes`. Final-3 is a later step. Beyond-CA2 live $n{=}3$ remains deferred under shared ConcurrentExecutions=10.
 
 ---
 
-**Honest Disclosure:** Live spend for the lite round ≈ **$0.00144** measured. Stack destroyed after that round. **No additional live SQS spend this pass.** Beyond-CA2 localsim $n{=}3$ is simulation, not AWS.
+**Honest Disclosure:** Prior lite ≈ **$0.00144**; `initial_eval_1` ≈ **$0.00132**. Stacks destroyed after each round. Mixed VT→recovery on n=1 smoke is disclosed (not hidden). Beyond-CA2 localsim $n{=}3$ is simulation, not AWS.

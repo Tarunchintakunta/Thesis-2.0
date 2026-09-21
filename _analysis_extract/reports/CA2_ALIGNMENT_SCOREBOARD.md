@@ -1,13 +1,13 @@
 # CA2 alignment scoreboard (12 theses — Kasi excluded)
 
-**Updated:** 2026-09-21  
+**Updated:** 2026-09-21 (Anji `initial_eval_1` gate)  
 **Bar:** **100% CA2** = RQ/objectives/gap/method/artefact/eval scope — **not** perfect marks.  
 **Rubric 70%+:** JPEG + `master_rubric.md` → `RUBRIC_QUALITY_BAR.md`.  
 **Handoff MD:** only after 3–5 full-scale evals. **Kasi:** never.
 
 | # | Thesis | CA2_% | Rubric70 | Block full-eval? | Next |
 |--:|--------|------:|----------|:----------------:|------|
-| 1 | Anji | **100** | yes | no | optional confirmatory |
+| 1 | Anji | **100** | yes | no | initial_eval_1 done; CA2 still 100 → ready for final-3 |
 | 2 | Chaitanya | **100** | partial | no | stale conclusion fold |
 | 3 | Yashaswini | **100** | yes | no | soft only |
 | 4 | Rasool | **100** | partial | no | optional W1/W2 |

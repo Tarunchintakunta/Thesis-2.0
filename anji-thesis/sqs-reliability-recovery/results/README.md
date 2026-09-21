@@ -21,6 +21,7 @@
 | `figures/` | all figures (`analysis/plot_results.py`) | - | - |
 | **Total** | unique `(campaign, cell, repeat)` after packaging-dedup | **350** | **690** |
 | `live/key_cells/` | live AWS lite 4-cell × n=1 (destroyed after round) | 4 | 4 |
+| `live/initial_eval_1/` | CA2 gate: ONE live initial eval (same lite config; destroyed) | 4 | 4 |
 | `localsim/key_cells_n3/` | beyond-CA2 localsim n=3 on the same 4 lite cells | 12 | 12 |
 | `localsim/key_cells_concurrency/` | beyond-CA2 localsim ESM poller 2 vs 5 | 8 | 8 |
 | `beyond_ca2/` | concurrency probe + localsim cell aggregation | - | - |
