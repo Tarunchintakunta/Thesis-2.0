@@ -1,3 +1,5 @@
+**Research Alignment to CA2:** **100%** (Free-Tier smoke/lite live method; formal volume optional beyond floor)
+
 # Uday thesis — status (root)
 
 **Last updated:** 2026-09-21  
