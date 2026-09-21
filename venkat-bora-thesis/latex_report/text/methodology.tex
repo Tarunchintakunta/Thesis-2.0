@@ -177,14 +177,10 @@ In the committed local JSON, this condition is \textbf{never} met for matmul thr
 \end{itemize}
 
 Local matched cores on one host are still \textbf{not} a substitute for multi-instance network cost. Live round-1+2 evidence:
+\begin{itemize}
     \item Scale-up numpy and on-node Dask cells at $n{=}500$ (round-1) and $n{=}250$ (round-2)
     \item Multi-instance: round-1 futures smoke OK / \texttt{da.matmul} timed out; round-2 \texttt{da.matmul} \textbf{0.2546\,s} at $n{=}250$
-
-\begin{itemize}
-    \item Scale-up numpy matmul ($n{=}500$): $\approx$0.0067\,s on \texttt{t3.small}
-    \item On-node Dask \texttt{LocalCluster} per \texttt{t3.micro} ($n{=}500$): mean $\approx$0.52\,s
-    \item Multi-instance: two workers registered; futures smoke OK; \texttt{da.matmul} \textbf{timed out} (no completed multi-instance matmul cell)
-    \item CLI exposes \texttt{--scheduler-address} for the remote Dask arm
+    \item CLI exposes remote Dask arm via live SSM runner (\texttt{scripts/run\_ec2\_round2\_matmul.sh})
 \end{itemize}
 
 \section{Ethical Considerations}
