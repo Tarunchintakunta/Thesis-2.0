@@ -34,5 +34,7 @@ Remediation effort: unified-diff line count between each insecure module and
 its `sibling_id` secure variant.
 
 McNemar: discordant insecure-module detections between paired stages
-(stdlib binomial two-sided). Holm–Bonferroni across the four pre-registered
-pairs is **not** applied in this pass (blocker for the statistical write-up).
+(stdlib binomial two-sided). Holm–Bonferroni (α=0.05) across the four
+pre-registered pairs is written to `results/holm_bonferroni.csv` by
+`scripts/evaluate.py`. Prose: `docs/VERDET_COMPARISON.md` and
+`../latex/verdet_comparison.tex`.

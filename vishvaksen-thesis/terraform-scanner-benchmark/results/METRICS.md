@@ -50,9 +50,18 @@ Mean **13.1** unified-diff lines (min 8, max 30) across 144 insecure modules.
 Cohen's κ = **0.775** (agreement po=0.896).  
 Not an independent second human. See `second_review_subsample.json`.
 
+## Verdet / McNemar / Holm–Bonferroni
+
+Evidence-only write-up: `docs/VERDET_COMPARISON.md` (latex fragment
+`../latex/verdet_comparison.tex`). Measured McNemar on n=144 insecure;
+Holm–Bonferroni (α=0.05, m=4) rejects **only** checklist vs OPA
+(adjusted p=7.45×10⁻⁹). Checkov vs tfsec p=0.229 (not significant).
+CSV: `mcnemar_pairs.csv`, `holm_bonferroni.csv`.
+
 ## Honesty
 
 - Second reviewer (independent human): **NOT RUN** (provisional dual-pass recorded)
-- Human checklist: **NOT RUN** (scripted procedure only)
+- Human checklist: **NOT RUN** (protocol + blank sheet + NON-INDEPENDENT
+  scripted samples exist under `docs/`; scripted procedure only for metrics)
 - War hybrid CSVs: **not this CA2**
 - `results/raw/` is local batch JSON (optional)

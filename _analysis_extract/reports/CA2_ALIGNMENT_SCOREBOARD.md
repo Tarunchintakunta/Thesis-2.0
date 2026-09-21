@@ -18,7 +18,7 @@
 | 9 | Mehak | **100** | partial | no | soft: optional 2019/dump |
 | 10 | Pooja | **62** | partial | **YES** | GCT+live K8s |
 | 11 | Uday | **~42** | no | **YES** | live IoT Core (scaffold done) |
-| 12 | Vishvaksen | **~72** | partial | **YES** | independent human dual-review | no | **YES** | scanner corpus + dual review |
+| 12 | Vishvaksen | **~82** | partial | **YES** | independent human checklist + 2nd rater |
 
 **Fix order:** Vishvaksen → Pooja → Venkat; Mehak + Nemi CA2 floor closed (soft/beyond-CA2 optionals only).
 

@@ -1,6 +1,6 @@
 """Scoring invariants."""
 
-from src.metrics import confusion, mcnemar, rates, wilson_ci
+from src.metrics import confusion, holm_bonferroni, mcnemar, rates, wilson_ci
 
 
 def test_perfect_detection():
@@ -29,3 +29,19 @@ def test_wilson_bounds():
 def test_mcnemar_symmetric():
     s = mcnemar(5, 5)
     assert s["p_two_sided"] > 0.5
+
+
+def test_holm_rejects_only_smallest_when_others_above():
+    tests = [
+        {"pair": "a", "p_two_sided": 1e-9},
+        {"pair": "b", "p_two_sided": 0.053},
+        {"pair": "c", "p_two_sided": 0.058},
+        {"pair": "d", "p_two_sided": 0.23},
+    ]
+    out = holm_bonferroni(tests, alpha=0.05)
+    by_pair = {r["pair"]: r for r in out}
+    assert by_pair["a"]["holm_reject_alpha_0_05"] is True
+    assert by_pair["b"]["holm_reject_alpha_0_05"] is False
+    assert by_pair["c"]["holm_reject_alpha_0_05"] is False
+    assert by_pair["d"]["holm_reject_alpha_0_05"] is False
+    assert by_pair["a"]["holm_rank"] == 1

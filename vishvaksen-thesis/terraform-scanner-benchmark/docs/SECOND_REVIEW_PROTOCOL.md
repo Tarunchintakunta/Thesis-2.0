@@ -31,3 +31,7 @@ Outputs:
 
 **Honesty rule:** provisional κ must never be presented as independent human
 agreement. Replace with a second human before claiming definitive reliability.
+
+Human checklist sheets: use `docs/CHECKLIST_SCORING_SHEET.md` with
+`docs/MANUAL_CHECKLIST.md`. Scripted sample fills are
+`docs/CHECKLIST_SAMPLE_FILLED_NONINDEPENDENT.md` (format only).

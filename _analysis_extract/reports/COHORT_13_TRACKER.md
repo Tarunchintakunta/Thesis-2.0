@@ -22,7 +22,7 @@
 | 9 | Mehak | **~88%** | **NOT FOUND** → `CA2_COMMITMENTS.md` | Yes |
 | 10 | Pooja | **~85%** | **NOT FOUND** → `CA2_COMMITMENTS.md` | Yes |
 | 11 | Uday | **~90%** | **NOT FOUND** → `CA2_COMMITMENTS.md` | Yes |
-| 12 | Vishvaksen | **~86%** | **NOT FOUND** → `CA2_COMMITMENTS.md` | Yes |
+| 12 | Vishvaksen | **~82%** | formal proposal.docx + `CA2_COMMITMENTS.md` | Yes |
 | 13 | Kasi | — | — | **EXCLUDED** |
 
 **None at 100% yet.**
@@ -47,3 +47,4 @@
 - 2026-09-20d: Anji/Varun/Yashaswini/Rasool/Nemi claim hygiene raise — eval↔JSON, STATUS demote, DOI notes, residual notes; still NOT COMPLETE; no AWS
 - 2026-09-20e: Anji packaging-dedup + phase run-count reconcile → ~90%; READY_FOR_AWS=yes (sole=live SQS); no AWS
 - 2026-09-20e: Varun temporal-holdout forecast fix; Yashaswini CausalRCA quarantine; both READY_FOR_AWS=yes; still NOT COMPLETE; no AWS apply
+- 2026-09-21: Vishvaksen checklist protocol + Verdet Holm/McNemar prose → **~82%**; human dual-review still open; no AWS

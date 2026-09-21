@@ -32,7 +32,7 @@ P/R/F1/FN; scan time; remediation LOC.
 | Paper / commitment | Ours |
 |--------------------|------|
 | Precision, recall (disputed subsample) | Precision, recall, F1, FN rate **per category** on a labelled corpus |
-| Alert conflicts | Checkov vs tfsec McNemar on the same modules |
+| Alert conflicts | Checkov vs tfsec McNemar on the same modules; Holm–Bonferroni on four pre-registered pairs (`docs/VERDET_COMPARISON.md`) |
 | (none) scan time / LOC | `results/scan_times.csv`, `results/remediation_loc.csv` |
 
 Evidence: `terraform-scanner-benchmark/results/` — **not**

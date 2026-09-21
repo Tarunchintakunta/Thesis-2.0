@@ -1,8 +1,8 @@
 # Project Status: vishvaksen-thesis
 
 **Last Updated:** 2026-09-21  
-**Branch:** `cursor/vishvaksen-tf-scanner-ca2-8385`  
-**Research Alignment to CA2:** **~72%** (formal scanner/PaC CA2)  
+**Branch:** `main`  
+**Research Alignment to CA2:** **~82%** (formal scanner/PaC CA2)  
 **Status:** **NOT COMPLETE** — **&lt;100%** (do **not** treat as SUBMIT-READY)
 
 ## Summary
@@ -27,11 +27,17 @@ Source: `terraform-scanner-benchmark/results/metrics_per_category.csv`
 Dual-review: **provisional** same-author 20% subsample
 (`results/second_review_subsample.json`, κ≈0.775) — **not** an independent human.
 
+Human checklist: **protocol + blank sheet + NON-INDEPENDENT scripted samples**
+exist; human pass **not run**.
+
+Verdet prose: McNemar + Holm–Bonferroni on measured pairs
+(`docs/VERDET_COMPARISON.md`, `latex/verdet_comparison.tex`) — only
+checklist vs OPA significant after Holm (α=0.05).
+
 ## Blockers to 100%
 
-1. Independent **human** checklist (scripted regex ≠ human rater)
+1. Independent **human** checklist (scripted regex ≠ human rater; protocol ready)
 2. Independent **second human** for 20% subsample (provisional dual-pass exists)
-3. Verdet-aligned statistical write-up in thesis prose (Holm–Bonferroni / McNemar)
 
 ## AWS
 

@@ -1,16 +1,17 @@
 # Project Status: terraform-scanner-benchmark (formal CA2)
 
 **Last Updated:** 2026-09-21  
-**Branch:** `cursor/vishvaksen-tf-scanner-ca2-8385`  
-**Research Alignment to CA2:** **~72%**  
+**Branch:** `main`  
+**Research Alignment to CA2:** **~82%**  
 **Status:** **NOT COMPLETE** — **&lt;100%** (do **not** treat as SUBMIT-READY)
 
 ## Summary
 
 Labelled Terraform corpus (N=240; 4 AWS categories; ~60% defective) evaluated
-with scripted checklist + Checkov/tfsec + OPA/Rego. War hybrid is under
-`../_superseded_proxy/` / `../iac-security/STATUS.md` (PROXY) and is **not**
-evidence. **No terraform apply.**
+with scripted checklist + Checkov/tfsec + OPA/Rego. Human checklist
+**protocol + scoring sheet** are ready; metrics still use the scripted pass.
+War hybrid is under `../_superseded_proxy/` / `../iac-security/STATUS.md`
+(PROXY) and is **not** evidence. **No terraform apply.**
 
 ## Evidence-bound results (this host)
 
@@ -28,13 +29,18 @@ Pinned: Checkov 3.3.19, tfsec v1.28.14, OPA 1.4.2 (see `results/tool_versions.js
 Dual-review subsample: **PROVISIONAL** same-author dual-pass
 (`results/second_review_subsample.json`, κ≈0.775). Not independent human κ.
 
-Checklist is **not** independent human review.
+Checklist is **not** independent human review (see
+`docs/MANUAL_CHECKLIST.md`, `docs/CHECKLIST_SCORING_SHEET.md`,
+`docs/CHECKLIST_SAMPLE_FILLED_NONINDEPENDENT.md`).
+
+Verdet-aligned stats: McNemar + Holm–Bonferroni written
+(`docs/VERDET_COMPARISON.md`; `results/holm_bonferroni.csv`) — only
+checklist vs OPA rejects after correction.
 
 ## Blockers to 100%
 
-1. Independent human checklist
+1. Independent human checklist (protocol ready; sheets not human-filled)
 2. Independent second-human 20% subsample (provisional recorded)
-3. Thesis prose vs Verdet (Holm–Bonferroni write-up)
 
 ## AWS
 

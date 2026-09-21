@@ -19,7 +19,13 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from src.io_util import CORPUS, RESULTS, load_labels  # noqa: E402
-from src.metrics import confusion, mcnemar, rates, wilson_ci  # noqa: E402
+from src.metrics import (  # noqa: E402
+    confusion,
+    holm_bonferroni,
+    mcnemar,
+    rates,
+    wilson_ci,
+)
 
 STAGES = (
     ("checklist", "checklist_verdicts.json", "manual_checklist_scripted"),
@@ -242,6 +248,7 @@ def main() -> int:
         paired_mcnemar(rows, preds, "checklist", "static_union"),
         paired_mcnemar(rows, preds, "checklist", "opa"),
     ]
+    holm_rows = holm_bonferroni(mcnemar_rows, alpha=0.05)
 
     insecure_n = sum(1 for r in rows if r["label"] == "insecure")
     rq = {
@@ -275,6 +282,7 @@ def main() -> int:
     write_csv(RESULTS / "scan_times.csv", time_rows)
     write_csv(RESULTS / "severity_coverage.csv", sev_rows)
     write_csv(RESULTS / "mcnemar_pairs.csv", mcnemar_rows)
+    write_csv(RESULTS / "holm_bonferroni.csv", holm_rows)
 
     versions = tool_versions()
     (RESULTS / "tool_versions.json").write_text(

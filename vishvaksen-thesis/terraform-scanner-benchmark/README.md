@@ -29,7 +29,7 @@ Formal N = **240** modules (60 per category × 4; 60% defective). See
 
 | Stage | What this tree runs | Honesty |
 |-------|---------------------|---------|
-| Manual checklist | Scripted application of `docs/MANUAL_CHECKLIST.md` | **Not** independent human review |
+| Manual checklist | Scripted application of `docs/MANUAL_CHECKLIST.md`; human protocol + blank sheet ready | Metrics = **scripted**; human pass **not run** |
 | Static scanning | Checkov and tfsec at **shipped defaults**, plus union | Tool versions pinned in `results/tool_versions.json` |
 | OPA/Rego gate | Category-scoped packages under `policies/rego/` | Policies follow category definitions, not per-module IDs |
 
@@ -64,5 +64,6 @@ docs/                   method, ethics, second-review protocol
 
 ## Status
 
-**NOT COMPLETE** — see `STATUS.md`. Dual-reviewer subsample and independent
-human checklist are still open. Do not treat this tree as SUBMIT-READY.
+**NOT COMPLETE (~82%)** — see `STATUS.md`. Independent human checklist and
+independent second-human subsample remain open. Verdet McNemar/Holm prose is
+in `docs/VERDET_COMPARISON.md`. Do not treat this tree as SUBMIT-READY.

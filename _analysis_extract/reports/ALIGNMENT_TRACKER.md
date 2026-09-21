@@ -20,7 +20,7 @@
 | Mehak | 80% | **100% CA2 floor (2011 GCT + scoped residuals)** | Soft only: optional dump/2019/net-bytes | **No** |
 | Pooja | 77% | **~48% vs formal `Pooja_25120921_CA2.docx`** | Traces+LSTM+K8s metrics; AWS EC2/S3/CW (NimbusGuard proxy superseded); Gantt missing | **Yes** (not sole) |
 | Uday | 83% | **~18% vs formal MQTT/IoT Core proposal** | Artefact≠CA2 (federated RF); need MQTT disconnect campaign | **Yes** (not sole) |
-| Vishvaksen | 78% | **~28% vs formal Terraform scanner proposal** | Artefact≠CA2 (War hybrid); need labelled TF corpus + Checkov/tfsec/OPA | **No** |
+| Vishvaksen | 78% | **~82% vs formal Terraform scanner CA2** | Independent human checklist; independent 2nd human (protocol+Holm/McNemar prose done) | **No** |
 
 ## Iteration log
 1. **2026-09-20 — Nemi claims hygiene + DOI notes.** AWS not started.  
@@ -38,3 +38,4 @@
 13. **2026-09-20 — Mehak/Pooja/Uday/Vishvaksen formal-CA2 rescore.** Formal docx now binding; proxy extras dropped. Scores: Mehak ~54%, Pooja ~48%, Uday ~18%, Vishvaksen ~28%. Synthetic OK for Uday/Vish; GCT required for Mehak/Pooja. AWS required: Pooja+Uday yes (not deployed); Mehak+Vish no. **No AWS deploy; no invented results.**
 14. **2026-09-20 — Varun live lite fold-in:** measured S3/CE/CW/Wilcoxon ($n{=}24$) into STATUS + LaTeX; residual/cohort **~90%**; SOLE_AWS_RESIDUAL still **yes** (full FinOps campaign); stack destroyed.
 15. **2026-09-21 — Nemi live cloud FL lite closed:** `cloud_lite_summary.json` verified (baseline 0.5000 / improved 0.5480; destroy complete, 9 resources); scoreboard/cohort/tracker → **100% COMPLETE**; `SOLE_AWS_RESIDUAL=closed`; block-full-eval=no. No new AWS runs.
+16. **2026-09-21 — Vishvaksen checklist protocol + Verdet Holm/McNemar prose:** human-executable sheet + NON-INDEPENDENT scripted samples; `holm_bonferroni.csv` + `docs/VERDET_COMPARISON.md` / `latex/verdet_comparison.tex`; alignment **~82%** (not 100% — independent humans still missing). No AWS apply.

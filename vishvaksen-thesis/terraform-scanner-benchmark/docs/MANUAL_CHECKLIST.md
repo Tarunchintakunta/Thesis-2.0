@@ -1,10 +1,42 @@
-# Manual checklist (documented procedure)
+# Manual checklist — human rater protocol
 
-This checklist is the formal “manual review” instrument. A reviewer inspects
-**only** `main.tf` for the module, against the module’s labelled category.
-Do not run scanners while filling the sheet. Do not deploy.
+This is the formal “manual review” instrument for CA2 Objective 2.  
+A human rater inspects **only** `main.tf` for one module, against that
+module’s **labelled category**. Do not run scanners. Do not deploy.
+Do not open `corpus/labels.csv` or sibling modules while scoring.
 
-Tick **Fail** if any item in the category is true. Tick **Pass** if none are.
+**Scripted pass:** `scripts/run_checklist.py` applies the same items as
+regexes. That pass is **not** an independent human rater. Cite scripted
+figures only as “scripted checklist”, never as human-review accuracy.
+
+---
+
+## Rater briefing (read once)
+
+1. You receive: `module_id`, `category`, path to `main.tf`, and a blank
+   scoring sheet (`docs/CHECKLIST_SCORING_SHEET.md`).
+2. You do **not** receive: oracle `label`, `severity`, sibling secure
+   module, scanner output, or other raters’ sheets.
+3. Work category by category. Use only the item list for that category.
+4. For each item: **Fail** if the condition is true on the HCL you see;
+   **Pass** / N/A if not applicable or not true.
+5. Module verdict: **Fail (insecure)** if **any** applicable item is Fail;
+   else **Pass (secure)**.
+6. Variable-only defects (`var.foo` with no literal insecure value in
+   `main.tf`) are **Pass** under this instrument (same rule as the
+   scripted pass). Note them under “notes” if you wish; do not Fail.
+7. Record start/end time. One sheet per module. No terraform apply.
+
+---
+
+## Scoring rule (summary)
+
+| Outcome | Rule |
+|---------|------|
+| Fail (insecure / positive) | ≥1 category checklist item is Fail |
+| Pass (secure / negative) | All applicable items Pass / N/A |
+
+---
 
 ## public_storage
 
@@ -47,12 +79,20 @@ Tick **Fail** if any item in the category is true. Tick **Pass** if none are.
 8. WAF ACL without logging configuration.
 9. Redshift `logging.enable = false` or MSK broker logs disabled.
 
-## How this pass applies it
+---
 
-`scripts/run_checklist.py` implements the items as **regular expressions on
-HCL text**. That is a scripted procedure, not an independent human rater.
-Variable-indirection (`var.*`) is not ticked as a defect unless the literal
-also appears (typically in the variable default — the script does not parse
-defaults). Dual-reviewer agreement is **not** measured here.
+## Deliverables after a human pass
 
-Do not cite checklist figures as human-review accuracy.
+- One filled sheet per module (or CSV export of the same fields).
+- Batch log: rater ID, date, tool versions **not used**, module list.
+- For the 20% dual-review subsample, follow
+  `docs/SECOND_REVIEW_PROTOCOL.md` (independent second human).
+
+## Honesty
+
+- Sample sheets under `docs/CHECKLIST_SAMPLE_FILLED_NONINDEPENDENT.md`
+  are filled by the **scripted** pass and labelled
+  **NON-INDEPENDENT / same-author**. They are training/format artefacts
+  only.
+- Until a human rater completes sheets, formal “manual checklist review”
+  remains **not run**.

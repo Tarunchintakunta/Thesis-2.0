@@ -60,3 +60,39 @@ def mcnemar(b: int, c: int) -> dict[str, float]:
         p_tail += math.comb(n, i)
     p = min(1.0, 2.0 * p_tail / (2**n))
     return {"b": float(b), "c": float(c), "p_two_sided": p}
+
+
+def holm_bonferroni(
+    tests: list[dict], alpha: float = 0.05
+) -> list[dict]:
+    """Holm–Bonferroni step-down on pre-registered tests (α default 0.05).
+
+    Each input dict must include ``p_two_sided``. Returns the same dicts
+    annotated with holm_rank, holm_threshold, holm_adjusted_p, and
+    holm_reject_alpha_0_05. Adjusted p uses the standard cumulative max of
+    (m−j+1)·p_(j), capped at 1.
+    """
+    m = len(tests)
+    if m == 0:
+        return []
+    order = sorted(range(m), key=lambda i: float(tests[i]["p_two_sided"]))
+    out: list[dict | None] = [None] * m
+    adj_run = 0.0
+    still_rejecting = True
+    for rank0, idx in enumerate(order):
+        j = rank0 + 1
+        raw = float(tests[idx]["p_two_sided"])
+        thresh = alpha / (m - j + 1)
+        adj = min(1.0, (m - j + 1) * raw)
+        adj_run = max(adj_run, adj)
+        reject = still_rejecting and raw <= thresh
+        if not reject:
+            still_rejecting = False
+        out[idx] = {
+            **tests[idx],
+            "holm_rank": j,
+            "holm_threshold": thresh,
+            "holm_adjusted_p": adj_run,
+            "holm_reject_alpha_0_05": reject,
+        }
+    return [r for r in out if r is not None]  # type: ignore[misc]

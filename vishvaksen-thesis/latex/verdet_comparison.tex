@@ -1,0 +1,29 @@
+% Verdet-aligned paired tests (evidence-only fragment)
+% Source numbers: terraform-scanner-benchmark/results/{mcnemar_pairs,holm_bonferroni,metrics_per_category}.csv
+% Include from the formal thesis evaluation chapter; do not invent values.
+
+\section{Comparison to Verdet et al.\ (2025): McNemar and Holm--Bonferroni}
+\label{sec:verdet-mcnemar}
+
+Verdet et al.\ (2025) report scanner agreement mainly on disputed
+Checkov/tfsec cases and do not publish labelled Terraform recall/F1.
+On this labelled corpus ($N{=}240$ modules; $144$ insecure) the measured
+identification rates (recall) are: scripted checklist $81.2\%$,
+Checkov~$56.2\%$, tfsec~$61.8\%$, static union~$70.8\%$,
+OPA~$60.4\%$.
+
+Exact two-sided McNemar tests on discordant detections among the $144$
+insecure modules yield:
+Checkov vs.\ tfsec $b{=}13$, $c{=}21$, $p{=}0.229$;
+static union vs.\ OPA $b{=}35$, $c{=}20$, $p{=}0.058$;
+checklist vs.\ static union $b{=}34$, $c{=}19$, $p{=}0.053$;
+checklist vs.\ OPA $b{=}30$, $c{=}0$, $p{=}1.86\times10^{-9}$.
+
+Holm--Bonferroni correction across these four pre-registered pairs at
+$\alpha{=}0.05$ leaves a single rejection: checklist vs.\ OPA
+(adjusted $p{=}7.45\times10^{-9}$). The other three pairs are not
+significant after correction (adjusted $p\in\{0.160,0.160,0.229\}$).
+
+These contrasts concern labelled detection disagreement; they are not
+Verdet adoption metrics. Checklist figures are scripted, not
+independent human review.
