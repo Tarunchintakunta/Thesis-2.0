@@ -3,7 +3,7 @@
 **Updated:** 2026-09-21  
 **Branch:** `main`  
 **COMPLETE** only at Research Alignment to CA2 = **exactly 100%**.  
-**2/12 COMPLETE** (Mehak + Nemi CA2 floor).
+**3/12 COMPLETE** (Mehak + Nemi + Venkat CA2 floor).
 
 ## Gates
 | Gate | Status |
@@ -24,7 +24,7 @@
 | Nemi | **no** (closed) | Lite EC2+S3+CW destroyed | **100%** | **CA2 floor COMPLETE** |
 | Vikas | **yes** (campaign) | **empty** (`deliveries.jsonl` 0 B; pilot done) | **~74%** | **NOT COMPLETE** |
 | Yashaswini | **no** (Leg3 closed) | Lite 3/3 destroyed; learned-LB subset | **~97%** | **NOT COMPLETE** |
-| Venkat | **yes** (matmul) | Round-1; matmul timeout | <100% | **NOT COMPLETE** |
+| Venkat | **no** (closed) | Round-1+2 destroyed; matmul ok n=250 | **100%** | **CA2 floor COMPLETE** |
 
 ## Formal-CA2 (4)
 

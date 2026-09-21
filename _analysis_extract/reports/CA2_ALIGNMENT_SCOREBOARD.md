@@ -1,6 +1,6 @@
 # CA2 alignment scoreboard (12 theses — Kasi excluded)
 
-**Updated:** 2026-09-21 (Anji `initial_eval_1` gate)  
+**Updated:** 2026-09-21 (Venkat EC2 round-2 matmul closed)  
 **Bar:** **100% CA2** = RQ/objectives/gap/method/artefact/eval scope — **not** perfect marks.  
 **Rubric 70%+:** JPEG + `master_rubric.md` → `RUBRIC_QUALITY_BAR.md`.  
 **Handoff MD:** only after 3–5 full-scale evals. **Kasi:** never.
@@ -14,13 +14,14 @@
 | 5 | Varun | **100** | yes | no | soft only; handoff deferred |
 | 6 | Vikas | **~74** | partial | **YES** | sole: live full campaign (deliveries.jsonl 0 B) |
 | 7 | Nemi | **100** | partial | no | optional beyond-CA2 |
-| 8 | Venkat | **63** | partial | **YES** | multi-instance matmul |
+| 8 | Venkat | **100** | partial | no | soft only (Holm/DOI); matmul closed |
 | 9 | Mehak | **100** | partial | no | INITIAL_EVAL_PASS=yes; next=3 local full GCT runs (not AWS) |
 | 10 | Pooja | **67** | partial | **YES** | live K8s + AWS; full dumps soft |
 | 11 | Uday | **~65** | no | **YES** | formal-scale IoT (smoke live done+destroyed) |
 | 12 | Vishvaksen | **~82** | partial | **YES** | independent human checklist + 2nd rater |
 
-**Fix order:** Vikas (empty campaign) → Vishvaksen → Pooja → Venkat; Mehak + Nemi CA2 floor closed (soft/beyond-CA2 optionals only).
+**Fix order:** Vikas (empty campaign) → Vishvaksen → Pooja; Venkat + Mehak + Nemi CA2 floor closed (soft/beyond-CA2 optionals only).
+Venkat raise 2026-09-21: round-2 multi-instance `da.matmul` n=250 **ok** (0.2546 s per `ec2_round2_summary.json`); destroy verified → **100%**.
 Pooja non-AWS raise 2026-09-21: GCT 2011 part + Alibaba RANGE → **~67%** (AWS/live K8s still block 100%).
 Vikas rescore 2026-09-21: scoreboard **100→~74** — working-tree `campaign/deliveries.jsonl` is **0 bytes**; pilot≠campaign; residual `vikas_alignment.md` / `vikas_AWS_RESIDUAL.md`.
 

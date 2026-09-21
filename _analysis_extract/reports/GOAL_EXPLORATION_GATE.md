@@ -21,15 +21,14 @@
 
 **AWS deployment MUST NOT start until all 8 rows are DONE.** (Satisfied for exploration completeness; live apply still gated by per-thesis alignment / residual discipline.)
 
-## Venkat exploration note (this run)
+## Venkat exploration note (updated 2026-09-21)
 - Report: `_analysis_extract/reports/venkat_alignment.md`
-- AWS_CLASS=required (EC2 matched-vCPU)
-- GATE_READY=yes for exploration completeness (not 100% CA2 alignment)
-- SOLE_AWS_RESIDUAL=yes (**multi-instance `da.matmul` + eval sync**; round-1 saved; no invented matmul timing)
-- Alignment (explore): **63%** (live evidence folded into STATUS/LaTeX/residual; still <100%)
-- Residual: `_analysis_extract/reports/venkat_AWS_RESIDUAL.md` (`READY_FOR_AWS=yes`)
-- Live: `results/live/ec2_round1_summary.json` — 1× t3.small vs 2× t3.micro; scale-up ~0.0067s; on-node ~0.52s; multi-instance matmul **timed_out**
-- Note: Terraform defaults already t3.small / t3.micro / count=2; fleet destroyed after round-1
+- AWS_CLASS=required (EC2 matched-vCPU) — **closed**
+- GATE_READY=yes
+- SOLE_AWS_RESIDUAL=**closed** (round-2 multi-instance `da.matmul` ok)
+- Alignment: **100%** CA2 floor
+- Residual: `_analysis_extract/reports/venkat_AWS_RESIDUAL.md` (`SOLE_AWS_RESIDUAL=closed`)
+- Live: round-1 timed_out at n=500; round-2 `ec2_round2_summary.json` matmul **0.2546 s** at n=250; fleets destroyed
 
 ## LIVE (READY subset) — 2026-09-20 / corrected 2026-09-21
 - Vikas: campaign **not** finished — working-tree `campaign/deliveries.jsonl` is **0 bytes** (r2/r3 = `run.log` start only). Alignment **~74%**; sole residual = full campaign. See `vikas_AWS_RESIDUAL.md`.

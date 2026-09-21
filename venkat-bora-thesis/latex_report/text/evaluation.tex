@@ -1,4 +1,7 @@
-% ALIGNMENT FIX 2026-09-20: local numbers match results/data/summary_statistics.json; live round-1 from results/live/ec2_round1_summary.json.
+% ALIGNMENT FIX 2026-09-21: local numbers match results/data/summary_statistics.json; live round-1+2 from results/live/ec2_round{1,2}_summary.json.
+% Prior ALIGNMENT FIX 2026-09-20 retained for local suite honesty.
+
+\textbf{Evidence boundary:} Primary tables and figures below are taken from committed \texttt{results/data/summary\_statistics.json} (local Dask \texttt{LocalCluster} on one host). Live matched-vCPU AWS EC2 artefacts are at \texttt{results/live/ec2\_round1\_summary.json} and \texttt{ec2\_round2\_summary.json} (1× \texttt{t3.small} vs 2× \texttt{t3.micro}); those cells are reported in Sections~\ref{sec:live-ec2-round1}--\ref{sec:live-ec2-round2} and are \textbf{not} mixed into the local suite tables. Round-1 multi-instance \texttt{da.matmul} timed out at $n{=}500$; round-2 completed it at $n{=}250$ (0.2546\,s).
 \chapter{Evaluation}
 
 This chapter presents experimental results, analyzes performance trends, and interprets findings in the context of the research question: how do multi-threaded and distributed parallelism models compare for matrix workloads at matched core counts?
@@ -216,17 +219,40 @@ Multi-instance & \texttt{da.matmul} & \textbf{timed\_out} (no wall-clock claimed
 \end{tabular}
 \end{table}
 
-No completed multi-instance matmul timing is invented or inferred from the smoke test.
+No completed multi-instance matmul timing is invented or inferred from the smoke test. Round-2 (next section) retries with smaller $n$ and longer timeout.
+
+\section{Live EC2 Round-2 (multi-instance matmul completed)}
+\label{sec:live-ec2-round2}
+
+Artefact: \texttt{results/live/ec2\_round2\_summary.json} (\texttt{eu-west-1}; instances destroyed after the round). Same matched topology; matrix order $n{=}250$; ephemeral intra-SG TCP opened for Dask worker ports; bench timeout 600\,s. Runner: \texttt{scripts/run\_ec2\_round2\_matmul.sh}.
+
+\begin{table}[ht]
+\centering
+\caption{EC2 round-2 cells at $n{=}250$ (from \texttt{ec2\_round2\_summary.json})}
+\label{tab:ec2-round2}
+\begin{tabular}{lll}
+\toprule
+\textbf{Arm} & \textbf{Mode} & \textbf{Outcome} \\
+\midrule
+1× \texttt{t3.small} & numpy matmul & 0.001562\,s \\
+2× \texttt{t3.micro} (per node) & Dask LocalCluster & mean 0.5497\,s \\
+Multi-instance & futures smoke & OK ($[0,1,4,9]$; 2 workers) \\
+Multi-instance & \texttt{da.matmul} & \textbf{0.2546\,s} (ok) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+At $n{=}250$ on this topology, scale-up numpy remains faster than multi-instance Dask matmul (0.001562\,s vs 0.2546\,s). The CA2 method requirement—completed multi-instance matmul on matched aggregate vCPUs with IaC destroy—is satisfied by round-2.
 
 \section{Limitations}
 
 \subsection{Experimental Scope}
 
 \begin{itemize}
-    \item Full local sweep covers 200--2000; live EC2 round-1 covers $n{=}500$ with multi-instance \texttt{da.matmul} incomplete
-    \item Local execution understates true network latency; multi-instance matmul cost on EC2 remains unmeasured
+    \item Full local sweep covers 200--2000; live EC2 covers $n{=}500$ (round-1) and $n{=}250$ (round-2 completed multi-instance matmul)
+    \item Live multi-instance matmul wall-clock is measured at $n{=}250$; broader live size sweep is optional beyond the CA2 floor
     \item Dense matrices only; sparse workloads have different communication patterns
-    \item Inferential statistical tests described but not coded; local $n{=}3$ iterations (not 5); live round-1 is single-shot
+    \item Inferential statistical tests described but not coded; local $n{=}3$ iterations (not 5); live rounds are single-shot
 \end{itemize}
 
 \subsection{Generalizability}
@@ -235,11 +261,11 @@ No completed multi-instance matmul timing is invented or inferred from the smoke
     \item Results are CPU platform-specific (x86-64, OpenBLAS)
     \item Python-specific runtime characteristics (GIL, NumPy kernel behavior)
     \item Dask-specific coordination overhead; other frameworks (Spark, Ray) may differ
-    \item Local matched cores $\neq$ completed multi-instance EC2 matmul; round-1 left \texttt{da.matmul} timed out
+    \item Local matched cores remain a proxy for factorial sweeps; live multi-instance matmul is evidenced at $n{=}250$
 \end{itemize}
 
 \section{Summary}
 
 Experimental results from committed local JSON demonstrate that multi-threaded execution maintains performance advantages over local-Dask distributed execution for matrix workloads from 200×200 through 2000×2000 at matched worker counts. At 1000×1000 / 4 workers, distributed matmul is $\approx$5.54× slower than threading (62.2\,ms vs 344.6\,ms). No crossover appears in the local evidence set.
 
-Live EC2 round-1 on the matched 2-vCPU topology (1× \texttt{t3.small} vs 2× \texttt{t3.micro}) measured scale-up numpy and on-node Dask cells at $n{=}500$, and confirmed multi-instance worker registration plus futures smoke, but \textbf{did not} complete multi-instance \texttt{da.matmul}. That incomplete cell—and full eval sync to live evidence—is the remaining residual.
+Live EC2 round-1 measured scale-up and on-node cells at $n{=}500$ but left multi-instance \texttt{da.matmul} timed out. Round-2 completed that cell at $n{=}250$ (0.2546\,s) on the same matched 2-vCPU topology and destroyed the fleet afterward.

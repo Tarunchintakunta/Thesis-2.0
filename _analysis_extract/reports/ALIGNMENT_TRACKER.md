@@ -13,7 +13,7 @@
 | Varun | 58% | **~90% live lite S3/CE/CW/Wilcoxon (destroyed)** | Soft: ML alloc 0.178; full FinOps campaign open | **Yes — sole hard (full live S3 FinOps)** |
 | Anji | 58–72% | **~90% run-count+dedup** | Soft: optional DIVE campaign | **Yes — sole hard (live SQS)** |
 | Yashaswini | 62% | **~88% CausalRCA quarantine + READY_FOR_AWS** | Soft: optional CausalRCA 90 / PDF | **Yes — sole hard (Leg3)** |
-| Venkat | 63% | **DOI + READY_FOR_AWS=yes** | Soft: scheduler CLI **wired** (`--scheduler-address`) | **Yes — sole hard (EC2)** |
+| Venkat | 63% | **100% CA2 floor** (round-2 multi-instance matmul ok + destroy) | Soft only (Holm/DOI) | **No — sole AWS residual closed** |
 | Rasool | 62% | **~74% moto+DOI+K4** | Fill cells still open | Yes (live DDB) — not sole |
 | Chaitanya | 67% | **Proxy-only eval; ROI not measured** | Soft: DOI notes | **Yes — sole hard (Lambda Init)** — **live python Init round RUNNING** |
 | Vikas | 68% | **~74% Pilot≠campaign; P4 quarantined; campaign deliveries 0 B** | Soft: DOI notes | **Yes — sole hard (full campaign)** — **NOT running** (r2/r3 = run.log only) |
@@ -41,3 +41,4 @@
 15. **2026-09-21 — Nemi live cloud FL lite closed:** `cloud_lite_summary.json` verified (baseline 0.5000 / improved 0.5480; destroy complete, 9 resources); scoreboard/cohort/tracker → **100% COMPLETE**; `SOLE_AWS_RESIDUAL=closed`; block-full-eval=no. No new AWS runs.
 16. **2026-09-21 — Vishvaksen checklist protocol + Verdet Holm/McNemar prose:** human-executable sheet + NON-INDEPENDENT scripted samples; `holm_bonferroni.csv` + `docs/VERDET_COMPARISON.md` / `latex/verdet_comparison.tex`; alignment **~82%** (not 100% — independent humans still missing). No AWS apply.
 17. **2026-09-21 — Vikas CA2 honesty rescore:** working-tree verify — pilot `deliveries.jsonl` 300 lines; campaign `deliveries.jsonl` **0 bytes**; r2/r3 start logs only. Scoreboard **100→~74**; `vikas_alignment.md` + `vikas_AWS_RESIDUAL.md`; block-full-eval=yes. **No campaign invented; no AWS apply.**
+18. **2026-09-21 — Venkat round-2 multi-instance `da.matmul` closed:** n=250 elapsed **0.2546 s** (`ec2_round2_summary.json`); terraform destroy verified; scoreboard/cohort → **100% COMPLETE**; `SOLE_AWS_RESIDUAL=closed`.

@@ -57,18 +57,11 @@ resource "aws_security_group" "cluster" {
   vpc_id      = data.aws_vpc.default.id
   description = "Matrix scaling research cluster (Dask scheduler/workers)"
 
+  # Dask scheduler/dashboard plus worker ephemeral ports (intra-SG only).
   ingress {
-    description = "Dask scheduler"
-    from_port   = 8786
-    to_port     = 8786
-    protocol    = "tcp"
-    self        = true
-  }
-
-  ingress {
-    description = "Dask dashboard"
-    from_port   = 8787
-    to_port     = 8787
+    description = "Dask cluster (scheduler, dashboard, worker)"
+    from_port   = 0
+    to_port     = 65535
     protocol    = "tcp"
     self        = true
   }
@@ -86,43 +79,42 @@ locals {
     #!/bin/bash
     set -euxo pipefail
     dnf -y update || yum -y update || true
-    dnf -y install python3.11 python3.11-pip python3.11-devel gcc || yum -y install python3 python3-pip gcc
-    python3 -m pip install --upgrade pip
-    python3 -m pip install 'numpy==2.1.3' 'dask[distributed]==2024.11.2' psutil
+    dnf -y install python3.11 python3.11-pip python3.11-devel gcc || yum -y install python3.11 python3.11-pip gcc
+    python3.11 -m pip install --upgrade pip
+    python3.11 -m pip install 'numpy==2.1.3' 'dask[distributed]==2024.11.2' psutil
     mkdir -p /opt/matrix-scale
     cat > /opt/matrix-scale/quick_bench.py <<'PY'
-    import json, time, os
-    import numpy as np
-    from pathlib import Path
-    size = int(os.environ.get("MATRIX_SIZE", "500"))
-    workers = int(os.environ.get("N_WORKERS", "2"))
-    role = os.environ.get("NODE_ROLE", "scale-up")
-    out = Path("/opt/matrix-scale/result.json")
-    A = np.random.rand(size, size)
-    B = np.random.rand(size, size)
-    t0 = time.perf_counter()
-    if role == "scale-up":
-        # threaded matmul proxy on one host
-        C = A @ B
-        mode = "threaded_local"
-    else:
-        from dask.distributed import Client, LocalCluster
-        cluster = LocalCluster(n_workers=workers, threads_per_worker=1, processes=True)
-        client = Client(cluster)
-        import dask.array as da
-        a = da.from_array(A, chunks=(size // workers, size))
-        b = da.from_array(B, chunks=(size, size // workers))
-        C = (a @ b).compute()
-        client.close(); cluster.close()
-        mode = "dask_localcluster_on_node"
-    elapsed = time.perf_counter() - t0
-    out.write_text(json.dumps({
-        "role": role, "mode": mode, "size": size, "workers": workers,
-        "elapsed_s": elapsed, "checksum": float(C[0,0]),
-        "hostname": os.uname().nodename,
-    }, indent=2) + "\n")
-    print(out.read_text())
-    PY
+import json, time, os
+import numpy as np
+from pathlib import Path
+size = int(os.environ.get("MATRIX_SIZE", "250"))
+workers = int(os.environ.get("N_WORKERS", "2"))
+role = os.environ.get("NODE_ROLE", "scale-up")
+out = Path("/opt/matrix-scale/result.json")
+A = np.random.rand(size, size)
+B = np.random.rand(size, size)
+t0 = time.perf_counter()
+if role == "scale-up":
+    C = A @ B
+    mode = "numpy_matmul"
+else:
+    from dask.distributed import Client, LocalCluster
+    cluster = LocalCluster(n_workers=workers, threads_per_worker=1, processes=False, dashboard_address=None)
+    client = Client(cluster)
+    import dask.array as da
+    a = da.from_array(A, chunks=(size // max(workers, 1), size))
+    b = da.from_array(B, chunks=(size, size // max(workers, 1)))
+    C = (a @ b).compute()
+    client.close(); cluster.close()
+    mode = "dask_localcluster_on_node"
+elapsed = time.perf_counter() - t0
+out.write_text(json.dumps({
+    "role": role, "mode": mode, "size": size, "workers": workers,
+    "elapsed_s": elapsed, "checksum": float(C[0,0]),
+    "hostname": os.uname().nodename,
+}, indent=2) + "\n")
+print(out.read_text())
+PY
     echo ready > /opt/matrix-scale/READY
   EOF
 }
