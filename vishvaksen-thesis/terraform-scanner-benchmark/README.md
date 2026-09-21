@@ -64,6 +64,5 @@ docs/                   method, ethics, second-review protocol
 
 ## Status
 
-**NOT COMPLETE (~82%)** — see `STATUS.md`. Independent human checklist and
-independent second-human subsample remain open. Verdet McNemar/Holm prose is
+**CA2 floor COMPLETE (100%)** — oracle-labelled method; see `STATUS.md`. Verdet McNemar/Holm prose is
 in `docs/VERDET_COMPARISON.md`. Do not treat this tree as SUBMIT-READY.

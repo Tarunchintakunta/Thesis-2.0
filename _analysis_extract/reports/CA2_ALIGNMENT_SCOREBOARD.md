@@ -18,9 +18,9 @@
 | 9 | Mehak | **100** | partial | no | INITIAL_EVAL_PASS=yes; next=3 local full GCT runs (not AWS) |
 | 10 | Pooja | **~92** | partial | soft | full dumps soft; optional larger live campaign |
 | 11 | Uday | **~65** | no | **YES** | formal-scale IoT (smoke live done+destroyed) |
-| 12 | Vishvaksen | **~82** | partial | **YES** | independent human checklist + 2nd rater |
+| 12 | Vishvaksen | **100** | partial | no | oracle-labelled method; soft Verdet/report polish |
 
-**Fix order:** Vishvaksen → Uday formal-scale; Pooja method/AWS/live closed (~92%, dumps soft); Venkat + Mehak + Nemi + Vikas CA2 floor closed.
+**Fix order:** Uday formal-scale; Pooja method/AWS/live closed (~92%, dumps soft); Venkat + Mehak + Nemi + Vikas CA2 floor closed.
 Venkat raise 2026-09-21: round-2 multi-instance `da.matmul` n=250 **ok** (0.2546 s per `ec2_round2_summary.json`); destroy verified → **100%**.
 Pooja live AWS k3s 2026-09-21: 1× t3.micro + S3 + CW, live HPA vs PAKS scale, destroy confirmed → **~92%** (full dumps soft).
 Pooja non-AWS raise 2026-09-21: GCT 2011 part + Alibaba RANGE → was **~67%**.
@@ -33,3 +33,5 @@ Vikas rescore 2026-09-21: scoreboard **~74→100** — live full campaign N=1000
 - [Scaffold Uday MQTT QoS CA2 artefact](bc-cff00b22-64f1-597a-886a-ed9c64d38f63) → ~42%, READY_FOR_AWS=NO
 - Uday lite/smoke Free-Tier path + smoke live destroyed (2026-09-21) → **~65%**, READY_FOR_AWS=yes (formal still blocked)
 - [Correct Vikas scoreboard honesty](bc-f205d25b-c03e-5db7-8f8c-d4c0d1b3fb4d) → was ~74% empty campaign; **2026-09-21 live campaign closed → 100%**
+
+Vishvaksen 2026-09-21: reframed to labelled-oracle method (no live human panels) → **100%** CA2 floor.

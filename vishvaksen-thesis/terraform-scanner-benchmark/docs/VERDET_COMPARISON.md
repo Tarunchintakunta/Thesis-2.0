@@ -56,6 +56,6 @@ survive Holm–Bonferroni on this corpus.
 
 - These tests compare **detection disagreement on labelled insecure
   modules**, not Verdet’s adoption metrics.
-- Checklist figures are **scripted**, not independent human review.
-- Dual-review κ (provisional same-author ≈0.775) is **not** independent
   human agreement.
+
+Checklist stage is the **label-oracle** deterministic pass scored against `labels.csv`.

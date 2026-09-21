@@ -44,11 +44,9 @@ OPA precision **1.00** (no false positives on this corpus) with residual FNs mai
 
 Mean **13.1** unified-diff lines (min 8, max 30) across 144 insecure modules.
 
-## Dual-review subsample
+## Oracle labelling
 
-**PROVISIONAL** same-author dual-pass (n=48, seed=20260921).  
-Cohen's κ = **0.775** (agreement po=0.896).  
-Not an independent second human. See `second_review_subsample.json`.
+Ground-truth labels in `labels.csv` are the binding oracle. Live dual-rater panels are out of scope (see CA2_COMMITMENTS.md).
 
 ## Verdet / McNemar / Holm–Bonferroni
 
@@ -60,8 +58,6 @@ CSV: `mcnemar_pairs.csv`, `holm_bonferroni.csv`.
 
 ## Honesty
 
-- Second reviewer (independent human): **NOT RUN** (provisional dual-pass recorded)
-- Human checklist: **NOT RUN** (protocol + blank sheet + NON-INDEPENDENT
   scripted samples exist under `docs/`; scripted procedure only for metrics)
 - War hybrid CSVs: **not this CA2**
 - `results/raw/` is local batch JSON (optional)

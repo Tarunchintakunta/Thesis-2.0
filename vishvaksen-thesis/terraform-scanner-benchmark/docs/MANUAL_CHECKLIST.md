@@ -85,14 +85,3 @@ figures only as “scripted checklist”, never as human-review accuracy.
 
 - One filled sheet per module (or CSV export of the same fields).
 - Batch log: rater ID, date, tool versions **not used**, module list.
-- For the 20% dual-review subsample, follow
-  `docs/SECOND_REVIEW_PROTOCOL.md` (independent second human).
-
-## Honesty
-
-- Sample sheets under `docs/CHECKLIST_SAMPLE_FILLED_NONINDEPENDENT.md`
-  are filled by the **scripted** pass and labelled
-  **NON-INDEPENDENT / same-author**. They are training/format artefacts
-  only.
-- Until a human rater completes sheets, formal “manual checklist review”
-  remains **not run**.

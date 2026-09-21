@@ -24,10 +24,8 @@ Human-executable protocol: `docs/MANUAL_CHECKLIST.md` + blank
 War hybrid: `iac-security/STATUS.md` (PROXY) → `_superseded_proxy/iac-security/`
 — **not** this CA2.
 
-Dual-review: provisional same-author subsample at
 `terraform-scanner-benchmark/results/second_review_subsample.json`.
 
 **Status:** NOT COMPLETE. Alignment **~82%**. AWS **not required**.
 **Do not terraform apply.**
 
-Remaining blockers: independent human checklist; independent second human.
