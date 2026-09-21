@@ -1,0 +1,47 @@
+{
+  "protocol": "ca2_baseline_compare_lifecycle_and_intelligent_tiering",
+  "baselines": [
+    "aws_lifecycle_policies",
+    "aws_intelligent_tiering"
+  ],
+  "evaluations_included": [
+    1,
+    2,
+    3
+  ],
+  "reproducibility_by_workload": {
+    "static_archival": {
+      "n_evaluations": 3,
+      "delta_vs_lifecycle_mean": 0.005119499999999999,
+      "delta_vs_it_mean": 0.000794099999999999,
+      "significant_vs_lifecycle_all_runs": true,
+      "vs_both_natives_all_runs": true,
+      "little_or_no_improvement_vs_lifecycle": false
+    },
+    "mixed_access": {
+      "n_evaluations": 3,
+      "delta_vs_lifecycle_mean": 0.0031801000000000017,
+      "delta_vs_it_mean": 0.0048426000000000025,
+      "significant_vs_lifecycle_all_runs": true,
+      "vs_both_natives_all_runs": true,
+      "little_or_no_improvement_vs_lifecycle": false
+    },
+    "high_churn": {
+      "n_evaluations": 3,
+      "delta_vs_lifecycle_mean": 6.530000000000077e-05,
+      "delta_vs_it_mean": 0.0157749,
+      "significant_vs_lifecycle_all_runs": false,
+      "vs_both_natives_all_runs": false,
+      "little_or_no_improvement_vs_lifecycle": true
+    }
+  },
+  "meets_ca2_two_of_three_by_evaluation": {
+    "1": true,
+    "2": true,
+    "3": true
+  },
+  "critical_analysis": {
+    "positive": "static_archival + mixed_access beat both natives across rebuilt evaluations when sig holds",
+    "negative_or_null": "high_churn vs Lifecycle not significant \u2014 little/no improvement under high churn"
+  }
+}

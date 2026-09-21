@@ -1,7 +1,7 @@
 # Alignment iteration tracker (AWS blocked until 100%)
 
 **Rule:** No AWS deploy until Research Alignment to CA2 = **100%** per thesis (or sole remaining gaps are the live-AWS experiments CA2 requires).  
-**Branch:** `feature/aws-ca2-alignment` only.  
+**Branch:** `main` only (no new `cursor/*` agent branches/worktrees).  
 **Exploration gate:** COMPLETE (all 8) — `GOAL_EXPLORATION_GATE.md`.  
 **Consolidated table:** `COHORT_COMPLETE_TABLE.md` — all **NOT COMPLETE**.
 
