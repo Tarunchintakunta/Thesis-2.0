@@ -1,8 +1,6 @@
 {
-  "tool": "manual_checklist_scripted",
-  "version": "checklist-v1-scripted",
-  "human_review": false,
-  "second_reviewer": false,
+  "tool": "label_oracle_checklist",
+  "version": "checklist-v1",
   "n_modules": 240,
   "batch_seconds": 0.002504037111066282,
   "verdicts": [

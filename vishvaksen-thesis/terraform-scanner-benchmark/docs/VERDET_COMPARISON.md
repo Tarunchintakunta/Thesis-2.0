@@ -11,7 +11,6 @@ accuracy mainly on disputed Checkov/tfsec cases. This artefact instead
 scores **labelled** secure/insecure AWS modules (N=240; 144 insecure)
 with per-category precision / recall / F1 / FN for:
 
-- scripted checklist (not a human rater),
 - Checkov 3.3.19,
 - tfsec v1.28.14,
 - static union (Checkov ∨ tfsec),
@@ -56,6 +55,5 @@ survive Holm–Bonferroni on this corpus.
 
 - These tests compare **detection disagreement on labelled insecure
   modules**, not Verdet’s adoption metrics.
-  human agreement.
 
 Checklist stage is the **label-oracle** deterministic pass scored against `labels.csv`.

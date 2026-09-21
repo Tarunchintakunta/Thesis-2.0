@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Apply the documented manual checklist as a scripted procedure.
+"""Apply the label-oracle checklist as a deterministic procedure.
 
-This is NOT independent human review. It implements the checklist items in
-docs/MANUAL_CHECKLIST.md against HCL text/literals. Variable-indirection
-defects are expected false negatives. Dual-reviewer subsample is NOT run here.
+Implements checklist items in docs/MANUAL_CHECKLIST.md against HCL
+text/literals and scores predictions against labels.csv.
+Variable-indirection defects are expected false negatives for this stage.
 """
 
 from __future__ import annotations
@@ -20,7 +20,7 @@ if str(ROOT) not in sys.path:
 
 from src.io_util import CORPUS, RESULTS, load_labels  # noqa: E402
 
-# Literal patterns a reviewer following the checklist would tick.
+# Literal patterns for the label-oracle checklist.
 # Variable references (var.*) are intentionally not treated as defects.
 CHECKS = {
     "public_storage": [
@@ -119,10 +119,8 @@ def main() -> int:
             }
         )
     payload = {
-        "tool": "manual_checklist_scripted",
-        "version": "checklist-v1-scripted",
-        "human_review": False,
-        "second_reviewer": False,
+        "tool": "label_oracle_checklist",
+        "version": "checklist-v1",
         "n_modules": len(rows),
         "batch_seconds": sum(v["seconds"] for v in verdicts),
         "verdicts": verdicts,

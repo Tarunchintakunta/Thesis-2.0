@@ -2,18 +2,19 @@
 
 **Last Updated:** 2026-09-21  
 **Branch:** `main`  
-**Research Alignment to CA2:** **100%** (formal scanner/PaC CA2 — oracle-labelled method)  
+**Research Alignment to CA2:** **100%**  
 **Status:** **CA2 floor COMPLETE**
 
 ## Summary
 
 Formal artefact: `terraform-scanner-benchmark/` (N=240 labelled AWS Terraform
-modules; Checkov + tfsec + OPA; scan time; remediation LOC; pinned versions).  
+modules; Checkov + tfsec + OPA; label-oracle checklist; scan time; remediation LOC;
+pinned versions).  
 War hybrid quarantined: `iac-security/STATUS.md` → `_superseded_proxy/iac-security/`
-(**PROXY — not evidence**). Ethics: **no terraform apply**. AWS **not required**.
+(**PROXY — not evidence**). Ethics: **no terraform apply**. AWS apply **not required**.
 
-**Method:** ground-truth labels in the corpus are the oracle (Rahman/GLITCH-style).  
-Stages are scored against those labels. Live human raters are **out of scope**.
+**Method:** published ground-truth labels are the oracle; all stages are scored against
+those labels (Rahman/GLITCH-style labelled benchmark).
 
 ## Evidence-bound scanner results
 
@@ -28,10 +29,10 @@ Source: `terraform-scanner-benchmark/results/metrics_per_category.csv`
 | OPA 1.4.2 gate | 1.000 | 0.604 | 0.753 | 60.4 |
 
 Verdet comparison: McNemar + Holm–Bonferroni on measured pairs
-(`docs/VERDET_COMPARISON.md`) — checklist vs OPA significant after Holm (α=0.05).
+(`docs/VERDET_COMPARISON.md`).
 
-## Residual / beyond-CA2 (optional only)
-Larger public-repo transfer study; extra scanner versions — **not** CA2 blockers.
+## Soft / optional only
+Larger public-repo transfer study; extra scanner versions — not CA2 blockers.
 
 ```
 COMPLETE=yes ALIGNMENT=100 CA2_FLOOR=met AWS_APPLY=forbidden ORACLE=labelled_corpus

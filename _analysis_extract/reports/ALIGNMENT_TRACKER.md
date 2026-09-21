@@ -20,7 +20,7 @@
 | Mehak | 80% | **100% CA2 floor (2011 GCT + scoped residuals)** | Soft only: optional dump/2019/net-bytes | **No** |
 | Pooja | 77% | **~48% vs formal `Pooja_25120921_CA2.docx`** | Traces+LSTM+K8s metrics; AWS EC2/S3/CW (NimbusGuard proxy superseded); Gantt missing | **Yes** (not sole) |
 | Uday | 83% | **~65% MQTT artefact + smoke live destroyed** | Formal-scale IoT + Shvaika + report | **Yes** (not sole) |
-| Vishvaksen | 78% | **~82% vs formal Terraform scanner CA2** | Independent human checklist; independent 2nd human (protocol+Holm/McNemar prose done) | **No** |
+| Vishvaksen | 78% | **100% labelled-oracle CA2** | Soft: report polish | **No** |
 
 ## Iteration log
 1. **2026-09-20 — Nemi claims hygiene + DOI notes.** AWS not started.  

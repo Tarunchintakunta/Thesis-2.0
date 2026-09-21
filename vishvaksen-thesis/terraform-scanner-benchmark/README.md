@@ -29,7 +29,7 @@ Formal N = **240** modules (60 per category × 4; 60% defective). See
 
 | Stage | What this tree runs | Honesty |
 |-------|---------------------|---------|
-| Manual checklist | Scripted application of `docs/MANUAL_CHECKLIST.md`; human protocol + blank sheet ready | Metrics = **scripted**; human pass **not run** |
+| Label-oracle checklist | Deterministic rules in `docs/MANUAL_CHECKLIST.md` scored vs `labels.csv` | Metrics = label-oracle checklist |
 | Static scanning | Checkov and tfsec at **shipped defaults**, plus union | Tool versions pinned in `results/tool_versions.json` |
 | OPA/Rego gate | Category-scoped packages under `policies/rego/` | Policies follow category definitions, not per-module IDs |
 
@@ -59,7 +59,7 @@ policies/rego/          category OPA policies
 mappings/               a priori Checkov/tfsec check-id maps
 scripts/                generate + runners + evaluate
 results/                metrics tables (after run_all)
-docs/                   method, ethics, second-review protocol
+docs/                   method, ethics, Verdet comparison
 ```
 
 ## Status

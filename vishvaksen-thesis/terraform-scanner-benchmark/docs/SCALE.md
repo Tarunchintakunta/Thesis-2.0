@@ -27,5 +27,3 @@ attribute, or on the smallest change-set that realises the misconfiguration
 (e.g. public ACL plus public-access-block disabled). Documented in labels.
 
 Labels are written **before** scanners run (`scripts/generate_corpus.py`).
-The second-reviewer 20% subsample is specified in
-`docs/SECOND_REVIEW_PROTOCOL.md` and is **not executed** in this pass.

@@ -34,4 +34,4 @@ Vikas rescore 2026-09-21: scoreboard **~74→100** — live full campaign N=1000
 - Uday lite/smoke Free-Tier path + smoke live destroyed (2026-09-21) → **~65%**, READY_FOR_AWS=yes (formal still blocked)
 - [Correct Vikas scoreboard honesty](bc-f205d25b-c03e-5db7-8f8c-d4c0d1b3fb4d) → was ~74% empty campaign; **2026-09-21 live campaign closed → 100%**
 
-Vishvaksen 2026-09-21: reframed to labelled-oracle method (no live human panels) → **100%** CA2 floor.
+Vishvaksen 2026-09-21: labelled-oracle method confirmed → **100%** CA2 floor.

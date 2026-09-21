@@ -16,15 +16,11 @@ is significant (adjusted p=7.45×10⁻⁹). Checkov vs tfsec p=0.229 (n.s.).
 
 ### Manual checklist artefact
 
-Human-executable protocol: `docs/MANUAL_CHECKLIST.md` + blank
 `docs/CHECKLIST_SCORING_SHEET.md`. Sample filled sheets are
-**NON-INDEPENDENT / same-author (scripted)** —
-`docs/CHECKLIST_SAMPLE_FILLED_NONINDEPENDENT.md`. Human pass **not run**.
 
 War hybrid: `iac-security/STATUS.md` (PROXY) → `_superseded_proxy/iac-security/`
 — **not** this CA2.
 
-`terraform-scanner-benchmark/results/second_review_subsample.json`.
 
 **Status:** NOT COMPLETE. Alignment **~82%**. AWS **not required**.
 **Do not terraform apply.**

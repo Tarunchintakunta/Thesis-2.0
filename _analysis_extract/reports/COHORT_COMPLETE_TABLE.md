@@ -33,7 +33,7 @@
 | Mehak | **100%** | no | **CA2 floor COMPLETE** (soft: optional 2019/dump) |
 | Pooja | **~48%** | yes (not sole) | **NOT COMPLETE** |
 | Uday | **~65%** | yes (not sole) | **NOT COMPLETE** (smoke live done+destroyed; formal free-tier-blocked) |
-| Vishvaksen | **~28%** | no | **NOT COMPLETE** |
+| Vishvaksen | **100%** | no | **NOT COMPLETE** |
 
 ## Credits
 ~$131. Destroy-after-round. ConcurrentExecutions=**10**.

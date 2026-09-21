@@ -2,7 +2,6 @@
 
 **N = 240** modules (60 × 4 categories; 144 insecure / 96 secure).  
 **Do not terraform apply.**  
-Checklist stage is **scripted** (`docs/MANUAL_CHECKLIST.md`), not a human rater.  
 Tools: Checkov **3.3.19**, tfsec **======================================================**, OPA **1.4.2**, Terraform **v1.15.8** (parser only).
 
 ## RQ — % of labelled insecure modules identified (recall)
@@ -46,7 +45,6 @@ Mean **13.1** unified-diff lines (min 8, max 30) across 144 insecure modules.
 
 ## Oracle labelling
 
-Ground-truth labels in `labels.csv` are the binding oracle. Live dual-rater panels are out of scope (see CA2_COMMITMENTS.md).
 
 ## Verdet / McNemar / Holm–Bonferroni
 

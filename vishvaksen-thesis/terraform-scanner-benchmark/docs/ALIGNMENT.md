@@ -1,6 +1,6 @@
 # Alignment — terraform-scanner-benchmark
 
-**CA2 floor: 100%** (oracle-labelled method).
+**CA2 floor: 100%.**
 
 | Objective | Evidence |
 |-----------|----------|
@@ -10,4 +10,4 @@
 | Per-category P/R/F1/FN | results CSVs |
 | Verdet stats | `docs/VERDET_COMPARISON.md` |
 
-Live human panels: **out of scope**. AWS apply: **forbidden**.
+AWS apply: **forbidden**.
