@@ -1,12 +1,9 @@
-% ALIGNMENT FIX 2026-09-21: local numbers match results/data/summary_statistics.json; live round-1+2 from results/live/ec2_round{1,2}_summary.json.
-% Prior ALIGNMENT FIX 2026-09-20 retained for local suite honesty.
-
-\textbf{Evidence boundary:} Primary tables and figures below are taken from committed \texttt{results/data/summary\_statistics.json} (local Dask \texttt{LocalCluster} on one host). Live matched-vCPU AWS EC2 artefacts are at \texttt{results/live/ec2\_round1\_summary.json} and \texttt{ec2\_round2\_summary.json} (1× \texttt{t3.small} vs 2× \texttt{t3.micro}); those cells are reported in Sections~\ref{sec:live-ec2-round1}--\ref{sec:live-ec2-round2} and are \textbf{not} mixed into the local suite tables. Round-1 multi-instance \texttt{da.matmul} timed out at $n{=}500$; round-2 completed it at $n{=}250$ (0.2546\,s).
+% ALIGNMENT FIX 2026-09-21: local + live round-1/2 from results/live/ec2_round{1,2}_summary.json.
 \chapter{Evaluation}
 
 This chapter presents experimental results, analyzes performance trends, and interprets findings in the context of the research question: how do multi-threaded and distributed parallelism models compare for matrix workloads at matched core counts?
 
-\textbf{Evidence boundary:} Primary tables and figures below are taken from committed \texttt{results/data/summary\_statistics.json} (local Dask \texttt{LocalCluster} on one host). A separate \textbf{AWS EC2 round-1} artefact exists at \texttt{results/live/ec2\_round1\_summary.json} (matched 2-vCPU topology: 1× \texttt{t3.small} vs 2× \texttt{t3.micro}); those live cells are reported in Section~\ref{sec:live-ec2-round1} and are \textbf{not} mixed into the local suite tables. Multi-instance \texttt{da.matmul} did \textbf{not} complete in round-1 (timed out after a successful futures smoke test).
+\textbf{Evidence boundary:} Primary tables and figures below are taken from committed \texttt{results/data/summary\_statistics.json} (local Dask \texttt{LocalCluster} on one host). Live matched-vCPU AWS EC2 artefacts are at \texttt{results/live/ec2\_round1\_summary.json} and \texttt{ec2\_round2\_summary.json} (1× \texttt{t3.small} vs 2× \texttt{t3.micro}); those cells are reported in Sections~\ref{sec:live-ec2-round1}--\ref{sec:live-ec2-round2} and are \textbf{not} mixed into the local suite tables. Round-1 multi-instance \texttt{da.matmul} timed out at $n{=}500$; round-2 completed it at $n{=}250$ (0.2546\,s).
 
 \section{Dataset Overview}
 

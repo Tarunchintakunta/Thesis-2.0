@@ -75,7 +75,7 @@ Guidance informed by local suite plus live round-1 topology (1× \texttt{t3.smal
 \begin{itemize}
     \item Prefer validating scale-up on one larger instance before assuming multi-instance benefit
     \item Do not treat local Dask times as multi-instance EC2 matmul results
-    \item Completed multi-instance \texttt{da.matmul} remains required to finish the CA2 cloud-instance RQ
+    \item Completed multi-instance \texttt{da.matmul} is evidenced in round-2 ($n{=}250$)
 \end{itemize}
 
 \section{Limitations}
@@ -83,8 +83,8 @@ Guidance informed by local suite plus live round-1 topology (1× \texttt{t3.smal
 \subsection{Scope Constraints}
 
 \begin{itemize}
-    \item \textbf{Matrix size range}: Local suite covers 200--2000; \textbf{no crossover} in that range; live EC2 round-1 multi-instance \texttt{da.matmul} timed out
-    \item \textbf{Local vs multi-instance}: True multi-node network cost for matmul not yet measured on EC2
+    \item \textbf{Matrix size range}: Local suite covers 200--2000; \textbf{no crossover} in that range; live EC2 round-1 timed out at $n{=}500$; round-2 completed at $n{=}250$
+    \item \textbf{Local vs multi-instance}: Multi-node matmul wall-clock measured on EC2 at $n{=}250$ (0.2546\,s)
     \item \textbf{Dense matrices}: Sparse workloads have different communication-to-computation ratios
     \item \textbf{CPU-only}: GPU acceleration not considered; would shift cost-benefit analysis
 \end{itemize}
@@ -111,8 +111,8 @@ Guidance informed by local suite plus live round-1 topology (1× \texttt{t3.smal
 \subsection{Immediate Extensions}
 
 \begin{enumerate}
-    \item \textbf{Larger Matrices / Cloud}: Complete multi-instance \texttt{da.matmul} on matched-vCPU EC2 (round-1 residual); do not extrapolate local crossover
-    \item \textbf{AWS Deployment}: Re-run multi-instance matmul to quantify network overhead after futures-smoke path
+    \item \textbf{Larger Matrices / Cloud}: Optional broader live size sweep beyond $n{=}250$; do not extrapolate local crossover
+    \item \textbf{AWS Deployment}: Optional: extend live multi-instance matmul across more matrix orders
     \item \textbf{GPU Comparison}: Add cuBLAS/cuDNN implementations to explore accelerator impact
     \item \textbf{Sparse Matrices}: Test scipy.sparse operations where communication patterns differ
 \end{enumerate}
@@ -137,7 +137,7 @@ Guidance informed by local suite plus live round-1 topology (1× \texttt{t3.smal
 
 \section{Research Impact}
 
-This work provides local-suite evidence plus a partial live EC2 round-1 for a decision that cloud practitioners face routinely. It does \textbf{not} claim a completed multi-instance AWS matmul crossover. By documenting that local distributed never beats threading through 2000×2000 in committed JSON, and by recording round-1 scale-up / on-node / futures-smoke cells without inventing a timed-out matmul, this study:
+This work provides local-suite evidence plus live matched-vCPU EC2 rounds for a decision that cloud practitioners face routinely. Round-2 completed multi-instance \texttt{da.matmul} at $n{=}250$ (0.2546\,s). By documenting that local distributed never beats threading through 2000×2000 in committed JSON, and by recording honest round-1 timeout plus round-2 completion, this study:
 
 \begin{itemize}
     \item Enables informed infrastructure decisions based on measurement rather than convention
@@ -150,6 +150,6 @@ This work provides local-suite evidence plus a partial live EC2 round-1 for a de
 
 The choice between multi-threaded and distributed parallelism is not binary but workload-dependent. For small to medium matrix operations, threading's lower coordination overhead makes it the clear winner. Distributed execution becomes competitive only when workloads exceed single-machine capacity or when matrix dimensions reach the point where computation dominates coordination.
 
-This project demonstrates that rigorous performance comparison requires controlling for resources, measuring multiple metrics, and testing across a range of configurations. The methodology is sound, the results are reproducible, and the tooling is extensible. Local factorial evidence is complete; live matched-vCPU EC2 round-1 is partial pending multi-instance \texttt{da.matmul}.
+This project demonstrates that rigorous performance comparison requires controlling for resources, measuring multiple metrics, and testing across a range of configurations. The methodology is sound, the results are reproducible, and the tooling is extensible. Local factorial evidence is complete; live matched-vCPU EC2 multi-instance \texttt{da.matmul} is evidenced in round-2.
 
-The research question—how do multi-threaded and distributed models compare at matched core counts—has been answered for the \textbf{local Dask proxy}: threading maintains advantage through 2000×2000 in committed JSON, with no crossover. On AWS, round-1 measured scale-up and on-node scale-out at $n{=}500$ on 1× \texttt{t3.small} vs 2× \texttt{t3.micro}; completed multi-instance \texttt{da.matmul} remains the residual.
+The research question—how do multi-threaded and distributed models compare at matched core counts—has been answered for the \textbf{local Dask proxy} (no crossover through 2000×2000) and for a \textbf{live matched-vCPU EC2} cell at $n{=}250$ (scale-up 0.001562\,s vs multi-instance 0.2546\,s on 1× \texttt{t3.small} vs 2× \texttt{t3.micro}).
