@@ -1,6 +1,6 @@
 ## Alignment note (2026-09-21)
 
-CA2 matched-vCPU **AWS EC2** round-2 completed multi-instance `da.matmul`: `distributed-matrix-scaling/results/live/ec2_round2_summary.json`. Topology (same as round-1): **1× t3.small** vs **2× t3.micro** (matched aggregate 2 vCPU), `eu-west-1`, fleet **destroyed** after. At **n=250**: scale-up numpy ≈ **0.00156 s**; on-node Dask LocalCluster mean ≈ **0.550 s**; multi-instance (2 workers) `da.matmul` ≈ **0.255 s** (`status=ok`). Round-1 residual (`da.matmul` timed_out at n=500) **closed**. Local campaign remains in `results/data/`. Soft residuals (beyond CA2 floor): LaTeX eval chapter full sync, multi-order live crossover sweep, live RSS/CPU, inferential stats. Alignment **100%** CA2 floor (was 63%; hard multi-instance matmul residual closed).
+CA2 matched-vCPU **AWS EC2** round-2 completed multi-instance `da.matmul`: `distributed-matrix-scaling/results/live/ec2_round2_summary.json`. Topology (same as round-1): **1× t3.small** vs **2× t3.micro** (matched aggregate 2 vCPU), `eu-west-1`, fleet **destroyed** after. At **n=250**: scale-up numpy ≈ **0.00156 s**; on-node Dask LocalCluster mean ≈ **0.550 s**; multi-instance (2 workers) `da.matmul` ≈ **0.255 s** (`status=ok`). Round-1 residual (`da.matmul` timed_out at n=500) **closed**. Local campaign remains in `results/data/`. Soft residuals (beyond CA2 floor): multi-order live crossover sweep, live RSS/CPU, inferential stats, DOI `note={doi:}` hygiene. Alignment **100%** CA2 floor (was 63%; hard multi-instance matmul residual closed).
 
 ---
 # Project Status: Venkat Bora - Matrix Scaling Workloads
@@ -46,7 +46,6 @@ CA2 matched-vCPU **AWS EC2** round-2 completed multi-instance `da.matmul`: `dist
 - Extended their multi-threaded LU approach with Dask comparison
 
 ⚠️ **Soft residuals (not blocking the multi-instance matmul cell):**
-- Evaluation LaTeX chapter still primarily narrates local JSON; round-2 live cells need full prose sync
 - Live campaign is single-shot at n=250 (not a full multi-order EC2 crossover sweep)
 - Live peak RSS / per-core utilisation not instrumented on EC2 (local suite has them)
 - Inferential stats code / WhatsApp DOI `note = {doi: ...}` hygiene as previously noted
