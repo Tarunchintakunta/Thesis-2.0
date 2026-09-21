@@ -1,13 +1,11 @@
-"""Dry-run Kubernetes client (default). Never deploys a cluster this pass.
+"""Dry-run Kubernetes client (default). Records Scale PATCH bodies only.
 
-If the official Python client and a kubeconfig are present, Scale patches can
-be issued with dryRun=['All'] (no object mutation). Live apply requires
-PAKS_K8S_APPLY=1, which this pass does not set.
+Live mutation belongs in `LiveKubectlClient` (AWS k3s / PAKS_K8S_APPLY=1).
+This class always refuses non-dry-run patches so local drivers stay safe.
 """
 
 from __future__ import annotations
 
-import os
 from typing import Any, Dict, List, Optional
 
 from src.k8s.api_shapes import (
@@ -20,18 +18,17 @@ from src.k8s.api_shapes import (
 
 
 class DryRunK8sClient:
-    """Records apps/v1 Deployment /scale PATCH bodies."""
+    """Records apps/v1 Deployment /scale PATCH bodies (dry-run only)."""
 
     def __init__(self, live_apply: Optional[bool] = None):
-        env = os.environ.get("PAKS_K8S_APPLY", "").strip() in {"1", "true", "TRUE", "yes"}
-        self.live_apply = bool(env if live_apply is None else live_apply)
-        self.operations: List[ScaleIntent] = []
-        self._api = None
-        if self.live_apply:
+        # live_apply retained for API compatibility; DryRunK8sClient never mutates.
+        self.live_apply = False
+        if live_apply:
             raise RuntimeError(
-                "PAKS_K8S_APPLY is set, but this CA2 pass forbids live cluster "
-                "mutation / AWS-K8s deploy. Unset the variable and use dry-run."
+                "DryRunK8sClient cannot live-apply. Use LiveKubectlClient with "
+                "PAKS_K8S_APPLY=1 on the k3s node (see scripts/run_live_aws_k8s.py)."
             )
+        self.operations: List[ScaleIntent] = []
 
     def patch_deployment_scale(
         self,
@@ -46,8 +43,11 @@ class DryRunK8sClient:
         observed_load: Optional[float] = None,
         extra: Optional[Dict[str, Any]] = None,
     ) -> ScaleIntent:
-        if not dry_run or self.live_apply:
-            raise RuntimeError("Refusing non-dry-run Kubernetes mutate in this pass.")
+        if not dry_run:
+            raise RuntimeError(
+                "Refusing non-dry-run Kubernetes mutate on DryRunK8sClient. "
+                "Use LiveKubectlClient for live apply."
+            )
         intent = ScaleIntent(
             method="PATCH",
             path=scale_patch_path(name, namespace, dry_run=True),

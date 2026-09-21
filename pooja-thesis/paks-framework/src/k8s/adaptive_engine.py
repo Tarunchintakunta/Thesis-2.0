@@ -87,13 +87,14 @@ class AdaptiveScalingEngine:
         observed_load: Optional[float],
         source: str = "paks",
         extra: Optional[Dict[str, Any]] = None,
+        dry_run: bool = True,
     ):
         return self.client.patch_deployment_scale(
             replicas=desired,
             name=self.name,
             namespace=self.namespace,
             current_replicas=current,
-            dry_run=True,
+            dry_run=dry_run,
             source=source,
             step=step,
             predicted_load=predicted_load,
@@ -104,11 +105,13 @@ class AdaptiveScalingEngine:
 
 def run_reactive_hpa_k8s(
     workload: Sequence[float],
-    client: Optional[DryRunK8sClient] = None,
+    client: Optional[Any] = None,
     name: str = DEFAULT_DEPLOYMENT,
     namespace: str = DEFAULT_NAMESPACE,
     capacity: float = POD_CAPACITY_CORES,
-) -> Tuple[np.ndarray, List[Dict[str, Any]], DryRunK8sClient]:
+    dry_run: bool = True,
+    max_replicas_live: int = 8,
+) -> Tuple[np.ndarray, List[Dict[str, Any]], Any]:
     """Reactive HPA: act on *already observed* utilization, one-step delay."""
     client = client or DryRunK8sClient()
     w = np.asarray(workload, dtype=np.float64)
@@ -116,21 +119,27 @@ def run_reactive_hpa_k8s(
     pods: List[int] = []
     snapshots: List[Dict[str, Any]] = []
     current = replicas_for_load(w[0], capacity=capacity)
+    if not dry_run:
+        current = min(current, max_replicas_live)
     for t in range(len(w)):
         pods.append(current)
         util = cpu_utilization_percent(w[t], current, capacity=capacity)
         desired = hpa_desired_from_current(current, util)
+        if not dry_run:
+            desired = min(desired, max_replicas_live)
         intent = client.patch_deployment_scale(
             replicas=desired,
             name=name,
             namespace=namespace,
             current_replicas=current,
-            dry_run=True,
+            dry_run=dry_run,
             source="hpa",
             step=t,
             observed_load=float(w[t]),
             extra={"hpa_spec": spec, "hpa_status": hpa_status(current, desired, util)},
         )
+        evidence = "LIVE" if not dry_run else "SIMULATED"
+        apply_s = (intent.extra or {}).get("apply_latency_s")
         snapshots.append(
             {
                 "step": t,
@@ -140,7 +149,8 @@ def run_reactive_hpa_k8s(
                 "desired_replicas": desired,
                 "cpu_utilization_pct": util,
                 "k8s_path": intent.path,
-                "evidence": "SIMULATED",
+                "apply_latency_s": apply_s,
+                "evidence": evidence,
             }
         )
         current = desired  # applied next loop iteration (simulated control interval)
@@ -150,17 +160,20 @@ def run_reactive_hpa_k8s(
 def run_paks_k8s(
     workload: Sequence[float],
     predict_fn: Callable[[np.ndarray], float],
-    client: Optional[DryRunK8sClient] = None,
+    client: Optional[Any] = None,
     lookback: int = LOOKBACK,
     name: str = DEFAULT_DEPLOYMENT,
     namespace: str = DEFAULT_NAMESPACE,
     capacity: float = POD_CAPACITY_CORES,
     safety_buffer: float = 1.05,
-) -> Tuple[np.ndarray, List[Dict[str, Any]], DryRunK8sClient]:
-    """PAKS: scale from predicted next load via dry-run Scale PATCH.
+    dry_run: bool = True,
+    max_replicas_live: int = 8,
+) -> Tuple[np.ndarray, List[Dict[str, Any]], Any]:
+    """PAKS: scale from predicted next load via Scale PATCH (dry-run or live).
 
     The replica vector is the count *in service* at each step. A scale decision
-    takes effect on the next step (simulated scaling latency = 1 control interval).
+    takes effect on the next step (simulated scaling latency = 1 control interval
+    when dry_run; live path records kubelet Ready latency in intent.extra).
     """
     engine = AdaptiveScalingEngine(
         client=client or DryRunK8sClient(),
@@ -173,6 +186,8 @@ def run_paks_k8s(
     pods: List[int] = []
     snapshots: List[Dict[str, Any]] = []
     current = replicas_for_load(w[0], capacity=capacity)
+    if not dry_run:
+        current = min(current, max_replicas_live)
     for t in range(len(w)):
         pods.append(current)
         if t < lookback:
@@ -182,6 +197,8 @@ def run_paks_k8s(
             predicted = float(predict_fn(w[t - lookback : t]))
             pred_source = "lstm"
         desired = engine.desired_from_prediction(predicted)
+        if not dry_run:
+            desired = min(desired, max_replicas_live)
         util = cpu_utilization_percent(w[t], current, capacity=capacity)
         intent = engine.emit_scale(
             desired=desired,
@@ -191,7 +208,10 @@ def run_paks_k8s(
             observed_load=float(w[t]),
             source="paks",
             extra={"pred_source": pred_source, "cpu_utilization_pct": util},
+            dry_run=dry_run,
         )
+        evidence = "LIVE" if not dry_run else "SIMULATED"
+        apply_s = (intent.extra or {}).get("apply_latency_s")
         snapshots.append(
             {
                 "step": t,
@@ -203,7 +223,8 @@ def run_paks_k8s(
                 "cpu_utilization_pct": util,
                 "k8s_path": intent.path,
                 "pred_source": pred_source,
-                "evidence": "SIMULATED",
+                "apply_latency_s": apply_s,
+                "evidence": evidence,
             }
         )
         current = desired

@@ -56,10 +56,17 @@ def test_dry_run_records_patch_and_refuses_live():
         client.patch_deployment_scale(replicas=5, dry_run=False)
 
 
-def test_live_apply_env_refused(monkeypatch):
-    monkeypatch.setenv("PAKS_K8S_APPLY", "1")
-    with pytest.raises(RuntimeError, match="forbids live"):
-        DryRunK8sClient()
+def test_dry_run_client_refuses_live_flag():
+    with pytest.raises(RuntimeError, match="cannot live-apply"):
+        DryRunK8sClient(live_apply=True)
+
+
+def test_live_client_requires_env(monkeypatch):
+    monkeypatch.delenv("PAKS_K8S_APPLY", raising=False)
+    from src.k8s.live_client import LiveKubectlClient
+
+    with pytest.raises(RuntimeError, match="PAKS_K8S_APPLY"):
+        LiveKubectlClient()
 
 
 def test_hpa_and_paks_emit_equal_length_pods():

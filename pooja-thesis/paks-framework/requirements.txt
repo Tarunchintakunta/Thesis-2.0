@@ -7,4 +7,6 @@ pytest-cov>=4.1.0
 # Formal CA2 resources name TensorFlow for LSTM. No TF wheel on CPython 3.14;
 # scripts/train_lstm_and_evaluate.py --backend tensorflow fails closed.
 # Optional on Python 3.10–3.12: tensorflow>=2.15
-# Optional live dryRun against a kubeconfig (still not used this pass): kubernetes>=31.0.0
+# Live AWS orchestration (SSM/S3/CW); kubectl used on the k3s node, not locally.
+boto3>=1.34.0
+# Optional: kubernetes>=31.0.0 (unused — live path uses kubectl on-node)

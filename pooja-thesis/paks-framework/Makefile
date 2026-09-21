@@ -1,4 +1,4 @@
-.PHONY: help install test run run-formal fetch fetch-extended probe-k8s clean all
+.PHONY: help install test run run-formal fetch fetch-extended probe-k8s live-aws destroy-aws clean all
 
 # Default target
 help:
@@ -11,6 +11,8 @@ help:
 	@echo "  make fetch           - Download/verify GCT v1 public slice and re-aggregate"
 	@echo "  make fetch-extended  - GCT 2011 part-00000 + Alibaba 64MiB RANGE sample"
 	@echo "  make probe-k8s       - Record kind/minikube/docker availability (no apply)"
+	@echo "  make live-aws        - Free-Tier t3.micro+k3s live scale vs HPA; destroy after"
+	@echo "  make destroy-aws     - terraform destroy paks-k8s-live only + verify"
 	@echo "  make run             - PROXY synthetic MLP driver (not formal evidence)"
 	@echo "  make clean           - Remove generated files and caches"
 	@echo "  make all             - Run install, test, and run-formal in sequence"
@@ -48,6 +50,17 @@ probe-k8s:
 	@echo "Probing local kind/minikube/docker (no mutate)..."
 	python scripts/probe_local_k8s.py
 	@echo "✓ wrote results/K8S_LOCAL_PROBE.md"
+
+# Live AWS: 1× t3.micro k3s + S3 + CloudWatch (project=paks-k8s-live). Destroys after.
+live-aws:
+	@echo "Deploying Free-Tier-safe live k3s + running PAKS vs HPA..."
+	python scripts/run_live_aws_k8s.py --steps 16 --max-replicas 3
+	@echo "✓ see results/formal_k8s_live_aws.json and aws_destroy_verify.json"
+
+destroy-aws:
+	@echo "Destroying paks-k8s-live only (never Venkat matrix-scale)..."
+	python scripts/run_live_aws_k8s.py --destroy-only
+	@echo "✓ destroy verify written"
 
 # PROXY experiments (not formal CA2 evidence)
 run:
