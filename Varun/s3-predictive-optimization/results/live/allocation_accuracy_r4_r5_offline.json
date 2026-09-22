@@ -1,0 +1,51 @@
+{
+  "protocol": "offline_seed_regeneration_pattern_oracle",
+  "oracle": "hot\u2192STANDARD, warm\u2192STANDARD_IA, cold\u2192GLACIER_* family",
+  "r4": {
+    "eval_id": 4,
+    "seed": 4242,
+    "proposed": {
+      "n": 2400,
+      "correct": 886,
+      "accuracy": 0.36916666666666664
+    },
+    "lifecycle": {
+      "n": 2400,
+      "correct": 2049,
+      "accuracy": 0.85375
+    },
+    "intelligent_tiering": {
+      "n": 2400,
+      "correct": 711,
+      "accuracy": 0.29625
+    },
+    "delta_proposed_minus_lifecycle": -0.48458333333333337,
+    "delta_proposed_minus_it": 0.07291666666666663
+  },
+  "r5": {
+    "eval_id": 5,
+    "seed": 5252,
+    "proposed": {
+      "n": 2400,
+      "correct": 828,
+      "accuracy": 0.345
+    },
+    "lifecycle": {
+      "n": 2400,
+      "correct": 2048,
+      "accuracy": 0.8533333333333334
+    },
+    "intelligent_tiering": {
+      "n": 2400,
+      "correct": 671,
+      "accuracy": 0.27958333333333335
+    },
+    "delta_proposed_minus_lifecycle": -0.5083333333333334,
+    "delta_proposed_minus_it": 0.06541666666666662
+  },
+  "limitations": [
+    "Offline regeneration of live seeds; not HeadObject-derived labels from S3.",
+    "Oracle is pattern-category mapping, not human-labelled production classes.",
+    "Compares proposed BaselineRecommender vs Lifecycle age rules vs IT freq rules."
+  ]
+}
