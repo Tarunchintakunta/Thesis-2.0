@@ -248,7 +248,7 @@ for i in $(seq 1 72); do
   sleep 15
 done
 
-python3 - "$OUTDIR" "$UP" "$SCHED" "$WORK" "$SCHED_IP" "$WORK_IP" "$MATRIX_SIZE" "$AMI_ID" "$REGION" <<'PY'
+python3 - "$OUTDIR" "$UP" "$SCHED" "$WORK" "$SCHED_IP" "$WORK_IP" "$MATRIX_SIZE" "$AMI_ID" "$REGION" "$ROUND" <<'PY'
 import json, sys
 from pathlib import Path
 from datetime import datetime, timezone
@@ -258,6 +258,7 @@ up, sched, work = sys.argv[2], sys.argv[3], sys.argv[4]
 sched_ip, work_ip = sys.argv[5], sys.argv[6]
 size = int(sys.argv[7])
 ami, region = sys.argv[8], sys.argv[9]
+round_n = sys.argv[10]
 
 def last_json(path: Path):
     text = path.read_text() if path.exists() else ""
@@ -294,11 +295,13 @@ multi = {
     "mode": "dask_multi_instance_matmul",
     "size": size,
     "elapsed_s": (dist_raw or {}).get("elapsed_s"),
+    "peak_rss_mb": (dist_raw or {}).get("peak_rss_mb"),
+    "avg_cpu_percent": (dist_raw or {}).get("avg_cpu_percent"),
     "checksum": (dist_raw or {}).get("checksum"),
     "scheduler": f"tcp://{sched_ip}:8786",
     "hostname": (dist_raw or {}).get("hostname"),
     "worker_addrs": (dist_raw or {}).get("worker_addrs"),
-    "note": "Scheduler on scale-out-0; one dask-worker per t3.micro (2 workers total); final_1 gate.",
+    "note": f"Scheduler on scale-out-0; one dask-worker per t3.micro (2 workers total); rss_size_final_{round_n}.",
 }
 if dist_raw is None:
     err = (outdir / "scale_out_distributed.err").read_text() if (outdir / "scale_out_distributed.err").exists() else ""
@@ -314,7 +317,7 @@ if on_nodes:
 summary = {
     "collected_at": datetime.now(timezone.utc).isoformat(),
     "region": region,
-    "round": "rss_size_final_${ROUND}",
+    "round": f"rss_size_final_{round_n}",
     "protocol_note": "RQ limbs: peak RSS + avg CPU; 1xt3.small vs 2xt3.micro; destroy-after.",
     "topology": {
         "scale_up": {"instance_id": up, "instance_type": "t3.small", "vcpus": 2, "count": 1},
