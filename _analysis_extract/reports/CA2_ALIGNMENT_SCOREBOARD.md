@@ -1,47 +1,42 @@
 # CA2 alignment scoreboard (12 thesis projects — Kasi excluded)
 
-**Updated:** 2026-09-22  
-**Bar:** **100% CA2** = RQ/objectives/gap/method/artefact/eval scope — **not** perfect marks.  
-**Rubric strategy (authoritative):** [`/RUBRIC_70_TO_100_STRATEGY.md`](../RUBRIC_70_TO_100_STRATEGY.md) — protect every **70%+** descriptor; push **Artefact 27% + Eval 25%** beyond minimum. Use **baseline** / **proposed** (not “arms”).  
-**Pending:** [`PENDING.md`](PENDING.md) · **Gap hunt:** [`ARTEFACT_GAP_HUNT.md`](ARTEFACT_GAP_HUNT.md)  
-**Evidence matrices:** `{thesis}/RUBRIC_EVIDENCE_MATRIX.md` (template: `_analysis_extract/templates/RUBRIC_EVIDENCE_MATRIX_TEMPLATE.md`).  
-**Handoff MD:** only after 3–5 full-scale evals. **Kasi:** never.
+**Updated:** 2026-09-22 (six-thesis deep audit closed — prior 100% labels **not trusted**)  
+**Bar:** **100% CA2** = complete match to approved RQ/objectives/gap/method/artefact/eval scope — **not** perfect marks.  
+**Authority for honesty:** [`INDEPENDENT_CRITICAL_AUDIT.md`](INDEPENDENT_CRITICAL_AUDIT.md) + per-thesis `INDEPENDENT_REVIEW_*.md`.  
+**Rubric strategy:** [`/RUBRIC_70_TO_100_STRATEGY.md`](../../RUBRIC_70_TO_100_STRATEGY.md) — but **do not raise Rubric70 on a false CA2 floor**.
 
+| # | Thesis | CA2_% (honest) | Rubric70 | Block full-eval? | Independent verdict / next |
+|--:|--------|---------------:|----------|:----------------:|----------------------------|
+| 1 | Anji | **~72 partial** | unverified | soft | Live 4-cell smoke Demonstrated; H1–H3 localsim all null; live n>1 Not met — `INDEPENDENT_REVIEW_ANJI.md` |
+| 2 | Chaitanya | **~70 partial** | unverified | soft | Lite H1/H2 Demonstrated; confirmatory n≥30 / H3 / hygiene Not met — `INDEPENDENT_REVIEW_CHAITANYA.md` |
+| 3 | Yashaswini | **~68 partial** | unverified | soft | Leg2 Demonstrated; Leg3 ≥50% cut **fails** on final_1–3 (0.383–0.472) — `INDEPENDENT_REVIEW_YASHASWINI.md` |
+| 4 | Rasool | **~74 partial** | unverified | soft | W3/W4 live Demonstrated; W1/W2 reframe; pool finals first — `INDEPENDENT_REVIEW_RASOOL.md` |
+| 5 | Varun | **~70 partial** | unverified | soft | Live Wilcoxon structure Demonstrated; e1≡e2≡e3 rebuilt clone — `INDEPENDENT_REVIEW_VARUN.md` |
+| 6 | Vikas | **~85 partial** | unverified | soft | Live E1–E3 **Demonstrated**; LaTeX/P4 integrity **Not met** — see `INDEPENDENT_REVIEW_VIKAS.md` |
+| 7 | Nemi | **~55 partial** | unverified | soft | UNSW+central Demonstrated; improved loses; Docker/K8s Not met; live ~6s toy — `INDEPENDENT_REVIEW_NEMI.md` |
+| 8 | Venkat | **~70 partial** | unverified | soft | Matched-vCPU n=250 **Demonstrated**; RQ memory/CPU/size **Not met** — `INDEPENDENT_REVIEW_VENKAT.md` |
+| 9 | Mehak | **~88 met** | unverified | no | GCT negative MHSA result Demonstrated; keep FN honesty — `INDEPENDENT_REVIEW_MEHAK.md` |
+| 10 | Pooja | **~45 not met** | **no** | **yes** | Causal HPA artefact fix **in tree** (metrics-server + burn + controller observe); prior finals INVALIDATED; AWS re-eval after Uday — `INDEPENDENT_REVIEW_POOJA.md` |
+| 11 | Uday | **~65 partial** | partial | no | Lite QoS1 loss=0 Demonstrated; formal N/Holm/d60≠d300 **Not met**. final_3 in flight — `INDEPENDENT_REVIEW_UDAY.md` |
+| 12 | Vishvaksen | **~90 met** | unverified | no | N=240 labelled-oracle Demonstrated; Checkov recall 0.562 — `INDEPENDENT_REVIEW_VISHVAKSEN.md` |
 
-| # | Thesis | CA2_% | Rubric70 | Block full-eval? | Next |
-|--:|--------|------:|----------|:----------------:|------|
-| 1 | Anji | **100** | yes | no | INITIAL_EVAL_PASS=yes; live final-3 **DONE**; baseline in `FINAL3_BASELINE.md` |
-| 2 | Chaitanya | **100** | raised→yes path | no | final-3 **DONE**; Rubric fold Init H1 pos+neg vs Bluemke |
-| 3 | Yashaswini | **100** | yes | no | INITIAL_EVAL_PASS=yes; live final-3 **DONE**; soft CausalRCA/PDF beyond-CA2 |
-| 4 | Rasool | **100** | raised→yes path | no | final-3 **DONE**; Rubric fold W3/W4 pos+neg; W1/W2 soft |
-| 5 | Varun | **100** | yes | no | INITIAL_EVAL_PASS=yes; live final-3 **DONE** (e1–e3 + BASELINE_COMPARE); handoff deferred |
-| 6 | Vikas | **100** | raised→yes path | no | campaign pack = final-scale; Rubric fold E1–E3 pos+neg; P4 quarantined |
-| 7 | Nemi | **100** | raised→yes path | no | final-3 **DONE**; Rubric fold FL lite pos+neg |
-| 8 | Venkat | **100** | raised→yes path | no | final-3 **DONE**; Rubric fold matched Free-Tier pos+neg |
-| 9 | Mehak | **100** | raised→yes path | no | local final-3 **DONE**; Rubric fold MHSA **does not** beat RF/Aldomi |
-| 10 | Pooja | **100** | raised→yes path | soft only | final-3 **DONE**; Rubric fold HPA/PAKS + LSTM<persistence |
-| 11 | Uday | **100** | partial | no | final-1 **DONE**; final-2/3 in flight; Rubric fold after final-3 |
-| 12 | Vishvaksen | **100** | raised→yes path | no | local final-3 **DONE**; Rubric fold scanner recall gaps |
+## Overturned prior claims (do not restore without new evidence)
 
-**Fix order:** all 12 at CA2 100% + INITIAL_EVAL_PASS; Mehak local final-3 in flight; AWS final-3 next (one-at-a-time).
-Venkat raise 2026-09-21: round-2 multi-instance `da.matmul` n=250 **ok** (0.2546 s per `ec2_round2_summary.json`); destroy verified → **100%**.
-Venkat initial_eval_1 2026-09-21: matched Free-Tier 1×t3.small vs 2×t3.micro, n=250 matmul **ok** 0.2737 s; destroy confirmed; CA2 re-check still **100%** → `INITIAL_EVAL_PASS=yes`; final-3 **not** started.
-Pooja live AWS k3s 2026-09-21: 1× t3.micro + S3 + CW, live HPA vs PAKS scale, destroy confirmed → was **~92%**.
-Pooja floor close 2026-09-21: full GCT/Alibaba dumps reframed **scoped-out optional** (`DESIGN_RATIONALE_BEYOND_CA2.md`) → **100%** (samples + live method evidence; not perfect marks).
-Pooja non-AWS raise 2026-09-21: GCT 2011 part + Alibaba RANGE → was **~67%**.
-Vikas rescore 2026-09-21: scoreboard **~74→100** — live full campaign N=1000×3×3 (24000 deliveries), E1–E3 supported, stack destroyed; see `vikas_alignment.md` / `vikas_AWS_RESIDUAL.md`.
+- “All 12 at CA2 100%” — **false** (only Mehak ~88 and Vishvaksen ~90 clear a met floor among the six re-audited here; none are perfect-marks 100).
+- Anji / Yashaswini / Nemi / Varun STATUS `ALIGNMENT=100` — **overturned** (smoke ≠ confirmatory; Yash ≥50% overhead rule fails finals; Nemi cloud-native gap; Varun e1≡e2≡e3).
+- Yashaswini STATUS locking reduction **0.803** — **stale**; finals are 0.383 / 0.422 / 0.472.
+- Pooja / Uday `DESIGN_RATIONALE_BEYOND_CA2.md` “COMPLETE / 100%” — treated as **scope reframe**, not examiner-grade floor closure.
+- Vikas scoreboard jump ~74→100 on campaign fill — measurement ≠ full research-package readiness.
 
-## Assess follow-up
+## Fix order (research-valid)
 
-- [Assess CA2 alignment cohort A](bc-6dee112d-0199-5306-a490-49f520cd3aaa)
-- [Assess CA2 alignment cohort B](bc-c8002071-fd7c-55bf-acae-d413dceec23e)
-- [Scaffold Uday MQTT QoS CA2 artefact](bc-cff00b22-64f1-597a-886a-ed9c64d38f63) → ~42%, READY_FOR_AWS=NO
-- Uday lite/smoke Free-Tier path + smoke live destroyed (2026-09-21) → **~65%**, READY_FOR_AWS=yes (formal still blocked)
-- Uday **lite 16-cell live** apply→collect→destroy (2026-09-21) + DESIGN_RATIONALE beyond-floor formal → **100%** CA2 floor
-- [Correct Vikas scoreboard honesty](bc-f205d25b-c03e-5db7-8f8c-d4c0d1b3fb4d) → was ~74% empty campaign; **2026-09-21 live campaign closed → 100%**
+1. **Uday** — finish final_3 + baseline; then decide genuine deepen (schedule/N) vs honest partial.
+2. **Pooja** — AWS re-eval under new causal HPA artefact (code already changed; destroy-after).
+3. **Yashaswini** — policy retune until ≥3 live rounds clear 0.50 reduction, or rewrite decision rule.
+4. **Varun** — fresh independent trial sampling (new raw_costs hashes).
+5. **Nemi** — multi-instance/container clients + improved-arm diagnosis.
+6. **Anji** — live n≥3 key cells; stop citing null H1–H3 as effects.
+7. **Venkat / Vikas** — as prior reviews.
+8. Rubric70 raises only after honest floors.
 
-Vishvaksen 2026-09-21: labelled-oracle method confirmed → **100%** CA2 floor.
-
-Uday floor close 2026-09-21: Free-Tier **lite 16-cell** live apply→collect→destroy + DESIGN_RATIONALE; formal 600k-msg volume scoped beyond floor → **100%**.
-
-2026-09-21 INITIAL_EVAL gates: Chaitanya / Yashaswini / Rasool / Nemi / Uday — existing live method rounds recorded under `initial_eval_1/`; CA2 re-check still **100%** → `INITIAL_EVAL_PASS=yes`.
+**Kasi:** never. **GENAI_HANDOFF:** still deferred until per-thesis finals + honest floor.

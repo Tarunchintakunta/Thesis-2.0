@@ -13,6 +13,7 @@ services:
       SHARED_DIR: /shared
     volumes:
       - fl_shared:/shared
+      - ./data:/app/data:ro
     command: ["python", "scripts/run_docker_fl_worker.py"]
     networks: [flnet]
 
@@ -28,6 +29,7 @@ services:
       SHARED_DIR: /shared
     volumes:
       - fl_shared:/shared
+      - ./data:/app/data:ro
     command: ["python", "scripts/run_docker_fl_worker.py"]
     networks: [flnet]
 
@@ -44,6 +46,7 @@ services:
       OUT_JSON: /shared/docker_fl_summary.json
     volumes:
       - fl_shared:/shared
+      - ./data:/app/data:ro
       - ./results/docker_fl:/out
     command: ["python", "scripts/run_docker_fl_worker.py"]
     networks: [flnet]
