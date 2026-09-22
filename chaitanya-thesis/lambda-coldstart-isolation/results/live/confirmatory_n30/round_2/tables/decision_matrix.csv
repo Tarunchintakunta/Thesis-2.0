@@ -1,0 +1,6 @@
+control,scope,init_delta_ms,cold_freq_delta,ms_saved_per_invocation,delta_cost_per_1k_usd,test,p_holm,band,when_to_use
+Switch runtime,java -> python,316.815,0.0,316.815,-0.005262692979999998,H1,2.637420567020283e-17,adopt,new functions where the team is free to pick the language
+Prune package,python default->optimised,3386.46,0.0,3386.46,-0.043532217660000004,H2_python,9.053900395471339e-11,adopt,see thesis notes
+Prune package,nodejs default->optimised,796.2,0.0,796.2,-0.011480946293333334,H2_nodejs,9.053900395471339e-11,adopt,see thesis notes
+Prune package,java default->optimised,352.405,0.0,352.405,-0.004504466966666667,H2_java,9.053900395471339e-11,adopt,see thesis notes
+(Future) Provisioned concurrency,not measured,,,,,-,,not tested,"paid feature, out of the primary scope (future work)"
