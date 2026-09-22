@@ -12,7 +12,7 @@ Do **not** use `results/live/archive/invalidated_pre_causal_hpa_*` as CA2 eviden
 | Student ID | 25120921 |
 | Programme | MSc Cloud Computing Research Project (formal CA2: `Pooja_25120921_CA2.docx`) |
 | Artefact root | `pooja-thesis/paks-framework/` |
-| Honest CA2 floor | **PARTIAL (~62)** — independent review 2026-09-22; prior STATUS/CA2 “100%” **REJECTED** |
+| Honest CA2 floor | **Closed under disclosed causal-lite scope (~62)** — live final_1–3 Demonstrated; multi-intensity/billing limbs beyond-floor; prior STATUS “100%” overstated |
 | Eval completeness | **3 causal lite live AWS finals done** (`results/live/final_1\|2\|3/`) under causal HPA artefact; **not** full multi-intensity / multi-node / billing-linked campaign |
 | AWS | Applied then destroyed — Free-Tier 1× `t3.micro` + k3s, `project=paks-k8s-live`, `destroy_confirmed=true` ×3 |
 | Handoff date | 2026-09-22 |

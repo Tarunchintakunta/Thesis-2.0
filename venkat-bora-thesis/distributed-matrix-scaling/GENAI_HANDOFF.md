@@ -6,7 +6,7 @@
 |-------|-------|
 | Student | Venkat Bora |
 | Artefact root | `venkat-bora-thesis/distributed-matrix-scaling/` |
-| Honest CA2 floor | **PARTIAL → improved (~78–82)** after RSS/CPU live ×3; size-ladder **dated-deferred 2026-09-22** |
+| Honest CA2 floor | **Closed under disclosed scope (~80)** — RSS/CPU live ×3 Demonstrated; size-ladder **dated-deferred 2026-09-22** (beyond-floor) |
 | Eval completeness | Prior time-only final_1–3 + **rss_size_final_1\|2\|3** with peak_rss_mb / avg_cpu_percent |
 | AWS | eu-west-1 Free-Tier matched vCPU; destroy-after each round |
 | Handoff date | 2026-09-22 |

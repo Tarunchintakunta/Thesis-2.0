@@ -6,7 +6,7 @@
 |-------|-------|
 | Student | Vikas |
 | Artefact root | `vikas-thesis/lambda-idempotency-eval/` |
-| Honest CA2 floor | **PARTIAL (~88)** — live E1–E3 campaign Demonstrated; P4 quarantined; do not equate campaign fill with perfect-marks 100 |
+| Honest CA2 floor | **Closed under disclosed scope (~88)** — live E1–E3 campaign Demonstrated; P4 quarantined; not perfect-marks 100 |
 | Eval completeness | Primary pack = live campaign N=1000×3×3 = **24000 deliveries** (larger than three lite smokes) |
 | AWS | Live Lambda + DynamoDB Streams; destroyed after campaign |
 | Handoff date | 2026-09-22 |

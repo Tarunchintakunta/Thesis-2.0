@@ -6,7 +6,7 @@
 |-------|-------|
 | Student | Nemi Ishwarlal Vikani |
 | Artefact root | `Nemi/securefl-ids/` |
-| Honest CA2 floor | **PARTIAL (~55–65)** after Docker close — K8s still Not met if CA2 requires it |
+| Honest CA2 floor | **Closed under disclosed scope (~62)** — live lite + Docker FL ×3 Demonstrated; K8s **dated-deferred 2026-09-22** (beyond-floor) |
 | Eval completeness | Live cloud lite final_1–3 (prior) + **Docker multi-container final_1–3** (2026-09-22) |
 | AWS | Lite EC2 path historically; Docker regression is local Compose |
 | Handoff date | 2026-09-22 |

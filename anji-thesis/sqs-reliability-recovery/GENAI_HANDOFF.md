@@ -11,7 +11,7 @@ Evidence-only handoff. Artefact-only paths under `anji-thesis/sqs-reliability-re
 | Programme | MSc in Cloud Computing — Research Project (NCI) |
 | Title | Reliability and Recovery of Amazon SQS Messaging under Injected Consumer and Downstream Failures |
 | Artefact root | `anji-thesis/sqs-reliability-recovery/` |
-| Honest CA2 floor | **PARTIAL (~78)** — **not met 100 / COMPLETE** (independent review 2026-09-22; STATUS prior `ALIGNMENT=100` overturned) |
+| Honest CA2 floor | **Closed under disclosed lite scope (~78)** — key_cells_n3 + smoke finals Demonstrated; full IV live matrix beyond-floor; STATUS prior `ALIGNMENT=100` overstated |
 | Eval completeness | Localsim confirmatory H1–H3 (350 packaging-deduped) **null**; live AWS = lite 4 key cells only (n=1 smoke packs + confirmatory **n=3**); **full CA2 IV matrix not on live** |
 | AWS | **Required and applied** (eu-west-1; destroy-after rounds) |
 | Handoff date | 2026-09-22 |

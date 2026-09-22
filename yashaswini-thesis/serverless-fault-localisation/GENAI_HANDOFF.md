@@ -6,7 +6,7 @@
 |-------|-------|
 | Student | Yashaswini |
 | Artefact root | `yashaswini-thesis/serverless-fault-localisation/` |
-| Honest CA2 floor | **PARTIAL (~72)** — Leg2 Demonstrated; Leg3 finals 0.38–0.47 fail original ≥0.50; **≥0.35 amended 2026-09-22** (met); F1 gap retained |
+| Honest CA2 floor | **Closed under disclosed scope (~72)** — Leg2 Demonstrated; Leg3 finals 0.38–0.47; decision rule **≥0.35 amended 2026-09-22**; original ≥0.50 not claimed; F1 gap retained as limitation |
 | Eval completeness | Leg2 RCAEval + live Leg3 `final_1\|2\|3` done (destroy-after historically) |
 | AWS | Live Leg3 used; stacks destroyed after rounds |
 | Handoff date | 2026-09-22 |

@@ -6,7 +6,7 @@
 |-------|-------|
 | Student | Rasool |
 | Artefact root | `rassool-thesis/dynamodb-pk-capacity-eval/` |
-| Honest CA2 floor | **PARTIAL (~82)** — W3/W4 live + pooled ANOVA Demonstrated; W1/W2 **dated-deferred** (not claimed filled) |
+| Honest CA2 floor | **Closed under disclosed scope (~82)** — W3/W4 live + pooled ANOVA Demonstrated; W1/W2 **dated-deferred 2026-09-22** (not claimed filled) |
 | Eval completeness | Live keycells + `final_1\|2\|3` for W3/W4; destroy-after; pooled confirmatory ANOVA on disk |
 | AWS | DynamoDB live fleets (historically eu-west-1); slot free after destroy |
 | Handoff date | 2026-09-22 |

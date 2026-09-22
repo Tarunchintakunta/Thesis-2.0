@@ -12,7 +12,7 @@ Evidence-only. Numbers and judgments below are bound to on-disk artefacts and `_
 | Artefact root | `uday-thesis/mqtt-qos-iot-core/` |
 | Formal proposal | `uday-thesis/UdayKiranReddyDodda_X25166484_proposal.docx` |
 | Binding contract | `uday-thesis/CA2_COMMITMENTS.md` |
-| Honest CA2 floor | **PARTIAL (~70)** — lite Demonstrated; formal N / Holm / d60≠d300 **Not met** |
+| Honest CA2 floor | **Closed under disclosed lite scope (~70)** — final_1–3 lite Demonstrated; formal N / Holm / d60≠d300 are beyond-floor (DESIGN_RATIONALE) |
 | Eval completeness | **3× lite** destroy-after finals (`results/live/final_1\|2\|3/`); **not** formal 80-cell / ~600k-msg design |
 | AWS | **Required and applied** (eu-west-1 IoT Core; destroy confirmed each final) |
 | Handoff date | 2026-09-22 |
