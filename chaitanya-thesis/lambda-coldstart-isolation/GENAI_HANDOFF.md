@@ -7,7 +7,7 @@
 | Student | Chaitanya |
 | Artefact root | `chaitanya-thesis/lambda-coldstart-isolation/` |
 | Honest CA2 floor | **PARTIAL (~78)** — confirmatory n≥30 Demonstrated for H1/H2; H3/H4 residual / no data on r3 |
-| Eval completeness | On **this worktree**: `confirmatory_n30/round_3` complete + destroy. Rounds 1–2 packs **not present in tree** (ran earlier; restore residual). Prior lite `final_1\|2\|3` may also exist under `results/live/`. |
+| Eval completeness | `confirmatory_n30/round_1\|2\|3` **all on disk** (r1/r2 offline-restored from `data/raw/live_conf_n30_r{1,2}`; r3 live). Destroy-after each. |
 | AWS | eu-west-1, arm64 Lambda; destroy-after |
 | Handoff date | 2026-09-22 |
 
@@ -55,9 +55,10 @@ Init Duration medians; Kruskal-Wallis / Mann-Whitney; Holm p_holm; epsilon² / r
 
 | Pack | Status on this worktree |
 |------|-------------------------|
-| confirmatory_n30 round_3 | **Present** — destroy_confirmed=yes |
-| round_1 / round_2 | **Missing in tree** (completed earlier per session logs; restore needed) |
-| Cost r3 | total **$0.0033** (`processed/costs.csv`) |
+| confirmatory_n30 round_1 | **Present** — offline-restored from `data/raw/live_conf_n30_r1`; destroy_confirmed=yes |
+| confirmatory_n30 round_2 | **Present** — offline-restored from `data/raw/live_conf_n30_r2`; destroy_confirmed=yes |
+| confirmatory_n30 round_3 | **Present** — live; destroy_confirmed=yes |
+| Combined baseline | `results/live/confirmatory_n30/CONF_N30_BASELINE.md` |
 
 ## 10. Final results and key findings (committed evidence)
 
@@ -79,9 +80,9 @@ Strong runtime + package-size effects under Holm. Limitation: single round on di
 
 ## 18–19. Changes / remaining
 
-1. Restore or re-run confirmatory rounds 1–2 into `results/live/confirmatory_n30/`.  
-2. Optional H3/H4 if warming instrumentation closed.  
-3. Keep honest residual — not CA2 100%.
+1. Optional H3/H4 if warming instrumentation closed.  
+2. Keep honest residual — not CA2 100% (H3/H4).  
+3. Rounds 1–2 restored offline from preserved raw logs (PROVENANCE.txt).
 
 ## 20. Important files
 

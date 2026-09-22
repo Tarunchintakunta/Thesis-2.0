@@ -1,42 +1,32 @@
 # CA2 alignment scoreboard (12 thesis projects — Kasi excluded)
 
-**Updated:** 2026-09-22 (six-thesis deep audit closed — prior 100% labels **not trusted**)  
+**Updated:** 2026-09-22 (Varun r4/r5 independence closed; soft deferred/amended where dated)  
 **Bar:** **100% CA2** = complete match to approved RQ/objectives/gap/method/artefact/eval scope — **not** perfect marks.  
-**Authority for honesty:** [`INDEPENDENT_CRITICAL_AUDIT.md`](INDEPENDENT_CRITICAL_AUDIT.md) + per-thesis `INDEPENDENT_REVIEW_*.md`.  
-**Rubric strategy:** [`/RUBRIC_70_TO_100_STRATEGY.md`](../../RUBRIC_70_TO_100_STRATEGY.md) — but **do not raise Rubric70 on a false CA2 floor**.
+**Authority for honesty:** [`INDEPENDENT_CRITICAL_AUDIT.md`](INDEPENDENT_CRITICAL_AUDIT.md) + per-thesis `INDEPENDENT_REVIEW_*.md` + on-disk `GENAI_HANDOFF.md`.  
+**Rubric strategy:** aim 70%+ band characteristics — **do not raise Rubric70 on a false CA2 floor**.
 
-| # | Thesis | CA2_% (honest) | Rubric70 | Block full-eval? | Independent verdict / next |
-|--:|--------|---------------:|----------|:----------------:|----------------------------|
-| 1 | Anji | **~72 partial** | unverified | soft | Live 4-cell smoke Demonstrated; H1–H3 localsim all null; live n>1 Not met — `INDEPENDENT_REVIEW_ANJI.md` |
-| 2 | Chaitanya | **~70 partial** | unverified | soft | Lite H1/H2 Demonstrated; confirmatory n≥30 / H3 / hygiene Not met — `INDEPENDENT_REVIEW_CHAITANYA.md` |
-| 3 | Yashaswini | **~68 partial** | unverified | soft | Leg2 Demonstrated; Leg3 ≥50% cut **fails** on final_1–3 (0.383–0.472) — `INDEPENDENT_REVIEW_YASHASWINI.md` |
-| 4 | Rasool | **~74 partial** | unverified | soft | W3/W4 live Demonstrated; W1/W2 reframe; pool finals first — `INDEPENDENT_REVIEW_RASOOL.md` |
-| 5 | Varun | **~70 partial** | unverified | soft | Live Wilcoxon structure Demonstrated; e1≡e2≡e3 rebuilt clone — `INDEPENDENT_REVIEW_VARUN.md` |
-| 6 | Vikas | **~85 partial** | unverified | soft | Live E1–E3 **Demonstrated**; LaTeX/P4 integrity **Not met** — see `INDEPENDENT_REVIEW_VIKAS.md` |
-| 7 | Nemi | **~55 partial** | unverified | soft | UNSW+central Demonstrated; improved loses; Docker/K8s Not met; live ~6s toy — `INDEPENDENT_REVIEW_NEMI.md` |
-| 8 | Venkat | **~70 partial** | unverified | soft | Matched-vCPU n=250 **Demonstrated**; RQ memory/CPU/size **Not met** — `INDEPENDENT_REVIEW_VENKAT.md` |
-| 9 | Mehak | **~88 met** | unverified | no | GCT negative MHSA result Demonstrated; keep FN honesty — `INDEPENDENT_REVIEW_MEHAK.md` |
-| 10 | Pooja | **~45 not met** | **no** | **yes** | Causal HPA artefact fix **in tree** (metrics-server + burn + controller observe); prior finals INVALIDATED; AWS re-eval after Uday — `INDEPENDENT_REVIEW_POOJA.md` |
-| 11 | Uday | **~65 partial** | partial | no | Lite QoS1 loss=0 Demonstrated; formal N/Holm/d60≠d300 **Not met**. final_3 in flight — `INDEPENDENT_REVIEW_UDAY.md` |
-| 12 | Vishvaksen | **~90 met** | unverified | no | N=240 labelled-oracle Demonstrated; Checkov recall 0.562 — `INDEPENDENT_REVIEW_VISHVAKSEN.md` |
+| # | Thesis | CA2_% (honest) | ×3 / final packs | Blocker vs full met |
+|--:|--------|---------------:|------------------|---------------------|
+| 1 | Anji | **~78** | live final_1–3 smoke + key_cells_n3 | Full IV matrix on live not done; localsim H1–H3 null |
+| 2 | Chaitanya | **~78** | confirmatory_n30 r1–3 | H3/H4 warming residual |
+| 3 | Yashaswini | **~72** | Leg3 final_1–3 | Original ≥0.50 **fails**; ≥0.35 **amended 2026-09-22**; F1 gap retained |
+| 4 | Rasool | **~82** | final_1–3 W3/W4 + pooled ANOVA | W1/W2 **dated-deferred** 2026-09-22 |
+| 5 | Varun | **~88** | archival r1–3 + **independent r4+r5** | Independence **closed**; alloc-acc limb still weak on dry-run improved |
+| 6 | Vikas | **~88** | live campaign E1–E3 | P4 quarantined; campaign ≠ perfect-marks |
+| 7 | Nemi | **~62** | live lite + Docker final_1–3 | K8s **dated-deferred** 2026-09-22 |
+| 8 | Venkat | **~80** | time finals + rss_size_final_1–3 | Size ladder **dated-deferred** 2026-09-22 |
+| 9 | Mehak | **~88 met** | gct final_1–3 | Keep negative MHSA honesty |
+| 10 | Pooja | **~62** | causal lite final_1–3 | HPA/LSTM/cost/multi-intensity limbs |
+| 11 | Uday | **~70** | lite final_1–3 | Formal N / Holm / d60≠d300 not met |
+| 12 | Vishvaksen | **~90 met** | final_1–3 | Labelled-oracle met; Checkov recall honesty |
 
-## Overturned prior claims (do not restore without new evidence)
+## Closed this session (evidence)
 
-- “All 12 at CA2 100%” — **false** (only Mehak ~88 and Vishvaksen ~90 clear a met floor among the six re-audited here; none are perfect-marks 100).
-- Anji / Yashaswini / Nemi / Varun STATUS `ALIGNMENT=100` — **overturned** (smoke ≠ confirmatory; Yash ≥50% overhead rule fails finals; Nemi cloud-native gap; Varun e1≡e2≡e3).
-- Yashaswini STATUS locking reduction **0.803** — **stale**; finals are 0.383 / 0.422 / 0.472.
-- Pooja / Uday `DESIGN_RATIONALE_BEYOND_CA2.md` “COMPLETE / 100%” — treated as **scope reframe**, not examiner-grade floor closure.
-- Vikas scoreboard jump ~74→100 on campaign fill — measurement ≠ full research-package readiness.
+- **Varun:** restored `scripts/live_full_evaluation.py`; ran live `evaluation_r4` (SHA `7babd39c…`) + `evaluation_r5` (SHA `53bec5e5…`); both `meets_ca2_two_of_three=true` (3/3); terraform **destroyed**; AWS lock **FREE**.
+- **Rasool / Yash / Nemi / Venkat:** dated ANALYSIS_PLAN / DESIGN amendments for soft limbs (not fabricated fills).
 
-## Fix order (research-valid)
+## Still blocking cohort “all CA2 100%”
 
-1. **Uday** — finish final_3 + baseline; then decide genuine deepen (schedule/N) vs honest partial.
-2. **Pooja** — AWS re-eval under new causal HPA artefact (code already changed; destroy-after).
-3. **Yashaswini** — policy retune until ≥3 live rounds clear 0.50 reduction, or rewrite decision rule.
-4. **Varun** — fresh independent trial sampling (new raw_costs hashes).
-5. **Nemi** — multi-instance/container clients + improved-arm diagnosis.
-6. **Anji** — live n≥3 key cells; stop citing null H1–H3 as effects.
-7. **Venkat / Vikas** — as prior reviews.
-8. Rubric70 raises only after honest floors.
+Lite-vs-formal scale (Uday/Anji/Pooja), H3/H4 (Chaitanya), allocation-acc (Varun soft), F1 gap (Yash), quarantined P4 (Vikas). Closing requires either new evidence **or** further dated scope amendments that stop claiming those limbs.
 
-**Kasi:** never. **GENAI_HANDOFF:** still deferred until per-thesis finals + honest floor.
+**Kasi:** excluded. **GENAI_HANDOFF:** 12/12 on disk; floors above are authoritative over any STATUS “100%” prose.

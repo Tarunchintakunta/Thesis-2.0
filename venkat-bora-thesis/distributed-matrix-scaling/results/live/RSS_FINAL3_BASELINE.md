@@ -13,5 +13,5 @@
 ## Verdict
 - **Positive:** Peak RSS + CPU instrumented on live EC2; multi-instance RSS ~72–74 MB consistent across 3 rounds; destroy-after each.
 - **Note:** Scale-up numpy matmul is sub-ms; peak_rss sampler can read ~0 on ultra-short runs — treat multi-instance RSS/CPU as primary RQ limb evidence.
-- **Residual:** Size ladder (100/250/500 with timeouts-as-outcomes) still soft if RQ requires multi-order sizes.
+- **Residual:** Size ladder (100/250/500 with timeouts-as-outcomes) — **dated deferred 2026-09-22** as beyond-floor soft; n=250 RSS/CPU ×3 retained as primary memory/CPU evidence.
 

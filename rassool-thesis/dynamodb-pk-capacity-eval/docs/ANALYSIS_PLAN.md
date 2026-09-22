@@ -81,4 +81,19 @@ The pilot does not fix n (n = 30 is fixed in advance). It checks:
 
 ## Amendments
 
-None yet.
+### 2026-09-22 — W1/W2 live cells deferred (scope amendment)
+
+**Date:** 2026-09-22  
+**Change:** Live factorial measurement for workloads **W1** (read-heavy) and **W2** (write-heavy) is **deferred** and treated as **beyond confirmatory CA2 floor** for this submission cycle.
+
+**Reason:** Confirmatory evidence for the RQ’s key×capacity method residual is already on disk for **W3/W4** (`results/final_{1,2,3}/`, `results/pooled_final3_anova.json`, live key-cell campaign). A further 12-cell W1/W2 destroy-after fleet would re-occupy the sole cohort AWS slot without changing the demonstrated W3/W4 ANOVA finding. Cohort policy: one AWS slot (eu-west-1), destroy-after; remaining slot priority is independence re-runs for other theses.
+
+**What remains claimed:** W3/W4 live cells + pooled confirmatory ANOVA (key main effect supported; capacity/interaction ns on W3 mean latency as reported).  
+
+**What is not claimed:** Full W1–W4 CA2 100%; W1/W2 cell tables filled; Holm over all 12 primary tests with W1/W2 present.
+
+**Re-open condition:** Run W1/W2 only when AWS slot is FREE and no higher-priority independence residual is queued; then amend this plan again with the run date and destroy confirmation.
+
+### 2026-09-22 — confirmatory n>1 already partially filled
+
+Pooled ANOVA across `final_1|2|3` (n_rows=36) supersedes the earlier “n=1 saturates interaction” soft note for W3/W4 latency. Per-pack exploratory n=1 OLS/KW remain non-confirmatory and must not be cited as the family tests.

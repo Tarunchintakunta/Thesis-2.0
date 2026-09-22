@@ -22,7 +22,7 @@ FL+DP IDS vs centralised monitors on UNSW-NB15; cloud packaging evidence beyond 
 ## 3. CA2 proposal alignment and any extensions beyond the proposal
 
 - Demonstrated: centralised vs FL (synthetic + UNSW), live cloud lite, ablations, **Docker Compose multi-container FedAvg**.
-- **Not met:** Kubernetes (explicit residual).
+- **Not met / dated deferred 2026-09-22:** Kubernetes/EKS (optional beyond-floor; Docker×3 delivered).
 
 ## 4. Research methodology and experimental design
 

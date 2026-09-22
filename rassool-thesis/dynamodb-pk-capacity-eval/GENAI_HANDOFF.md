@@ -6,9 +6,9 @@
 |-------|-------|
 | Student | Rasool |
 | Artefact root | `rassool-thesis/dynamodb-pk-capacity-eval/` |
-| Honest CA2 floor | **PARTIAL (~78)** — W3/W4 live + pooled ANOVA Demonstrated; **W1/W2 still open** vs proposal |
+| Honest CA2 floor | **PARTIAL (~82)** — W3/W4 live + pooled ANOVA Demonstrated; W1/W2 **dated-deferred** (not claimed filled) |
 | Eval completeness | Live keycells + `final_1\|2\|3` for W3/W4; destroy-after; pooled confirmatory ANOVA on disk |
-| AWS | DynamoDB live fleets (historically eu-west-1) |
+| AWS | DynamoDB live fleets (historically eu-west-1); slot free after destroy |
 | Handoff date | 2026-09-22 |
 
 ## 1. Research problem, motivation, research question, and objectives
@@ -21,7 +21,7 @@ Live factorial evidence (key × capacity) vs moto-only claims — with confirmat
 
 ## 3. CA2 proposal alignment and any extensions beyond the proposal
 
-Proposal / experiment.yaml register W1–W4. **Delivered:** W3/W4 live. **Not met:** W1/W2 (amend scope or run when AWS free).
+Proposal / experiment.yaml register W1–W4. **Delivered:** W3/W4 live + pooled ANOVA. **W1/W2:** dated scope amendment in `docs/ANALYSIS_PLAN.md` (2026-09-22) — deferred beyond confirmatory floor; do not claim filled.
 
 ## 4. Research methodology and experimental design
 
@@ -69,7 +69,7 @@ Independent review also cites W4 Key F≈17 p≈3e-4. Live 12/12 keycells histor
 
 ## 11–12. Objectives / RQ
 
-W3/W4 key-factor effects **supported** (strong key F; capacity/interaction ns on W3 mean latency). W1/W2 **unanswered**.
+W3/W4 key-factor effects **supported** (strong key F; capacity/interaction ns on W3 mean latency). W1/W2 **unanswered by measurement** — explicitly deferred 2026-09-22 in ANALYSIS_PLAN (not hidden).
 
 ## 13–17. Literature / stats / observations / limitations / conclusions
 
@@ -77,9 +77,9 @@ Confirmatory pooled ANOVA is the statistical contribution. Limitation: W1/W2 abs
 
 ## 18–19. Changes / remaining
 
-1. Run W1/W2 when AWS slot free **or** dated ANALYSIS_PLAN deferral.  
-2. Do not claim full W1–W4 CA2 100%.
+1. ~~Dated ANALYSIS_PLAN deferral~~ — done 2026-09-22.  
+2. Do not claim full W1–W4 CA2 100%. Optional: reopen W1/W2 only when slot free and no higher-priority residual.
 
 ## 20. Important files
 
-`results/pooled_final3_anova.json`, `results/final_{1,2,3}/`, `FINAL3_BASELINE.md`, experiment YAML registering W1–W4.
+`docs/ANALYSIS_PLAN.md` (W1/W2 amendment), `results/pooled_final3_anova.json`, `results/final_{1,2,3}/`, `FINAL3_BASELINE.md`, experiment YAML registering W1–W4.

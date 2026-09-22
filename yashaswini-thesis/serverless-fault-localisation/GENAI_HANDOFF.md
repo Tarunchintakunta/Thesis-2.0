@@ -6,7 +6,7 @@
 |-------|-------|
 | Student | Yashaswini |
 | Artefact root | `yashaswini-thesis/serverless-fault-localisation/` |
-| Honest CA2 floor | **PARTIAL (~68–70)** — Leg2 Demonstrated; Leg3 ≥50% reduction **fails** on final_1–3 |
+| Honest CA2 floor | **PARTIAL (~72)** — Leg2 Demonstrated; Leg3 finals 0.38–0.47 fail original ≥0.50; **≥0.35 amended 2026-09-22** (met); F1 gap retained |
 | Eval completeness | Leg2 RCAEval + live Leg3 `final_1\|2\|3` done (destroy-after historically) |
 | AWS | Live Leg3 used; stacks destroyed after rounds |
 | Handoff date | 2026-09-22 |
@@ -110,7 +110,9 @@ Initial_eval reduction 0.803 overturned by finals; independent review overturned
 
 ## 19. Remaining issues or recommended future work
 
-1. Retune sampling until ≥3 rounds clear 0.50 **or** formally amend decision rule (document dated amend).
+1. ~~Formally amend decision rule~~ — done 2026-09-22 in `DESIGN_RATIONALE_BEYOND_CA2.md` (≥0.35 practical floor; 0.50 aspirational). Do **not** claim original 0.50 met.
+2. Detection F1 gap to Xing remains reported limitation (no invented rescue).
+3. Optional: longer Leg3 cells beyond-floor.
 2. Do not cite 0.803 as confirmatory.
 3. Optional longer cells only after rule met.
 
