@@ -74,11 +74,11 @@ Do **not** assume proposed is stronger — report per-workload Wilcoxon honestly
 
 ## 11. How results satisfy or address each research objective
 
-Cost-vs-natives limb **supported** on independent r4/r5 under modeled costs. Allocation-accuracy limb **not supported** for improved arm on dry-run (0.178). CE-settled production savings not demonstrated.
+Cost-vs-natives limb **supported** on independent r4/r5 under modeled costs. Allocation-accuracy limb **not supported** for proposed vs Lifecycle on offline seed regeneration (r4 proposed Acc≈**0.369** vs Lifecycle ≈**0.854**, Δ≈**−0.485**; see `allocation_accuracy_r4_r5_offline.json`). Proposed slightly above Intelligent-Tiering Acc. CE-settled production savings not demonstrated.
 
 ## 12. How results answer the research question
 
-On live modeled cost, proposed beats Lifecycle + Intelligent-Tiering on all three workloads in two independent full packs (r4, r5). Allocation-accuracy improvement remains unsupported on the dry-run improved arm. Archival r1–r3 must not be counted as three independent successes.
+On live modeled cost, proposed beats Lifecycle + Intelligent-Tiering on all three workloads in two independent full packs (r4, r5). **Allocation accuracy vs pattern-oracle is worse than Lifecycle** on the same seeds (honest negative). Archival r1–r3 must not be counted as three independent successes.
 
 ## 13–17. Literature / stats / observations / limitations / conclusions
 
@@ -87,7 +87,7 @@ Limitation: costs are modeled monthly storage via SavingsEstimator, not settled 
 ## 18–19. Changes / remaining
 
 1. ~~Fresh r4/r5 with distinct SHA~~ — done 2026-09-22.  
-2. Optional: live allocation-accuracy metric on recommendations.  
+2. ~~Allocation accuracy on r4/r5 seeds~~ — offline oracle compare written (`allocation_accuracy_r4_r5_offline.json`); **negative vs Lifecycle retained**.  
 3. Keep archival r1–r3 labeled non-independent.
 
 ## 20. Important files

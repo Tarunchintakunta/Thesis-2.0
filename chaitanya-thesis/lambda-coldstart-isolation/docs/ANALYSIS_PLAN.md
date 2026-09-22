@@ -99,4 +99,8 @@ _Not run yet. `python scripts/pilot_power.py --in data/pilot/<mode>/ --out docs/
 
 ## 8. Amendments
 
-None yet.
+### 2026-09-22 — confirmatory H3/H4 deferred beyond confirmatory floor
+
+**Delivered:** confirmatory n≥30 packs for **H1/H2** (`results/live/confirmatory_n30/round_{1,2,3}/`).  
+**Deferred:** confirmatory-depth **H3** (warming frequency) and **H4** (memory sweep) at n≥30. H3-lite / H4-lite evidence remains as directional (see `DESIGN_RATIONALE_BEYOND_CA2.md`); do not claim confirmatory H3/H4 Holm families filled.  
+**Reason:** sole AWS slot + destroy-after; H1/H2 already close the primary Init Duration RQ limbs under confirmatory n. Re-open H3/H4 confirmatory only when slot free.

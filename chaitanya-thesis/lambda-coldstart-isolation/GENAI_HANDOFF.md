@@ -6,7 +6,7 @@
 |-------|-------|
 | Student | Chaitanya |
 | Artefact root | `chaitanya-thesis/lambda-coldstart-isolation/` |
-| Honest CA2 floor | **PARTIAL (~78)** — confirmatory n≥30 Demonstrated for H1/H2; H3/H4 residual / no data on r3 |
+| Honest CA2 floor | **Improved (~82)** — confirmatory n≥30 H1/H2 Demonstrated ×3; H3/H4 confirmatory **dated-deferred 2026-09-22** (lite H3/H4 retained as directional) |
 | Eval completeness | `confirmatory_n30/round_1\|2\|3` **all on disk** (r1/r2 offline-restored from `data/raw/live_conf_n30_r{1,2}`; r3 live). Destroy-after each. |
 | AWS | eu-west-1, arm64 Lambda; destroy-after |
 | Handoff date | 2026-09-22 |
@@ -80,8 +80,8 @@ Strong runtime + package-size effects under Holm. Limitation: single round on di
 
 ## 18–19. Changes / remaining
 
-1. Optional H3/H4 if warming instrumentation closed.  
-2. Keep honest residual — not CA2 100% (H3/H4).  
+1. ~~Confirmatory H3/H4~~ — **dated-deferred 2026-09-22** in `docs/ANALYSIS_PLAN.md` (lite H3/H4 directional only).  
+2. Keep H1/H2 confirmatory honesty; do not claim full H1–H4 confirmatory 100%.  
 3. Rounds 1–2 restored offline from preserved raw logs (PROVENANCE.txt).
 
 ## 20. Important files
