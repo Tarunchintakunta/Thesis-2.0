@@ -2,7 +2,8 @@
 
 **Sources (authoritative — use throughout this goal):**
 1. `/Users/valletivarish/Downloads/WhatsApp Image 2026-09-17 at 7.23.54 PM.jpeg` — **MSc Cloud Computing – Research Project – Marking Rubric**
-2. `/Users/valletivarish/Downloads/master_rubric.md` — module overview, handbook, abstract/intro/lit/method/results/discussion guidance
+2. `/Users/valletivarish/Downloads/master_rubric.md` — module overview / handbook guidance (if present)
+3. **`/RUBRIC_70_TO_100_STRATEGY.md` (repo root)** — operating strategy: protect 70+ descriptors; push Artefact+Eval beyond; evidence matrix + audit
 
 **Standing exclusion:** `kasi-thesis` — never, unless user re-includes.
 
@@ -36,7 +37,7 @@ Lower bands (for gap diagnosis only): 60–69 = good/rigorous but less creative/
 ## How this gates AWS work
 
 1. Fix CA2 scope alignment to **100%** first (RQ/objectives/gap/method/artefact/eval — **not** perfect marks).  
-2. Rubric 70%+ (JPEG + `master_rubric.md`) is a **quality check** throughout — aim for 70%+ traits; include **negative results**; analyse vs RQ/baseline/previous research; appreciate limitations.  
+2. Rubric quality (JPEG + handbook): aim **70–100** traits — not scrape-70. Include **negative results**; analyse vs RQ/baseline/previous research; appreciate limitations. Artefact (27%) + Eval (25%) dominate marks.  
 3. **Evaluation cycle (binding):**  
    **100% CA2 → 1 evaluation → CA2 re-check → if needed fix → 1 evaluation → re-check → once still 100% → 3 full-scale final evaluations.**  
 4. Baseline compare on the final 3 (pos+neg, stats, consistency). Then RQ/objectives/limitations/conclusions.  
@@ -46,10 +47,22 @@ Lower bands (for gap diagnosis only): 60–69 = good/rigorous but less creative/
 - `/Users/valletivarish/Downloads/WhatsApp Image 2026-09-17 at 7.23.54 PM.jpeg`  
 - `/Users/valletivarish/Downloads/master_rubric.md`
 
-## Per-thesis Rubric70 notes (evidence fold)
+## Per-thesis Rubric notes (evidence fold; aim **70–100**, not scrape-70)
+
+Mark weights from JPEG: Spec 5% · Lit 8% · **Artefact 27%** · **Eval 25%** · Report 8% · Config 5% · Viva 10%.  
+Raise path = fold final-3 **pos+neg** into STATUS/eval/conclusions vs RQ + baseline paper + limitations.
 
 | Thesis | Rubric70 | Evidence used (no invented metrics) | Next |
 |--------|----------|-------------------------------------|------|
-| Anji | **yes** | `initial_eval_1` live lite 4/4 + prior `key_cells`; loss=0; MRC=1 DLQ pos; **neg:** VT→recovery non-monotone n=1; MRC=1 success 0.805; vs Kyrychenko: fault reliability ≠ steady-state guidance; limitations disclosed; H1–H3 stay localsim | final-3 later; **GENAI_HANDOFF deferred** |
-| Varun | **yes** | e1–e3 + `BASELINE_COMPARE.md` folded into STATUS + LaTeX eval/conclusion/limitations; high_churn little/no vs Lifecycle retained; RQ assessment evidence-bound; rebuild-identical e1–e3 vectors disclosed | soft only; **GENAI_HANDOFF deferred** |
-| Uday | **partial** | lite LIVE_EVIDENCE 16/16; QoS1 loss=0; **neg:** d60≡d300 under lite schedule; QoS1 latency cost; n=1; vs Shvaika: managed+disconnect gap (not TBMQ clone); formal 600k beyond-floor | soft prose/report; **GENAI_HANDOFF deferred** |
+| Anji | **yes** | final-3 + initial_eval_1; loss=0; MRC=1 DLQ pos; **neg:** VT→recovery non-monotone; vs Kyrychenko | soft; handoff deferred |
+| Varun | **yes** | e1–e3 + BASELINE_COMPARE in STATUS/LaTeX; high_churn little/no vs Lifecycle | soft; handoff deferred |
+| Yashaswini | **yes** | Leg3 lite final-3; CausalRCA quarantined; overhead pos+neg | soft PDF; handoff deferred |
+| Chaitanya | **raised** | final-3 H1 stable; Init/H3/H4 lite; **neg:** lite n; H3 underpowered; vs Bluemke Init isolation | report prose polish |
+| Mehak | **raised** | GCT final-3; RF/Aldomi lead; **neg:** MHSA does not win; FN≫TP | report prose polish |
+| Venkat | **raised** | matched Free-Tier final-3; matmul ok; **neg:** n=250 single-shot; n=500 timed_out historically | report prose polish |
+| Pooja | **raised** | k3s final-3; **neg:** HPA/PAKS not monotone; LSTM < persistence MAE | report prose polish |
+| Nemi | **raised** | cloud FL lite final-3; **neg:** not 50-round/2.5M; vs Saklani depth | report prose polish |
+| Rasool | **raised** | W3/W4 final-3 ×3; **neg:** n=1 exploratory only; W1/W2 soft | report prose polish |
+| Vishvaksen | **raised** | labelled-oracle final-3; **neg:** scanner recall gaps; no apply | soft Verdet optional |
+| Vikas | **raised** | full campaign N=1000×3×3; E1–E3 supported; **neg:** P1 dups; moto≠AWS | soft LaTeX optional |
+| Uday | **partial** | lite 16-cell; final-3 in flight; **neg:** d60≡d300; QoS1 latency cost | finish final-3 + fold |

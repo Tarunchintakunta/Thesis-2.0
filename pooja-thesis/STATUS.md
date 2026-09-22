@@ -1,6 +1,16 @@
 **INITIAL_EVAL_PASS:** **yes** (live AWS k3s PAKS vs HPA; CA2 re-check still 100%)
 INITIAL_EVAL_PASS=yes
-Evidence: `paks-framework/results/formal_k8s_live_aws.json`. Final-3 not started.
+Evidence: `paks-framework/results/formal_k8s_live_aws.json`. Final-3 **DONE** (`results/live/final_{1,2,3}/` + `FINAL3_BASELINE.md`).
+
+### Rubric quality notes (aim 70–100; Eval 25% + Artefact 27%)
+
+From `paks-framework/results/live/FINAL3_BASELINE.md` + TRACE prediction tables.
+
+- **Artefact:** PAKS (NumPy LSTM + adaptive scale) vs reactive HPA on Free-Tier **1× t3.micro + k3s** with S3/CW; destroy-after; Venkat fleet never in this state.
+- **Pos (final-3):** all three rounds live-apply + `destroy_confirmed`; scale latency p50 ≈0.14 s both policies; method closed under Free-Tier.
+- **Neg retained:** mean HPA↔PAKS ordering **not** monotone (PAKS faster f1/f3, HPA on f2); TRACE LSTM MAE **worse** than persistence on GCT 2011 / Alibaba RANGE slices — prediction gain not automatic.
+- **vs reactive HPA baseline:** live latency parity at lite n=16 single-node — do **not** claim confirmatory superiority; cost/SLA fields partly SIMULATED.
+- **Limitations:** single-node k3s; steps=16; full multi-GB dumps scoped beyond-CA2 (`DESIGN_RATIONALE_BEYOND_CA2.md`).
 
 # Project Status: pooja-thesis
 

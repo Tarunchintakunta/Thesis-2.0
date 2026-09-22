@@ -1,0 +1,32 @@
+{
+  "backend": "live",
+  "extra": {
+    "iot_endpoint": "a2xptes3s2nj8n-ats.iot.eu-west-1.amazonaws.com",
+    "settle_s": 3.0,
+    "table": "mqtt-qos-lite-delivered",
+    "uuid_ns": "284384b6-f247-43cf-a7db-db9375f464c1"
+  },
+  "finished_at": "2026-09-22T05:15:50Z",
+  "measurement_kind": "AWS IoT Core rules \u2192 Lambda \u2192 DynamoDB (live)",
+  "n_delivered_copies": 250,
+  "n_device_log": 250,
+  "region": "eu-west-1",
+  "run_id": "live-qos1_d15_steady_r1-s74-d89b7744",
+  "seed": 74,
+  "spec": {
+    "backend": "live",
+    "cell_id": "qos1_d15_steady",
+    "config_id": "qos1_d15_steady_r1",
+    "disconnect_s": 15,
+    "interval_s": 1.0,
+    "n_devices": 5,
+    "n_messages": 50,
+    "payload_bytes": 64,
+    "qos": 1,
+    "rate_mode": "steady",
+    "region": "eu-west-1",
+    "replication": 1,
+    "seed": 74
+  },
+  "started_at": "2026-09-22T05:11:34Z"
+}

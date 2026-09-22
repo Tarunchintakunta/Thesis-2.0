@@ -1,0 +1,7 @@
+phase,function,memory_mb,intended_cold,came_back_warm
+burst,java-optimised,1024,100,50
+burst,nodejs-optimised,1024,100,50
+burst,python-optimised,1024,100,55
+runtime_compare,java-optimised,1024,5,0
+runtime_compare,nodejs-optimised,1024,5,0
+runtime_compare,python-optimised,1024,5,0

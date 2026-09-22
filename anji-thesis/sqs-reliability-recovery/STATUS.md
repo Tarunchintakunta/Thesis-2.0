@@ -1,6 +1,7 @@
 ## Alignment note (2026-09-21 — initial_eval_1 gate)
 
-**CA2 research alignment = 100% (floor).** **COMPLETE.** Re-checked after **ONE** live initial evaluation; still 100 → `INITIAL_EVAL_PASS=yes`. Final-3 **not** started.
+**CA2 research alignment = 100% (floor).** **COMPLETE.** Re-checked after **ONE** live initial evaluation; still 100 → `INITIAL_EVAL_PASS=yes`.  
+**Final-3 progress:** `results/live/final_1/` + `final_2/` + `final_3/` **DONE (3/3)** — each 4/4 destroyed. Baseline: `results/live/FINAL3_BASELINE.md`.
 
 Authoritative confirmatory stats remain packaging-deduped localsim: `results/summary/stats_H1_H2_H3.json` (`runs: 350`, `backend: localsim`). Live smoke: prior `results/live/key_cells/` plus **initial_eval_1** under `results/live/initial_eval_1/` (both destroyed after round). No live $n{>}1$ numbers exist.
 
@@ -62,7 +63,11 @@ Authoritative confirmatory stats remain packaging-deduped localsim: `results/sum
 ```
 COMPLETE=yes ALIGNMENT=100 CA2_FLOOR=met
 INITIAL_EVAL_PASS=yes
-FINAL3=not_started
+FINAL3=done_3of3
+LIVE_FINAL_1=yes
+LIVE_FINAL_2=yes
+LIVE_FINAL_3=yes
+DESTROY_CONFIRMED=yes
 READY_FOR_AWS=done_lite_round
 SOLE_AWS_RESIDUAL=closed
 AWS_CLASS=required

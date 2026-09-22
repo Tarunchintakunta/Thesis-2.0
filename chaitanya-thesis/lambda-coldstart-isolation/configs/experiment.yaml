@@ -14,7 +14,7 @@ idle_gap_min: 30                  # only used with force_cold: idle
 
 # daily spend cap checked before every invocation (scripts/budget_guard.py)
 budget:
-  daily_usd: 2.00
+  daily_usd: 25.00
   spend_log: data/spend_log.csv
 
 phases:

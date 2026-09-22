@@ -271,8 +271,8 @@ def main() -> int:
     logs_client = boto3.client("logs", region_name=region)
 
     _assert_not_venkat(instance_id, ec2)
-    _wait_ssm(instance_id, ssm, timeout_s=720)
-    _wait_ready_marker(instance_id, ssm, timeout_s=900)
+    _wait_ssm(instance_id, ssm, timeout_s=1200)
+    _wait_ready_marker(instance_id, ssm, timeout_s=1200)
 
     with tempfile.TemporaryDirectory(prefix="paks-live-") as tmp:
         tar_path = _build_tarball(Path(tmp))
@@ -299,6 +299,7 @@ def main() -> int:
                 "export KUBECONFIG=/etc/rancher/k3s/k3s.yaml",
                 f"export PAKS_LIVE_STEPS={args.steps}",
                 f"export PAKS_LIVE_MAX_REPLICAS={args.max_replicas}",
+                f"export PAKS_LIVE_SEED={os.environ.get('PAKS_LIVE_SEED', '42')}",
                 "export PAKS_LIVE_OUT=/opt/paks/formal_k8s_live_aws.json",
                 "cd /opt/paks/paks-framework",
                 "python3 scripts/live_scale_on_node.py",

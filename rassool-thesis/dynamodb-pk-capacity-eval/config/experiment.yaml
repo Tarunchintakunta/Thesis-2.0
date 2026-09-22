@@ -3,7 +3,7 @@
 project: dynamodb-pk-capacity
 run_label: "ddbpk-eval"
 region: eu-west-1
-table_prefix: ddbpk              # tables are ddbpk-<k1|k2|k3>-<ondemand|provisioned>
+table_prefix: ddbpk
 
 factors:
   key_design: [K1, K2, K3]

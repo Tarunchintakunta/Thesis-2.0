@@ -1,0 +1,22 @@
+{
+    "CommandId": "e71cf5e7-1bf7-4c8d-a5a3-18ddc791ae54",
+    "InstanceId": "i-08d143a106ed033c4",
+    "Comment": "",
+    "DocumentName": "AWS-RunShellScript",
+    "DocumentVersion": "$DEFAULT",
+    "PluginName": "aws:runShellScript",
+    "ResponseCode": 0,
+    "ExecutionStartDateTime": "2026-09-21T18:24:48.898Z",
+    "ExecutionElapsedTime": "PT0.146S",
+    "ExecutionEndDateTime": "2026-09-21T18:24:48.898Z",
+    "Status": "Success",
+    "StatusDetails": "Success",
+    "StandardOutputContent": "/usr/bin/python3.11\n{\n  \"role\": \"scale-up\",\n  \"mode\": \"numpy_matmul\",\n  \"size\": 250,\n  \"workers\": 2,\n  \"elapsed_s\": 0.001655454000001555,\n  \"checksum\": 62.41381891530221,\n  \"hostname\": \"ip-172-31-6-253.eu-west-1.compute.internal\"\n}\n\n",
+    "StandardOutputUrl": "",
+    "StandardErrorContent": "",
+    "StandardErrorUrl": "",
+    "CloudWatchOutputConfig": {
+        "CloudWatchLogGroupName": "",
+        "CloudWatchOutputEnabled": false
+    }
+}

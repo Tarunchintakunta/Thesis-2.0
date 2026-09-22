@@ -1,26 +1,29 @@
-# CA2 alignment scoreboard (12 theses — Kasi excluded)
+# CA2 alignment scoreboard (12 thesis projects — Kasi excluded)
 
-**Updated:** 2026-09-21 (Pooja CA2 floor closed — dumps scoped out)  
+**Updated:** 2026-09-22  
 **Bar:** **100% CA2** = RQ/objectives/gap/method/artefact/eval scope — **not** perfect marks.  
-**Rubric 70%+:** JPEG + `master_rubric.md` → `RUBRIC_QUALITY_BAR.md`.  
+**Rubric strategy (authoritative):** [`/RUBRIC_70_TO_100_STRATEGY.md`](../RUBRIC_70_TO_100_STRATEGY.md) — protect every **70%+** descriptor; push **Artefact 27% + Eval 25%** beyond minimum. Use **baseline** / **proposed** (not “arms”).  
+**Pending:** [`PENDING.md`](PENDING.md) · **Gap hunt:** [`ARTEFACT_GAP_HUNT.md`](ARTEFACT_GAP_HUNT.md)  
+**Evidence matrices:** `{thesis}/RUBRIC_EVIDENCE_MATRIX.md` (template: `_analysis_extract/templates/RUBRIC_EVIDENCE_MATRIX_TEMPLATE.md`).  
 **Handoff MD:** only after 3–5 full-scale evals. **Kasi:** never.
+
 
 | # | Thesis | CA2_% | Rubric70 | Block full-eval? | Next |
 |--:|--------|------:|----------|:----------------:|------|
-| 1 | Anji | **100** | yes | no | initial_eval_1 done; CA2 still 100 → ready for final-3 |
-| 2 | Chaitanya | **100** | partial | no | stale conclusion fold |
-| 3 | Yashaswini | **100** | yes | no | soft only |
-| 4 | Rasool | **100** | partial | no | optional W1/W2 |
-| 5 | Varun | **100** | yes | no | INITIAL_EVAL_PASS=yes; e1–e3 pack present; handoff deferred |
-| 6 | Vikas | **100** | partial | no | INITIAL_EVAL_PASS=yes; campaign pack present; soft LaTeX optional |
-| 7 | Nemi | **100** | partial | no | optional beyond-CA2 |
-| 8 | Venkat | **100** | partial | no | initial_eval_1 done; CA2 still 100 → INITIAL_EVAL_PASS=yes; final-3 not started |
-| 9 | Mehak | **100** | partial | no | INITIAL_EVAL_PASS=yes; next=3 local full GCT runs (not AWS) |
-| 10 | Pooja | **100** | partial | soft only | INITIAL_EVAL_PASS=yes; optional dumps/larger live beyond floor |
-| 11 | Uday | **100** | partial | no | CA2 floor COMPLETE — lite 16-cell live destroyed; formal 600k beyond-floor; soft Shvaika prose |
-| 12 | Vishvaksen | **100** | partial | no | INITIAL_EVAL_PASS=yes; soft Verdet/report polish |
+| 1 | Anji | **100** | yes | no | INITIAL_EVAL_PASS=yes; live final-3 **DONE**; baseline in `FINAL3_BASELINE.md` |
+| 2 | Chaitanya | **100** | raised→yes path | no | final-3 **DONE**; Rubric fold Init H1 pos+neg vs Bluemke |
+| 3 | Yashaswini | **100** | yes | no | INITIAL_EVAL_PASS=yes; live final-3 **DONE**; soft CausalRCA/PDF beyond-CA2 |
+| 4 | Rasool | **100** | raised→yes path | no | final-3 **DONE**; Rubric fold W3/W4 pos+neg; W1/W2 soft |
+| 5 | Varun | **100** | yes | no | INITIAL_EVAL_PASS=yes; live final-3 **DONE** (e1–e3 + BASELINE_COMPARE); handoff deferred |
+| 6 | Vikas | **100** | raised→yes path | no | campaign pack = final-scale; Rubric fold E1–E3 pos+neg; P4 quarantined |
+| 7 | Nemi | **100** | raised→yes path | no | final-3 **DONE**; Rubric fold FL lite pos+neg |
+| 8 | Venkat | **100** | raised→yes path | no | final-3 **DONE**; Rubric fold matched Free-Tier pos+neg |
+| 9 | Mehak | **100** | raised→yes path | no | local final-3 **DONE**; Rubric fold MHSA **does not** beat RF/Aldomi |
+| 10 | Pooja | **100** | raised→yes path | soft only | final-3 **DONE**; Rubric fold HPA/PAKS + LSTM<persistence |
+| 11 | Uday | **100** | partial | no | final-1 **DONE**; final-2/3 in flight; Rubric fold after final-3 |
+| 12 | Vishvaksen | **100** | raised→yes path | no | local final-3 **DONE**; Rubric fold scanner recall gaps |
 
-**Fix order:** cohort floors largely closed; soft/beyond-floor polish remains (Uday Shvaika prose; formal volume optional).
+**Fix order:** all 12 at CA2 100% + INITIAL_EVAL_PASS; Mehak local final-3 in flight; AWS final-3 next (one-at-a-time).
 Venkat raise 2026-09-21: round-2 multi-instance `da.matmul` n=250 **ok** (0.2546 s per `ec2_round2_summary.json`); destroy verified → **100%**.
 Venkat initial_eval_1 2026-09-21: matched Free-Tier 1×t3.small vs 2×t3.micro, n=250 matmul **ok** 0.2737 s; destroy confirmed; CA2 re-check still **100%** → `INITIAL_EVAL_PASS=yes`; final-3 **not** started.
 Pooja live AWS k3s 2026-09-21: 1× t3.micro + S3 + CW, live HPA vs PAKS scale, destroy confirmed → was **~92%**.
@@ -40,3 +43,5 @@ Vikas rescore 2026-09-21: scoreboard **~74→100** — live full campaign N=1000
 Vishvaksen 2026-09-21: labelled-oracle method confirmed → **100%** CA2 floor.
 
 Uday floor close 2026-09-21: Free-Tier **lite 16-cell** live apply→collect→destroy + DESIGN_RATIONALE; formal 600k-msg volume scoped beyond floor → **100%**.
+
+2026-09-21 INITIAL_EVAL gates: Chaitanya / Yashaswini / Rasool / Nemi / Uday — existing live method rounds recorded under `initial_eval_1/`; CA2 re-check still **100%** → `INITIAL_EVAL_PASS=yes`.

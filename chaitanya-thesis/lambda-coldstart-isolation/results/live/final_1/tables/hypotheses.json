@@ -1,0 +1,113 @@
+{
+  "data_mode": "live",
+  "label": "measured on AWS Lambda, eu-west-1, arm64",
+  "alpha": 0.05,
+  "tests": {
+    "H1": {
+      "test": "anova",
+      "statistic": 193.388609,
+      "p": 0.0,
+      "effect": 0.969908,
+      "effect_name": "eta_squared",
+      "normal": true,
+      "groups": [
+        "python",
+        "nodejs",
+        "java"
+      ],
+      "n": [
+        5,
+        5,
+        5
+      ],
+      "medians": {
+        "python": 82.81,
+        "nodejs": 146.84,
+        "java": 424.72
+      },
+      "family": "confirmatory",
+      "p_holm": 0.0,
+      "reject": true
+    },
+    "H1_posthoc_python_vs_nodejs": {
+      "test": "welch_t",
+      "statistic": -9.453347,
+      "p": 0.000112,
+      "effect": -5.978821,
+      "effect_name": "cohens_d",
+      "normal": true,
+      "n": [
+        5,
+        5
+      ],
+      "median_a": 82.81,
+      "median_b": 146.84,
+      "median_diff": -64.03,
+      "median_diff_ci95": [
+        -81.85,
+        -44.81
+      ],
+      "family": "posthoc:H1",
+      "p_holm": 0.000224,
+      "reject": true
+    },
+    "H1_posthoc_python_vs_java": {
+      "test": "welch_t",
+      "statistic": -15.24275,
+      "p": 3.7e-05,
+      "effect": -9.640361,
+      "effect_name": "cohens_d",
+      "normal": true,
+      "n": [
+        5,
+        5
+      ],
+      "median_a": 82.81,
+      "median_b": 424.72,
+      "median_diff": -341.91,
+      "median_diff_ci95": [
+        -401.35,
+        -267.83
+      ],
+      "family": "posthoc:H1",
+      "p_holm": 0.000112,
+      "reject": true
+    },
+    "H1_posthoc_nodejs_vs_java": {
+      "test": "welch_t",
+      "statistic": -12.739784,
+      "p": 0.000177,
+      "effect": -8.057347,
+      "effect_name": "cohens_d",
+      "normal": true,
+      "n": [
+        5,
+        5
+      ],
+      "median_a": 146.84,
+      "median_b": 424.72,
+      "median_diff": -277.88,
+      "median_diff_ci95": [
+        -337.32,
+        -203.8
+      ],
+      "family": "posthoc:H1",
+      "p_holm": 0.000224,
+      "reject": true
+    }
+  },
+  "cold_fraction_used_for_cost": 1.0,
+  "notes": [
+    "python-bytecode dropped from H2 (valid Init n<3; Unhandled on live lite)",
+    "confirmatory: no data for H2_python, H2_nodejs, H2_java, H3 (family size shrinks to 1)",
+    "exploratory:H4: no data for H4_python, H4_nodejs, H4_java (family size shrinks to 0)",
+    "exploratory:combined: no data for combined_python, combined_nodejs, combined_java (family size shrinks to 0)",
+    "no warming data: per-1k cost treats every invocation as cold (f = 1)"
+  ],
+  "figures": [
+    "baseline_style_duration_cost.png",
+    "init_by_runtime.png",
+    "burst_latency.png",
+    "decision_matrix.png"
+  ]
+}

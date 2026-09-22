@@ -5,7 +5,7 @@
 **Research Alignment to CA2:** **100%** (formal `MAHEK NAAZ.docx`; research-scope floor — not perfect marks)  
 **Status:** **CA2 floor COMPLETE** — soft residuals (full 2011 dump / 2019 cells / true net-bytes) are **explicitly scoped out** with rationale in `DESIGN_RATIONALE_BEYOND_CA2.md`  
 **INITIAL_EVAL_PASS:** **yes**
-**Final-3 progress:** `results/gct/final_1/` done (1/3). (one local GCT full run; path below)
+**Final-3 progress:** `results/gct/final_1/` + `final_2/` + `final_3/` **DONE (3/3)**. Baseline: `mhsa-tdl-framework/results/gct/FINAL3_BASELINE.md` (RF/Aldomi lead; MHSA does not; packs stable).
 
 ## Summary
 
@@ -19,6 +19,16 @@ Formal CA2: **MHSA-TDL on Google Cluster Trace** vs hybrid/traditional monitors 
 - **CA2 re-check vs `MAHEK NAAZ.docx`:** still **100%** (RQ/objectives/GCT/baselines/metric suite). Doc fix this pass: methodology/implementation no longer claim GCT absent.
 - **Rubric70 honesty:** MHSA does **not** beat RF/Aldomi; FN≫TP retained in eval/conclusion.
 - **Next (not this task):** only after pass stays 100% — three reproducible **local** full GCT runs (final-3); no AWS.
+
+### Rubric quality notes (aim 70–100; Eval 25% + Artefact 27%)
+
+From `mhsa-tdl-framework/results/gct/FINAL3_BASELINE.md` + `initial_eval_1/`.
+
+- **Artefact:** MHSA-TDL vs classical RF/KNN/SVM and Aldomi SelectKBest+GRU-RF/KNN on official GCT 2011 expanded subset; 4th channel = sampled CPU (2011 has **no** network bytes — documented, not invented).
+- **Pos:** RF Acc 0.944 and Aldomi GRU-RF Acc 0.943 lead; three final packs **stable** (identical summary precision); Fail-F1 highest on Aldomi/RF.
+- **Neg retained (required for marks):** MHSA-Fused Acc 0.922 **does not** beat baselines; last-seed CM FN≫TP (MHSA FN=144 vs RF-class patterns); persistence/classical often win on this subset.
+- **vs Aldomi hybrid monitor framing:** hybrid GRU-RF remains competitive; attention fusion is **not** claimed superior here — honest non-improvement vs RQ “does MHSA improve failure detection?”.
+- **Limitations:** disclosed 2011 subset (not full dump); epochs=15; net≠bytes; no AWS (not required). Soft full-dump / 2019 cells beyond-CA2.
 
 ## Evidence-bound results (seeds 42–46) — Google Cluster Trace
 

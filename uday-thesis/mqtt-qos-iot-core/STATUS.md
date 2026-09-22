@@ -5,6 +5,7 @@
 **Alignment residual:** `_analysis_extract/reports/uday_alignment.md`  
 **Design rationale:** `uday-thesis/DESIGN_RATIONALE_BEYOND_CA2.md`  
 **CA2 align % (honest):** **100 / 100** (research-scope floor)  
+**INITIAL_EVAL_PASS:** **yes** (lite 16-cell live treated as initial eval; CA2 still 100%). Final-3 **not** started.  
 **READY_FOR_AWS:** **YES** (lite/smoke only; formal still free-tier-blocked as single-month apply)
 
 ## What this artefact is

@@ -1,0 +1,3 @@
+round=final_1
+protocol=mqtt lite 16-cell device_count=5; destroy-after
+2026-09-22T04:29:17Z

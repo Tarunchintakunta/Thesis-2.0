@@ -2,6 +2,16 @@
 INITIAL_EVAL_PASS=yes
 Final-3: not started as separate post-gate series (campaign is the factorial evidence pack).
 
+### Rubric quality notes (aim 70–100; Eval 25% + Artefact 27%)
+
+From live campaign `results/live/summary.md` (N=1000×3×3 = 24000 deliveries).
+
+- **Artefact:** P1 plain put / P2 conditional / P3 idempotency-key on Lambda+DynamoDB; Streams ground truth; destroy-after; P4 TransactWrite **quarantined** (ASSUMPTIONS A12).
+- **Pos:** E1–E3 **supported** on live campaign; P2/P3 cut duplicates vs P1; sensitivity `p3_between` supports E2 crash-between contrast; stack destroyed.
+- **Neg retained:** P1 remains the duplicate-risk control (expected); moto latency/capacity **must not** be cited as AWS; pilot mult=2 only was directional — full campaign is the answer.
+- **vs retry/idempotency literature:** application-level keys beat plain put under injected retries; conditional put is not free (contention) — disclose in eval.
+- **Limitations:** no separate final-3 series (campaign is the pack); soft LaTeX polish optional.
+
 # Project Status — Artefact and Evaluation
 
 **Student:** Vikas Reddy Amanagantti (X25178849)  

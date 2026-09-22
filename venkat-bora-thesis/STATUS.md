@@ -1,8 +1,9 @@
 ## Alignment note (2026-09-21 — initial_eval_1 gate)
 
-**CA2 research alignment = 100% (floor).** Re-checked after **ONE** live initial evaluation (`results/live/initial_eval_1/`); still **100** → `INITIAL_EVAL_PASS=yes`. Final-3 **not** started.
+**CA2 research alignment = 100% (floor).** Re-checked after **ONE** live initial evaluation (`results/live/initial_eval_1/`); still **100** → `INITIAL_EVAL_PASS=yes`.  
+**Final-3 progress:** `results/live/final_1|2|3/` **DONE** — baseline `results/live/FINAL3_BASELINE.md`.
 
-Matched Free-Tier topology: **1× t3.small** vs **2× t3.micro** (aggregate 2 vCPU), `eu-west-1`, `n=250`. Fleet **destroyed** after (`destroy_confirmed=yes`; 0 running project instances).
+Matched Free-Tier topology: **1× t3.small** vs **2× t3.micro** (aggregate 2 vCPU), `eu-west-1`, `n=250`. Fleet **destroyed** after each round.
 
 | Arm | Mode | Result |
 |-----|------|--------|
@@ -16,13 +17,23 @@ Evidence: `distributed-matrix-scaling/results/live/initial_eval_1/summary.json` 
 ```
 COMPLETE=yes ALIGNMENT=100 CA2_FLOOR=met
 INITIAL_EVAL_PASS=yes
-FINAL3=not_started
+FINAL3=done_3of3
 SOLE_AWS_RESIDUAL=closed
 AWS_CLASS=required
 GATE_READY=yes
 LIVE_INITIAL_EVAL_1=yes
 DESTROY_CONFIRMED=yes
 ```
+
+### Rubric quality notes (aim 70–100; Eval 25% + Artefact 27%)
+
+From `distributed-matrix-scaling/results/live/FINAL3_BASELINE.md`.
+
+- **Artefact:** matched Free-Tier **1× t3.small vs 2× t3.micro** (aggregate 2 vCPU); Dask multi-instance `da.matmul`; destroy-after each round — scale-up vs scale-out under equal vCPU budget.
+- **Pos:** multi-instance matmul **ok** on final_1–3 (elapsed ≈0.248–0.252 s) and initial_eval_1 (0.274 s); destroy confirmed (0 running project instances).
+- **Neg / mixed retained:** single-shot n=250 (not multi-order sweep); round-1 n=500 multi-instance **timed_out** historically — larger n not free; on-node Dask LocalCluster per micro is slower than single-node numpy scale-up (expected orchestration overhead).
+- **vs distributed matrix / Dask literature:** equal-vCPU crossover shows scale-out is **not** automatically faster than scale-up for this dense matmul — orchestration and network dominate small-n.
+- **Limitations:** no Holm across orders; peak RSS not instrumented on EC2; soft multi-order beyond-CA2.
 
 ---
 # Project Status: Venkat Bora - Matrix Scaling Workloads

@@ -1,6 +1,17 @@
 **INITIAL_EVAL_PASS:** **yes** (local labelled-oracle full scan+evaluate; CA2 still 100%)
+**Final-3 progress:** `results/final_1|2|3/` **DONE** — baseline `results/FINAL3_BASELINE.md`.
 INITIAL_EVAL_PASS=yes
 Evidence: `terraform-scanner-benchmark/results/initial_eval_1/`.
+
+### Rubric quality notes (aim 70–100; Eval 25% + Artefact 27%)
+
+From `results/FINAL3_BASELINE.md` + `metrics_per_category.csv`.
+
+- **Artefact:** labelled-oracle N=240 AWS Terraform modules; Checkov/tfsec/OPA vs label checklist; **no terraform apply** (ethics); War hybrid quarantined as PROXY.
+- **Pos:** label-oracle F1 0.876; static union F1 0.718; three local final packs done; Verdet McNemar+Holm documented.
+- **Neg retained:** Checkov/tfsec alone miss many labelled defects (Checkov recall 0.562); OPA precision 1.0 but recall 0.604 — high precision ≠ complete coverage.
+- **vs Rahman/GLITCH-style labelled benchmarks:** this thesis uses published labels as oracle under pinned scanner versions — transfer to larger public repos remains soft optional.
+- **Limitations:** local-only; no live AWS apply; soft Verdet/public-repo transfer beyond-CA2.
 
 # Project Status: vishvaksen-thesis
 

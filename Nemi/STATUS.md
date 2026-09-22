@@ -10,11 +10,28 @@
 
 **Research alignment:** **100%** vs CA2 floor — centralised comparator + real UNSW training-partition sample locked locally; **live cloud FL lite** executed on Free-Tier EC2+S3+CloudWatch and **destroyed**. Soft items (full 2.5M-flow, 50-round campaigns, Docker/K8s, improved-arm plateau) are **beyond-CA2** (`securefl-ids/DESIGN_RATIONALE_BEYOND_CA2.md`) — not blockers. **AWS residual: closed.**
 
+**INITIAL_EVAL_PASS:** **yes** (live cloud FL lite treated as initial eval; CA2 still 100%). Final-3 **DONE** (`results/live/final_1|2|3/`; baseline `FINAL3_BASELINE.md`).
+
 ```
 COMPLETE=yes ALIGNMENT=100 CA2_FLOOR=met SOLE_AWS_RESIDUAL=closed BEYOND_CA2=optional
+INITIAL_EVAL_PASS=yes
+FINAL3=done_3of3
+LIVE_INITIAL_EVAL_1=yes
 ```
 
-Authoritative live lite: `securefl-ids/results/live/cloud_lite_summary.json`.
+Authoritative live lite: `securefl-ids/results/live/cloud_lite_summary.json`.  
+Initial-eval gate: `securefl-ids/results/live/initial_eval_1/`.  
+Final-3: `securefl-ids/results/live/final_{1,2,3}/`.
+
+### Rubric quality notes (aim 70–100; Eval 25% + Artefact 27%)
+
+From `securefl-ids/results/live/FINAL3_BASELINE.md` + centralised comparator.
+
+- **Artefact:** SecureFL-IDS FL vs **centralised** IDS; live Free-Tier EC2+S3+CW FL lite; destroy-after; real UNSW training-partition sample locked locally.
+- **Pos:** three destroy-after live finals completed; centralised comparator present; privacy-preserving FL method executed on cloud lite path.
+- **Neg / mixed retained:** lite rounds are method-scale (not 50-round / 2.5M-flow confirmatory); improved-arm plateau and Docker/K8s remain soft beyond-CA2 — do not over-claim production FL performance.
+- **vs Saklani et al. (2026) baseline framing:** this thesis adds live cloud FL lite + centralised comparator under Free-Tier constraints — not a full reproduction of large-scale FL campaigns.
+- **Limitations:** Free-Tier depth; soft residuals listed in `DESIGN_RATIONALE_BEYOND_CA2.md`.
 
 ---
 

@@ -1,0 +1,424 @@
+{
+  "live_apply": true,
+  "aws_deployed": true,
+  "cluster": "k3s-single-node",
+  "instance_role": "k3s-single",
+  "project_tag": "paks-k8s-live",
+  "n_steps": 16,
+  "max_replicas_live": 3,
+  "lookback": 4,
+  "elapsed_wall_s": 19.781145095825195,
+  "workload_head": [
+    144.28055566666666,
+    263.115079,
+    259.366799,
+    283.64193133333333,
+    264.1701776666667
+  ],
+  "hpa_metrics": {
+    "policy": "reactive-hpa",
+    "n_steps": 16,
+    "mae": 27.292965151506383,
+    "rmse": 36.684924230362384,
+    "cpu_util_mean": 7.7963756618055555,
+    "mem_util_mean": null,
+    "response_time_ms_mean": 4999.999999999995,
+    "throughput_mean": 30.0,
+    "throughput_sum": 480.0,
+    "scaling_latency_s_mean": 0.33412420511764734,
+    "cost_usd": 0.0026666666666666666,
+    "sla_violations": 16,
+    "sla_compliance": 0.0,
+    "availability_sim": 0.0,
+    "scaling_events": 0,
+    "mean_replicas": 3.0,
+    "bin_seconds": 5.0,
+    "usd_per_pod_hour_assumed": 0.04,
+    "evidence_prediction": "n/a",
+    "evidence_loop": "LIVE",
+    "evidence_cost": "SIMULATED",
+    "evidence_latency": "LIVE",
+    "evidence_response_throughput": "SIMULATED",
+    "live_k8s": true,
+    "live_cloudwatch": true,
+    "scaling_latency_s_p50": 0.14048025900000027,
+    "scaling_latency_s_max": 3.2715568389999987
+  },
+  "paks_metrics": {
+    "policy": "paks-adaptive",
+    "n_steps": 16,
+    "mae": 27.292965151506383,
+    "rmse": 36.684924230362384,
+    "cpu_util_mean": 7.7963756618055555,
+    "mem_util_mean": null,
+    "response_time_ms_mean": 4999.999999999995,
+    "throughput_mean": 30.0,
+    "throughput_sum": 480.0,
+    "scaling_latency_s_mean": 0.27898476694117513,
+    "cost_usd": 0.0026666666666666666,
+    "sla_violations": 16,
+    "sla_compliance": 0.0,
+    "availability_sim": 0.0,
+    "scaling_events": 0,
+    "mean_replicas": 3.0,
+    "bin_seconds": 5.0,
+    "usd_per_pod_hour_assumed": 0.04,
+    "evidence_prediction": "TRACE",
+    "evidence_loop": "LIVE",
+    "evidence_cost": "SIMULATED",
+    "evidence_latency": "LIVE",
+    "evidence_response_throughput": "SIMULATED",
+    "live_k8s": true,
+    "live_cloudwatch": true,
+    "scaling_latency_s_p50": 0.14182219400001372,
+    "scaling_latency_s_max": 2.442009853000002
+  },
+  "hpa_latency": {
+    "n": 17,
+    "mean_s": 0.33412420511764734,
+    "p50_s": 0.14048025900000027,
+    "max_s": 3.2715568389999987,
+    "evidence": "LIVE"
+  },
+  "paks_latency": {
+    "n": 17,
+    "mean_s": 0.27898476694117513,
+    "p50_s": 0.14182219400001372,
+    "max_s": 2.442009853000002,
+    "evidence": "LIVE"
+  },
+  "hpa_ops": 17,
+  "paks_ops": 17,
+  "sample_hpa": [
+    {
+      "method": "PATCH",
+      "path": "/apis/apps/v1/namespaces/default/deployments/paks-demo/scale",
+      "body": {
+        "apiVersion": "autoscaling/v1",
+        "kind": "Scale",
+        "metadata": {
+          "name": "paks-demo",
+          "namespace": "default"
+        },
+        "spec": {
+          "replicas": 1
+        }
+      },
+      "dry_run": false,
+      "source": "reset",
+      "step": -1,
+      "predicted_load": null,
+      "observed_load": null,
+      "extra": {
+        "apply_latency_s": 0.3067117900000085,
+        "ready_ok": true,
+        "evidence": "LIVE"
+      }
+    },
+    {
+      "method": "PATCH",
+      "path": "/apis/apps/v1/namespaces/default/deployments/paks-demo/scale",
+      "body": {
+        "apiVersion": "autoscaling/v1",
+        "kind": "Scale",
+        "metadata": {
+          "name": "paks-demo",
+          "namespace": "default"
+        },
+        "spec": {
+          "replicas": 3
+        },
+        "status": {
+          "replicas": 3,
+          "selector": "app=paks-demo"
+        }
+      },
+      "dry_run": false,
+      "source": "hpa",
+      "step": 0,
+      "predicted_load": null,
+      "observed_load": 144.28055566666666,
+      "extra": {
+        "hpa_spec": {
+          "apiVersion": "autoscaling/v2",
+          "kind": "HorizontalPodAutoscaler",
+          "metadata": {
+            "name": "paks-demo-hpa",
+            "namespace": "default"
+          },
+          "spec": {
+            "scaleTargetRef": {
+              "apiVersion": "apps/v1",
+              "kind": "Deployment",
+              "name": "paks-demo"
+            },
+            "minReplicas": 1,
+            "maxReplicas": 100,
+            "metrics": [
+              {
+                "type": "Resource",
+                "resource": {
+                  "name": "cpu",
+                  "target": {
+                    "type": "Utilization",
+                    "averageUtilization": 70
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "hpa_status": {
+          "currentReplicas": 3,
+          "desiredReplicas": 3,
+          "currentMetrics": [
+            {
+              "type": "Resource",
+              "resource": {
+                "name": "cpu",
+                "current": {
+                  "averageUtilization": 481
+                }
+              }
+            }
+          ]
+        },
+        "apply_latency_s": 3.2715568389999987,
+        "ready_ok": true,
+        "evidence": "LIVE"
+      }
+    },
+    {
+      "method": "PATCH",
+      "path": "/apis/apps/v1/namespaces/default/deployments/paks-demo/scale",
+      "body": {
+        "apiVersion": "autoscaling/v1",
+        "kind": "Scale",
+        "metadata": {
+          "name": "paks-demo",
+          "namespace": "default"
+        },
+        "spec": {
+          "replicas": 3
+        },
+        "status": {
+          "replicas": 3,
+          "selector": "app=paks-demo"
+        }
+      },
+      "dry_run": false,
+      "source": "hpa",
+      "step": 1,
+      "predicted_load": null,
+      "observed_load": 263.115079,
+      "extra": {
+        "hpa_spec": {
+          "apiVersion": "autoscaling/v2",
+          "kind": "HorizontalPodAutoscaler",
+          "metadata": {
+            "name": "paks-demo-hpa",
+            "namespace": "default"
+          },
+          "spec": {
+            "scaleTargetRef": {
+              "apiVersion": "apps/v1",
+              "kind": "Deployment",
+              "name": "paks-demo"
+            },
+            "minReplicas": 1,
+            "maxReplicas": 100,
+            "metrics": [
+              {
+                "type": "Resource",
+                "resource": {
+                  "name": "cpu",
+                  "target": {
+                    "type": "Utilization",
+                    "averageUtilization": 70
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "hpa_status": {
+          "currentReplicas": 3,
+          "desiredReplicas": 3,
+          "currentMetrics": [
+            {
+              "type": "Resource",
+              "resource": {
+                "name": "cpu",
+                "current": {
+                  "averageUtilization": 877
+                }
+              }
+            }
+          ]
+        },
+        "apply_latency_s": 0.1462480940000006,
+        "ready_ok": true,
+        "evidence": "LIVE"
+      }
+    }
+  ],
+  "sample_paks": [
+    {
+      "method": "PATCH",
+      "path": "/apis/apps/v1/namespaces/default/deployments/paks-demo/scale",
+      "body": {
+        "apiVersion": "autoscaling/v1",
+        "kind": "Scale",
+        "metadata": {
+          "name": "paks-demo",
+          "namespace": "default"
+        },
+        "spec": {
+          "replicas": 1
+        }
+      },
+      "dry_run": false,
+      "source": "reset",
+      "step": -1,
+      "predicted_load": null,
+      "observed_load": null,
+      "extra": {
+        "apply_latency_s": 0.18236699099999498,
+        "ready_ok": true,
+        "evidence": "LIVE"
+      }
+    },
+    {
+      "method": "PATCH",
+      "path": "/apis/apps/v1/namespaces/default/deployments/paks-demo/scale",
+      "body": {
+        "apiVersion": "autoscaling/v1",
+        "kind": "Scale",
+        "metadata": {
+          "name": "paks-demo",
+          "namespace": "default"
+        },
+        "spec": {
+          "replicas": 3
+        },
+        "status": {
+          "replicas": 3,
+          "selector": "app=paks-demo"
+        }
+      },
+      "dry_run": false,
+      "source": "paks",
+      "step": 0,
+      "predicted_load": 144.28055566666666,
+      "observed_load": 144.28055566666666,
+      "extra": {
+        "pred_source": "warmup-observed",
+        "cpu_utilization_pct": 481,
+        "apply_latency_s": 2.442009853000002,
+        "ready_ok": true,
+        "evidence": "LIVE"
+      }
+    },
+    {
+      "method": "PATCH",
+      "path": "/apis/apps/v1/namespaces/default/deployments/paks-demo/scale",
+      "body": {
+        "apiVersion": "autoscaling/v1",
+        "kind": "Scale",
+        "metadata": {
+          "name": "paks-demo",
+          "namespace": "default"
+        },
+        "spec": {
+          "replicas": 3
+        },
+        "status": {
+          "replicas": 3,
+          "selector": "app=paks-demo"
+        }
+      },
+      "dry_run": false,
+      "source": "paks",
+      "step": 1,
+      "predicted_load": 263.115079,
+      "observed_load": 263.115079,
+      "extra": {
+        "pred_source": "warmup-observed",
+        "cpu_utilization_pct": 877,
+        "apply_latency_s": 0.15109774500000128,
+        "ready_ok": true,
+        "evidence": "LIVE"
+      }
+    }
+  ],
+  "hpa_snapshot_tail": [
+    {
+      "step": 14,
+      "policy": "reactive-hpa",
+      "observed_load": 179.13280400000002,
+      "current_replicas": 3,
+      "desired_replicas": 3,
+      "cpu_utilization_pct": 597,
+      "k8s_path": "/apis/apps/v1/namespaces/default/deployments/paks-demo/scale",
+      "apply_latency_s": 0.13729906599999708,
+      "evidence": "LIVE"
+    },
+    {
+      "step": 15,
+      "policy": "reactive-hpa",
+      "observed_load": 315.9694446666667,
+      "current_replicas": 3,
+      "desired_replicas": 3,
+      "cpu_utilization_pct": 1053,
+      "k8s_path": "/apis/apps/v1/namespaces/default/deployments/paks-demo/scale",
+      "apply_latency_s": 0.13596822700000644,
+      "evidence": "LIVE"
+    }
+  ],
+  "paks_snapshot_tail": [
+    {
+      "step": 14,
+      "policy": "paks-adaptive",
+      "observed_load": 179.13280400000002,
+      "predicted_load": 234.76628923841386,
+      "current_replicas": 3,
+      "desired_replicas": 3,
+      "cpu_utilization_pct": 597,
+      "k8s_path": "/apis/apps/v1/namespaces/default/deployments/paks-demo/scale",
+      "pred_source": "lstm",
+      "apply_latency_s": 0.13321861000000013,
+      "evidence": "LIVE"
+    },
+    {
+      "step": 15,
+      "policy": "paks-adaptive",
+      "observed_load": 315.9694446666667,
+      "predicted_load": 234.06361355325677,
+      "current_replicas": 3,
+      "desired_replicas": 3,
+      "cpu_utilization_pct": 1053,
+      "k8s_path": "/apis/apps/v1/namespaces/default/deployments/paks-demo/scale",
+      "pred_source": "lstm",
+      "apply_latency_s": 0.1350866440000118,
+      "evidence": "LIVE"
+    }
+  ],
+  "evidence": {
+    "k8s_scale": "LIVE",
+    "lstm_series": "TRACE-or-synthetic-fallback",
+    "cost": "SIMULATED",
+    "cloudwatch": "LIVE"
+  },
+  "aws": {
+    "region": "eu-west-1",
+    "instance_id": "i-0680a2dae9d9302ac",
+    "s3_bucket": "paks-k8s-live-922384915031-faf37161",
+    "s3_results_key": "results/formal_k8s_live_aws.json",
+    "cloudwatch_namespace": "PAKS/LiveK8s",
+    "cloudwatch_log_group": "/paks-k8s-live/paks-k8s-live",
+    "project_tag": "paks-k8s-live",
+    "live_cloudwatch": true
+  },
+  "round": "final_1",
+  "seed": 41
+}

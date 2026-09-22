@@ -4,6 +4,7 @@
 **Formal CA2:** MQTT QoS 0 vs 1 loss under controlled disconnect on AWS IoT Core  
 **Formal artefact:** `uday-thesis/mqtt-qos-iot-core/`  
 **CA2 align %:** **100 / 100** (research-scope floor; see `DESIGN_RATIONALE_BEYOND_CA2.md`)  
+**INITIAL_EVAL_PASS:** **yes** (lite 16-cell live; CA2 still 100%). Final-3 **not** started.  
 **READY_FOR_AWS:** **YES** (lite/smoke only; formal single-month blocked)
 
 ## Pointers

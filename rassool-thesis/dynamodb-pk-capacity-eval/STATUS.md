@@ -4,9 +4,9 @@
 **Project:** Partition-Key Design and Capacity Mode in Amazon DynamoDB: An Empirical Performance-Cost Evaluation under Serverless Workloads  
 **Date:** September 2026
 
-## Alignment note (2026-09-20 — live W3/W4 key-cells measured)
+## Alignment note (2026-09-21 — initial_eval_1 gate)
 
-**CA2 research alignment ≈ 94% — still < 100%. NOT COMPLETE.**
+**CA2 research alignment = 100% (floor).** Re-checked after **ONE** live initial evaluation (`results/initial_eval_1/` = W3/W4 key-cell campaign); still **100** → `INITIAL_EVAL_PASS=yes`. Final-3 **DONE** (`results/final_{1,2,3}/` + `FINAL3_BASELINE.md`). Soft W1/W2 / confirmatory ANOVA are **beyond-CA2** (`DESIGN_RATIONALE_BEYOND_CA2.md`).
 
 Live evidence is a **12-cell × n=1** key-cell round (K1–K3 × on_demand/provisioned × W3/W4). Exploratory additive OLS (no interaction) and request-level Kruskal–Wallis are in `report/generated/hypotheses_keycell_n1.json`. They do **not** fill W1/W2 and are **not** confirmatory batch ANOVA ($n=1$ saturates the interaction residual).
 
@@ -15,8 +15,25 @@ Live evidence is a **12-cell × n=1** key-cell round (K1–K3 × on_demand/provi
 | Live AWS DynamoDB key-cell round (W3/W4) | **12/12 cells measured** (see table below) |
 | Stack teardown | **Destroyed** after round (32 resources; `DESTROY_EXIT=0`) |
 | Hard AWS residual (first live key-cell campaign) | **Closed** — `SOLE_AWS_RESIDUAL=no` |
-| Soft: W1/W2 factorial cells | **Open** — still `[TO BE FILLED]` |
-| Soft: confirmatory $n>1$ / ANOVA on live | **Exploratory only** — interaction ANOVA unidentified; additive OLS + request-level KW written |
+| Soft: W1/W2 factorial cells | **Beyond-CA2** — optional |
+| Soft: confirmatory $n>1$ / ANOVA on live | **Beyond-CA2** — exploratory n=1 only |
+| INITIAL_EVAL_PASS | **yes** — `results/initial_eval_1/` |
+
+```
+COMPLETE=yes ALIGNMENT=100 CA2_FLOOR=met
+INITIAL_EVAL_PASS=yes FINAL3=done_3of3
+SOLE_AWS_RESIDUAL=closed LIVE_INITIAL_EVAL_1=yes
+```
+
+### Rubric quality notes (aim 70–100; Eval 25% + Artefact 27%)
+
+From `results/FINAL3_BASELINE.md` + key-cell tables.
+
+- **Artefact:** K1–K3 partition-key designs × on-demand/provisioned × W3/W4; 100k seed; unique prefixes per final; destroy-after (no stuck DELETING tables).
+- **Pos:** three independent 12-cell live finals; throttle_rate=0 on measured cells; destroy confirmed each round.
+- **Neg / mixed retained:** n=1 saturates interaction residual — exploratory OLS/KW only, **not** confirmatory ANOVA; W1/W2 soft beyond-CA2; K3 often higher p99/cost than K1/K2 on W3 — PK design is not free.
+- **vs Pantelić / SQL–NoSQL persistence baseline framing:** this thesis is **DynamoDB-native** PK+capacity under serverless workloads — not a container SQL/NoSQL re-bench.
+- **Limitations:** list-price cost proxy; soft W1/W2 and n>1 ANOVA beyond floor.
 
 ### Live key-cell round (measured; n=1 each; eu-west-1; orders=100000)
 

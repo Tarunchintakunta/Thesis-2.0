@@ -1,0 +1,14 @@
+{
+  "requests": 300,
+  "log_bytes": 338709.0,
+  "traces_recorded": 0,
+  "trace_bytes": 0.0,
+  "bytes_per_1000_requests": 1129030.0,
+  "latency_median_ms": 874.25,
+  "latency_p95_ms": 1007.9845,
+  "error_share": 0.02,
+  "policy": {
+    "mode": "PassThrough",
+    "log_level": "ERROR"
+  }
+}

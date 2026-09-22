@@ -4,32 +4,32 @@
   "cluster": "k3s-single-node",
   "instance_role": "k3s-single",
   "project_tag": "paks-k8s-live",
-  "n_steps": 12,
+  "n_steps": 16,
   "max_replicas_live": 3,
-  "lookback": 3,
-  "elapsed_wall_s": 16.109143495559692,
+  "lookback": 4,
+  "elapsed_wall_s": 21.605704069137573,
   "workload_head": [
-    30.914151239263294,
-    35.976367634823696,
-    39.808849330961955,
-    30.004368580759348,
-    94.24868001522917
+    144.28055566666666,
+    263.115079,
+    259.366799,
+    283.64193133333333,
+    264.1701776666667
   ],
   "hpa_metrics": {
     "policy": "reactive-hpa",
-    "n_steps": 12,
-    "mae": 45.689159628786605,
-    "rmse": 49.56351403261835,
-    "cpu_util_mean": 2.3191789735519426,
+    "n_steps": 16,
+    "mae": 28.557551942445134,
+    "rmse": 36.92969411747777,
+    "cpu_util_mean": 7.7963756618055555,
     "mem_util_mean": null,
-    "response_time_ms_mean": 4602.688793328926,
-    "throughput_mean": 29.461822830920273,
-    "throughput_sum": 353.5418739710433,
-    "scaling_latency_s_mean": 0.34884293492307106,
-    "cost_usd": 0.002,
-    "sla_violations": 11,
-    "sla_compliance": 0.08333333333333337,
-    "availability_sim": 0.08333333333333337,
+    "response_time_ms_mean": 4999.999999999995,
+    "throughput_mean": 30.0,
+    "throughput_sum": 480.0,
+    "scaling_latency_s_mean": 0.3951232069411771,
+    "cost_usd": 0.0026666666666666666,
+    "sla_violations": 16,
+    "sla_compliance": 0.0,
+    "availability_sim": 0.0,
     "scaling_events": 0,
     "mean_replicas": 3.0,
     "bin_seconds": 5.0,
@@ -41,24 +41,24 @@
     "evidence_response_throughput": "SIMULATED",
     "live_k8s": true,
     "live_cloudwatch": true,
-    "scaling_latency_s_p50": 0.14376839600004132,
-    "scaling_latency_s_max": 2.6977383339999506
+    "scaling_latency_s_p50": 0.14307974300000126,
+    "scaling_latency_s_max": 4.149671212000001
   },
   "paks_metrics": {
     "policy": "paks-adaptive",
-    "n_steps": 12,
-    "mae": 45.689159628786605,
-    "rmse": 49.56351403261835,
-    "cpu_util_mean": 2.3191789735519426,
+    "n_steps": 16,
+    "mae": 28.557551942445134,
+    "rmse": 36.92969411747777,
+    "cpu_util_mean": 7.7963756618055555,
     "mem_util_mean": null,
-    "response_time_ms_mean": 4602.688793328926,
-    "throughput_mean": 29.461822830920273,
-    "throughput_sum": 353.5418739710433,
-    "scaling_latency_s_mean": 0.33522758099995653,
-    "cost_usd": 0.002,
-    "sla_violations": 11,
-    "sla_compliance": 0.08333333333333337,
-    "availability_sim": 0.08333333333333337,
+    "response_time_ms_mean": 4999.999999999995,
+    "throughput_mean": 30.0,
+    "throughput_sum": 480.0,
+    "scaling_latency_s_mean": 0.3118737784117689,
+    "cost_usd": 0.0026666666666666666,
+    "sla_violations": 16,
+    "sla_compliance": 0.0,
+    "availability_sim": 0.0,
     "scaling_events": 0,
     "mean_replicas": 3.0,
     "bin_seconds": 5.0,
@@ -70,25 +70,25 @@
     "evidence_response_throughput": "SIMULATED",
     "live_k8s": true,
     "live_cloudwatch": true,
-    "scaling_latency_s_p50": 0.14257736600006865,
-    "scaling_latency_s_max": 2.599755881999954
+    "scaling_latency_s_p50": 0.14512300199999117,
+    "scaling_latency_s_max": 2.2436318920000105
   },
   "hpa_latency": {
-    "n": 13,
-    "mean_s": 0.34884293492307106,
-    "p50_s": 0.14376839600004132,
-    "max_s": 2.6977383339999506,
+    "n": 17,
+    "mean_s": 0.3951232069411771,
+    "p50_s": 0.14307974300000126,
+    "max_s": 4.149671212000001,
     "evidence": "LIVE"
   },
   "paks_latency": {
-    "n": 13,
-    "mean_s": 0.33522758099995653,
-    "p50_s": 0.14257736600006865,
-    "max_s": 2.599755881999954,
+    "n": 17,
+    "mean_s": 0.3118737784117689,
+    "p50_s": 0.14512300199999117,
+    "max_s": 2.2436318920000105,
     "evidence": "LIVE"
   },
-  "hpa_ops": 13,
-  "paks_ops": 13,
+  "hpa_ops": 17,
+  "paks_ops": 17,
   "sample_hpa": [
     {
       "method": "PATCH",
@@ -110,7 +110,7 @@
       "predicted_load": null,
       "observed_load": null,
       "extra": {
-        "apply_latency_s": 0.2624549769998339,
+        "apply_latency_s": 0.4214599550000031,
         "ready_ok": true,
         "evidence": "LIVE"
       }
@@ -137,7 +137,7 @@
       "source": "hpa",
       "step": 0,
       "predicted_load": null,
-      "observed_load": 30.914151239263294,
+      "observed_load": 144.28055566666666,
       "extra": {
         "hpa_spec": {
           "apiVersion": "autoscaling/v2",
@@ -177,13 +177,13 @@
               "resource": {
                 "name": "cpu",
                 "current": {
-                  "averageUtilization": 103
+                  "averageUtilization": 481
                 }
               }
             }
           ]
         },
-        "apply_latency_s": 2.6977383339999506,
+        "apply_latency_s": 4.149671212000001,
         "ready_ok": true,
         "evidence": "LIVE"
       }
@@ -210,7 +210,7 @@
       "source": "hpa",
       "step": 1,
       "predicted_load": null,
-      "observed_load": 35.976367634823696,
+      "observed_load": 263.115079,
       "extra": {
         "hpa_spec": {
           "apiVersion": "autoscaling/v2",
@@ -250,13 +250,13 @@
               "resource": {
                 "name": "cpu",
                 "current": {
-                  "averageUtilization": 120
+                  "averageUtilization": 877
                 }
               }
             }
           ]
         },
-        "apply_latency_s": 0.15942192700003943,
+        "apply_latency_s": 0.1552840319999973,
         "ready_ok": true,
         "evidence": "LIVE"
       }
@@ -283,7 +283,7 @@
       "predicted_load": null,
       "observed_load": null,
       "extra": {
-        "apply_latency_s": 0.20209399099985603,
+        "apply_latency_s": 0.885893799999991,
         "ready_ok": true,
         "evidence": "LIVE"
       }
@@ -309,12 +309,12 @@
       "dry_run": false,
       "source": "paks",
       "step": 0,
-      "predicted_load": 30.914151239263294,
-      "observed_load": 30.914151239263294,
+      "predicted_load": 144.28055566666666,
+      "observed_load": 144.28055566666666,
       "extra": {
         "pred_source": "warmup-observed",
-        "cpu_utilization_pct": 103,
-        "apply_latency_s": 2.599755881999954,
+        "cpu_utilization_pct": 481,
+        "apply_latency_s": 2.2436318920000105,
         "ready_ok": true,
         "evidence": "LIVE"
       }
@@ -340,12 +340,12 @@
       "dry_run": false,
       "source": "paks",
       "step": 1,
-      "predicted_load": 35.976367634823696,
-      "observed_load": 35.976367634823696,
+      "predicted_load": 263.115079,
+      "observed_load": 263.115079,
       "extra": {
         "pred_source": "warmup-observed",
-        "cpu_utilization_pct": 120,
-        "apply_latency_s": 0.15956425499985016,
+        "cpu_utilization_pct": 877,
+        "apply_latency_s": 0.16909665299999688,
         "ready_ok": true,
         "evidence": "LIVE"
       }
@@ -353,53 +353,53 @@
   ],
   "hpa_snapshot_tail": [
     {
-      "step": 10,
+      "step": 14,
       "policy": "reactive-hpa",
-      "observed_load": 23.5418739710433,
+      "observed_load": 179.13280400000002,
       "current_replicas": 3,
       "desired_replicas": 3,
-      "cpu_utilization_pct": 78,
+      "cpu_utilization_pct": 597,
       "k8s_path": "/apis/apps/v1/namespaces/default/deployments/paks-demo/scale",
-      "apply_latency_s": 0.1392814969999563,
+      "apply_latency_s": 0.14391416700000548,
       "evidence": "LIVE"
     },
     {
-      "step": 11,
+      "step": 15,
       "policy": "reactive-hpa",
-      "observed_load": 32.33337580628684,
+      "observed_load": 315.9694446666667,
       "current_replicas": 3,
       "desired_replicas": 3,
-      "cpu_utilization_pct": 108,
+      "cpu_utilization_pct": 1053,
       "k8s_path": "/apis/apps/v1/namespaces/default/deployments/paks-demo/scale",
-      "apply_latency_s": 0.13953763700010313,
+      "apply_latency_s": 0.155514814,
       "evidence": "LIVE"
     }
   ],
   "paks_snapshot_tail": [
     {
-      "step": 10,
+      "step": 14,
       "policy": "paks-adaptive",
-      "observed_load": 23.5418739710433,
-      "predicted_load": 69.79355246779282,
+      "observed_load": 179.13280400000002,
+      "predicted_load": 240.26894985708128,
       "current_replicas": 3,
       "desired_replicas": 3,
-      "cpu_utilization_pct": 78,
+      "cpu_utilization_pct": 597,
       "k8s_path": "/apis/apps/v1/namespaces/default/deployments/paks-demo/scale",
       "pred_source": "lstm",
-      "apply_latency_s": 0.13321526200002154,
+      "apply_latency_s": 0.13584749400001783,
       "evidence": "LIVE"
     },
     {
-      "step": 11,
+      "step": 15,
       "policy": "paks-adaptive",
-      "observed_load": 32.33337580628684,
-      "predicted_load": 68.5810853465114,
+      "observed_load": 315.9694446666667,
+      "predicted_load": 241.33352411072698,
       "current_replicas": 3,
       "desired_replicas": 3,
-      "cpu_utilization_pct": 108,
+      "cpu_utilization_pct": 1053,
       "k8s_path": "/apis/apps/v1/namespaces/default/deployments/paks-demo/scale",
       "pred_source": "lstm",
-      "apply_latency_s": 0.1289173899999696,
+      "apply_latency_s": 0.1403981139999928,
       "evidence": "LIVE"
     }
   ],
@@ -411,8 +411,8 @@
   },
   "aws": {
     "region": "eu-west-1",
-    "instance_id": "i-09ff2992cab1414bf",
-    "s3_bucket": "paks-k8s-live-922384915031-33dda57b",
+    "instance_id": "i-0d0d89b73838fc857",
+    "s3_bucket": "paks-k8s-live-922384915031-22f447ff",
     "s3_results_key": "results/formal_k8s_live_aws.json",
     "cloudwatch_namespace": "PAKS/LiveK8s",
     "cloudwatch_log_group": "/paks-k8s-live/paks-k8s-live",

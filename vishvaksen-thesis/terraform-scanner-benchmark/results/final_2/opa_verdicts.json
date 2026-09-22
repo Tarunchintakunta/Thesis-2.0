@@ -1,0 +1,3566 @@
+{
+  "tool": "opa",
+  "version": "1.4.2",
+  "policy_scope": "category_package",
+  "n_modules": 240,
+  "parse_errors": 0,
+  "batch_seconds": 2.773609695810592,
+  "verdicts": [
+    {
+      "module_id": "ps-001-ps-s3-acl-s01",
+      "category": "public_storage",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.012801666976884007,
+      "denies": []
+    },
+    {
+      "module_id": "ps-002-ps-s3-acl-s02",
+      "category": "public_storage",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.011856625002110377,
+      "denies": []
+    },
+    {
+      "module_id": "ps-003-ps-s3-acl-i01",
+      "category": "public_storage",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.011727291013812646,
+      "denies": [
+        "public_storage: aws_s3_bucket_acl[this] acl=public-read",
+        "public_storage: aws_s3_bucket_public_access_block[this] block_public_acls is false",
+        "public_storage: aws_s3_bucket_public_access_block[this] restrict_public_buckets is false"
+      ]
+    },
+    {
+      "module_id": "ps-004-ps-s3-acl-i02",
+      "category": "public_storage",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.01132937500369735,
+      "denies": [
+        "public_storage: aws_s3_bucket_public_access_block[this] block_public_acls is false",
+        "public_storage: aws_s3_bucket_public_access_block[this] restrict_public_buckets is false"
+      ]
+    },
+    {
+      "module_id": "ps-005-ps-s3-acl-i03",
+      "category": "public_storage",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.011784874979639426,
+      "denies": [
+        "public_storage: aws_s3_bucket_acl[this] acl=public-read-write",
+        "public_storage: aws_s3_bucket_public_access_block[this] block_public_acls is false",
+        "public_storage: aws_s3_bucket_public_access_block[this] restrict_public_buckets is false"
+      ]
+    },
+    {
+      "module_id": "ps-006-ps-s3-pab-s01",
+      "category": "public_storage",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.01207724999403581,
+      "denies": []
+    },
+    {
+      "module_id": "ps-007-ps-s3-pab-s02",
+      "category": "public_storage",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.011355374997947365,
+      "denies": []
+    },
+    {
+      "module_id": "ps-008-ps-s3-pab-i01",
+      "category": "public_storage",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.011404499993659556,
+      "denies": [
+        "public_storage: aws_s3_bucket_public_access_block[this] block_public_acls is false",
+        "public_storage: aws_s3_bucket_public_access_block[this] restrict_public_buckets is false"
+      ]
+    },
+    {
+      "module_id": "ps-009-ps-s3-pab-i02",
+      "category": "public_storage",
+      "label": "insecure",
+      "predicted": 0,
+      "seconds": 0.011630624998360872,
+      "denies": []
+    },
+    {
+      "module_id": "ps-010-ps-s3-pab-i03",
+      "category": "public_storage",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.01154058301472105,
+      "denies": [
+        "public_storage: aws_s3_bucket_public_access_block[this] block_public_acls is false",
+        "public_storage: aws_s3_bucket_public_access_block[this] restrict_public_buckets is false"
+      ]
+    },
+    {
+      "module_id": "ps-011-ps-s3-policy-s01",
+      "category": "public_storage",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.011278333025984466,
+      "denies": []
+    },
+    {
+      "module_id": "ps-012-ps-s3-policy-s02",
+      "category": "public_storage",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.011391916981665418,
+      "denies": []
+    },
+    {
+      "module_id": "ps-013-ps-s3-policy-i01",
+      "category": "public_storage",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.011553792021004483,
+      "denies": [
+        "public_storage: aws_s3_bucket_public_access_block[this] block_public_acls is false",
+        "public_storage: aws_s3_bucket_public_access_block[this] restrict_public_buckets is false"
+      ]
+    },
+    {
+      "module_id": "ps-014-ps-s3-policy-i02",
+      "category": "public_storage",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.011745416006306186,
+      "denies": [
+        "public_storage: aws_s3_bucket_public_access_block[this] block_public_acls is false",
+        "public_storage: aws_s3_bucket_public_access_block[this] restrict_public_buckets is false"
+      ]
+    },
+    {
+      "module_id": "ps-015-ps-s3-policy-i03",
+      "category": "public_storage",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.011150082980748266,
+      "denies": [
+        "public_storage: aws_s3_bucket_public_access_block[this] block_public_acls is false",
+        "public_storage: aws_s3_bucket_public_access_block[this] restrict_public_buckets is false"
+      ]
+    },
+    {
+      "module_id": "ps-016-ps-rds-public-s01",
+      "category": "public_storage",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.011506290989927948,
+      "denies": []
+    },
+    {
+      "module_id": "ps-017-ps-rds-public-s02",
+      "category": "public_storage",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.011365082988049835,
+      "denies": []
+    },
+    {
+      "module_id": "ps-018-ps-rds-public-i01",
+      "category": "public_storage",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.01144937498611398,
+      "denies": [
+        "public_storage: aws_db_instance[this] publicly_accessible"
+      ]
+    },
+    {
+      "module_id": "ps-019-ps-rds-public-i02",
+      "category": "public_storage",
+      "label": "insecure",
+      "predicted": 0,
+      "seconds": 0.011850792012410238,
+      "denies": []
+    },
+    {
+      "module_id": "ps-020-ps-rds-public-i03",
+      "category": "public_storage",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.011735624982975423,
+      "denies": [
+        "public_storage: aws_db_instance[this] publicly_accessible"
+      ]
+    },
+    {
+      "module_id": "ps-021-ps-redshift-public-s01",
+      "category": "public_storage",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.011372790992027149,
+      "denies": []
+    },
+    {
+      "module_id": "ps-022-ps-redshift-public-s02",
+      "category": "public_storage",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.011485082999570295,
+      "denies": []
+    },
+    {
+      "module_id": "ps-023-ps-redshift-public-i01",
+      "category": "public_storage",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.011553791002370417,
+      "denies": [
+        "public_storage: aws_redshift_cluster[this] publicly_accessible"
+      ]
+    },
+    {
+      "module_id": "ps-024-ps-redshift-public-i02",
+      "category": "public_storage",
+      "label": "insecure",
+      "predicted": 0,
+      "seconds": 0.011251541989622638,
+      "denies": []
+    },
+    {
+      "module_id": "ps-025-ps-redshift-public-i03",
+      "category": "public_storage",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.011473416991066188,
+      "denies": [
+        "public_storage: aws_redshift_cluster[this] publicly_accessible"
+      ]
+    },
+    {
+      "module_id": "ps-026-ps-sqs-policy-s01",
+      "category": "public_storage",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.011468625016277656,
+      "denies": []
+    },
+    {
+      "module_id": "ps-027-ps-sqs-policy-s02",
+      "category": "public_storage",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.011333750007906929,
+      "denies": []
+    },
+    {
+      "module_id": "ps-028-ps-sqs-policy-i01",
+      "category": "public_storage",
+      "label": "insecure",
+      "predicted": 0,
+      "seconds": 0.011512791010318324,
+      "denies": []
+    },
+    {
+      "module_id": "ps-029-ps-sqs-policy-i02",
+      "category": "public_storage",
+      "label": "insecure",
+      "predicted": 0,
+      "seconds": 0.011838041013106704,
+      "denies": []
+    },
+    {
+      "module_id": "ps-030-ps-sqs-policy-i03",
+      "category": "public_storage",
+      "label": "insecure",
+      "predicted": 0,
+      "seconds": 0.011404333024984226,
+      "denies": []
+    },
+    {
+      "module_id": "ps-031-ps-sns-policy-s01",
+      "category": "public_storage",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.012018874986097217,
+      "denies": []
+    },
+    {
+      "module_id": "ps-032-ps-sns-policy-s02",
+      "category": "public_storage",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.011503957997774705,
+      "denies": []
+    },
+    {
+      "module_id": "ps-033-ps-sns-policy-i01",
+      "category": "public_storage",
+      "label": "insecure",
+      "predicted": 0,
+      "seconds": 0.011972040985710919,
+      "denies": []
+    },
+    {
+      "module_id": "ps-034-ps-sns-policy-i02",
+      "category": "public_storage",
+      "label": "insecure",
+      "predicted": 0,
+      "seconds": 0.01148245797958225,
+      "denies": []
+    },
+    {
+      "module_id": "ps-035-ps-sns-policy-i03",
+      "category": "public_storage",
+      "label": "insecure",
+      "predicted": 0,
+      "seconds": 0.011636167007964104,
+      "denies": []
+    },
+    {
+      "module_id": "ps-036-ps-ecr-policy-s01",
+      "category": "public_storage",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.011552624986506999,
+      "denies": []
+    },
+    {
+      "module_id": "ps-037-ps-ecr-policy-s02",
+      "category": "public_storage",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.011491874989587814,
+      "denies": []
+    },
+    {
+      "module_id": "ps-038-ps-ecr-policy-i01",
+      "category": "public_storage",
+      "label": "insecure",
+      "predicted": 0,
+      "seconds": 0.011585333006223664,
+      "denies": []
+    },
+    {
+      "module_id": "ps-039-ps-ecr-policy-i02",
+      "category": "public_storage",
+      "label": "insecure",
+      "predicted": 0,
+      "seconds": 0.011314375005895272,
+      "denies": []
+    },
+    {
+      "module_id": "ps-040-ps-ecr-policy-i03",
+      "category": "public_storage",
+      "label": "insecure",
+      "predicted": 0,
+      "seconds": 0.011687416990753263,
+      "denies": []
+    },
+    {
+      "module_id": "ps-041-ps-ami-public-s01",
+      "category": "public_storage",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.011423541989643127,
+      "denies": []
+    },
+    {
+      "module_id": "ps-042-ps-ami-public-s02",
+      "category": "public_storage",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.011591708986088634,
+      "denies": []
+    },
+    {
+      "module_id": "ps-043-ps-ami-public-i01",
+      "category": "public_storage",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.01224625000031665,
+      "denies": [
+        "public_storage: aws_ami_launch_permission[this] group=all"
+      ]
+    },
+    {
+      "module_id": "ps-044-ps-ami-public-i02",
+      "category": "public_storage",
+      "label": "insecure",
+      "predicted": 0,
+      "seconds": 0.012080792017513886,
+      "denies": []
+    },
+    {
+      "module_id": "ps-045-ps-ami-public-i03",
+      "category": "public_storage",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.01148116699187085,
+      "denies": [
+        "public_storage: aws_ami_launch_permission[this] group=all"
+      ]
+    },
+    {
+      "module_id": "ps-046-ps-ec2-public-ip-s01",
+      "category": "public_storage",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.011084124998888,
+      "denies": []
+    },
+    {
+      "module_id": "ps-047-ps-ec2-public-ip-s02",
+      "category": "public_storage",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.011707541008945554,
+      "denies": []
+    },
+    {
+      "module_id": "ps-048-ps-ec2-public-ip-i01",
+      "category": "public_storage",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.011593707982683554,
+      "denies": [
+        "public_storage: aws_instance[this] associate_public_ip_address"
+      ]
+    },
+    {
+      "module_id": "ps-049-ps-ec2-public-ip-i02",
+      "category": "public_storage",
+      "label": "insecure",
+      "predicted": 0,
+      "seconds": 0.011256999976467341,
+      "denies": []
+    },
+    {
+      "module_id": "ps-050-ps-ec2-public-ip-i03",
+      "category": "public_storage",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.011353749985573813,
+      "denies": [
+        "public_storage: aws_instance[this] associate_public_ip_address"
+      ]
+    },
+    {
+      "module_id": "ps-051-ps-opensearch-public-s01",
+      "category": "public_storage",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.011715083994204178,
+      "denies": []
+    },
+    {
+      "module_id": "ps-052-ps-opensearch-public-s02",
+      "category": "public_storage",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.01132358398172073,
+      "denies": []
+    },
+    {
+      "module_id": "ps-053-ps-opensearch-public-i01",
+      "category": "public_storage",
+      "label": "insecure",
+      "predicted": 0,
+      "seconds": 0.011435249994974583,
+      "denies": []
+    },
+    {
+      "module_id": "ps-054-ps-opensearch-public-i02",
+      "category": "public_storage",
+      "label": "insecure",
+      "predicted": 0,
+      "seconds": 0.011457957996753976,
+      "denies": []
+    },
+    {
+      "module_id": "ps-055-ps-opensearch-public-i03",
+      "category": "public_storage",
+      "label": "insecure",
+      "predicted": 0,
+      "seconds": 0.012080750020686537,
+      "denies": []
+    },
+    {
+      "module_id": "ps-056-ps-neptune-public-s01",
+      "category": "public_storage",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.011348375002853572,
+      "denies": []
+    },
+    {
+      "module_id": "ps-057-ps-neptune-public-s02",
+      "category": "public_storage",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.011498707986902446,
+      "denies": []
+    },
+    {
+      "module_id": "ps-058-ps-neptune-public-i01",
+      "category": "public_storage",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.011654958012513816,
+      "denies": [
+        "public_storage: aws_neptune_cluster_instance[this] publicly_accessible"
+      ]
+    },
+    {
+      "module_id": "ps-059-ps-neptune-public-i02",
+      "category": "public_storage",
+      "label": "insecure",
+      "predicted": 0,
+      "seconds": 0.011869417008711025,
+      "denies": []
+    },
+    {
+      "module_id": "ps-060-ps-neptune-public-i03",
+      "category": "public_storage",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.01146824998431839,
+      "denies": [
+        "public_storage: aws_neptune_cluster_instance[this] publicly_accessible"
+      ]
+    },
+    {
+      "module_id": "oa-001-oa-sg-ssh-s01",
+      "category": "overpermissive_access",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.011419582995586097,
+      "denies": []
+    },
+    {
+      "module_id": "oa-002-oa-sg-ssh-s02",
+      "category": "overpermissive_access",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.01161333397612907,
+      "denies": []
+    },
+    {
+      "module_id": "oa-003-oa-sg-ssh-i01",
+      "category": "overpermissive_access",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.011050084023736417,
+      "denies": [
+        "overpermissive_access: aws_security_group[this] world CIDR 0.0.0.0/0"
+      ]
+    },
+    {
+      "module_id": "oa-004-oa-sg-ssh-i02",
+      "category": "overpermissive_access",
+      "label": "insecure",
+      "predicted": 0,
+      "seconds": 0.011317208991385996,
+      "denies": []
+    },
+    {
+      "module_id": "oa-005-oa-sg-ssh-i03",
+      "category": "overpermissive_access",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.011805165995610878,
+      "denies": [
+        "overpermissive_access: aws_security_group[this] world CIDR ::/0"
+      ]
+    },
+    {
+      "module_id": "oa-006-oa-sg-all-s01",
+      "category": "overpermissive_access",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.01156170800095424,
+      "denies": []
+    },
+    {
+      "module_id": "oa-007-oa-sg-all-s02",
+      "category": "overpermissive_access",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.011390083993319422,
+      "denies": []
+    },
+    {
+      "module_id": "oa-008-oa-sg-all-i01",
+      "category": "overpermissive_access",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.011533083015820011,
+      "denies": [
+        "overpermissive_access: aws_security_group[this] world CIDR 0.0.0.0/0"
+      ]
+    },
+    {
+      "module_id": "oa-009-oa-sg-all-i02",
+      "category": "overpermissive_access",
+      "label": "insecure",
+      "predicted": 0,
+      "seconds": 0.011569041991606355,
+      "denies": []
+    },
+    {
+      "module_id": "oa-010-oa-sg-all-i03",
+      "category": "overpermissive_access",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.01154458400560543,
+      "denies": [
+        "overpermissive_access: aws_security_group[this] world CIDR 0.0.0.0/0"
+      ]
+    },
+    {
+      "module_id": "oa-011-oa-sg-rdp-s01",
+      "category": "overpermissive_access",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.01157983299344778,
+      "denies": []
+    },
+    {
+      "module_id": "oa-012-oa-sg-rdp-s02",
+      "category": "overpermissive_access",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.011116999987279996,
+      "denies": []
+    },
+    {
+      "module_id": "oa-013-oa-sg-rdp-i01",
+      "category": "overpermissive_access",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.011428666999563575,
+      "denies": [
+        "overpermissive_access: aws_security_group[this] world CIDR 0.0.0.0/0"
+      ]
+    },
+    {
+      "module_id": "oa-014-oa-sg-rdp-i02",
+      "category": "overpermissive_access",
+      "label": "insecure",
+      "predicted": 0,
+      "seconds": 0.011416624998673797,
+      "denies": []
+    },
+    {
+      "module_id": "oa-015-oa-sg-rdp-i03",
+      "category": "overpermissive_access",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.011770875018555671,
+      "denies": [
+        "overpermissive_access: aws_security_group[this] world CIDR ::/0"
+      ]
+    },
+    {
+      "module_id": "oa-016-oa-iam-star-s01",
+      "category": "overpermissive_access",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.01190137499361299,
+      "denies": []
+    },
+    {
+      "module_id": "oa-017-oa-iam-star-s02",
+      "category": "overpermissive_access",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.011517625011038035,
+      "denies": []
+    },
+    {
+      "module_id": "oa-018-oa-iam-star-i01",
+      "category": "overpermissive_access",
+      "label": "insecure",
+      "predicted": 0,
+      "seconds": 0.011333790986100212,
+      "denies": []
+    },
+    {
+      "module_id": "oa-019-oa-iam-star-i02",
+      "category": "overpermissive_access",
+      "label": "insecure",
+      "predicted": 0,
+      "seconds": 0.011291583010461181,
+      "denies": []
+    },
+    {
+      "module_id": "oa-020-oa-iam-star-i03",
+      "category": "overpermissive_access",
+      "label": "insecure",
+      "predicted": 0,
+      "seconds": 0.01146662500104867,
+      "denies": []
+    },
+    {
+      "module_id": "oa-021-oa-iam-admin-s01",
+      "category": "overpermissive_access",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.0116273750027176,
+      "denies": []
+    },
+    {
+      "module_id": "oa-022-oa-iam-admin-s02",
+      "category": "overpermissive_access",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.011758375010685995,
+      "denies": []
+    },
+    {
+      "module_id": "oa-023-oa-iam-admin-i01",
+      "category": "overpermissive_access",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.011805999994976446,
+      "denies": [
+        "overpermissive_access: aws_iam_role_policy_attachment[this] AdministratorAccess"
+      ]
+    },
+    {
+      "module_id": "oa-024-oa-iam-admin-i02",
+      "category": "overpermissive_access",
+      "label": "insecure",
+      "predicted": 0,
+      "seconds": 0.011489625001559034,
+      "denies": []
+    },
+    {
+      "module_id": "oa-025-oa-iam-admin-i03",
+      "category": "overpermissive_access",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.011416834022384137,
+      "denies": [
+        "overpermissive_access: aws_iam_role_policy_attachment[this] IAMFullAccess"
+      ]
+    },
+    {
+      "module_id": "oa-026-oa-nacl-all-s01",
+      "category": "overpermissive_access",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.011354791990015656,
+      "denies": []
+    },
+    {
+      "module_id": "oa-027-oa-nacl-all-s02",
+      "category": "overpermissive_access",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.011324042017804459,
+      "denies": []
+    },
+    {
+      "module_id": "oa-028-oa-nacl-all-i01",
+      "category": "overpermissive_access",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.011611875001108274,
+      "denies": [
+        "overpermissive_access: aws_network_acl_rule[ingress] allow from world"
+      ]
+    },
+    {
+      "module_id": "oa-029-oa-nacl-all-i02",
+      "category": "overpermissive_access",
+      "label": "insecure",
+      "predicted": 0,
+      "seconds": 0.011596750002354383,
+      "denies": []
+    },
+    {
+      "module_id": "oa-030-oa-nacl-all-i03",
+      "category": "overpermissive_access",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.011239874991588295,
+      "denies": [
+        "overpermissive_access: aws_network_acl_rule[ingress] allow from world"
+      ]
+    },
+    {
+      "module_id": "oa-031-oa-lambda-principal-s01",
+      "category": "overpermissive_access",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.011326790991006419,
+      "denies": []
+    },
+    {
+      "module_id": "oa-032-oa-lambda-principal-s02",
+      "category": "overpermissive_access",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.011587999993935227,
+      "denies": []
+    },
+    {
+      "module_id": "oa-033-oa-lambda-principal-i01",
+      "category": "overpermissive_access",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.011420915980124846,
+      "denies": [
+        "overpermissive_access: aws_lambda_permission[this] principal=*"
+      ]
+    },
+    {
+      "module_id": "oa-034-oa-lambda-principal-i02",
+      "category": "overpermissive_access",
+      "label": "insecure",
+      "predicted": 0,
+      "seconds": 0.011318458011373878,
+      "denies": []
+    },
+    {
+      "module_id": "oa-035-oa-lambda-principal-i03",
+      "category": "overpermissive_access",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.01126208298956044,
+      "denies": [
+        "overpermissive_access: aws_lambda_permission[this] principal=*"
+      ]
+    },
+    {
+      "module_id": "oa-036-oa-kms-policy-s01",
+      "category": "overpermissive_access",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.011449917015852407,
+      "denies": []
+    },
+    {
+      "module_id": "oa-037-oa-kms-policy-s02",
+      "category": "overpermissive_access",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.011534542019944638,
+      "denies": []
+    },
+    {
+      "module_id": "oa-038-oa-kms-policy-i01",
+      "category": "overpermissive_access",
+      "label": "insecure",
+      "predicted": 0,
+      "seconds": 0.011308499990263954,
+      "denies": []
+    },
+    {
+      "module_id": "oa-039-oa-kms-policy-i02",
+      "category": "overpermissive_access",
+      "label": "insecure",
+      "predicted": 0,
+      "seconds": 0.011454874998889863,
+      "denies": []
+    },
+    {
+      "module_id": "oa-040-oa-kms-policy-i03",
+      "category": "overpermissive_access",
+      "label": "insecure",
+      "predicted": 0,
+      "seconds": 0.011346790997777134,
+      "denies": []
+    },
+    {
+      "module_id": "oa-041-oa-iam-s3-star-s01",
+      "category": "overpermissive_access",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.01144625002052635,
+      "denies": []
+    },
+    {
+      "module_id": "oa-042-oa-iam-s3-star-s02",
+      "category": "overpermissive_access",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.011965417012106627,
+      "denies": []
+    },
+    {
+      "module_id": "oa-043-oa-iam-s3-star-i01",
+      "category": "overpermissive_access",
+      "label": "insecure",
+      "predicted": 0,
+      "seconds": 0.011698875023284927,
+      "denies": []
+    },
+    {
+      "module_id": "oa-044-oa-iam-s3-star-i02",
+      "category": "overpermissive_access",
+      "label": "insecure",
+      "predicted": 0,
+      "seconds": 0.012483541999245062,
+      "denies": []
+    },
+    {
+      "module_id": "oa-045-oa-iam-s3-star-i03",
+      "category": "overpermissive_access",
+      "label": "insecure",
+      "predicted": 0,
+      "seconds": 0.011797167011536658,
+      "denies": []
+    },
+    {
+      "module_id": "oa-046-oa-sg-postgres-s01",
+      "category": "overpermissive_access",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.011571459006518126,
+      "denies": []
+    },
+    {
+      "module_id": "oa-047-oa-sg-postgres-s02",
+      "category": "overpermissive_access",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.01166587500483729,
+      "denies": []
+    },
+    {
+      "module_id": "oa-048-oa-sg-postgres-i01",
+      "category": "overpermissive_access",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.011473082995507866,
+      "denies": [
+        "overpermissive_access: aws_security_group[this] world CIDR 0.0.0.0/0"
+      ]
+    },
+    {
+      "module_id": "oa-049-oa-sg-postgres-i02",
+      "category": "overpermissive_access",
+      "label": "insecure",
+      "predicted": 0,
+      "seconds": 0.011732749990187585,
+      "denies": []
+    },
+    {
+      "module_id": "oa-050-oa-sg-postgres-i03",
+      "category": "overpermissive_access",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.011975917004747316,
+      "denies": [
+        "overpermissive_access: aws_security_group[this] world CIDR ::/0"
+      ]
+    },
+    {
+      "module_id": "oa-051-oa-eks-public-s01",
+      "category": "overpermissive_access",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.011960416013607755,
+      "denies": [
+        "opa_error:"
+      ]
+    },
+    {
+      "module_id": "oa-052-oa-eks-public-s02",
+      "category": "overpermissive_access",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.011291374976281077,
+      "denies": [
+        "opa_error:"
+      ]
+    },
+    {
+      "module_id": "oa-053-oa-eks-public-i01",
+      "category": "overpermissive_access",
+      "label": "insecure",
+      "predicted": 0,
+      "seconds": 0.011360292002791539,
+      "denies": [
+        "opa_error:"
+      ]
+    },
+    {
+      "module_id": "oa-054-oa-eks-public-i02",
+      "category": "overpermissive_access",
+      "label": "insecure",
+      "predicted": 0,
+      "seconds": 0.011251207994064316,
+      "denies": [
+        "opa_error:"
+      ]
+    },
+    {
+      "module_id": "oa-055-oa-eks-public-i03",
+      "category": "overpermissive_access",
+      "label": "insecure",
+      "predicted": 0,
+      "seconds": 0.011758292006561533,
+      "denies": [
+        "opa_error:"
+      ]
+    },
+    {
+      "module_id": "oa-056-oa-secrets-policy-s01",
+      "category": "overpermissive_access",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.011407249985495582,
+      "denies": []
+    },
+    {
+      "module_id": "oa-057-oa-secrets-policy-s02",
+      "category": "overpermissive_access",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.011521875014295802,
+      "denies": []
+    },
+    {
+      "module_id": "oa-058-oa-secrets-policy-i01",
+      "category": "overpermissive_access",
+      "label": "insecure",
+      "predicted": 0,
+      "seconds": 0.012093292025383562,
+      "denies": []
+    },
+    {
+      "module_id": "oa-059-oa-secrets-policy-i02",
+      "category": "overpermissive_access",
+      "label": "insecure",
+      "predicted": 0,
+      "seconds": 0.011791415978223085,
+      "denies": []
+    },
+    {
+      "module_id": "oa-060-oa-secrets-policy-i03",
+      "category": "overpermissive_access",
+      "label": "insecure",
+      "predicted": 0,
+      "seconds": 0.011168583994731307,
+      "denies": []
+    },
+    {
+      "module_id": "enc-001-enc-s3-sse-s01",
+      "category": "encryption_at_rest",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.011139042006107047,
+      "denies": []
+    },
+    {
+      "module_id": "enc-002-enc-s3-sse-s02",
+      "category": "encryption_at_rest",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.011210208002012223,
+      "denies": []
+    },
+    {
+      "module_id": "enc-003-enc-s3-sse-i01",
+      "category": "encryption_at_rest",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.011278207995928824,
+      "denies": [
+        "encryption_at_rest: S3 bucket without SSE configuration resource"
+      ]
+    },
+    {
+      "module_id": "enc-004-enc-s3-sse-i02",
+      "category": "encryption_at_rest",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.012543707998702303,
+      "denies": [
+        "encryption_at_rest: S3 bucket without SSE configuration resource"
+      ]
+    },
+    {
+      "module_id": "enc-005-enc-s3-sse-i03",
+      "category": "encryption_at_rest",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.01319112500641495,
+      "denies": [
+        "encryption_at_rest: S3 bucket without SSE configuration resource"
+      ]
+    },
+    {
+      "module_id": "enc-006-enc-ebs-s01",
+      "category": "encryption_at_rest",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.012345459021162242,
+      "denies": []
+    },
+    {
+      "module_id": "enc-007-enc-ebs-s02",
+      "category": "encryption_at_rest",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.012299000023631379,
+      "denies": []
+    },
+    {
+      "module_id": "enc-008-enc-ebs-i01",
+      "category": "encryption_at_rest",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.012130374991102144,
+      "denies": [
+        "encryption_at_rest: aws_ebs_volume[this] encrypted is false"
+      ]
+    },
+    {
+      "module_id": "enc-009-enc-ebs-i02",
+      "category": "encryption_at_rest",
+      "label": "insecure",
+      "predicted": 0,
+      "seconds": 0.012071000004652888,
+      "denies": []
+    },
+    {
+      "module_id": "enc-010-enc-ebs-i03",
+      "category": "encryption_at_rest",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.011746458010748029,
+      "denies": [
+        "encryption_at_rest: aws_ebs_volume[this] encrypted is false"
+      ]
+    },
+    {
+      "module_id": "enc-011-enc-rds-s01",
+      "category": "encryption_at_rest",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.011304749990813434,
+      "denies": []
+    },
+    {
+      "module_id": "enc-012-enc-rds-s02",
+      "category": "encryption_at_rest",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.011766582989366725,
+      "denies": []
+    },
+    {
+      "module_id": "enc-013-enc-rds-i01",
+      "category": "encryption_at_rest",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.011423082993132994,
+      "denies": [
+        "encryption_at_rest: aws_db_instance[this] storage_encrypted is false"
+      ]
+    },
+    {
+      "module_id": "enc-014-enc-rds-i02",
+      "category": "encryption_at_rest",
+      "label": "insecure",
+      "predicted": 0,
+      "seconds": 0.011920791992451996,
+      "denies": []
+    },
+    {
+      "module_id": "enc-015-enc-rds-i03",
+      "category": "encryption_at_rest",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.011169040983077139,
+      "denies": [
+        "encryption_at_rest: aws_db_instance[this] storage_encrypted is false"
+      ]
+    },
+    {
+      "module_id": "enc-016-enc-efs-s01",
+      "category": "encryption_at_rest",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.011388165992684662,
+      "denies": []
+    },
+    {
+      "module_id": "enc-017-enc-efs-s02",
+      "category": "encryption_at_rest",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.011552457988727838,
+      "denies": []
+    },
+    {
+      "module_id": "enc-018-enc-efs-i01",
+      "category": "encryption_at_rest",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.01135424998938106,
+      "denies": [
+        "encryption_at_rest: aws_efs_file_system[this] encrypted is false"
+      ]
+    },
+    {
+      "module_id": "enc-019-enc-efs-i02",
+      "category": "encryption_at_rest",
+      "label": "insecure",
+      "predicted": 0,
+      "seconds": 0.01149916701251641,
+      "denies": []
+    },
+    {
+      "module_id": "enc-020-enc-efs-i03",
+      "category": "encryption_at_rest",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.011921041994355619,
+      "denies": [
+        "encryption_at_rest: aws_efs_file_system[this] encrypted is false"
+      ]
+    },
+    {
+      "module_id": "enc-021-enc-sns-s01",
+      "category": "encryption_at_rest",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.011627875006524846,
+      "denies": []
+    },
+    {
+      "module_id": "enc-022-enc-sns-s02",
+      "category": "encryption_at_rest",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.011173042003065348,
+      "denies": []
+    },
+    {
+      "module_id": "enc-023-enc-sns-i01",
+      "category": "encryption_at_rest",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.011552708019735292,
+      "denies": [
+        "encryption_at_rest: aws_sns_topic[this] missing kms_master_key_id"
+      ]
+    },
+    {
+      "module_id": "enc-024-enc-sns-i02",
+      "category": "encryption_at_rest",
+      "label": "insecure",
+      "predicted": 0,
+      "seconds": 0.011284249980235472,
+      "denies": []
+    },
+    {
+      "module_id": "enc-025-enc-sns-i03",
+      "category": "encryption_at_rest",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.011939957999857143,
+      "denies": [
+        "encryption_at_rest: aws_sns_topic[this] missing kms_master_key_id"
+      ]
+    },
+    {
+      "module_id": "enc-026-enc-sqs-s01",
+      "category": "encryption_at_rest",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.011644499987596646,
+      "denies": []
+    },
+    {
+      "module_id": "enc-027-enc-sqs-s02",
+      "category": "encryption_at_rest",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.011740749992895871,
+      "denies": []
+    },
+    {
+      "module_id": "enc-028-enc-sqs-i01",
+      "category": "encryption_at_rest",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.01134266599547118,
+      "denies": [
+        "encryption_at_rest: aws_sqs_queue[this] SSE disabled"
+      ]
+    },
+    {
+      "module_id": "enc-029-enc-sqs-i02",
+      "category": "encryption_at_rest",
+      "label": "insecure",
+      "predicted": 0,
+      "seconds": 0.01163854100741446,
+      "denies": []
+    },
+    {
+      "module_id": "enc-030-enc-sqs-i03",
+      "category": "encryption_at_rest",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.011572667019208893,
+      "denies": [
+        "encryption_at_rest: aws_sqs_queue[this] SSE disabled"
+      ]
+    },
+    {
+      "module_id": "enc-031-enc-logs-s01",
+      "category": "encryption_at_rest",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.011288167006568983,
+      "denies": []
+    },
+    {
+      "module_id": "enc-032-enc-logs-s02",
+      "category": "encryption_at_rest",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.011357582989148796,
+      "denies": []
+    },
+    {
+      "module_id": "enc-033-enc-logs-i01",
+      "category": "encryption_at_rest",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.01221895799972117,
+      "denies": [
+        "encryption_at_rest: aws_cloudwatch_log_group[this] missing kms_key_id"
+      ]
+    },
+    {
+      "module_id": "enc-034-enc-logs-i02",
+      "category": "encryption_at_rest",
+      "label": "insecure",
+      "predicted": 0,
+      "seconds": 0.011429667007178068,
+      "denies": []
+    },
+    {
+      "module_id": "enc-035-enc-logs-i03",
+      "category": "encryption_at_rest",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.011344625003403053,
+      "denies": [
+        "encryption_at_rest: aws_cloudwatch_log_group[this] missing kms_key_id"
+      ]
+    },
+    {
+      "module_id": "enc-036-enc-dynamodb-s01",
+      "category": "encryption_at_rest",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.01116866699885577,
+      "denies": []
+    },
+    {
+      "module_id": "enc-037-enc-dynamodb-s02",
+      "category": "encryption_at_rest",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.011220165994018316,
+      "denies": []
+    },
+    {
+      "module_id": "enc-038-enc-dynamodb-i01",
+      "category": "encryption_at_rest",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.011369707994163036,
+      "denies": [
+        "encryption_at_rest: aws_dynamodb_table[this] SSE disabled"
+      ]
+    },
+    {
+      "module_id": "enc-039-enc-dynamodb-i02",
+      "category": "encryption_at_rest",
+      "label": "insecure",
+      "predicted": 0,
+      "seconds": 0.011130541999591514,
+      "denies": []
+    },
+    {
+      "module_id": "enc-040-enc-dynamodb-i03",
+      "category": "encryption_at_rest",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.011478500004159287,
+      "denies": [
+        "encryption_at_rest: aws_dynamodb_table[this] SSE disabled"
+      ]
+    },
+    {
+      "module_id": "enc-041-enc-redshift-s01",
+      "category": "encryption_at_rest",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.011415624991059303,
+      "denies": []
+    },
+    {
+      "module_id": "enc-042-enc-redshift-s02",
+      "category": "encryption_at_rest",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.011832499993033707,
+      "denies": []
+    },
+    {
+      "module_id": "enc-043-enc-redshift-i01",
+      "category": "encryption_at_rest",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.011409541999455541,
+      "denies": [
+        "encryption_at_rest: aws_redshift_cluster[this] encrypted is false"
+      ]
+    },
+    {
+      "module_id": "enc-044-enc-redshift-i02",
+      "category": "encryption_at_rest",
+      "label": "insecure",
+      "predicted": 0,
+      "seconds": 0.011325375002343208,
+      "denies": []
+    },
+    {
+      "module_id": "enc-045-enc-redshift-i03",
+      "category": "encryption_at_rest",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.011493500001961365,
+      "denies": [
+        "encryption_at_rest: aws_redshift_cluster[this] encrypted is false"
+      ]
+    },
+    {
+      "module_id": "enc-046-enc-elasticache-s01",
+      "category": "encryption_at_rest",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.011765540984924883,
+      "denies": []
+    },
+    {
+      "module_id": "enc-047-enc-elasticache-s02",
+      "category": "encryption_at_rest",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.011489541007904336,
+      "denies": []
+    },
+    {
+      "module_id": "enc-048-enc-elasticache-i01",
+      "category": "encryption_at_rest",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.01149687499855645,
+      "denies": [
+        "encryption_at_rest: aws_elasticache_replication_group[this] at-rest encryption disabled"
+      ]
+    },
+    {
+      "module_id": "enc-049-enc-elasticache-i02",
+      "category": "encryption_at_rest",
+      "label": "insecure",
+      "predicted": 0,
+      "seconds": 0.011568374990019947,
+      "denies": []
+    },
+    {
+      "module_id": "enc-050-enc-elasticache-i03",
+      "category": "encryption_at_rest",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.011604041006648913,
+      "denies": [
+        "encryption_at_rest: aws_elasticache_replication_group[this] at-rest encryption disabled"
+      ]
+    },
+    {
+      "module_id": "enc-051-enc-glue-s01",
+      "category": "encryption_at_rest",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.011630791996140033,
+      "denies": []
+    },
+    {
+      "module_id": "enc-052-enc-glue-s02",
+      "category": "encryption_at_rest",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.011214375001145527,
+      "denies": []
+    },
+    {
+      "module_id": "enc-053-enc-glue-i01",
+      "category": "encryption_at_rest",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.011253333010245115,
+      "denies": [
+        "encryption_at_rest: aws_glue_data_catalog_encryption_settings[this] DISABLED"
+      ]
+    },
+    {
+      "module_id": "enc-054-enc-glue-i02",
+      "category": "encryption_at_rest",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.011592333990847692,
+      "denies": [
+        "encryption_at_rest: aws_glue_data_catalog_encryption_settings[this] DISABLED"
+      ]
+    },
+    {
+      "module_id": "enc-055-enc-glue-i03",
+      "category": "encryption_at_rest",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.01187241601292044,
+      "denies": [
+        "encryption_at_rest: aws_glue_data_catalog_encryption_settings[this] DISABLED"
+      ]
+    },
+    {
+      "module_id": "enc-056-enc-kinesis-s01",
+      "category": "encryption_at_rest",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.011511290998896584,
+      "denies": []
+    },
+    {
+      "module_id": "enc-057-enc-kinesis-s02",
+      "category": "encryption_at_rest",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.011245250003412366,
+      "denies": []
+    },
+    {
+      "module_id": "enc-058-enc-kinesis-i01",
+      "category": "encryption_at_rest",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.011773749982239679,
+      "denies": [
+        "encryption_at_rest: aws_kinesis_stream[this] encryption_type NONE"
+      ]
+    },
+    {
+      "module_id": "enc-059-enc-kinesis-i02",
+      "category": "encryption_at_rest",
+      "label": "insecure",
+      "predicted": 0,
+      "seconds": 0.01143049998790957,
+      "denies": []
+    },
+    {
+      "module_id": "enc-060-enc-kinesis-i03",
+      "category": "encryption_at_rest",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.01131199998781085,
+      "denies": [
+        "encryption_at_rest: aws_kinesis_stream[this] encryption_type NONE"
+      ]
+    },
+    {
+      "module_id": "log-001-log-s3-access-s01",
+      "category": "weak_logging",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.011287625005934387,
+      "denies": []
+    },
+    {
+      "module_id": "log-002-log-s3-access-s02",
+      "category": "weak_logging",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.011202333000255749,
+      "denies": []
+    },
+    {
+      "module_id": "log-003-log-s3-access-i01",
+      "category": "weak_logging",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.011327708984026685,
+      "denies": [
+        "weak_logging: S3 bucket without aws_s3_bucket_logging"
+      ]
+    },
+    {
+      "module_id": "log-004-log-s3-access-i02",
+      "category": "weak_logging",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.011181625013705343,
+      "denies": [
+        "weak_logging: S3 bucket without aws_s3_bucket_logging"
+      ]
+    },
+    {
+      "module_id": "log-005-log-s3-access-i03",
+      "category": "weak_logging",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.011552250012755394,
+      "denies": [
+        "weak_logging: S3 bucket without aws_s3_bucket_logging"
+      ]
+    },
+    {
+      "module_id": "log-006-log-cloudtrail-validation-s01",
+      "category": "weak_logging",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.011252333002630621,
+      "denies": []
+    },
+    {
+      "module_id": "log-007-log-cloudtrail-validation-s02",
+      "category": "weak_logging",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.01131500001065433,
+      "denies": []
+    },
+    {
+      "module_id": "log-008-log-cloudtrail-validation-i01",
+      "category": "weak_logging",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.011923042009584606,
+      "denies": [
+        "weak_logging: aws_cloudtrail[this] log-file validation disabled"
+      ]
+    },
+    {
+      "module_id": "log-009-log-cloudtrail-validation-i02",
+      "category": "weak_logging",
+      "label": "insecure",
+      "predicted": 0,
+      "seconds": 0.011415665998356417,
+      "denies": []
+    },
+    {
+      "module_id": "log-010-log-cloudtrail-validation-i03",
+      "category": "weak_logging",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.011723333998816088,
+      "denies": [
+        "weak_logging: aws_cloudtrail[this] log-file validation disabled"
+      ]
+    },
+    {
+      "module_id": "log-011-log-vpc-flow-s01",
+      "category": "weak_logging",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.01123274999554269,
+      "denies": []
+    },
+    {
+      "module_id": "log-012-log-vpc-flow-s02",
+      "category": "weak_logging",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.011541083018528298,
+      "denies": []
+    },
+    {
+      "module_id": "log-013-log-vpc-flow-i01",
+      "category": "weak_logging",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.011507666000397876,
+      "denies": [
+        "weak_logging: VPC without aws_flow_log"
+      ]
+    },
+    {
+      "module_id": "log-014-log-vpc-flow-i02",
+      "category": "weak_logging",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.011532125005032867,
+      "denies": [
+        "weak_logging: VPC without aws_flow_log"
+      ]
+    },
+    {
+      "module_id": "log-015-log-vpc-flow-i03",
+      "category": "weak_logging",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.011180665984284133,
+      "denies": [
+        "weak_logging: VPC without aws_flow_log"
+      ]
+    },
+    {
+      "module_id": "log-016-log-alb-access-s01",
+      "category": "weak_logging",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.01152775000082329,
+      "denies": []
+    },
+    {
+      "module_id": "log-017-log-alb-access-s02",
+      "category": "weak_logging",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.011421958013670519,
+      "denies": []
+    },
+    {
+      "module_id": "log-018-log-alb-access-i01",
+      "category": "weak_logging",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.011293624993413687,
+      "denies": [
+        "weak_logging: aws_lb[this] access_logs disabled"
+      ]
+    },
+    {
+      "module_id": "log-019-log-alb-access-i02",
+      "category": "weak_logging",
+      "label": "insecure",
+      "predicted": 0,
+      "seconds": 0.011969999992288649,
+      "denies": []
+    },
+    {
+      "module_id": "log-020-log-alb-access-i03",
+      "category": "weak_logging",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.011275833006948233,
+      "denies": [
+        "weak_logging: aws_lb[this] access_logs disabled"
+      ]
+    },
+    {
+      "module_id": "log-021-log-rds-cw-s01",
+      "category": "weak_logging",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.01124641700880602,
+      "denies": []
+    },
+    {
+      "module_id": "log-022-log-rds-cw-s02",
+      "category": "weak_logging",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.01165387500077486,
+      "denies": []
+    },
+    {
+      "module_id": "log-023-log-rds-cw-i01",
+      "category": "weak_logging",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.011739332985598594,
+      "denies": [
+        "weak_logging: aws_db_instance[this] empty CloudWatch log exports"
+      ]
+    },
+    {
+      "module_id": "log-024-log-rds-cw-i02",
+      "category": "weak_logging",
+      "label": "insecure",
+      "predicted": 0,
+      "seconds": 0.01124116699793376,
+      "denies": []
+    },
+    {
+      "module_id": "log-025-log-rds-cw-i03",
+      "category": "weak_logging",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.011514125013491139,
+      "denies": [
+        "weak_logging: aws_db_instance[this] empty CloudWatch log exports"
+      ]
+    },
+    {
+      "module_id": "log-026-log-apigw-s01",
+      "category": "weak_logging",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.011780750006437302,
+      "denies": []
+    },
+    {
+      "module_id": "log-027-log-apigw-s02",
+      "category": "weak_logging",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.011241625004913658,
+      "denies": []
+    },
+    {
+      "module_id": "log-028-log-apigw-i01",
+      "category": "weak_logging",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.011623458005487919,
+      "denies": [
+        "weak_logging: API Gateway stage without method settings / execution logs"
+      ]
+    },
+    {
+      "module_id": "log-029-log-apigw-i02",
+      "category": "weak_logging",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.011612833011895418,
+      "denies": [
+        "weak_logging: API Gateway stage without method settings / execution logs"
+      ]
+    },
+    {
+      "module_id": "log-030-log-apigw-i03",
+      "category": "weak_logging",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.011551584000699222,
+      "denies": [
+        "weak_logging: API Gateway stage without method settings / execution logs"
+      ]
+    },
+    {
+      "module_id": "log-031-log-eks-control-s01",
+      "category": "weak_logging",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.011154124978929758,
+      "denies": []
+    },
+    {
+      "module_id": "log-032-log-eks-control-s02",
+      "category": "weak_logging",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.011717500019585714,
+      "denies": []
+    },
+    {
+      "module_id": "log-033-log-eks-control-i01",
+      "category": "weak_logging",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.011342707992298529,
+      "denies": [
+        "weak_logging: aws_eks_cluster[this] empty control-plane logs"
+      ]
+    },
+    {
+      "module_id": "log-034-log-eks-control-i02",
+      "category": "weak_logging",
+      "label": "insecure",
+      "predicted": 0,
+      "seconds": 0.011985958000877872,
+      "denies": []
+    },
+    {
+      "module_id": "log-035-log-eks-control-i03",
+      "category": "weak_logging",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.011324082995997742,
+      "denies": [
+        "weak_logging: aws_eks_cluster[this] empty control-plane logs"
+      ]
+    },
+    {
+      "module_id": "log-036-log-cloudtrail-missing-s01",
+      "category": "weak_logging",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.011927874991670251,
+      "denies": []
+    },
+    {
+      "module_id": "log-037-log-cloudtrail-missing-s02",
+      "category": "weak_logging",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.0113829999754671,
+      "denies": []
+    },
+    {
+      "module_id": "log-038-log-cloudtrail-missing-i01",
+      "category": "weak_logging",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.011247374990489334,
+      "denies": [
+        "weak_logging: S3 bucket without aws_s3_bucket_logging"
+      ]
+    },
+    {
+      "module_id": "log-039-log-cloudtrail-missing-i02",
+      "category": "weak_logging",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.011657124996418133,
+      "denies": [
+        "weak_logging: S3 bucket without aws_s3_bucket_logging"
+      ]
+    },
+    {
+      "module_id": "log-040-log-cloudtrail-missing-i03",
+      "category": "weak_logging",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.011751165991881862,
+      "denies": [
+        "weak_logging: S3 bucket without aws_s3_bucket_logging"
+      ]
+    },
+    {
+      "module_id": "log-041-log-redshift-audit-s01",
+      "category": "weak_logging",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.011363375000655651,
+      "denies": []
+    },
+    {
+      "module_id": "log-042-log-redshift-audit-s02",
+      "category": "weak_logging",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.011702040996169671,
+      "denies": []
+    },
+    {
+      "module_id": "log-043-log-redshift-audit-i01",
+      "category": "weak_logging",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.011488124990137294,
+      "denies": [
+        "weak_logging: aws_redshift_cluster[this] audit logging disabled"
+      ]
+    },
+    {
+      "module_id": "log-044-log-redshift-audit-i02",
+      "category": "weak_logging",
+      "label": "insecure",
+      "predicted": 0,
+      "seconds": 0.01159275000100024,
+      "denies": []
+    },
+    {
+      "module_id": "log-045-log-redshift-audit-i03",
+      "category": "weak_logging",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.011980040988419205,
+      "denies": [
+        "weak_logging: aws_redshift_cluster[this] audit logging disabled"
+      ]
+    },
+    {
+      "module_id": "log-046-log-msk-broker-s01",
+      "category": "weak_logging",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.01150008398690261,
+      "denies": []
+    },
+    {
+      "module_id": "log-047-log-msk-broker-s02",
+      "category": "weak_logging",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.011409457976697013,
+      "denies": []
+    },
+    {
+      "module_id": "log-048-log-msk-broker-i01",
+      "category": "weak_logging",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.01158579098409973,
+      "denies": [
+        "weak_logging: aws_msk_cluster[this] broker logging disabled"
+      ]
+    },
+    {
+      "module_id": "log-049-log-msk-broker-i02",
+      "category": "weak_logging",
+      "label": "insecure",
+      "predicted": 0,
+      "seconds": 0.011733583000022918,
+      "denies": []
+    },
+    {
+      "module_id": "log-050-log-msk-broker-i03",
+      "category": "weak_logging",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.012059333006618544,
+      "denies": [
+        "weak_logging: aws_msk_cluster[this] broker logging disabled"
+      ]
+    },
+    {
+      "module_id": "log-051-log-waf-s01",
+      "category": "weak_logging",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.01143054201384075,
+      "denies": []
+    },
+    {
+      "module_id": "log-052-log-waf-s02",
+      "category": "weak_logging",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.011625666986219585,
+      "denies": []
+    },
+    {
+      "module_id": "log-053-log-waf-i01",
+      "category": "weak_logging",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.011592416994972154,
+      "denies": [
+        "weak_logging: WAFv2 ACL without logging configuration"
+      ]
+    },
+    {
+      "module_id": "log-054-log-waf-i02",
+      "category": "weak_logging",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.012045042007230222,
+      "denies": [
+        "weak_logging: WAFv2 ACL without logging configuration"
+      ]
+    },
+    {
+      "module_id": "log-055-log-waf-i03",
+      "category": "weak_logging",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.011488499992992729,
+      "denies": [
+        "weak_logging: WAFv2 ACL without logging configuration"
+      ]
+    },
+    {
+      "module_id": "log-056-log-elb-access-s01",
+      "category": "weak_logging",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.01135124999564141,
+      "denies": []
+    },
+    {
+      "module_id": "log-057-log-elb-access-s02",
+      "category": "weak_logging",
+      "label": "secure",
+      "predicted": 0,
+      "seconds": 0.011483874986879528,
+      "denies": []
+    },
+    {
+      "module_id": "log-058-log-elb-access-i01",
+      "category": "weak_logging",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.011553374992217869,
+      "denies": [
+        "weak_logging: aws_elb[this] access_logs disabled"
+      ]
+    },
+    {
+      "module_id": "log-059-log-elb-access-i02",
+      "category": "weak_logging",
+      "label": "insecure",
+      "predicted": 0,
+      "seconds": 0.011489291995530948,
+      "denies": []
+    },
+    {
+      "module_id": "log-060-log-elb-access-i03",
+      "category": "weak_logging",
+      "label": "insecure",
+      "predicted": 1,
+      "seconds": 0.011335583025356755,
+      "denies": [
+        "weak_logging: aws_elb[this] access_logs disabled"
+      ]
+    }
+  ],
+  "sample_times": [
+    {
+      "module_id": "ps-001-ps-s3-acl-s01",
+      "category": "public_storage",
+      "label": "secure",
+      "seconds": 0.012801666976884007
+    },
+    {
+      "module_id": "ps-002-ps-s3-acl-s02",
+      "category": "public_storage",
+      "label": "secure",
+      "seconds": 0.011856625002110377
+    },
+    {
+      "module_id": "ps-003-ps-s3-acl-i01",
+      "category": "public_storage",
+      "label": "insecure",
+      "seconds": 0.011727291013812646
+    },
+    {
+      "module_id": "ps-004-ps-s3-acl-i02",
+      "category": "public_storage",
+      "label": "insecure",
+      "seconds": 0.01132937500369735
+    },
+    {
+      "module_id": "ps-005-ps-s3-acl-i03",
+      "category": "public_storage",
+      "label": "insecure",
+      "seconds": 0.011784874979639426
+    },
+    {
+      "module_id": "ps-006-ps-s3-pab-s01",
+      "category": "public_storage",
+      "label": "secure",
+      "seconds": 0.01207724999403581
+    },
+    {
+      "module_id": "ps-007-ps-s3-pab-s02",
+      "category": "public_storage",
+      "label": "secure",
+      "seconds": 0.011355374997947365
+    },
+    {
+      "module_id": "ps-008-ps-s3-pab-i01",
+      "category": "public_storage",
+      "label": "insecure",
+      "seconds": 0.011404499993659556
+    },
+    {
+      "module_id": "ps-009-ps-s3-pab-i02",
+      "category": "public_storage",
+      "label": "insecure",
+      "seconds": 0.011630624998360872
+    },
+    {
+      "module_id": "ps-010-ps-s3-pab-i03",
+      "category": "public_storage",
+      "label": "insecure",
+      "seconds": 0.01154058301472105
+    },
+    {
+      "module_id": "ps-011-ps-s3-policy-s01",
+      "category": "public_storage",
+      "label": "secure",
+      "seconds": 0.011278333025984466
+    },
+    {
+      "module_id": "ps-012-ps-s3-policy-s02",
+      "category": "public_storage",
+      "label": "secure",
+      "seconds": 0.011391916981665418
+    },
+    {
+      "module_id": "ps-013-ps-s3-policy-i01",
+      "category": "public_storage",
+      "label": "insecure",
+      "seconds": 0.011553792021004483
+    },
+    {
+      "module_id": "ps-014-ps-s3-policy-i02",
+      "category": "public_storage",
+      "label": "insecure",
+      "seconds": 0.011745416006306186
+    },
+    {
+      "module_id": "ps-015-ps-s3-policy-i03",
+      "category": "public_storage",
+      "label": "insecure",
+      "seconds": 0.011150082980748266
+    },
+    {
+      "module_id": "ps-016-ps-rds-public-s01",
+      "category": "public_storage",
+      "label": "secure",
+      "seconds": 0.011506290989927948
+    },
+    {
+      "module_id": "ps-017-ps-rds-public-s02",
+      "category": "public_storage",
+      "label": "secure",
+      "seconds": 0.011365082988049835
+    },
+    {
+      "module_id": "ps-018-ps-rds-public-i01",
+      "category": "public_storage",
+      "label": "insecure",
+      "seconds": 0.01144937498611398
+    },
+    {
+      "module_id": "ps-019-ps-rds-public-i02",
+      "category": "public_storage",
+      "label": "insecure",
+      "seconds": 0.011850792012410238
+    },
+    {
+      "module_id": "ps-020-ps-rds-public-i03",
+      "category": "public_storage",
+      "label": "insecure",
+      "seconds": 0.011735624982975423
+    },
+    {
+      "module_id": "ps-021-ps-redshift-public-s01",
+      "category": "public_storage",
+      "label": "secure",
+      "seconds": 0.011372790992027149
+    },
+    {
+      "module_id": "ps-022-ps-redshift-public-s02",
+      "category": "public_storage",
+      "label": "secure",
+      "seconds": 0.011485082999570295
+    },
+    {
+      "module_id": "ps-023-ps-redshift-public-i01",
+      "category": "public_storage",
+      "label": "insecure",
+      "seconds": 0.011553791002370417
+    },
+    {
+      "module_id": "ps-024-ps-redshift-public-i02",
+      "category": "public_storage",
+      "label": "insecure",
+      "seconds": 0.011251541989622638
+    },
+    {
+      "module_id": "ps-025-ps-redshift-public-i03",
+      "category": "public_storage",
+      "label": "insecure",
+      "seconds": 0.011473416991066188
+    },
+    {
+      "module_id": "ps-026-ps-sqs-policy-s01",
+      "category": "public_storage",
+      "label": "secure",
+      "seconds": 0.011468625016277656
+    },
+    {
+      "module_id": "ps-027-ps-sqs-policy-s02",
+      "category": "public_storage",
+      "label": "secure",
+      "seconds": 0.011333750007906929
+    },
+    {
+      "module_id": "ps-028-ps-sqs-policy-i01",
+      "category": "public_storage",
+      "label": "insecure",
+      "seconds": 0.011512791010318324
+    },
+    {
+      "module_id": "ps-029-ps-sqs-policy-i02",
+      "category": "public_storage",
+      "label": "insecure",
+      "seconds": 0.011838041013106704
+    },
+    {
+      "module_id": "ps-030-ps-sqs-policy-i03",
+      "category": "public_storage",
+      "label": "insecure",
+      "seconds": 0.011404333024984226
+    },
+    {
+      "module_id": "ps-031-ps-sns-policy-s01",
+      "category": "public_storage",
+      "label": "secure",
+      "seconds": 0.012018874986097217
+    },
+    {
+      "module_id": "ps-032-ps-sns-policy-s02",
+      "category": "public_storage",
+      "label": "secure",
+      "seconds": 0.011503957997774705
+    },
+    {
+      "module_id": "ps-033-ps-sns-policy-i01",
+      "category": "public_storage",
+      "label": "insecure",
+      "seconds": 0.011972040985710919
+    },
+    {
+      "module_id": "ps-034-ps-sns-policy-i02",
+      "category": "public_storage",
+      "label": "insecure",
+      "seconds": 0.01148245797958225
+    },
+    {
+      "module_id": "ps-035-ps-sns-policy-i03",
+      "category": "public_storage",
+      "label": "insecure",
+      "seconds": 0.011636167007964104
+    },
+    {
+      "module_id": "ps-036-ps-ecr-policy-s01",
+      "category": "public_storage",
+      "label": "secure",
+      "seconds": 0.011552624986506999
+    },
+    {
+      "module_id": "ps-037-ps-ecr-policy-s02",
+      "category": "public_storage",
+      "label": "secure",
+      "seconds": 0.011491874989587814
+    },
+    {
+      "module_id": "ps-038-ps-ecr-policy-i01",
+      "category": "public_storage",
+      "label": "insecure",
+      "seconds": 0.011585333006223664
+    },
+    {
+      "module_id": "ps-039-ps-ecr-policy-i02",
+      "category": "public_storage",
+      "label": "insecure",
+      "seconds": 0.011314375005895272
+    },
+    {
+      "module_id": "ps-040-ps-ecr-policy-i03",
+      "category": "public_storage",
+      "label": "insecure",
+      "seconds": 0.011687416990753263
+    },
+    {
+      "module_id": "ps-041-ps-ami-public-s01",
+      "category": "public_storage",
+      "label": "secure",
+      "seconds": 0.011423541989643127
+    },
+    {
+      "module_id": "ps-042-ps-ami-public-s02",
+      "category": "public_storage",
+      "label": "secure",
+      "seconds": 0.011591708986088634
+    },
+    {
+      "module_id": "ps-043-ps-ami-public-i01",
+      "category": "public_storage",
+      "label": "insecure",
+      "seconds": 0.01224625000031665
+    },
+    {
+      "module_id": "ps-044-ps-ami-public-i02",
+      "category": "public_storage",
+      "label": "insecure",
+      "seconds": 0.012080792017513886
+    },
+    {
+      "module_id": "ps-045-ps-ami-public-i03",
+      "category": "public_storage",
+      "label": "insecure",
+      "seconds": 0.01148116699187085
+    },
+    {
+      "module_id": "ps-046-ps-ec2-public-ip-s01",
+      "category": "public_storage",
+      "label": "secure",
+      "seconds": 0.011084124998888
+    },
+    {
+      "module_id": "ps-047-ps-ec2-public-ip-s02",
+      "category": "public_storage",
+      "label": "secure",
+      "seconds": 0.011707541008945554
+    },
+    {
+      "module_id": "ps-048-ps-ec2-public-ip-i01",
+      "category": "public_storage",
+      "label": "insecure",
+      "seconds": 0.011593707982683554
+    },
+    {
+      "module_id": "ps-049-ps-ec2-public-ip-i02",
+      "category": "public_storage",
+      "label": "insecure",
+      "seconds": 0.011256999976467341
+    },
+    {
+      "module_id": "ps-050-ps-ec2-public-ip-i03",
+      "category": "public_storage",
+      "label": "insecure",
+      "seconds": 0.011353749985573813
+    },
+    {
+      "module_id": "ps-051-ps-opensearch-public-s01",
+      "category": "public_storage",
+      "label": "secure",
+      "seconds": 0.011715083994204178
+    },
+    {
+      "module_id": "ps-052-ps-opensearch-public-s02",
+      "category": "public_storage",
+      "label": "secure",
+      "seconds": 0.01132358398172073
+    },
+    {
+      "module_id": "ps-053-ps-opensearch-public-i01",
+      "category": "public_storage",
+      "label": "insecure",
+      "seconds": 0.011435249994974583
+    },
+    {
+      "module_id": "ps-054-ps-opensearch-public-i02",
+      "category": "public_storage",
+      "label": "insecure",
+      "seconds": 0.011457957996753976
+    },
+    {
+      "module_id": "ps-055-ps-opensearch-public-i03",
+      "category": "public_storage",
+      "label": "insecure",
+      "seconds": 0.012080750020686537
+    },
+    {
+      "module_id": "ps-056-ps-neptune-public-s01",
+      "category": "public_storage",
+      "label": "secure",
+      "seconds": 0.011348375002853572
+    },
+    {
+      "module_id": "ps-057-ps-neptune-public-s02",
+      "category": "public_storage",
+      "label": "secure",
+      "seconds": 0.011498707986902446
+    },
+    {
+      "module_id": "ps-058-ps-neptune-public-i01",
+      "category": "public_storage",
+      "label": "insecure",
+      "seconds": 0.011654958012513816
+    },
+    {
+      "module_id": "ps-059-ps-neptune-public-i02",
+      "category": "public_storage",
+      "label": "insecure",
+      "seconds": 0.011869417008711025
+    },
+    {
+      "module_id": "ps-060-ps-neptune-public-i03",
+      "category": "public_storage",
+      "label": "insecure",
+      "seconds": 0.01146824998431839
+    },
+    {
+      "module_id": "oa-001-oa-sg-ssh-s01",
+      "category": "overpermissive_access",
+      "label": "secure",
+      "seconds": 0.011419582995586097
+    },
+    {
+      "module_id": "oa-002-oa-sg-ssh-s02",
+      "category": "overpermissive_access",
+      "label": "secure",
+      "seconds": 0.01161333397612907
+    },
+    {
+      "module_id": "oa-003-oa-sg-ssh-i01",
+      "category": "overpermissive_access",
+      "label": "insecure",
+      "seconds": 0.011050084023736417
+    },
+    {
+      "module_id": "oa-004-oa-sg-ssh-i02",
+      "category": "overpermissive_access",
+      "label": "insecure",
+      "seconds": 0.011317208991385996
+    },
+    {
+      "module_id": "oa-005-oa-sg-ssh-i03",
+      "category": "overpermissive_access",
+      "label": "insecure",
+      "seconds": 0.011805165995610878
+    },
+    {
+      "module_id": "oa-006-oa-sg-all-s01",
+      "category": "overpermissive_access",
+      "label": "secure",
+      "seconds": 0.01156170800095424
+    },
+    {
+      "module_id": "oa-007-oa-sg-all-s02",
+      "category": "overpermissive_access",
+      "label": "secure",
+      "seconds": 0.011390083993319422
+    },
+    {
+      "module_id": "oa-008-oa-sg-all-i01",
+      "category": "overpermissive_access",
+      "label": "insecure",
+      "seconds": 0.011533083015820011
+    },
+    {
+      "module_id": "oa-009-oa-sg-all-i02",
+      "category": "overpermissive_access",
+      "label": "insecure",
+      "seconds": 0.011569041991606355
+    },
+    {
+      "module_id": "oa-010-oa-sg-all-i03",
+      "category": "overpermissive_access",
+      "label": "insecure",
+      "seconds": 0.01154458400560543
+    },
+    {
+      "module_id": "oa-011-oa-sg-rdp-s01",
+      "category": "overpermissive_access",
+      "label": "secure",
+      "seconds": 0.01157983299344778
+    },
+    {
+      "module_id": "oa-012-oa-sg-rdp-s02",
+      "category": "overpermissive_access",
+      "label": "secure",
+      "seconds": 0.011116999987279996
+    },
+    {
+      "module_id": "oa-013-oa-sg-rdp-i01",
+      "category": "overpermissive_access",
+      "label": "insecure",
+      "seconds": 0.011428666999563575
+    },
+    {
+      "module_id": "oa-014-oa-sg-rdp-i02",
+      "category": "overpermissive_access",
+      "label": "insecure",
+      "seconds": 0.011416624998673797
+    },
+    {
+      "module_id": "oa-015-oa-sg-rdp-i03",
+      "category": "overpermissive_access",
+      "label": "insecure",
+      "seconds": 0.011770875018555671
+    },
+    {
+      "module_id": "oa-016-oa-iam-star-s01",
+      "category": "overpermissive_access",
+      "label": "secure",
+      "seconds": 0.01190137499361299
+    },
+    {
+      "module_id": "oa-017-oa-iam-star-s02",
+      "category": "overpermissive_access",
+      "label": "secure",
+      "seconds": 0.011517625011038035
+    },
+    {
+      "module_id": "oa-018-oa-iam-star-i01",
+      "category": "overpermissive_access",
+      "label": "insecure",
+      "seconds": 0.011333790986100212
+    },
+    {
+      "module_id": "oa-019-oa-iam-star-i02",
+      "category": "overpermissive_access",
+      "label": "insecure",
+      "seconds": 0.011291583010461181
+    },
+    {
+      "module_id": "oa-020-oa-iam-star-i03",
+      "category": "overpermissive_access",
+      "label": "insecure",
+      "seconds": 0.01146662500104867
+    },
+    {
+      "module_id": "oa-021-oa-iam-admin-s01",
+      "category": "overpermissive_access",
+      "label": "secure",
+      "seconds": 0.0116273750027176
+    },
+    {
+      "module_id": "oa-022-oa-iam-admin-s02",
+      "category": "overpermissive_access",
+      "label": "secure",
+      "seconds": 0.011758375010685995
+    },
+    {
+      "module_id": "oa-023-oa-iam-admin-i01",
+      "category": "overpermissive_access",
+      "label": "insecure",
+      "seconds": 0.011805999994976446
+    },
+    {
+      "module_id": "oa-024-oa-iam-admin-i02",
+      "category": "overpermissive_access",
+      "label": "insecure",
+      "seconds": 0.011489625001559034
+    },
+    {
+      "module_id": "oa-025-oa-iam-admin-i03",
+      "category": "overpermissive_access",
+      "label": "insecure",
+      "seconds": 0.011416834022384137
+    },
+    {
+      "module_id": "oa-026-oa-nacl-all-s01",
+      "category": "overpermissive_access",
+      "label": "secure",
+      "seconds": 0.011354791990015656
+    },
+    {
+      "module_id": "oa-027-oa-nacl-all-s02",
+      "category": "overpermissive_access",
+      "label": "secure",
+      "seconds": 0.011324042017804459
+    },
+    {
+      "module_id": "oa-028-oa-nacl-all-i01",
+      "category": "overpermissive_access",
+      "label": "insecure",
+      "seconds": 0.011611875001108274
+    },
+    {
+      "module_id": "oa-029-oa-nacl-all-i02",
+      "category": "overpermissive_access",
+      "label": "insecure",
+      "seconds": 0.011596750002354383
+    },
+    {
+      "module_id": "oa-030-oa-nacl-all-i03",
+      "category": "overpermissive_access",
+      "label": "insecure",
+      "seconds": 0.011239874991588295
+    },
+    {
+      "module_id": "oa-031-oa-lambda-principal-s01",
+      "category": "overpermissive_access",
+      "label": "secure",
+      "seconds": 0.011326790991006419
+    },
+    {
+      "module_id": "oa-032-oa-lambda-principal-s02",
+      "category": "overpermissive_access",
+      "label": "secure",
+      "seconds": 0.011587999993935227
+    },
+    {
+      "module_id": "oa-033-oa-lambda-principal-i01",
+      "category": "overpermissive_access",
+      "label": "insecure",
+      "seconds": 0.011420915980124846
+    },
+    {
+      "module_id": "oa-034-oa-lambda-principal-i02",
+      "category": "overpermissive_access",
+      "label": "insecure",
+      "seconds": 0.011318458011373878
+    },
+    {
+      "module_id": "oa-035-oa-lambda-principal-i03",
+      "category": "overpermissive_access",
+      "label": "insecure",
+      "seconds": 0.01126208298956044
+    },
+    {
+      "module_id": "oa-036-oa-kms-policy-s01",
+      "category": "overpermissive_access",
+      "label": "secure",
+      "seconds": 0.011449917015852407
+    },
+    {
+      "module_id": "oa-037-oa-kms-policy-s02",
+      "category": "overpermissive_access",
+      "label": "secure",
+      "seconds": 0.011534542019944638
+    },
+    {
+      "module_id": "oa-038-oa-kms-policy-i01",
+      "category": "overpermissive_access",
+      "label": "insecure",
+      "seconds": 0.011308499990263954
+    },
+    {
+      "module_id": "oa-039-oa-kms-policy-i02",
+      "category": "overpermissive_access",
+      "label": "insecure",
+      "seconds": 0.011454874998889863
+    },
+    {
+      "module_id": "oa-040-oa-kms-policy-i03",
+      "category": "overpermissive_access",
+      "label": "insecure",
+      "seconds": 0.011346790997777134
+    },
+    {
+      "module_id": "oa-041-oa-iam-s3-star-s01",
+      "category": "overpermissive_access",
+      "label": "secure",
+      "seconds": 0.01144625002052635
+    },
+    {
+      "module_id": "oa-042-oa-iam-s3-star-s02",
+      "category": "overpermissive_access",
+      "label": "secure",
+      "seconds": 0.011965417012106627
+    },
+    {
+      "module_id": "oa-043-oa-iam-s3-star-i01",
+      "category": "overpermissive_access",
+      "label": "insecure",
+      "seconds": 0.011698875023284927
+    },
+    {
+      "module_id": "oa-044-oa-iam-s3-star-i02",
+      "category": "overpermissive_access",
+      "label": "insecure",
+      "seconds": 0.012483541999245062
+    },
+    {
+      "module_id": "oa-045-oa-iam-s3-star-i03",
+      "category": "overpermissive_access",
+      "label": "insecure",
+      "seconds": 0.011797167011536658
+    },
+    {
+      "module_id": "oa-046-oa-sg-postgres-s01",
+      "category": "overpermissive_access",
+      "label": "secure",
+      "seconds": 0.011571459006518126
+    },
+    {
+      "module_id": "oa-047-oa-sg-postgres-s02",
+      "category": "overpermissive_access",
+      "label": "secure",
+      "seconds": 0.01166587500483729
+    },
+    {
+      "module_id": "oa-048-oa-sg-postgres-i01",
+      "category": "overpermissive_access",
+      "label": "insecure",
+      "seconds": 0.011473082995507866
+    },
+    {
+      "module_id": "oa-049-oa-sg-postgres-i02",
+      "category": "overpermissive_access",
+      "label": "insecure",
+      "seconds": 0.011732749990187585
+    },
+    {
+      "module_id": "oa-050-oa-sg-postgres-i03",
+      "category": "overpermissive_access",
+      "label": "insecure",
+      "seconds": 0.011975917004747316
+    },
+    {
+      "module_id": "oa-051-oa-eks-public-s01",
+      "category": "overpermissive_access",
+      "label": "secure",
+      "seconds": 0.011960416013607755
+    },
+    {
+      "module_id": "oa-052-oa-eks-public-s02",
+      "category": "overpermissive_access",
+      "label": "secure",
+      "seconds": 0.011291374976281077
+    },
+    {
+      "module_id": "oa-053-oa-eks-public-i01",
+      "category": "overpermissive_access",
+      "label": "insecure",
+      "seconds": 0.011360292002791539
+    },
+    {
+      "module_id": "oa-054-oa-eks-public-i02",
+      "category": "overpermissive_access",
+      "label": "insecure",
+      "seconds": 0.011251207994064316
+    },
+    {
+      "module_id": "oa-055-oa-eks-public-i03",
+      "category": "overpermissive_access",
+      "label": "insecure",
+      "seconds": 0.011758292006561533
+    },
+    {
+      "module_id": "oa-056-oa-secrets-policy-s01",
+      "category": "overpermissive_access",
+      "label": "secure",
+      "seconds": 0.011407249985495582
+    },
+    {
+      "module_id": "oa-057-oa-secrets-policy-s02",
+      "category": "overpermissive_access",
+      "label": "secure",
+      "seconds": 0.011521875014295802
+    },
+    {
+      "module_id": "oa-058-oa-secrets-policy-i01",
+      "category": "overpermissive_access",
+      "label": "insecure",
+      "seconds": 0.012093292025383562
+    },
+    {
+      "module_id": "oa-059-oa-secrets-policy-i02",
+      "category": "overpermissive_access",
+      "label": "insecure",
+      "seconds": 0.011791415978223085
+    },
+    {
+      "module_id": "oa-060-oa-secrets-policy-i03",
+      "category": "overpermissive_access",
+      "label": "insecure",
+      "seconds": 0.011168583994731307
+    },
+    {
+      "module_id": "enc-001-enc-s3-sse-s01",
+      "category": "encryption_at_rest",
+      "label": "secure",
+      "seconds": 0.011139042006107047
+    },
+    {
+      "module_id": "enc-002-enc-s3-sse-s02",
+      "category": "encryption_at_rest",
+      "label": "secure",
+      "seconds": 0.011210208002012223
+    },
+    {
+      "module_id": "enc-003-enc-s3-sse-i01",
+      "category": "encryption_at_rest",
+      "label": "insecure",
+      "seconds": 0.011278207995928824
+    },
+    {
+      "module_id": "enc-004-enc-s3-sse-i02",
+      "category": "encryption_at_rest",
+      "label": "insecure",
+      "seconds": 0.012543707998702303
+    },
+    {
+      "module_id": "enc-005-enc-s3-sse-i03",
+      "category": "encryption_at_rest",
+      "label": "insecure",
+      "seconds": 0.01319112500641495
+    },
+    {
+      "module_id": "enc-006-enc-ebs-s01",
+      "category": "encryption_at_rest",
+      "label": "secure",
+      "seconds": 0.012345459021162242
+    },
+    {
+      "module_id": "enc-007-enc-ebs-s02",
+      "category": "encryption_at_rest",
+      "label": "secure",
+      "seconds": 0.012299000023631379
+    },
+    {
+      "module_id": "enc-008-enc-ebs-i01",
+      "category": "encryption_at_rest",
+      "label": "insecure",
+      "seconds": 0.012130374991102144
+    },
+    {
+      "module_id": "enc-009-enc-ebs-i02",
+      "category": "encryption_at_rest",
+      "label": "insecure",
+      "seconds": 0.012071000004652888
+    },
+    {
+      "module_id": "enc-010-enc-ebs-i03",
+      "category": "encryption_at_rest",
+      "label": "insecure",
+      "seconds": 0.011746458010748029
+    },
+    {
+      "module_id": "enc-011-enc-rds-s01",
+      "category": "encryption_at_rest",
+      "label": "secure",
+      "seconds": 0.011304749990813434
+    },
+    {
+      "module_id": "enc-012-enc-rds-s02",
+      "category": "encryption_at_rest",
+      "label": "secure",
+      "seconds": 0.011766582989366725
+    },
+    {
+      "module_id": "enc-013-enc-rds-i01",
+      "category": "encryption_at_rest",
+      "label": "insecure",
+      "seconds": 0.011423082993132994
+    },
+    {
+      "module_id": "enc-014-enc-rds-i02",
+      "category": "encryption_at_rest",
+      "label": "insecure",
+      "seconds": 0.011920791992451996
+    },
+    {
+      "module_id": "enc-015-enc-rds-i03",
+      "category": "encryption_at_rest",
+      "label": "insecure",
+      "seconds": 0.011169040983077139
+    },
+    {
+      "module_id": "enc-016-enc-efs-s01",
+      "category": "encryption_at_rest",
+      "label": "secure",
+      "seconds": 0.011388165992684662
+    },
+    {
+      "module_id": "enc-017-enc-efs-s02",
+      "category": "encryption_at_rest",
+      "label": "secure",
+      "seconds": 0.011552457988727838
+    },
+    {
+      "module_id": "enc-018-enc-efs-i01",
+      "category": "encryption_at_rest",
+      "label": "insecure",
+      "seconds": 0.01135424998938106
+    },
+    {
+      "module_id": "enc-019-enc-efs-i02",
+      "category": "encryption_at_rest",
+      "label": "insecure",
+      "seconds": 0.01149916701251641
+    },
+    {
+      "module_id": "enc-020-enc-efs-i03",
+      "category": "encryption_at_rest",
+      "label": "insecure",
+      "seconds": 0.011921041994355619
+    },
+    {
+      "module_id": "enc-021-enc-sns-s01",
+      "category": "encryption_at_rest",
+      "label": "secure",
+      "seconds": 0.011627875006524846
+    },
+    {
+      "module_id": "enc-022-enc-sns-s02",
+      "category": "encryption_at_rest",
+      "label": "secure",
+      "seconds": 0.011173042003065348
+    },
+    {
+      "module_id": "enc-023-enc-sns-i01",
+      "category": "encryption_at_rest",
+      "label": "insecure",
+      "seconds": 0.011552708019735292
+    },
+    {
+      "module_id": "enc-024-enc-sns-i02",
+      "category": "encryption_at_rest",
+      "label": "insecure",
+      "seconds": 0.011284249980235472
+    },
+    {
+      "module_id": "enc-025-enc-sns-i03",
+      "category": "encryption_at_rest",
+      "label": "insecure",
+      "seconds": 0.011939957999857143
+    },
+    {
+      "module_id": "enc-026-enc-sqs-s01",
+      "category": "encryption_at_rest",
+      "label": "secure",
+      "seconds": 0.011644499987596646
+    },
+    {
+      "module_id": "enc-027-enc-sqs-s02",
+      "category": "encryption_at_rest",
+      "label": "secure",
+      "seconds": 0.011740749992895871
+    },
+    {
+      "module_id": "enc-028-enc-sqs-i01",
+      "category": "encryption_at_rest",
+      "label": "insecure",
+      "seconds": 0.01134266599547118
+    },
+    {
+      "module_id": "enc-029-enc-sqs-i02",
+      "category": "encryption_at_rest",
+      "label": "insecure",
+      "seconds": 0.01163854100741446
+    },
+    {
+      "module_id": "enc-030-enc-sqs-i03",
+      "category": "encryption_at_rest",
+      "label": "insecure",
+      "seconds": 0.011572667019208893
+    },
+    {
+      "module_id": "enc-031-enc-logs-s01",
+      "category": "encryption_at_rest",
+      "label": "secure",
+      "seconds": 0.011288167006568983
+    },
+    {
+      "module_id": "enc-032-enc-logs-s02",
+      "category": "encryption_at_rest",
+      "label": "secure",
+      "seconds": 0.011357582989148796
+    },
+    {
+      "module_id": "enc-033-enc-logs-i01",
+      "category": "encryption_at_rest",
+      "label": "insecure",
+      "seconds": 0.01221895799972117
+    },
+    {
+      "module_id": "enc-034-enc-logs-i02",
+      "category": "encryption_at_rest",
+      "label": "insecure",
+      "seconds": 0.011429667007178068
+    },
+    {
+      "module_id": "enc-035-enc-logs-i03",
+      "category": "encryption_at_rest",
+      "label": "insecure",
+      "seconds": 0.011344625003403053
+    },
+    {
+      "module_id": "enc-036-enc-dynamodb-s01",
+      "category": "encryption_at_rest",
+      "label": "secure",
+      "seconds": 0.01116866699885577
+    },
+    {
+      "module_id": "enc-037-enc-dynamodb-s02",
+      "category": "encryption_at_rest",
+      "label": "secure",
+      "seconds": 0.011220165994018316
+    },
+    {
+      "module_id": "enc-038-enc-dynamodb-i01",
+      "category": "encryption_at_rest",
+      "label": "insecure",
+      "seconds": 0.011369707994163036
+    },
+    {
+      "module_id": "enc-039-enc-dynamodb-i02",
+      "category": "encryption_at_rest",
+      "label": "insecure",
+      "seconds": 0.011130541999591514
+    },
+    {
+      "module_id": "enc-040-enc-dynamodb-i03",
+      "category": "encryption_at_rest",
+      "label": "insecure",
+      "seconds": 0.011478500004159287
+    },
+    {
+      "module_id": "enc-041-enc-redshift-s01",
+      "category": "encryption_at_rest",
+      "label": "secure",
+      "seconds": 0.011415624991059303
+    },
+    {
+      "module_id": "enc-042-enc-redshift-s02",
+      "category": "encryption_at_rest",
+      "label": "secure",
+      "seconds": 0.011832499993033707
+    },
+    {
+      "module_id": "enc-043-enc-redshift-i01",
+      "category": "encryption_at_rest",
+      "label": "insecure",
+      "seconds": 0.011409541999455541
+    },
+    {
+      "module_id": "enc-044-enc-redshift-i02",
+      "category": "encryption_at_rest",
+      "label": "insecure",
+      "seconds": 0.011325375002343208
+    },
+    {
+      "module_id": "enc-045-enc-redshift-i03",
+      "category": "encryption_at_rest",
+      "label": "insecure",
+      "seconds": 0.011493500001961365
+    },
+    {
+      "module_id": "enc-046-enc-elasticache-s01",
+      "category": "encryption_at_rest",
+      "label": "secure",
+      "seconds": 0.011765540984924883
+    },
+    {
+      "module_id": "enc-047-enc-elasticache-s02",
+      "category": "encryption_at_rest",
+      "label": "secure",
+      "seconds": 0.011489541007904336
+    },
+    {
+      "module_id": "enc-048-enc-elasticache-i01",
+      "category": "encryption_at_rest",
+      "label": "insecure",
+      "seconds": 0.01149687499855645
+    },
+    {
+      "module_id": "enc-049-enc-elasticache-i02",
+      "category": "encryption_at_rest",
+      "label": "insecure",
+      "seconds": 0.011568374990019947
+    },
+    {
+      "module_id": "enc-050-enc-elasticache-i03",
+      "category": "encryption_at_rest",
+      "label": "insecure",
+      "seconds": 0.011604041006648913
+    },
+    {
+      "module_id": "enc-051-enc-glue-s01",
+      "category": "encryption_at_rest",
+      "label": "secure",
+      "seconds": 0.011630791996140033
+    },
+    {
+      "module_id": "enc-052-enc-glue-s02",
+      "category": "encryption_at_rest",
+      "label": "secure",
+      "seconds": 0.011214375001145527
+    },
+    {
+      "module_id": "enc-053-enc-glue-i01",
+      "category": "encryption_at_rest",
+      "label": "insecure",
+      "seconds": 0.011253333010245115
+    },
+    {
+      "module_id": "enc-054-enc-glue-i02",
+      "category": "encryption_at_rest",
+      "label": "insecure",
+      "seconds": 0.011592333990847692
+    },
+    {
+      "module_id": "enc-055-enc-glue-i03",
+      "category": "encryption_at_rest",
+      "label": "insecure",
+      "seconds": 0.01187241601292044
+    },
+    {
+      "module_id": "enc-056-enc-kinesis-s01",
+      "category": "encryption_at_rest",
+      "label": "secure",
+      "seconds": 0.011511290998896584
+    },
+    {
+      "module_id": "enc-057-enc-kinesis-s02",
+      "category": "encryption_at_rest",
+      "label": "secure",
+      "seconds": 0.011245250003412366
+    },
+    {
+      "module_id": "enc-058-enc-kinesis-i01",
+      "category": "encryption_at_rest",
+      "label": "insecure",
+      "seconds": 0.011773749982239679
+    },
+    {
+      "module_id": "enc-059-enc-kinesis-i02",
+      "category": "encryption_at_rest",
+      "label": "insecure",
+      "seconds": 0.01143049998790957
+    },
+    {
+      "module_id": "enc-060-enc-kinesis-i03",
+      "category": "encryption_at_rest",
+      "label": "insecure",
+      "seconds": 0.01131199998781085
+    },
+    {
+      "module_id": "log-001-log-s3-access-s01",
+      "category": "weak_logging",
+      "label": "secure",
+      "seconds": 0.011287625005934387
+    },
+    {
+      "module_id": "log-002-log-s3-access-s02",
+      "category": "weak_logging",
+      "label": "secure",
+      "seconds": 0.011202333000255749
+    },
+    {
+      "module_id": "log-003-log-s3-access-i01",
+      "category": "weak_logging",
+      "label": "insecure",
+      "seconds": 0.011327708984026685
+    },
+    {
+      "module_id": "log-004-log-s3-access-i02",
+      "category": "weak_logging",
+      "label": "insecure",
+      "seconds": 0.011181625013705343
+    },
+    {
+      "module_id": "log-005-log-s3-access-i03",
+      "category": "weak_logging",
+      "label": "insecure",
+      "seconds": 0.011552250012755394
+    },
+    {
+      "module_id": "log-006-log-cloudtrail-validation-s01",
+      "category": "weak_logging",
+      "label": "secure",
+      "seconds": 0.011252333002630621
+    },
+    {
+      "module_id": "log-007-log-cloudtrail-validation-s02",
+      "category": "weak_logging",
+      "label": "secure",
+      "seconds": 0.01131500001065433
+    },
+    {
+      "module_id": "log-008-log-cloudtrail-validation-i01",
+      "category": "weak_logging",
+      "label": "insecure",
+      "seconds": 0.011923042009584606
+    },
+    {
+      "module_id": "log-009-log-cloudtrail-validation-i02",
+      "category": "weak_logging",
+      "label": "insecure",
+      "seconds": 0.011415665998356417
+    },
+    {
+      "module_id": "log-010-log-cloudtrail-validation-i03",
+      "category": "weak_logging",
+      "label": "insecure",
+      "seconds": 0.011723333998816088
+    },
+    {
+      "module_id": "log-011-log-vpc-flow-s01",
+      "category": "weak_logging",
+      "label": "secure",
+      "seconds": 0.01123274999554269
+    },
+    {
+      "module_id": "log-012-log-vpc-flow-s02",
+      "category": "weak_logging",
+      "label": "secure",
+      "seconds": 0.011541083018528298
+    },
+    {
+      "module_id": "log-013-log-vpc-flow-i01",
+      "category": "weak_logging",
+      "label": "insecure",
+      "seconds": 0.011507666000397876
+    },
+    {
+      "module_id": "log-014-log-vpc-flow-i02",
+      "category": "weak_logging",
+      "label": "insecure",
+      "seconds": 0.011532125005032867
+    },
+    {
+      "module_id": "log-015-log-vpc-flow-i03",
+      "category": "weak_logging",
+      "label": "insecure",
+      "seconds": 0.011180665984284133
+    },
+    {
+      "module_id": "log-016-log-alb-access-s01",
+      "category": "weak_logging",
+      "label": "secure",
+      "seconds": 0.01152775000082329
+    },
+    {
+      "module_id": "log-017-log-alb-access-s02",
+      "category": "weak_logging",
+      "label": "secure",
+      "seconds": 0.011421958013670519
+    },
+    {
+      "module_id": "log-018-log-alb-access-i01",
+      "category": "weak_logging",
+      "label": "insecure",
+      "seconds": 0.011293624993413687
+    },
+    {
+      "module_id": "log-019-log-alb-access-i02",
+      "category": "weak_logging",
+      "label": "insecure",
+      "seconds": 0.011969999992288649
+    },
+    {
+      "module_id": "log-020-log-alb-access-i03",
+      "category": "weak_logging",
+      "label": "insecure",
+      "seconds": 0.011275833006948233
+    },
+    {
+      "module_id": "log-021-log-rds-cw-s01",
+      "category": "weak_logging",
+      "label": "secure",
+      "seconds": 0.01124641700880602
+    },
+    {
+      "module_id": "log-022-log-rds-cw-s02",
+      "category": "weak_logging",
+      "label": "secure",
+      "seconds": 0.01165387500077486
+    },
+    {
+      "module_id": "log-023-log-rds-cw-i01",
+      "category": "weak_logging",
+      "label": "insecure",
+      "seconds": 0.011739332985598594
+    },
+    {
+      "module_id": "log-024-log-rds-cw-i02",
+      "category": "weak_logging",
+      "label": "insecure",
+      "seconds": 0.01124116699793376
+    },
+    {
+      "module_id": "log-025-log-rds-cw-i03",
+      "category": "weak_logging",
+      "label": "insecure",
+      "seconds": 0.011514125013491139
+    },
+    {
+      "module_id": "log-026-log-apigw-s01",
+      "category": "weak_logging",
+      "label": "secure",
+      "seconds": 0.011780750006437302
+    },
+    {
+      "module_id": "log-027-log-apigw-s02",
+      "category": "weak_logging",
+      "label": "secure",
+      "seconds": 0.011241625004913658
+    },
+    {
+      "module_id": "log-028-log-apigw-i01",
+      "category": "weak_logging",
+      "label": "insecure",
+      "seconds": 0.011623458005487919
+    },
+    {
+      "module_id": "log-029-log-apigw-i02",
+      "category": "weak_logging",
+      "label": "insecure",
+      "seconds": 0.011612833011895418
+    },
+    {
+      "module_id": "log-030-log-apigw-i03",
+      "category": "weak_logging",
+      "label": "insecure",
+      "seconds": 0.011551584000699222
+    },
+    {
+      "module_id": "log-031-log-eks-control-s01",
+      "category": "weak_logging",
+      "label": "secure",
+      "seconds": 0.011154124978929758
+    },
+    {
+      "module_id": "log-032-log-eks-control-s02",
+      "category": "weak_logging",
+      "label": "secure",
+      "seconds": 0.011717500019585714
+    },
+    {
+      "module_id": "log-033-log-eks-control-i01",
+      "category": "weak_logging",
+      "label": "insecure",
+      "seconds": 0.011342707992298529
+    },
+    {
+      "module_id": "log-034-log-eks-control-i02",
+      "category": "weak_logging",
+      "label": "insecure",
+      "seconds": 0.011985958000877872
+    },
+    {
+      "module_id": "log-035-log-eks-control-i03",
+      "category": "weak_logging",
+      "label": "insecure",
+      "seconds": 0.011324082995997742
+    },
+    {
+      "module_id": "log-036-log-cloudtrail-missing-s01",
+      "category": "weak_logging",
+      "label": "secure",
+      "seconds": 0.011927874991670251
+    },
+    {
+      "module_id": "log-037-log-cloudtrail-missing-s02",
+      "category": "weak_logging",
+      "label": "secure",
+      "seconds": 0.0113829999754671
+    },
+    {
+      "module_id": "log-038-log-cloudtrail-missing-i01",
+      "category": "weak_logging",
+      "label": "insecure",
+      "seconds": 0.011247374990489334
+    },
+    {
+      "module_id": "log-039-log-cloudtrail-missing-i02",
+      "category": "weak_logging",
+      "label": "insecure",
+      "seconds": 0.011657124996418133
+    },
+    {
+      "module_id": "log-040-log-cloudtrail-missing-i03",
+      "category": "weak_logging",
+      "label": "insecure",
+      "seconds": 0.011751165991881862
+    },
+    {
+      "module_id": "log-041-log-redshift-audit-s01",
+      "category": "weak_logging",
+      "label": "secure",
+      "seconds": 0.011363375000655651
+    },
+    {
+      "module_id": "log-042-log-redshift-audit-s02",
+      "category": "weak_logging",
+      "label": "secure",
+      "seconds": 0.011702040996169671
+    },
+    {
+      "module_id": "log-043-log-redshift-audit-i01",
+      "category": "weak_logging",
+      "label": "insecure",
+      "seconds": 0.011488124990137294
+    },
+    {
+      "module_id": "log-044-log-redshift-audit-i02",
+      "category": "weak_logging",
+      "label": "insecure",
+      "seconds": 0.01159275000100024
+    },
+    {
+      "module_id": "log-045-log-redshift-audit-i03",
+      "category": "weak_logging",
+      "label": "insecure",
+      "seconds": 0.011980040988419205
+    },
+    {
+      "module_id": "log-046-log-msk-broker-s01",
+      "category": "weak_logging",
+      "label": "secure",
+      "seconds": 0.01150008398690261
+    },
+    {
+      "module_id": "log-047-log-msk-broker-s02",
+      "category": "weak_logging",
+      "label": "secure",
+      "seconds": 0.011409457976697013
+    },
+    {
+      "module_id": "log-048-log-msk-broker-i01",
+      "category": "weak_logging",
+      "label": "insecure",
+      "seconds": 0.01158579098409973
+    },
+    {
+      "module_id": "log-049-log-msk-broker-i02",
+      "category": "weak_logging",
+      "label": "insecure",
+      "seconds": 0.011733583000022918
+    },
+    {
+      "module_id": "log-050-log-msk-broker-i03",
+      "category": "weak_logging",
+      "label": "insecure",
+      "seconds": 0.012059333006618544
+    },
+    {
+      "module_id": "log-051-log-waf-s01",
+      "category": "weak_logging",
+      "label": "secure",
+      "seconds": 0.01143054201384075
+    },
+    {
+      "module_id": "log-052-log-waf-s02",
+      "category": "weak_logging",
+      "label": "secure",
+      "seconds": 0.011625666986219585
+    },
+    {
+      "module_id": "log-053-log-waf-i01",
+      "category": "weak_logging",
+      "label": "insecure",
+      "seconds": 0.011592416994972154
+    },
+    {
+      "module_id": "log-054-log-waf-i02",
+      "category": "weak_logging",
+      "label": "insecure",
+      "seconds": 0.012045042007230222
+    },
+    {
+      "module_id": "log-055-log-waf-i03",
+      "category": "weak_logging",
+      "label": "insecure",
+      "seconds": 0.011488499992992729
+    },
+    {
+      "module_id": "log-056-log-elb-access-s01",
+      "category": "weak_logging",
+      "label": "secure",
+      "seconds": 0.01135124999564141
+    },
+    {
+      "module_id": "log-057-log-elb-access-s02",
+      "category": "weak_logging",
+      "label": "secure",
+      "seconds": 0.011483874986879528
+    },
+    {
+      "module_id": "log-058-log-elb-access-i01",
+      "category": "weak_logging",
+      "label": "insecure",
+      "seconds": 0.011553374992217869
+    },
+    {
+      "module_id": "log-059-log-elb-access-i02",
+      "category": "weak_logging",
+      "label": "insecure",
+      "seconds": 0.011489291995530948
+    },
+    {
+      "module_id": "log-060-log-elb-access-i03",
+      "category": "weak_logging",
+      "label": "insecure",
+      "seconds": 0.011335583025356755
+    }
+  ]
+}

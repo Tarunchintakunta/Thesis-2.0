@@ -1,0 +1,3 @@
+source_raw=live_r13
+protocol=baseline+runtime_compare(reps=5)+burst; destroy-after-round via SAM
+2026-09-22T02:38:32Z

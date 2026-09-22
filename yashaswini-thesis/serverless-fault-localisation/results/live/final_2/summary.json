@@ -1,0 +1,85 @@
+{
+  "conditions": {
+    "full": {
+      "requests": 300,
+      "log_bytes": 602992.0,
+      "traces_recorded": 257,
+      "trace_bytes": 2251573.145,
+      "bytes_per_1000_requests": 9515217.15,
+      "latency_median_ms": 943.98,
+      "latency_p95_ms": 1127.3075000000006,
+      "error_share": 0.02,
+      "policy": {
+        "mode": "Active",
+        "reservoir_per_s": 1000,
+        "fixed_rate": 1.0,
+        "log_level": "INFO"
+      }
+    },
+    "policy": {
+      "requests": 300,
+      "log_bytes": 379717.0,
+      "traces_recorded": 139,
+      "trace_bytes": 1271019.0,
+      "bytes_per_1000_requests": 5502453.333333333,
+      "latency_median_ms": 859.25,
+      "latency_p95_ms": 1020.732,
+      "error_share": 0.016666666666666666,
+      "policy": {
+        "mode": "Active",
+        "reservoir_per_s": 1,
+        "fixed_rate": 0.05,
+        "log_level": "ERROR"
+      }
+    },
+    "off": {
+      "requests": 300,
+      "log_bytes": 331523.0,
+      "traces_recorded": 0,
+      "trace_bytes": 0.0,
+      "bytes_per_1000_requests": 1105076.6666666667,
+      "latency_median_ms": 874.9,
+      "latency_p95_ms": 1003.1370000000001,
+      "error_share": 0.02,
+      "policy": {
+        "mode": "PassThrough",
+        "log_level": "ERROR"
+      }
+    }
+  },
+  "reduction_policy_vs_full": 0.42172067682834413,
+  "expected_reduction": 0.5,
+  "latency_tracing_on_vs_off": {
+    "hypothesis": "H0: tracing does not change end-to-end latency",
+    "median_x": 859.25,
+    "median_y": 874.9,
+    "p95_x": 1020.732,
+    "p95_y": 1003.1370000000001,
+    "median_diff": -15.649999999999977,
+    "ci_lo": -30.44549999999994,
+    "ci_hi": -2.728000000000031,
+    "shapiro_p_x": 1.9073310327980897e-26,
+    "shapiro_p_y": 7.411231792666684e-27,
+    "test": "mann_whitney_u",
+    "p": 0.13776661552994188,
+    "effect": -0.07003333333333328,
+    "effect_name": "rank_biserial"
+  },
+  "cost_per_million_requests": {
+    "full": {
+      "logs_ingest_usd": 1.1456848,
+      "xray_recorded_usd": 4.283333333333334,
+      "total_usd": 5.429018133333334
+    },
+    "policy": {
+      "logs_ingest_usd": 0.7214622999999999,
+      "xray_recorded_usd": 2.316666666666667,
+      "total_usd": 3.0381289666666667
+    }
+  },
+  "asymmetry": "the learned baselines run offline; their overhead is a lower bound from their inputs, not a measurement on this service",
+  "learned_lower_bound_bytes_per_1000_requests": null,
+  "learned_lower_bound_note": "data/rcaeval case files absent; live volume/latency/cost still measured; learned lower bound omitted (not invented)",
+  "round": "final_2",
+  "collected_at": "2026-09-21T19:14:07.349353+00:00"
+}

@@ -8,7 +8,7 @@ TF_DIR="${ROOT}/terraform"
 REGION="${AWS_REGION:-${AWS_DEFAULT_REGION:-eu-west-1}}"
 export AWS_DEFAULT_REGION="$REGION"
 RUN_ID="$(date -u +%Y%m%dT%H%M%SZ)"
-OUT_DIR="${ROOT}/results/live"
+OUT_DIR="${OUT_DIR:-${ROOT}/results/live}"
 mkdir -p "$OUT_DIR"
 APPLY_OK=0
 DESTROY_OK=0

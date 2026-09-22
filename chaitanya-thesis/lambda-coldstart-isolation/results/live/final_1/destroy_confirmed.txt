@@ -1,0 +1,1 @@
+destroy_confirmed=yes (historical CHAITANYA_R13_DONE + sam delete)
