@@ -1,0 +1,103 @@
+{
+  "collected_at": "2026-09-22T12:41:43.933495+00:00",
+  "region": "eu-west-1",
+  "round": "rss_size_final_1",
+  "protocol_note": "RQ limbs: peak RSS + avg CPU on same stack; topology 1xt3.small vs 2xt3.micro; n=250; destroy-after. Size ladder deferred to later packs if needed.",
+  "topology": {
+    "scale_up": {
+      "instance_id": "i-03d3a12fc45c280d3",
+      "instance_type": "t3.small",
+      "vcpus": 2,
+      "count": 1
+    },
+    "scale_out": {
+      "instance_ids": [
+        "i-02c333c4b6627469e",
+        "i-08cb8c0fbcf97240a"
+      ],
+      "instance_type": "t3.micro",
+      "vcpus": 1,
+      "count": 2,
+      "aggregate_vcpus": 2,
+      "private_ips": [
+        "172.31.11.34",
+        "172.31.13.92"
+      ],
+      "scheduler_private_ip": "172.31.11.34"
+    }
+  },
+  "matrix_size": 250,
+  "scale_up": {
+    "role": "scale-up",
+    "mode": "numpy_matmul",
+    "size": 250,
+    "workers": 2,
+    "status": "ok",
+    "elapsed_s": 0.002467039000009663,
+    "peak_rss_mb": 37.43359375,
+    "avg_cpu_percent": 0.0,
+    "checksum": 58.44198702248372,
+    "hostname": "ip-172-31-0-109.eu-west-1.compute.internal",
+    "error": null
+  },
+  "scale_out_on_node": [
+    {
+      "role": "scale-out",
+      "mode": "dask_localcluster_on_node",
+      "size": 250,
+      "workers": 1,
+      "status": "ok",
+      "elapsed_s": 0.5077145039999778,
+      "peak_rss_mb": 74.01953125,
+      "avg_cpu_percent": 41.6,
+      "checksum": 58.44198702248372,
+      "hostname": "ip-172-31-11-34.eu-west-1.compute.internal",
+      "error": null
+    },
+    {
+      "role": "scale-out",
+      "mode": "dask_localcluster_on_node",
+      "size": 250,
+      "workers": 1,
+      "status": "ok",
+      "elapsed_s": 0.5234936450000021,
+      "peak_rss_mb": 74.0703125,
+      "avg_cpu_percent": 43.90909090909091,
+      "checksum": 58.44198702248372,
+      "hostname": "ip-172-31-13-92.eu-west-1.compute.internal",
+      "error": null
+    }
+  ],
+  "scale_out_multi_instance": {
+    "status": "ok",
+    "workers_registered": 2,
+    "futures_smoke": [
+      0,
+      1,
+      4,
+      9
+    ],
+    "dask_array_matmul": "ok",
+    "mode": "dask_multi_instance_matmul",
+    "size": 250,
+    "elapsed_s": 0.2531926530000419,
+    "checksum": 58.44198702248372,
+    "scheduler": "tcp://172.31.11.34:8786",
+    "hostname": "ip-172-31-11-34.eu-west-1.compute.internal",
+    "worker_addrs": [
+      "tcp://172.31.11.34:34991",
+      "tcp://172.31.13.92:36899"
+    ],
+    "note": "Scheduler on scale-out-0; one dask-worker per t3.micro (2 workers total); final_1 gate.",
+    "peak_rss_mb": 72.48828125,
+    "avg_cpu_percent": 44.44
+  },
+  "comparison": {
+    "scale_up_elapsed_s": 0.002467039000009663,
+    "scale_out_on_node_mean_elapsed_s": 0.5156040744999899,
+    "scale_out_multi_instance_elapsed_s": 0.2531926530000419
+  },
+  "ami_id": "ami-0ee768eb261a01ed2",
+  "name_prefix": "matrix-rss-f${ROUND}",
+  "destroy_after": true
+}

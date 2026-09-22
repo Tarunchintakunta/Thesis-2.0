@@ -314,8 +314,8 @@ if on_nodes:
 summary = {
     "collected_at": datetime.now(timezone.utc).isoformat(),
     "region": region,
-    "round": f"rss_size_final_{'+str(ROUND)+'}",
-    "protocol_note": "ONE confirmatory matched Free-Tier gate after CA2 100% (post ec2_round2). Same topology 1xt3.small vs 2xt3.micro; destroy-after. Final-3 not started.",
+    "round": "rss_size_final_${ROUND}",
+    "protocol_note": "RQ limbs: peak RSS + avg CPU; 1xt3.small vs 2xt3.micro; destroy-after.",
     "topology": {
         "scale_up": {"instance_id": up, "instance_type": "t3.small", "vcpus": 2, "count": 1},
         "scale_out": {
