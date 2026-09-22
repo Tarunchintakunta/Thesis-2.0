@@ -49,7 +49,7 @@ PY
 done
 
 python3 - "$OUT_ROOT" <<'PY'
-import json
+import json, sys
 from pathlib import Path
 from datetime import datetime, timezone
 root = Path(sys.argv[1])

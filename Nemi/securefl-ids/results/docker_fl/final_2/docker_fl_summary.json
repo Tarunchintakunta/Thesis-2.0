@@ -1,0 +1,17 @@
+{
+  "mode": "docker_compose_multi_container",
+  "num_clients": 2,
+  "num_rounds": 3,
+  "sample_rows": 2500,
+  "accuracy": 0.908,
+  "f1": 0.9371584699453552,
+  "elapsed_s": 2.571866989135742,
+  "containers": [
+    "securefl-client0",
+    "securefl-client1",
+    "securefl-orchestrator"
+  ],
+  "note": "Clients are separate containers; FedAvg via shared volume. Not K8s.",
+  "regression_round": 2,
+  "collected_at": "2026-09-22T12:28:45.819521+00:00"
+}
