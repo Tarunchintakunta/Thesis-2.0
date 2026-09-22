@@ -6,7 +6,7 @@
 |-------|-------|
 | Student | Chaitanya |
 | Artefact root | `chaitanya-thesis/lambda-coldstart-isolation/` |
-| Honest CA2 floor | **Improved (~82)** — confirmatory n≥30 H1/H2 Demonstrated ×3; H3/H4 confirmatory **dated-deferred 2026-09-22** (lite H3/H4 retained as directional) |
+| Honest CA2 floor | **Closed under disclosed scope (~82)** — confirmatory n≥30 H1/H2 Demonstrated ×3; H3/H4 confirmatory **dated-deferred 2026-09-22** (lite H3/H4 directional only) |
 | Eval completeness | `confirmatory_n30/round_1\|2\|3` **all on disk** (r1/r2 offline-restored from `data/raw/live_conf_n30_r{1,2}`; r3 live). Destroy-after each. |
 | AWS | eu-west-1, arm64 Lambda; destroy-after |
 | Handoff date | 2026-09-22 |

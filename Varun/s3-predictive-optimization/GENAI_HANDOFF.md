@@ -6,7 +6,7 @@
 |-------|-------|
 | Student | Varun Gampa |
 | Artefact root | `Varun/s3-predictive-optimization/` |
-| Honest CA2 floor | **Improved (~88)** — confirmatory independent live packs **r4 + r5** with distinct `raw_costs` SHAs; archival r1–r3 retained but **not** counted as independent. Allocation-accuracy limb still weak on dry-run improved arm. |
+| Honest CA2 floor | **Closed under disclosed scope (~88)** — confirmatory independent live packs **r4 + r5** with distinct `raw_costs` SHAs; archival r1–r3 not counted as independent; allocation Acc vs Lifecycle **negative** (retained) |
 | Eval completeness | Dry-run + live lite + archival `evaluation_r1\|r2\|r3` + **fresh `evaluation_r4\|r5`** (destroy-after) |
 | AWS | Live S3 eu-west-1; stack destroyed after r5 (2026-09-22) |
 | Handoff date | 2026-09-22 |
