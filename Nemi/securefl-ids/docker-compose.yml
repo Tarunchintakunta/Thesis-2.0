@@ -1,0 +1,56 @@
+# Multi-container SecureFL-IDS: 1 orchestrator + 2 FL clients (not in-process).
+# Shared volume exchanges global/client weight blobs each round.
+services:
+  client0:
+    build: .
+    container_name: securefl-client0
+    environment:
+      ROLE: client
+      CLIENT_ID: "0"
+      NUM_CLIENTS: "2"
+      NUM_ROUNDS: "3"
+      SAMPLE_ROWS: "2500"
+      SHARED_DIR: /shared
+    volumes:
+      - fl_shared:/shared
+    command: ["python", "scripts/run_docker_fl_worker.py"]
+    networks: [flnet]
+
+  client1:
+    build: .
+    container_name: securefl-client1
+    environment:
+      ROLE: client
+      CLIENT_ID: "1"
+      NUM_CLIENTS: "2"
+      NUM_ROUNDS: "3"
+      SAMPLE_ROWS: "2500"
+      SHARED_DIR: /shared
+    volumes:
+      - fl_shared:/shared
+    command: ["python", "scripts/run_docker_fl_worker.py"]
+    networks: [flnet]
+
+  orchestrator:
+    build: .
+    container_name: securefl-orchestrator
+    depends_on: [client0, client1]
+    environment:
+      ROLE: orchestrator
+      NUM_CLIENTS: "2"
+      NUM_ROUNDS: "3"
+      SAMPLE_ROWS: "2500"
+      SHARED_DIR: /shared
+      OUT_JSON: /shared/docker_fl_summary.json
+    volumes:
+      - fl_shared:/shared
+      - ./results/docker_fl:/out
+    command: ["python", "scripts/run_docker_fl_worker.py"]
+    networks: [flnet]
+
+volumes:
+  fl_shared:
+
+networks:
+  flnet:
+    driver: bridge
