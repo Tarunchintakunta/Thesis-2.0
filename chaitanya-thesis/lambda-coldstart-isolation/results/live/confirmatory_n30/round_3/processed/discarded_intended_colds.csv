@@ -1,0 +1,10 @@
+phase,function,memory_mb,intended_cold,came_back_warm
+package_size,java-default,1024,30,0
+package_size,java-optimised,1024,30,0
+package_size,nodejs-default,1024,30,0
+package_size,nodejs-optimised,1024,30,0
+package_size,python-default,1024,30,0
+package_size,python-optimised,1024,30,0
+runtime_compare,java-optimised,1024,30,1
+runtime_compare,nodejs-optimised,1024,30,0
+runtime_compare,python-optimised,1024,30,0
