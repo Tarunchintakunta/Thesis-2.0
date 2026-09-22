@@ -240,7 +240,7 @@ Findings support the gap framing: steady-state optima (long VT / aggressive sett
 
 **Contribution:** An open, reproducible SQS fault-injection artefact measuring message-level reliability and recovery while varying VT and MRC, with Kyrychenko steady-state baseline as the no-fault reference and honest null confirmatory tests.
 
-**Conclusion (evidence-bound):** Under the tested faults, **loss stayed at 0** and **MRC policy strongly gated DLQ capture**; **VT influences recovery directionally on live n=3 means** but confirmatory tests remain **null** on localsim and **untested by Holm on live**. CA2 research floor is **PARTIAL (~78)**, not complete.
+**Conclusion (evidence-bound):** Under the tested faults, **loss stayed at 0** and **MRC policy strongly gated DLQ capture**; **VT influences recovery directionally on live n=3 means** but confirmatory tests remain **null** on localsim and **untested by Holm on live**. CA2 research floor is **closed under disclosed lite scope (~78)**, not perfect-marks complete.
 
 ## 18. What changed or improved during the evaluation process
 

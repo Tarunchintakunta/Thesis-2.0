@@ -233,7 +233,7 @@ Supplies the managed-broker + disconnect + multi-QoS + per-message log cell that
 | `../CA2_COMMITMENTS.md` | Binding formal contract |
 | `../DESIGN_RATIONALE_BEYOND_CA2.md` | Floor vs beyond-floor formal depth |
 | `../baseline_papers/BASELINE_PAPER.md` | Shvaika gap mapping |
-| `../../_analysis_extract/reports/INDEPENDENT_REVIEW_UDAY.md` | Honest floor PARTIAL ~70 |
+| `../../_analysis_extract/reports/INDEPENDENT_REVIEW_UDAY.md` | Honest floor closed under lite scope ~70 |
 | `configs/experiment.yaml` | dry_run / lite / smoke / formal scales |
 | `configs/pricing.yaml` | Unit prices for `usd_est` |
 | `configs/analysis_plan.yaml` | Analysis plan |

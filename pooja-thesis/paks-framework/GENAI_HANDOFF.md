@@ -232,7 +232,7 @@ Independent review: “Multi-intensity + stats | Partial | n=12 steps ×3 seeds;
 
 **Contribution:** A fail-closed PAKS artefact with TRACE prediction on public GCT/Alibaba **samples**, and a **causal** Free-Tier AWS k3s evaluation path that observes a real HorizontalPodAutoscaler controller versus predictive Scale — with three destroy-confirmed lite finals.
 
-**Conclusion:** Research-scope CA2 is **PARTIAL (~62)**. Differentiating live packs and causal baseline are demonstrated; HPA undershoot, LSTM&lt;persistence, SIMULATED cost, and open TF/memory/multi-intensity limbs prevent a 100% floor or a confirmatory PAKS-win claim.
+**Conclusion:** Research-scope CA2 is **closed under disclosed causal-lite scope (~62)**. Differentiating live packs and causal baseline are demonstrated; HPA undershoot, LSTM&lt;persistence, SIMULATED cost, and open TF/memory/multi-intensity limbs remain beyond-floor — not a confirmatory PAKS-win claim.
 
 ## 18. What changed or improved during the evaluation process
 
