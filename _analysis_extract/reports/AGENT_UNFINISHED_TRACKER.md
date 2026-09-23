@@ -59,7 +59,7 @@
 | SOT-Va | Varun missing ONE-file SoT + scripted remediable audit | Write SoT + `audit_independence_root_causes.py`; EXIT 0 | **CLOSED** — `Varun/CA2_PROPOSED_VS_ARTEFACT.md`; audit EXIT 0; [Varun SoT](bc-2f6b9d76-b1ca-5066-9ca7-5722396246b7) |
 | SOT-Vi | Vikas missing ONE-file SoT + scripted remediable audit | Write SoT + `audit_campaign_root_causes.py`; EXIT 0 | **CLOSED** — `vikas-thesis/CA2_PROPOSED_VS_ARTEFACT.md`; audit EXIT 0 |
 | SOT-Ve | Venkat missing ONE-file SoT + scripted remediable audit | Write SoT + `audit_size_ladder_root_causes.py`; EXIT 0 | **CLOSED** — **MOVE ALLOWED** (audit remediable=0; anti-crossover retained; full live 200–2000 WONTFIX) |
-| SOT-RESTORE | Branch churn dropped uncommitted SoTs (Mehak/Vish/Chaitanya/Yash/Uday/Anji/Nemi/Pooja) | Restore SoTs + audit scripts onto integration branch; EXIT 0 each | **IN_PROGRESS** |
+| SOT-RESTORE | Branch churn dropped uncommitted SoTs (Mehak/Vish/Chaitanya/Yash/Uday/Anji/Nemi/Pooja) | Restore SoTs + audit scripts onto integration branch; EXIT 0 each | **IN_PROGRESS** — Nemi+Pooja restored this commit; others pending |
 
 
 
@@ -94,7 +94,7 @@
 **Noticed by agent:** Goal marked **complete** under goal-defined CA2 100% (= research-scope match after dated amendments), **not** marketing perfect marks.  
 **Proof:** `_analysis_extract/reports/REQUIREMENT_COMPLETION_PROOF.md`  
 **Runtime:** 43h 34m 3s  
-**Remediable tracker rows:** soft N CLOSED; **SOT-RESTORE IN_PROGRESS** (8 SoTs lost to uncommitted branch churn).  
-**Landed on this branch:** Rasool / Varun / Venkat (+ Vikas cherry-pick next).  
+**Remediable tracker rows:** soft N CLOSED; **SOT-RESTORE IN_PROGRESS** (Nemi+Pooja restored; Mehak/Vish/Chaitanya/Yash/Uday/Anji still pending).  
+**Landed on this branch:** Rasool / Varun / Venkat / Vikas + **Nemi** + **Pooja**.  
 **If anything new appears unfinished:** add a row here immediately — never silently drop.
 
