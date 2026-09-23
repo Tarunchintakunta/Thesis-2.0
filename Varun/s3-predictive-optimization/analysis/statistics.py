@@ -15,7 +15,7 @@ def wilcoxon_paired(sample1: Sequence[float], sample2: Sequence[float], alpha: f
 
 
 def multi_workload_protocol(results_by_workload: Dict[str, Dict], alpha: float = 0.05) -> Dict:
- """Success criterion: significant cost cut on ≥2/3 named workloads.
+    """Success criterion: significant cost cut on ≥2/3 named workloads.
 
     Each value must already contain paired cost arrays `baseline` and `improved`.
     Missing workloads are reported, not filled.

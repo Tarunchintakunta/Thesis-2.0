@@ -5,8 +5,8 @@
     python scripts/estimate_cost.py --config configs/fault_campaigns.yaml --campaign A_vt_consumer_kill
     python scripts/estimate_cost.py --orders 1000 --repeats 5
 
-It simulates every planned run, prices the request counts with
-configs/pricing.yaml and applies a x2 safety factor. Free tier is ignored.
+Prices planned runs from order counts via configs/pricing.yaml with a x2
+safety factor (no local simulator).
 """
 from __future__ import annotations
 
