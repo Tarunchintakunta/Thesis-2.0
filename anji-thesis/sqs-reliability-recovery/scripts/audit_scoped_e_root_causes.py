@@ -152,7 +152,8 @@ def main() -> int:
         raw_dirs = [p for p in raw_dirs if p.is_dir()]
         man_files = list(manifests.glob("*.json")) if manifests.exists() else []
 
-        if len(raw_dirs) != EXPECTED_RUNS:
+        # raw/ is gitignored (**/results/**/raw/); optional when manifests+summary = 20/20
+        if raw.exists() and len(raw_dirs) != EXPECTED_RUNS:
             remediable["scoped_e_raw_count_mismatch"] += 1
             findings.append(
                 {
@@ -160,6 +161,22 @@ def main() -> int:
                     "remediable": True,
                     "n": len(raw_dirs),
                     "expected": EXPECTED_RUNS,
+                }
+            )
+        elif not raw.exists():
+            findings.append(
+                {
+                    "kind": "scoped_e_raw_gitignored_ok",
+                    "remediable": False,
+                    "note": "raw/ absent (gitignore); manifests+summary are binding",
+                }
+            )
+        else:
+            findings.append(
+                {
+                    "kind": "scoped_e_raw_present",
+                    "remediable": False,
+                    "n": len(raw_dirs),
                 }
             )
         if len(rows) != EXPECTED_RUNS:
