@@ -20,7 +20,7 @@ def run_centralised_experiment(
 ):
     """Train centralised CNN and write summary JSON."""
     print("=" * 70)
-    print("Centralised IDS Comparator (CA2 traditional baseline)")
+    print("Centralised IDS Comparator (traditional baseline)")
     print("=" * 70)
 
     config = {

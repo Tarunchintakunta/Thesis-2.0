@@ -4,7 +4,7 @@ PY ?= .venv/bin/python
 RESULTS ?= results
 BUCKET ?= $(shell cd iac && terraform output -raw results_bucket 2>/dev/null)
 
-.PHONY: test lint tf-check design tfvars build deploy seed pilot run-matrix collect analyse teardown smoke prices aws-verify
+.PHONY: test lint tf-check design tfvars build deploy seed pilot run-matrix collect analyse teardown smoke prices
 
 test:
 	$(PY) -m pytest
@@ -55,5 +55,3 @@ smoke:
 prices:
 	$(PY) analysis/fetch_prices.py --region eu-west-1
 
-aws-verify:
-	@bash ../../scripts/aws-verify/rassool-dynamodb.sh

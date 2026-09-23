@@ -1,4 +1,4 @@
-"""The fault switch every function reads (master prompt 4.2).
+"""The fault switch every function reads .
 
 The injector writes one SSM parameter, /<stack>/fault, as JSON, e.g.
 

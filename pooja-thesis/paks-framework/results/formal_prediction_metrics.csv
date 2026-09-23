@@ -1,3 +1,0 @@
-n_train_windows,n_test_windows,lookback,hidden_size,backend,mae_train,rmse_train,mae_test,rmse_test,mae_persistence_test,rmse_persistence_test,evidence,split,policy,dataset,note,units
-2500,3710,12,16,numpy-lstm,0.13850769146087055,1.923646695568169,0.10245627032965798,1.349423827384825,0.047700192164420493,0.6552925298995473,TRACE,held-out jobs (no window leakage),lstm-job-windows,gct2011,,
-201,87,12,16,numpy-lstm,,,3.4349288717377107,4.302016728890062,2.8025914934601657,3.9551956279023233,TRACE,last 30% of cluster bins,lstm-cluster-series,alibaba,"Public OSS range sample, SHA256-verified; resampled to 300s mean CPU. Scaling loop uses Alibaba RANGE sample (CPU%×10 demand units) because primary GCT cluster bins were too few.",cpu_pct_mean

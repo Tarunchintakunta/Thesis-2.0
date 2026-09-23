@@ -1,9 +1,0 @@
-{
-  "n_modules": 240,
-  "n_insecure": 144,
-  "checkov_identified_pct": 91.66666666666666,
-  "tfsec_identified_pct": 61.80555555555556,
-  "static_union_identified_pct": 93.75,
-  "opa_identified_pct": 60.416666666666664,
-  "checklist_identified_pct": 81.25
-}

@@ -1,7 +1,5 @@
-# Live AWS key-cell smoke for CA2 residual evidence.
 # NOT a full 350-cell localsim redo. Four cells × 1 repeat, scaled load.
 # Contrasts: VT under consumer_kill; MRC under unhandled_error.
-# Beyond-CA2 confirmatory n=3 (same cells): configs/live_key_cells_n3.yaml.
 seed: 9001
 defaults:
   repeats: 1

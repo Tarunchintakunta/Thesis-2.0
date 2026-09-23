@@ -1,9 +1,0 @@
-{
-  "N": 1000,
-  "required": 392,
-  "binding": "P2 latency",
-  "provisional": 1000,
-  "budget_max_n": 2431,
-  "reason": "the pilot supports the provisional N (largest requirement 392 <= 1000)",
-  "source": "live"
-}

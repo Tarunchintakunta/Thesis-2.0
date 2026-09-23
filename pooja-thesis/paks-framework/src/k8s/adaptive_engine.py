@@ -153,7 +153,7 @@ def run_reactive_hpa_k8s(
                 "evidence": evidence,
             }
         )
-        current = desired  # applied next loop iteration (simulated control interval)
+        current = desired
     return np.asarray(pods, dtype=float), snapshots, client
 
 

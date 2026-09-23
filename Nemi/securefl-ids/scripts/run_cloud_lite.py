@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Minimal live-cloud FL round: train on this host, persist rounds to S3, emit CW metrics.
 
-Lite floor (CA2): 2 in-process clients, 3 rounds, small UNSW/synthetic sample.
-Not a 50-round / 2.5M-flow campaign. Docker/K8s is beyond-CA2.
+Lite floor: 2 in-process clients, 3 rounds, small UNSW/synthetic sample.
+Not a 50-round / 2.5M-flow campaign.
 """
 from __future__ import annotations
 
@@ -463,9 +463,9 @@ def main() -> int:
             "namespace": "SecureFL-IDS",
         },
         "limitations": [
-            "Lite floor only: 2 clients × 3 rounds × small sample; not full 2.5M-flow / 50-round CA2 campaign.",
-            "Federated clients are in-process on one t3.micro; multi-instance WAN FL is beyond-CA2.",
-            "Docker/Kubernetes not executed (beyond-CA2; see DESIGN_RATIONALE_BEYOND_CA2.md).",
+            "Lite floor only: 2 clients × 3 rounds × small sample; not full 2.5M-flow / 50-round campaign.",
+            "Federated clients are in-process on one t3.micro; multi-instance WAN FL is out of scope here.",
+            "Docker/Kubernetes not executed in this lite script.",
             "Did not use Lambda (Vikas campaign_r5 holds shared ConcurrentExecutions).",
         ],
         "destroy_after": True,

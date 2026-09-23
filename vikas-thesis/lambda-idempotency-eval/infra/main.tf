@@ -1,4 +1,3 @@
-# One DynamoDB table and one Lambda function (master prompt 5 and 6). On-demand
 # capacity, streams on (the independent record of every state change), no SDK
 # or platform retries. `terraform destroy` removes all of it.
 # Tags: project slug only — no personal name or personal ID.

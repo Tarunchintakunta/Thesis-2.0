@@ -56,7 +56,6 @@ def read_stream(streams, stream_arn: str, max_empty: int = 10, pause: float = 0.
                 events.append({
                     "event": r["eventName"], "seq": r["dynamodb"].get("SequenceNumber"), "pk": pk,
                     "kind": "business" if kind == "REQ" else "idem_key", "request_id": rid,
-                    # item version after / before the change (master prompt 5 ground-truth log)
                     "exec_id": _s(new, "exec_id"), "delivery": _n(new, "delivery"), "status": _s(new, "status"),
                     "old_exec_id": _s(old, "exec_id"), "old_delivery": _n(old, "delivery"),
                     "old_status": _s(old, "status"),

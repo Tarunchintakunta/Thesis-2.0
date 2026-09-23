@@ -49,7 +49,6 @@ leg2-baselines:
 leg2: leg2-rules leg2-baselines
 	$(PY) -m eval.leg2 --raw results/rcaeval/raw --out results/rcaeval --figures figures/rcaeval
 
-# ---- live AWS (own account; see docs/CONFIGURATION_MANUAL.md) ----
 build:
 	sam build
 
@@ -86,5 +85,3 @@ lite-overhead-help:
 	@echo "See docs/LITE_LEG3_OVERHEAD.md — destroy after; tags: project/managed_by/purpose/data only"
 	@echo "Gate: account ConcurrentExecutions headroom before apply (shared student account)."
 
-aws-verify:
-	@bash ../../scripts/aws-verify/yashaswini-serverless.sh

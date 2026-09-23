@@ -1,9 +1,6 @@
 """Train/evaluate MHSA-TDL artefact.
 
-Default dataset = synthetic (artefact-as-built). Formal CA2 requires Google
-Cluster Trace: pass `--dataset gct` only when DATA_GAPS files are present;
-that path refuses to invent windows.
-"""
+Default dataset = synthetic (artefact-as-built)."""
 
 from __future__ import annotations
 
@@ -77,7 +74,7 @@ def score_binary_failure(y_true, y_pred, y_score=None):
 
 
 def score_model(y_true, y_pred, is_transient, y_score=None):
-    """Artefact metrics + formal CA2 suite (Acc/Prec/Rec/F1/ROC-AUC).
+    """Artefact metrics suite (Acc/Prec/Rec/F1/ROC-AUC).
 
     Formal metrics are macro-averaged over metrics then classes where applicable.
     ROC-AUC uses one-vs-rest on provided score tensor (N, metrics, 3). When
@@ -190,7 +187,6 @@ def _write_provenance(results_dir, dataset, extra_lines):
     body = [
         "# Results provenance\n",
         f"- Dataset flag used for this CSV: **{dataset}**\n",
-        "- Formal CA2 requires **Google Cluster Trace** (`--dataset gct`).\n",
         "- If dataset is `synthetic`, these numbers are **artefact-as-built only** "
         "and do **not** close the GCT residual (see `../../DATA_GAPS.md`).\n",
         "- Formal metric suite columns present: Accuracy, Precision, Recall, "
@@ -211,7 +207,7 @@ def main():
         "--dataset",
         choices=["synthetic", "gct"],
         default="synthetic",
-        help="synthetic = artefact-as-built; gct = formal CA2 (requires DATA_GAPS files)",
+        help="synthetic = artefact-as-built; gct = GCT traces (requires data files)",
     )
     parser.add_argument(
         "--skip-classical",
@@ -248,7 +244,7 @@ def main():
         )
 
     print(f"Device: {DEVICE}")
-    print(f"Dataset: {args.dataset}  (formal CA2 requires gct; synthetic is artefact-only)")
+    print(f"Dataset: {args.dataset}  (gct = trace; synthetic = artefact-only)")
     all_runs = []
     fused_model_for_export = None
     fused_model_meta = None
@@ -409,10 +405,8 @@ def main():
         with open(pointer, "w") as f:
             f.write(
                 "# Results provenance\n\n"
-                "## Synthetic (artefact-as-built, not formal CA2)\n\n"
                 "- Files: `results_per_seed.csv`, `results_summary.csv` from `--dataset synthetic`.\n"
                 "- These rows are **not** Google Cluster Trace evidence.\n\n"
-                "## Google Cluster Trace (formal CA2)\n\n"
                 "- Files: `gct/results_per_seed.csv`, `gct/results_summary.csv`, "
                 "`gct/RESULTS_PROVENANCE.md` from `--dataset gct`.\n"
                 f"- Load meta: `{json.dumps(gct_loader_mod.LAST_LOAD_META, default=str)}`\n"

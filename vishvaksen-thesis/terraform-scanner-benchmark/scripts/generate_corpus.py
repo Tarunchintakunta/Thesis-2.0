@@ -160,7 +160,6 @@ def write_corpus(out_dir: Path) -> list[ModuleSpec]:
         "categories": list(CATEGORIES),
         "ethics": "evaluation_only_no_apply",
         "scale_note": (
-            "Formal CA2 N = 60 modules/category × 4 = 240; 60% defective "
             "(36 insecure + 24 secure per category)."
         ),
         "counts": {},

@@ -4,7 +4,6 @@
 # publicationDate 2026-09-11T12:44:22Z, table class Standard, region EU (Ireland).
 # Refresh with: python analysis/fetch_prices.py --region eu-west-1
 # Cost per 10k ops leaves out storage, backups and data transfer on purpose
-# (master prompt 2.3) - only the request path the configuration controls.
 region: eu-west-1
 source: AWS Price List API (AmazonDynamoDB offer file)
 publication_date: "2026-09-11T12:44:22Z"

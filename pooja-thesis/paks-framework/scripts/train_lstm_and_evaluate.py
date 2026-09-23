@@ -87,7 +87,7 @@ def main() -> int:
 
     print("PAKS formal driver — LSTM + K8s dry-run vs HPA. No live AWS/K8s apply.")
     if args.dataset == "synthetic":
-        print("WARNING: --dataset synthetic is PROXY, not formal CA2 evidence.")
+        print("WARNING: --dataset synthetic is PROXY, not trace evidence.")
 
     if args.backend == "tensorflow":
         require_tensorflow()

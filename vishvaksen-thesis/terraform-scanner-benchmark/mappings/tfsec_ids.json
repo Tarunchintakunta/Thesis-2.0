@@ -72,5 +72,5 @@
     "aws-msk-enable-logging",
     "aws-waf-enable-logging"
   ],
-  "_note": "A priori shipped-check mapping from tfsec AWS rules to the four CA2 categories."
+  "_note": "Shipped-check mapping from tfsec AWS rules to the four labelled categories."
 }

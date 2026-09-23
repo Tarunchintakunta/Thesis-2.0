@@ -1,7 +1,7 @@
 variable "region" {
   type        = string
   default     = "eu-west-1"
-  description = "Single-region campaign (formal CA2 bound)."
+  description = ""
 }
 
 variable "name_prefix" {
@@ -23,7 +23,7 @@ variable "stage" {
 variable "device_count" {
   type        = number
   default     = 5
-  description = "Formal CA2 holds device count at five; smoke may use fewer via TF_VAR."
+  description = ""
 }
 
 variable "lambda_memory_mb" {

@@ -1,4 +1,4 @@
-"""Leg 3: monitoring overhead on the live rig (master prompt 4.4, 4.5).
+"""Leg 3: monitoring overhead on the live rig .
 
 Each telemetry condition (configs/experiment.yaml, tracing: full / policy / off)
 runs the same steady load for the same time. Per condition:

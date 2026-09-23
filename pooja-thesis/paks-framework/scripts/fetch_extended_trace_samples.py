@@ -56,7 +56,7 @@ def download(url: str, dest: Path, expected_sha256: str | None = None, timeout: 
         print(f"already present and SHA256-verified: {dest}")
         return dest
     print(f"GET {url}")
-    req = urllib.request.Request(url, headers={"User-Agent": "paks-ca2-sample/1.0"})
+    req = urllib.request.Request(url, headers={"User-Agent": "paks-sample/1.0"})
     with urllib.request.urlopen(req, timeout=timeout) as resp, dest.open("wb") as out:
         while True:
             chunk = resp.read(1 << 20)
@@ -80,7 +80,7 @@ def download_range(url: str, dest: Path, nbytes: int, expected_sha256: str | Non
     print(f"GET {url} Range bytes=0-{nbytes - 1}")
     req = urllib.request.Request(
         url,
-        headers={"User-Agent": "paks-ca2-sample/1.0", "Range": f"bytes=0-{nbytes - 1}"},
+        headers={"User-Agent": "paks-sample/1.0", "Range": f"bytes=0-{nbytes - 1}"},
     )
     with urllib.request.urlopen(req, timeout=timeout) as resp, dest.open("wb") as out:
         while True:

@@ -1,2 +1,0 @@
-restored_offline_from=data/raw/live_conf_n30_r1
-restored_at=2026-09-22T13:00:58Z

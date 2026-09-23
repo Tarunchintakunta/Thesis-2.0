@@ -1,8 +1,3 @@
-"""Formal CA2 metrics with explicit simulated vs live / trace evidence tags.
-
-Required: MAE, RMSE, utilisation, response time, throughput, scaling latency,
-infrastructure cost, SLA / availability.
-"""
 
 from __future__ import annotations
 

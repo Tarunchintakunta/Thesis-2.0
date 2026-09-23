@@ -1,6 +1,4 @@
 #!/usr/bin/env bash
-# CA2 multi-order size ladder on matched Free-Tier EC2.
-# CA2 §3: growing matrix orders at fixed aggregate vCPU; record time/RSS/CPU;
 # timeouts are valid outcomes (not failures to hide).
 # Default Free-Tier live subset: 100,250,500 (local suite already covers 200–2000).
 # Usage: bash scripts/run_ec2_size_ladder.sh [tag]
@@ -286,7 +284,6 @@ summary = {
     "collected_at": datetime.now(timezone.utc).isoformat(),
     "region": region,
     "pack": f"size_ladder_{tag}",
-    "protocol_note": "CA2 growing-order limb on Free-Tier matched vCPU; timeouts-as-outcomes.",
     "topology": {
         "scale_up": {"instance_id": up, "instance_type": "t3.small", "vcpus": 2, "count": 1},
         "scale_out": {
@@ -375,7 +372,6 @@ for n in sizes:
         "multi_avg_cpu_percent": c.get("scale_out_multi_avg_cpu_percent"),
     })
 
-# CA2 crossover: smallest order where multi is significantly faster and stays faster.
 # On Free-Tier descriptive: report whether any order has multi_elapsed < scale_up_elapsed with status ok.
 crossover = None
 anti = True
@@ -393,7 +389,6 @@ campaign = {
     "collected_at": datetime.now(timezone.utc).isoformat(),
     "pack": f"size_ladder_{tag}",
     "region": region,
-    "ca2_alignment": {
         "objective": "growing matrix orders at matched aggregate vCPU (1xt3.small vs 2xt3.micro)",
         "live_subset": sizes,
         "local_full_range_note": "local Dask suite covers 200–2000; this pack is Free-Tier live limb",

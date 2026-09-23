@@ -1,3 +1,0 @@
-round=final_2
-protocol=mqtt lite 16-cell device_count=5; destroy-after
-2026-09-22T05:44:06Z

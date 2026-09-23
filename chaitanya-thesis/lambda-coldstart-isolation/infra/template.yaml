@@ -11,7 +11,6 @@ Metadata:
     config:
       # nodejs20.x is the runtime named in the proposal. AWS deprecated it on
       # 2026-04-30 but creating functions stays possible until 2027-02-01.
-      # Kept on purpose, see docs/ASSUMPTIONS.md A3.
       ignore_checks: [W2531]
 
 Parameters:

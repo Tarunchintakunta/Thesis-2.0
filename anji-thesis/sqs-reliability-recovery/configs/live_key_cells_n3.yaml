@@ -1,4 +1,3 @@
-# Beyond-CA2 confirmatory protocol for the same 4 lite cells as live_key_cells.yaml.
 # Preferred live execution: DRY_RUN=0 --live --repeats 3 (or this file), then destroy.
 # This file is the localsim stand-in when shared-account ConcurrentExecutions
 # cannot host ESM maximum_concurrency=5 alongside another campaign.

@@ -1,4 +1,4 @@
-"""Campaign schedule - the ground truth by construction (master prompt 4.2).
+"""Campaign schedule - the ground truth by construction .
 
 One campaign per load level: a fault-free control period, then 60 injections of
 each of the four fault types, spread evenly over the three downstream services

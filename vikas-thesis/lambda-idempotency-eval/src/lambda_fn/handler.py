@@ -7,7 +7,7 @@ Event
     inject       none | after_commit | p3_between
     payload      synthetic business fields (data/payload_template.json)
 
-Injected timeout (master prompt 5, step 3): after the path's writes have
+Injected timeout : after the path's writes have
 committed, the handler logs its record and then sleeps past the function
 timeout, so the platform ends the invocation with "Task timed out" while the
 state change is already in DynamoDB. The driver sees a failure and redelivers
@@ -65,7 +65,6 @@ def _fail_after_commit(record: dict, context) -> None:
 
 
 def _record(base: dict, res: dict, t0: float) -> dict:
-    # master prompt 6 field names: delivery_index, outcome, consumed_capacity, latency_ms
     return {**base, **res, "consumed_capacity": round(res["rcu"] + res["wcu"], 3),
             "latency_ms": round((time.perf_counter() - t0) * 1000, 3)}
 

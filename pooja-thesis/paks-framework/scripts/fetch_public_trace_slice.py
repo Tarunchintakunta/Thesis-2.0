@@ -43,7 +43,7 @@ def download_gct_v1(dest: Path, timeout: int = 120) -> Path:
         print(f"already present and SHA1-verified: {dest}")
         return dest
     print(f"GET {GCT_V1_URL}")
-    req = urllib.request.Request(GCT_V1_URL, headers={"User-Agent": "paks-ca2-slice/1.0"})
+    req = urllib.request.Request(GCT_V1_URL, headers={"User-Agent": "paks-slice/1.0"})
     with urllib.request.urlopen(req, timeout=timeout) as resp, dest.open("wb") as out:
         while True:
             chunk = resp.read(1 << 20)

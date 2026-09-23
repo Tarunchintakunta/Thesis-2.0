@@ -30,7 +30,6 @@ test:
 	pytest tests/ -v --tb=short
 	@echo "✓ All tests passed"
 
-# Formal CA2 path (no AWS / no live K8s apply)
 run-formal:
 	@echo "Running train_lstm_and_evaluate.py (formal, dry-run)..."
 	python scripts/train_lstm_and_evaluate.py --dataset gct
@@ -62,7 +61,6 @@ destroy-aws:
 	python scripts/run_live_aws_k8s.py --destroy-only
 	@echo "✓ destroy verify written"
 
-# PROXY experiments (not formal CA2 evidence)
 run:
 	@echo "PROXY: Running train_and_evaluate.py (synthetic MLP)..."
 	python scripts/train_and_evaluate.py

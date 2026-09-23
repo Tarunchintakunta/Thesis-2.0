@@ -1,9 +1,0 @@
-{
-  "accuracy": 0.7975,
-  "f1_score": 0.014598540145985401,
-  "avg_communication_cost": 0.0,
-  "total_communication_cost": 0.0,
-  "convergence_rounds": 30,
-  "avg_round_time": 0.5725237290064494,
-  "mode": "centralised"
-}

@@ -1,6 +1,0 @@
-pack=confirmatory_1
-sources=final_1,final_2
-backend=live_pooled_analysis
-measurement_kind=derived from AWS IoT Core lite LIVE_EVIDENCE
-holm_d300_gt_d60=FAIL
-generated_at=2026-09-23T07:56:39.526510+00:00

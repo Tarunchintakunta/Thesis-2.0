@@ -1,8 +1,0 @@
-# Retired — do not deploy the federated-RF proxy
-
-The previous SAM deploy targeted `iot-reliability/`, which implements a
-**different thesis** (federated RF). That tree is quarantined under
-`_superseded_proxy/iot-reliability/`.
-
-Formal artefact: `mqtt-qos-iot-core/` (Terraform, not SAM). **No AWS apply**
-from CI. Tests: `ci.yml`.

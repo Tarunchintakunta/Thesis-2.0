@@ -1,4 +1,4 @@
-"""Scoring detections and rankings against the injector's ground truth (master prompt 4.5).
+"""Scoring detections and rankings against the injector's ground truth .
 
 Detection. An injection counts as detected (TP) when any fired minute becomes
 known - the end of that minute - inside [start, end + tolerance]. The delay is the

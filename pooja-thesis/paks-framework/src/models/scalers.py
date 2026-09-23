@@ -1,8 +1,7 @@
 """PROXY: MLPRegressor + NimbusGuard-framed EMA/hysteresis policies.
 
-Binding CA2 predictor is LSTM (``src/models/lstm_predictor.py``); binding
-baseline is Kubernetes HPA (``src/k8s/adaptive_engine.py``), not NimbusGuard.
-"""
+Binding  predictor is LSTM (``src/models/lstm_predictor.py``); binding
+baseline is Kubernetes HPA (``src/k8s/adaptive_engine.py``), not NimbusGuard."""
 import numpy as np
 from sklearn.neural_network import MLPRegressor
 

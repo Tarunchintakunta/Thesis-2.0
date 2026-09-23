@@ -1,9 +1,0 @@
-{
-  "mode": "centralised",
-  "epochs": 30,
-  "learning_rate": 0.001,
-  "batch_size": 64,
-  "sample_size": 10000,
-  "data_path": "data/UNSW_NB15_training-set.csv",
-  "model": "cnn"
-}

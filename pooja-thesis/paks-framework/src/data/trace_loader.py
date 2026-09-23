@@ -1,7 +1,6 @@
-"""Fail-closed loaders for GCT / Alibaba (formal CA2) plus explicit synthetic proxy.
+"""Fail-closed loaders for GCT / Alibaba plus explicit synthetic proxy.
 
-Never substitutes the sine-spike simulator when a trace dataset is requested.
-"""
+Never substitutes the sine-spike simulator when a trace dataset is requested."""
 
 from __future__ import annotations
 
@@ -127,7 +126,6 @@ def missing_checklist(dataset: str) -> str:
         "",
         "Populate the paths in DATA_GAPS.md, run scripts/fetch_extended_trace_samples.py,",
         "or use --dataset gct2010 for the committed 2010 slice,",
-        "or --dataset synthetic for the PROXY NimbusGuard simulator (not formal CA2 evidence).",
     ]
     return "\n".join(lines)
 

@@ -1,5 +1,0 @@
-b,c,p_two_sided,stage_a,stage_b,n_insecure
-46.0,3.0,6.981082378842984e-11,checkov,tfsec,144
-55.0,7.0,2.4300843108615577e-10,static_union,opa,144
-8.0,26.0,0.0029350556433200836,checklist,static_union,144
-30.0,0.0,1.862645149230957e-09,checklist,opa,144

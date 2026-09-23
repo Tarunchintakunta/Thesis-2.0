@@ -1,6 +1,0 @@
-,SLA Violations,SLA Violations,Over-provisioning %,Over-provisioning %,Scaling Events,Scaling Events,Pod Count Volatility (std),Pod Count Volatility (std)
-,mean,std,mean,std,mean,std,mean,std
-Model,,,,,,,,
-Aggressive PAKS (baseline),11.0,2.2361,45.802,2.2334,384.4,9.0719,2.8645,0.3627
-Reactive HPA,20.0,2.7386,40.918,0.1875,407.4,4.8785,3.3152,0.2505
-Stability-Aware PAKS (improved),18.0,2.7386,46.522,2.1583,165.8,5.3104,1.9541,0.168

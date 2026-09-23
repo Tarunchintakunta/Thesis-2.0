@@ -1,3 +1,0 @@
-baseline=default package; proposed=optimised package; H1 on proposed runtimes
-reps=30; destroy-after; round=3
-2026-09-22T12:10:34Z

@@ -349,7 +349,6 @@ summary = {
     "collected_at": datetime.now(timezone.utc).isoformat(),
     "region": region,
     "round": "final_1",
-    "protocol_note": "ONE confirmatory matched Free-Tier gate after CA2 100% (post ec2_round2). Same topology 1xt3.small vs 2xt3.micro; destroy-after. Final-3 not started.",
     "topology": {
         "scale_up": {"instance_id": up, "instance_type": "t3.small", "vcpus": 2, "count": 1},
         "scale_out": {

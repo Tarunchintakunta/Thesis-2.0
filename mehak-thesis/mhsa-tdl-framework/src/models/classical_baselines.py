@@ -1,10 +1,8 @@
-"""Classical monitors named in formal CA2 (RF / KNN / SVM).
+"""Classical monitors named in.
 
 Trained on flattened history windows from the *same* feature matrix as MHSA.
 These are scaffold baselines for metric-suite completeness on whatever dataset
-the caller provides. Formal CA2 still requires the same models on GCT splits
-(see DATA_GAPS.md) — synthetic scores are not formal evidence.
-"""
+the caller provides. — synthetic scores are not formal evidence."""
 
 from __future__ import annotations
 

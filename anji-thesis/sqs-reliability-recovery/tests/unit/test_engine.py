@@ -78,7 +78,7 @@ def test_datastore_timeout_burns_the_function_timeout():
 
 
 def test_lite_cells_zero_loss_at_reduced_poller_concurrency():
-    """Beyond-CA2: ESM max_concurrency=2 still preserves queue-arm loss floor on lite load."""
+    """ESM max_concurrency=2 still preserves queue-arm loss floor on lite load."""
     shared = dict(
         order_count=200,
         rate_per_sec=10,

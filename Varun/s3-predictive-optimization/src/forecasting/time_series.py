@@ -115,7 +115,6 @@ class TimeSeriesForecaster:
         # Generate forecast
         forecast_df = self.forecast(horizon_days)
         
-        # Extract future predictions only (not historical fit)
         last_historical_date = pd.to_datetime(cost_history[-1].get("date") or 
                                              cost_history[-1].get("ds"))
         future_forecast = forecast_df[forecast_df["ds"] > last_historical_date]

@@ -1,4 +1,4 @@
-"""Rule-based detection over per-minute CloudWatch series (master prompt 4.3).
+"""Rule-based detection over per-minute CloudWatch series .
 
 A series is one metric of one service ("inventory/ErrorRate"), one value per
 60-second period. A minute fires when

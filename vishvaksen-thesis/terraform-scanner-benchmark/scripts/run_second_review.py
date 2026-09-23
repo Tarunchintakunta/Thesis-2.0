@@ -6,5 +6,5 @@ cited in the thesis. Prefer metrics from the main benchmark runners.
 """
 raise SystemExit(
     "Unused: labelled-oracle evaluation does not use this script. "
-    "See CA2_COMMITMENTS.md"
+    "Second-review agreement helper"
 )

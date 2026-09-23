@@ -1,9 +1,8 @@
 """Vanilla LSTM workload predictor (formal PAKS path).
 
-TensorFlow is named in the CA2 resources table. On this CPython 3.14 host there
+TensorFlow is named in the  resources table. On this CPython 3.14 host there
 is no TF wheel; ``require_tensorflow()`` fails closed. Default trainer is a
-NumPy LSTM cell with BPTT (architecture = LSTM, runtime = numpy).
-"""
+NumPy LSTM cell with BPTT (architecture = LSTM, runtime = numpy)."""
 
 from __future__ import annotations
 
@@ -23,7 +22,6 @@ def require_tensorflow():
     except ImportError as exc:
         raise ImportError(
             "TensorFlow backend requested but not importable (typical on CPython "
-            "3.14: no supported wheel). Formal CA2 names TF; this artefact's "
             "runnable LSTM is NumPy BPTT. See pooja-thesis/DATA_GAPS.md."
         ) from exc
     import tensorflow as tf

@@ -1,7 +1,6 @@
 # Experiment plan for the cold-start study (Phase A baseline-style + Phase B isolation).
 # Same file drives live and mock runs; DATA_MODE=live|mock picks the backend.
 # Reps below are the pre-pilot plan; scripts/pilot_power.py checks them against
-# the pilot and the frozen numbers go into docs/ANALYSIS_PLAN.md.
 stack_name: coldstart-study
 region: eu-west-1
 arch: arm64                       # fixed on purpose (Bluemke and Zdanowski found arm64 cheaper)

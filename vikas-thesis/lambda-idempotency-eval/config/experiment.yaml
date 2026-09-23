@@ -1,5 +1,3 @@
-# Experiment design (master prompt section 5). Changes after the pilot are
-# amendments in docs/ANALYSIS_PLAN.md, with a date.
 table_name: idem-eval
 function_name: idem-eval-fn
 

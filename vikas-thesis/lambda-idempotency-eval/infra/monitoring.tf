@@ -1,4 +1,3 @@
-# Spend guards (master prompt 6, safety): alarms when a day has more invocations
 # or write units than the whole campaign needs, and an optional monthly budget.
 # Alerts go to e-mail only when alert_email is set.
 

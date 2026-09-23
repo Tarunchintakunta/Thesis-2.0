@@ -1,4 +1,4 @@
-.PHONY: help install pilot test experiment centralised unsw-real stats figures clean aws-verify live-cloud-fl
+.PHONY: help install pilot test experiment centralised unsw-real stats figures clean live-cloud-fl
 
 help:
 	@echo "SecureFL-IDS Makefile"
@@ -6,13 +6,12 @@ help:
 	@echo "make install      - Create venv and install dependencies"
 	@echo "make pilot        - Run quick pilot experiment (synthetic sample)"
 	@echo "make test         - Run all tests"
-	@echo "make centralised  - CA2 centralised IDS comparator (synthetic PoC data)"
+	@echo "make centralised  - centralised IDS comparator (synthetic PoC data)"
 	@echo "make experiment   - Federated baseline + improved (synthetic)"
 	@echo "make unsw-real    - Real UNSW training-partition sample (central+FL)"
 	@echo "make stats        - Generate statistical analysis"
 	@echo "make figures      - Create evaluation figures"
 	@echo "make clean        - Remove generated files and cache"
-	@echo "make aws-verify   - Check AWS scaffold (does not apply)"
 	@echo "make live-cloud-fl - Free-Tier EC2+S3+CW lite FL, then destroy"
 
 install:
@@ -74,5 +73,3 @@ live-cloud-fl:
 	@chmod +x scripts/run_live_cloud_fl.sh scripts/bootstrap_cloud.sh
 	@bash scripts/run_live_cloud_fl.sh
 
-aws-verify:
-	@bash ../../scripts/aws-verify/nemi-securefl.sh

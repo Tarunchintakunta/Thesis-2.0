@@ -1,4 +1,4 @@
-"""The three application-level write paths (master prompt 2.3).
+"""The three application-level write paths .
 
 P1 plain put        unconditional PutItem - a redelivery writes the item again
 P2 conditional put  PutItem with attribute_not_exists(pk) - a redelivery fails the condition

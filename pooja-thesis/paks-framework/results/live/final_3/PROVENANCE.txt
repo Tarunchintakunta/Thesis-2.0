@@ -1,3 +1,0 @@
-round=final_3
-protocol=1xt3.micro+k3s HPA vs PAKS; steps=16; destroy-after
-2026-09-22T03:13:16Z

@@ -89,5 +89,3 @@ functional:
 clean:
 	rm -rf build $(MOTO) data/runs/local
 
-aws-verify:
-	@bash ../../scripts/aws-verify/vikas-lambda.sh

@@ -1,4 +1,3 @@
-# Formal CA2 factorial (source of truth: uday-thesis/CA2_COMMITMENTS.md)
 # Scales:
 #   dry_run — local mock only (no AWS). Small n for CI / harness proof.
 #   lite    — Free-Tier-safe live envelope (full 16 cells × 1 rep). Under monthly IoT budget with headroom.

@@ -12,7 +12,7 @@ FIG = figures/$(MODE)
 TAB = reports/paper/tables/$(MODE)
 PILOT = data/pilot/$(MODE)
 
-.PHONY: test lint package gate bench campaign pipeline pilot mock-all proxy-analysis aws-verify
+.PHONY: test lint package gate bench campaign pipeline pilot mock-all proxy-analysis
 
 test:
 	$(PY) -m pytest
@@ -53,5 +53,3 @@ mock-all:
 	rm -rf data/raw/mock data/pilot/mock/raw
 	$(MAKE) MODE=mock campaign pipeline pilot
 
-aws-verify:
-	@bash ../../scripts/aws-verify/chaitanya-lambda.sh

@@ -1,9 +1,8 @@
-"""Parse AWS S3 Inventory CSV (CA2 Table 1 metadata source).
+"""Parse AWS S3 Inventory CSV ( Table 1 metadata source).
 
 This is a local parser for already-exported Inventory files. It does not
 create an Inventory configuration or call AWS. Live Inventory jobs remain
-a fuller-FinOps residual (see DESIGN_RATIONALE_BEYOND_CA2.md).
-"""
+optional fuller FinOps fields when present."""
 
 from __future__ import annotations
 

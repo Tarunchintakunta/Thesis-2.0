@@ -1,11 +1,9 @@
-"""
-Centralised IDS comparator (CA2 traditional baseline).
+"""Centralised IDS comparator ( traditional baseline).
 
 Trains a single CNN on the pooled training set (no federated split, no DP).
 Uses the same model family and data path as the FL arms for a fair local PoC
 comparison on detection metrics. Communication cost is not applicable (raw
-features stay local to one trainer); reported as 0.0 MB/round.
-"""
+features stay local to one trainer); reported as 0.0 MB/round."""
 import time
 from typing import Dict, Optional
 

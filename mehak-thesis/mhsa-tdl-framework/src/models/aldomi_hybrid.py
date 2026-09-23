@@ -29,7 +29,7 @@ from sklearn.svm import LinearSVC
 class AldomiStyleHybrid(nn.Module):
     """Retained lightweight GRU+gate scaffold (unit-test / ablation).
 
-    The CA2 comparison path uses ``run_aldomi_hybrid`` (SelectKBest+GRU+RF).
+    The comparison path uses ``run_aldomi_hybrid`` (SelectKBest+GRU+RF).
     """
 
     def __init__(
@@ -154,7 +154,7 @@ def run_aldomi_hybrid(
     """Fit SelectKBest + GRU extractor + ML heads.
 
     Returns name -> (preds, scores[N,M,3], latency_ms, info).
-    Primary CA2 row is ``Aldomi GRU-RF``.
+    Primary comparison row is ``Aldomi GRU-RF``.
     """
     heads = heads or ["Aldomi GRU-RF", "Aldomi GRU-KNN"]
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")

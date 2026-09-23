@@ -1,5 +1,3 @@
-# Factorial design - committed values from the master prompt (section 2).
-# Changing anything here after the pilot needs a dated amendment in docs/ANALYSIS_PLAN.md.
 project: dynamodb-pk-capacity
 run_label: "ddbpk-eval"
 region: eu-west-1

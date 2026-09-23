@@ -79,7 +79,7 @@ if rows:
     lines += ["", "## Verdict", f"- Rounds present: {len(rows)}/3",
               f"- Accuracy range: {min(accs):.4f}–{max(accs):.4f}",
               f"- F1 range: {min(f1s):.4f}–{max(f1s):.4f}",
-              "- Residual: Kubernetes still Not met if CA2 requires K8s.", ""]
+              "- Residual: Kubernetes path not executed in this script.", ""]
 (root / "DOCKER_FINAL3_BASELINE.md").write_text("\n".join(lines) + "\n")
 print((root / "DOCKER_FINAL3_BASELINE.md").read_text())
 PY

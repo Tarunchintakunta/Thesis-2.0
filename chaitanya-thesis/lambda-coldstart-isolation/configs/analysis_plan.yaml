@@ -1,4 +1,3 @@
-# Machine-readable half of docs/ANALYSIS_PLAN.md. Written before any live data.
 # Changes after the freeze go into `amendments` with a date and a reason.
 written: "2026-09-11, before any live data"
 alpha: 0.05

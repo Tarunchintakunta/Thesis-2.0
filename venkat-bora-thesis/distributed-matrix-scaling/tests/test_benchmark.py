@@ -143,7 +143,7 @@ class TestBenchmarkHarness:
             50, 1,
             "matmul",
             "threaded",
-            3,  # n_iterations
+            3,
             A, B
         )
         

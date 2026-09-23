@@ -46,7 +46,6 @@ def main() -> int:
         "opa": probe("opa", ["version"], str(Path.home() / ".local/bin/opa")),
         "note": (
             "Shipped default rule sets. Unpinned versions would make recall "
-            "non-repeatable (Verdet et al. 2025; formal CA2)."
         ),
     }
     out = ROOT / "results" / "tool_versions.json"

@@ -1,5 +1,0 @@
-\begin{abstract}
-Formal CA2 commits to evaluating the Multi-Head Self-Attention Telemetry-Driven Deep Learning (MHSA-TDL) framework for cloud cluster health / failure prediction on the \textbf{Google Cluster Trace}, reporting Accuracy, Precision, Recall, F1-Score, ROC-AUC and prediction latency against hybrid deep learning and traditional monitors (Aldomi-style GRU+feature-selection hybrids; RF/KNN/SVM).
-
-This artefact scores that suite on an official \textbf{2011} GCT subset (4 \texttt{task\_events} parts + 2 \texttt{task\_usage} parts + \texttt{machine\_events}; $N{=}12000$ windows, 981 FAIL-forced). The MHSA fourth channel is \textbf{sampled CPU}: ClusterData 2011 has no network-byte column (not a fabricated bandwidth series). On five seeds (42--46), classical RF reaches Acc $0.944\pm0.002$; Aldomi SelectKBest+GRU-RF reaches Acc $0.943\pm0.001$ and Macro-F1 $0.676$; MHSA-Fused Acc $0.922\pm0.002$. MHSA is \textbf{not} claimed to outperform those monitors on this subset. Full 29-day / 2019 cells remain absent. Synthetic telemetry is artefact-as-built only.
-\end{abstract}

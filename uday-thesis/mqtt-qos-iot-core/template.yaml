@@ -3,7 +3,7 @@
 
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
-Description: mqtt-qos-iot-core IoT Core rules → Lambda → DynamoDB (formal CA2)
+Description: mqtt-qos-iot-core IoT Core rules to Lambda to DynamoDB
 
 Parameters:
   ProjectName:

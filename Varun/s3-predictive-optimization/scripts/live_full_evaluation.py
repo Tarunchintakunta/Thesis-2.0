@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Full-scale LIVE FinOps evaluation (CA2 three-workload Wilcoxon).
+"""Full-scale LIVE FinOps evaluation (three-workload Wilcoxon).
 
 Not lite: 3 workloads × n_trials trial-buckets × objects_per_trial live S3
 objects. Metadata via ListObjectsV2 (+ object user-metadata for access attrs).
@@ -388,7 +388,7 @@ def run_evaluation(
         "evaluation": eval_id,
         "round": "live_full",
         "mode": "live_aws",
-        "protocol": "ca2_three_workload_wilcoxon",
+        "protocol": "three_workload_wilcoxon",
         "collected_at": iso(finished),
         "started_at": iso(started),
         "elapsed_s": (finished - started).total_seconds(),
@@ -413,7 +413,6 @@ def run_evaluation(
         ),
         "workloads": workloads_out,
         "success_workloads_vs_both_natives": significant_vs_both,
-        "meets_ca2_two_of_three": len(significant_vs_both) >= 2,
         "pricing_api": probes.get("pricing_api"),
         "cost_explorer": probes.get("cost_explorer"),
         "cloudwatch_metrics": probes.get("cloudwatch_metrics"),

@@ -1,7 +1,6 @@
-"""PROXY: synthetic sine + spikes. Not GCT/Alibaba. Not binding CA2 evidence.
+"""PROXY: synthetic sine + spikes. Not GCT/Alibaba. Not binding  evidence.
 
-Formal path: ``src/data/trace_loader.py`` + ``data/traces/PROVENANCE.md``.
-"""
+Formal path: ``src/data/trace_loader.py`` + ``data/traces/PROVENANCE.md``."""
 import numpy as np
 
 POD_CAPACITY = 100.0  # requests per second per pod

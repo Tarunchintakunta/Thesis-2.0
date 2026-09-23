@@ -13,7 +13,7 @@ Assumptions (explicit):
 - Network loss while connected is a small independent coin-flip.
 - Rule/Lambda/DynamoDB is an in-memory put with simulated one-way delay.
 - Subscriber persistent-session queues on IoT Core are not modelled: the
-  formal CA2 disconnects the *publisher*.
+  the publisher is disconnected.
 """
 
 from __future__ import annotations

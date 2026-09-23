@@ -50,7 +50,6 @@ class Outcome:
     # business write happened for the first time (business_success_first)
     FIRST_SUCCESS = "first_success"
     # conditional put found the order already there -> safe no-op
-    # (business_success_duplicate_attempt in the master prompt)
     DUPLICATE_SUCCESS = "duplicate_success"
     # only possible when idempotency is switched off: the order was applied twice
     UNSAFE_DOUBLE_APPLY = "unsafe_double_apply"

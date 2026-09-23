@@ -122,7 +122,7 @@ class ExperimentRunner:
     def generate_cost_history(self, objects, days=60):
         """Generate synthetic cost history for forecasting.
 
-        Preserve float precision: rounding to 4 d.p. previously collapsed
+        Preserve float precision: rounding to 4 d.p. can collapse
         sub-cent daily costs (~1e-3) into a flat series, making Prophet
         identical to naive persistence.
         """

@@ -1,7 +1,0 @@
-connecting
-workers 2
-futures [0, 1, 4, 9]
-matmul_start 250 chunk 125
-matmul_done 0.273731186999953
-{"role": "scale-out", "mode": "dask_multi_instance", "size": 250, "workers": 2, "elapsed_s": 0.273731186999953, "checksum": 61.24886662146923, "futures_smoke": [0, 1, 4, 9], "worker_addrs": ["tcp://172.31.3.5:46101", "tcp://172.31.4.31:37683"]}
-

@@ -84,7 +84,6 @@ def test_structured_log_line_is_written_before_the_failure(ddb, capsys):
         handler.lambda_handler(event("P2", "r-log", 1, "after_commit"))
     line = json.loads(capsys.readouterr().out.strip().splitlines()[-1])
     assert line["type"] == "delivery" and line["request_id"] == "r-log" and line["outcome"] == "APPLIED"
-    # master prompt 6: request_id, path, delivery_index, outcome, consumed_capacity, latency_ms
     for field in ("path", "delivery_index", "consumed_capacity", "latency_ms", "exec_id", "cold_start"):
         assert field in line
     assert line["consumed_capacity"] == 1.0

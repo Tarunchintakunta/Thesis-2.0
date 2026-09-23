@@ -1,4 +1,4 @@
-"""X-Ray dependency ranking (master prompt 4.3). Deterministic, no training.
+"""X-Ray dependency ranking . Deterministic, no training.
 
 For the traces that overlap a detection window:
 

@@ -100,7 +100,6 @@ def main() -> int:
         (probe["kubectl_cluster"].get("stderr") or probe["kubectl_cluster"].get("stdout") or "")[:800],
         "```",
         "",
-        "## Implication for formal CA2",
         "",
         "Formal method still requires a Kubernetes environment (AWS EC2 + S3 + CloudWatch).",
         "This host cannot raise dry-run → live scale patches without kind/minikube **and** a",

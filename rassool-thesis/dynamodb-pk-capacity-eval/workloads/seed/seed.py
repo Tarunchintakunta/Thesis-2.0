@@ -23,7 +23,7 @@ from botocore.config import Config
 
 from workloads.generator import keys
 
-BATCH = 25  # BatchWriteItem limit, and the batch size fixed in the master prompt
+BATCH = 25 # BatchWriteItem limit, and the batch size fixed in the master prompt
 ROOT = Path(__file__).resolve().parents[2]
 _SER = TypeSerializer()
 

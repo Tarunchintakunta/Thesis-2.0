@@ -369,7 +369,7 @@ def main() -> int:
             ),
         },
         "limitations": [
-            "Lite probe only: 24 objects × 2 storage classes; not multi-workload CA2 protocol.",
+            "Lite probe only: 24 objects × 2 storage classes; not multi-workload protocol.",
             "Cost Explorer window reflects account S3 spend (often near-zero / lagged), not round savings.",
             "CloudWatch BucketSizeBytes typically lags ~24h for new buckets.",
             "src/metadata/ collector still absent; no S3 Inventory job in this round.",

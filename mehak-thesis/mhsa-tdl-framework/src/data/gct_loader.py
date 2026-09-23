@@ -1,4 +1,4 @@
-"""Google Cluster Trace loader (formal CA2).
+"""Google Cluster Trace loader.
 
 Does **not** invent data. Raises FileNotFoundError with an exact checklist when
 the required GCT files are absent. Synthetic telemetry remains a separate path
@@ -18,8 +18,7 @@ UPDATE). Future FAIL-family events are labels, never features.
 
 Labels: per-channel None/L1/L2 from the *future* usage window (same thresholds
 as the synthetic path), with FAIL/EVICT/KILL/LOST events inside the horizon
-forcing L2 on all channels (failure-aware health).
-"""
+forcing L2 on all channels (failure-aware health)."""
 
 from __future__ import annotations
 
@@ -125,7 +124,6 @@ def inventory(root: Optional[Path] = None) -> dict:
 def missing_checklist(root: Optional[Path] = None) -> str:
     inv = inventory(root)
     lines = [
-        "Google Cluster Trace data is missing for formal CA2 evaluation.",
         f"Looked under: {inv['root']}",
         "See mehak-thesis/DATA_GAPS.md for canonical download locations.",
         "",

@@ -135,7 +135,7 @@ def main(argv: list[str] | None = None) -> int:
         )
 
     summary = {
-        "kind": "beyond-CA2 key-cell aggregation",
+        "kind": "key-cell aggregation",
         "inputs": [c["dir"] for c in campaigns],
         "total_manifests": len(all_rows),
         "campaigns": campaigns,

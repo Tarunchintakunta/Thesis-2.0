@@ -1,9 +1,8 @@
-"""Boto3 per-object metadata collector (CA2 Table 1 module 1).
+"""Boto3 per-object metadata collector ( Table 1 module 1).
 
 Client is injected so unit tests can use moto without live AWS. Default
 construction uses boto3 only when the caller asks. This module never
-creates buckets or writes objects.
-"""
+creates buckets or writes objects."""
 
 from __future__ import annotations
 

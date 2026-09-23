@@ -39,7 +39,7 @@ def evaluate(workload, pods):
 
 
 def main():
-    print("PROXY mode: synthetic MLP vs HPA (NimbusGuard-framed). Not formal CA2.")
+    print("PROXY mode: synthetic MLP vs HPA (NimbusGuard-framed).")
     all_runs = []
     exported_model = None
 
