@@ -1,0 +1,3 @@
+region=eu-west-2
+protocol=W1,W2 key-cells K1-K3 x ondemand/provisioned; destroy-after
+2026-09-22T20:18:48Z

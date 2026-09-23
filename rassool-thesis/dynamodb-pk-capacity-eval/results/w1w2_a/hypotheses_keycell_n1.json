@@ -1,0 +1,208 @@
+{
+  "label": "live DynamoDB key-cells n=1 (W3/W4); exploratory request-level KW/KS",
+  "data_source": "live",
+  "batches": 12,
+  "workloads_present": [
+    "W1",
+    "W2"
+  ],
+  "workloads_missing": [
+    "W3",
+    "W4"
+  ],
+  "confirmatory_batch_anova": false,
+  "batch_factorial": {
+    "W3": {
+      "workload": "W3",
+      "n_configs": 0,
+      "n_per_config": 0,
+      "identified_two_way_with_interaction": false,
+      "note": "n=1 per cell: two-way ANOVA with interaction has residual df=0; not computed as confirmatory"
+    },
+    "W4": {
+      "workload": "W4",
+      "n_configs": 0,
+      "n_per_config": 0,
+      "identified_two_way_with_interaction": false,
+      "note": "n=1 per cell: two-way ANOVA with interaction has residual df=0; not computed as confirmatory"
+    }
+  },
+  "request_level_exploratory": [
+    {
+      "stratum": "W1-on_demand",
+      "workload": "W1",
+      "capacity_mode": "on_demand",
+      "keys": [
+        "K1",
+        "K2",
+        "K3"
+      ],
+      "n_requests": [
+        18000,
+        18000,
+        18000
+      ],
+      "median_latency_ms": [
+        3.813,
+        3.86,
+        5.077
+      ],
+      "kruskal_h": 28012.1403,
+      "kruskal_p": 0.0,
+      "ks_pairs": [
+        {
+          "a": "K1",
+          "b": "K2",
+          "statistic": 0.1,
+          "p": 0.0
+        },
+        {
+          "a": "K1",
+          "b": "K3",
+          "statistic": 0.858944,
+          "p": 0.0
+        },
+        {
+          "a": "K2",
+          "b": "K3",
+          "statistic": 0.878889,
+          "p": 0.0
+        }
+      ],
+      "confirmatory": false,
+      "note": "request-level; pseudo-replication vs batch ANOVA; exploratory only"
+    },
+    {
+      "stratum": "W1-provisioned",
+      "workload": "W1",
+      "capacity_mode": "provisioned",
+      "keys": [
+        "K1",
+        "K2",
+        "K3"
+      ],
+      "n_requests": [
+        18000,
+        18000,
+        18000
+      ],
+      "median_latency_ms": [
+        3.929,
+        3.931,
+        4.8165
+      ],
+      "kruskal_h": 14809.571173,
+      "kruskal_p": 0.0,
+      "ks_pairs": [
+        {
+          "a": "K1",
+          "b": "K2",
+          "statistic": 0.202333,
+          "p": 0.0
+        },
+        {
+          "a": "K1",
+          "b": "K3",
+          "statistic": 0.729222,
+          "p": 0.0
+        },
+        {
+          "a": "K2",
+          "b": "K3",
+          "statistic": 0.621889,
+          "p": 0.0
+        }
+      ],
+      "confirmatory": false,
+      "note": "request-level; pseudo-replication vs batch ANOVA; exploratory only"
+    },
+    {
+      "stratum": "W2-on_demand",
+      "workload": "W2",
+      "capacity_mode": "on_demand",
+      "keys": [
+        "K1",
+        "K2",
+        "K3"
+      ],
+      "n_requests": [
+        18000,
+        18000,
+        18000
+      ],
+      "median_latency_ms": [
+        5.709,
+        5.487,
+        5.323
+      ],
+      "kruskal_h": 427.242077,
+      "kruskal_p": 0.0,
+      "ks_pairs": [
+        {
+          "a": "K1",
+          "b": "K2",
+          "statistic": 0.1915,
+          "p": 0.0
+        },
+        {
+          "a": "K1",
+          "b": "K3",
+          "statistic": 0.246278,
+          "p": 0.0
+        },
+        {
+          "a": "K2",
+          "b": "K3",
+          "statistic": 0.243444,
+          "p": 0.0
+        }
+      ],
+      "confirmatory": false,
+      "note": "request-level; pseudo-replication vs batch ANOVA; exploratory only"
+    },
+    {
+      "stratum": "W2-provisioned",
+      "workload": "W2",
+      "capacity_mode": "provisioned",
+      "keys": [
+        "K1",
+        "K2",
+        "K3"
+      ],
+      "n_requests": [
+        18000,
+        18000,
+        18000
+      ],
+      "median_latency_ms": [
+        5.341,
+        5.466,
+        5.473
+      ],
+      "kruskal_h": 1549.806721,
+      "kruskal_p": 0.0,
+      "ks_pairs": [
+        {
+          "a": "K1",
+          "b": "K2",
+          "statistic": 0.121611,
+          "p": 0.0
+        },
+        {
+          "a": "K1",
+          "b": "K3",
+          "statistic": 0.218889,
+          "p": 0.0
+        },
+        {
+          "a": "K2",
+          "b": "K3",
+          "statistic": 0.243944,
+          "p": 0.0
+        }
+      ],
+      "confirmatory": false,
+      "note": "request-level; pseudo-replication vs batch ANOVA; exploratory only"
+    }
+  ]
+}

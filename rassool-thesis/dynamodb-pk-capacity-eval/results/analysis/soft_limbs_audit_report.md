@@ -1,6 +1,6 @@
 # Rasool soft-limbs remediable audit (scripted)
 
-Generated: `2026-09-23T07:47:46.617395+00:00`
+Generated: `2026-09-23T07:48:27.742534+00:00`
 
 ## Move gate
 

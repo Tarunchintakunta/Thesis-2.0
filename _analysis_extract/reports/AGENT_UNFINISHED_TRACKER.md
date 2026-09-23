@@ -56,9 +56,10 @@
 | M3  | Mehak full 2011 dump / 2019 cells not fetched | Dated WONTFIX beyond disclosed 4+2 parts | **CLOSED** — same amendment |
 | M4  | Mehak SVM/Threshold ROC-AUC NaN in results_summary | Emit AUC or dated why undefined | **CLOSED** — SVM calibrated fix; Threshold AUC WONTFIX dated (`DATED_NOTE_M4_ROC_AUC_2026-09-23.md`) |
 | SOT-R | Rasool missing ONE-file SoT + scripted remediable audit | Write SoT + `audit_soft_limbs_root_causes.py`; EXIT 0 | **CLOSED** — `rassool-thesis/CA2_PROPOSED_VS_ARTEFACT.md`; audit EXIT 0; remediable_total=0 |
-| SOT-Va | Varun missing ONE-file SoT + scripted remediable audit | Write SoT + `audit_independence_root_causes.py`; EXIT 0 | **IN_PROGRESS** |
-| SOT-Vi | Vikas missing ONE-file SoT + scripted remediable audit | Write SoT + `audit_campaign_root_causes.py`; EXIT 0 | **IN_PROGRESS** |
+| SOT-Va | Varun missing ONE-file SoT + scripted remediable audit | Write SoT + `audit_independence_root_causes.py`; EXIT 0 | **CLOSED** — `Varun/CA2_PROPOSED_VS_ARTEFACT.md`; audit EXIT 0; [Varun SoT](bc-2f6b9d76-b1ca-5066-9ca7-5722396246b7) |
+| SOT-Vi | Vikas missing ONE-file SoT + scripted remediable audit | Write SoT + `audit_campaign_root_causes.py`; EXIT 0 | **CLOSED** — `vikas-thesis/CA2_PROPOSED_VS_ARTEFACT.md`; audit EXIT 0 |
 | SOT-Ve | Venkat missing ONE-file SoT + scripted remediable audit | Write SoT + `audit_size_ladder_root_causes.py`; EXIT 0 | **CLOSED** — **MOVE ALLOWED** (audit remediable=0; anti-crossover retained; full live 200–2000 WONTFIX) |
+| SOT-RESTORE | Branch churn dropped uncommitted SoTs (Mehak/Vish/Chaitanya/Yash/Uday/Anji/Nemi/Pooja) | Restore SoTs + audit scripts onto integration branch; EXIT 0 each | **IN_PROGRESS** |
 
 
 
@@ -93,7 +94,7 @@
 **Noticed by agent:** Goal marked **complete** under goal-defined CA2 100% (= research-scope match after dated amendments), **not** marketing perfect marks.  
 **Proof:** `_analysis_extract/reports/REQUIREMENT_COMPLETION_PROOF.md`  
 **Runtime:** 43h 34m 3s  
-**Remediable tracker rows:** all CLOSED. Soft N1–N8 **hard-closed** (evidence or dated WONTFIX).  
-**Still required for current goal (2026-09-23):** ONE-file `CA2_PROPOSED_VS_ARTEFACT.md` + scripted remediable audit for **Varun / Venkat** (missing SoTs). Vikas SoT + campaign audit EXIT 0 closed. Rasool SoT + soft-limbs audit EXIT 0 closed. Vish/Mehak/Chaitanya/Yash/Uday/Anji/Nemi/Pooja/Rasool/Vikas SoTs present.  
+**Remediable tracker rows:** soft N CLOSED; **SOT-RESTORE IN_PROGRESS** (8 SoTs lost to uncommitted branch churn).  
+**Landed on this branch:** Rasool / Varun / Venkat (+ Vikas cherry-pick next).  
 **If anything new appears unfinished:** add a row here immediately — never silently drop.
 
