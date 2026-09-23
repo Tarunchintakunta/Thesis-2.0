@@ -1,8 +1,8 @@
 {
-  "tool": "checkov",
-  "version": "3.3.19",
+  "tool": "tfsec",
+  "version": "v1.28.14",
   "defaults": "shipped",
-  "batch_seconds": 3.904719916987233,
+  "batch_seconds": 0.6823047499929089,
   "n_modules": 240,
   "verdicts": [
     {
@@ -11,7 +11,7 @@
       "label": "secure",
       "predicted": 0,
       "n_mapped_findings": 0,
-      "n_all_findings": 7,
+      "n_all_findings": 4,
       "mapped_check_ids": []
     },
     {
@@ -20,7 +20,7 @@
       "label": "secure",
       "predicted": 0,
       "n_mapped_findings": 0,
-      "n_all_findings": 7,
+      "n_all_findings": 4,
       "mapped_check_ids": []
     },
     {
@@ -28,15 +28,14 @@
       "category": "public_storage",
       "label": "insecure",
       "predicted": 1,
-      "n_mapped_findings": 6,
-      "n_all_findings": 13,
+      "n_mapped_findings": 5,
+      "n_all_findings": 9,
       "mapped_check_ids": [
-        "CKV2_AWS_6",
-        "CKV_AWS_20",
-        "CKV_AWS_53",
-        "CKV_AWS_54",
-        "CKV_AWS_55",
-        "CKV_AWS_56"
+        "aws-s3-block-public-acls",
+        "aws-s3-block-public-policy",
+        "aws-s3-ignore-public-acls",
+        "aws-s3-no-public-access-with-acl",
+        "aws-s3-no-public-buckets"
       ]
     },
     {
@@ -44,15 +43,14 @@
       "category": "public_storage",
       "label": "insecure",
       "predicted": 1,
-      "n_mapped_findings": 6,
-      "n_all_findings": 13,
+      "n_mapped_findings": 5,
+      "n_all_findings": 9,
       "mapped_check_ids": [
-        "CKV2_AWS_6",
-        "CKV_AWS_20",
-        "CKV_AWS_53",
-        "CKV_AWS_54",
-        "CKV_AWS_55",
-        "CKV_AWS_56"
+        "aws-s3-block-public-acls",
+        "aws-s3-block-public-policy",
+        "aws-s3-ignore-public-acls",
+        "aws-s3-no-public-access-with-acl",
+        "aws-s3-no-public-buckets"
       ]
     },
     {
@@ -60,15 +58,14 @@
       "category": "public_storage",
       "label": "insecure",
       "predicted": 1,
-      "n_mapped_findings": 6,
-      "n_all_findings": 14,
+      "n_mapped_findings": 5,
+      "n_all_findings": 9,
       "mapped_check_ids": [
-        "CKV2_AWS_6",
-        "CKV_AWS_20",
-        "CKV_AWS_53",
-        "CKV_AWS_54",
-        "CKV_AWS_55",
-        "CKV_AWS_56"
+        "aws-s3-block-public-acls",
+        "aws-s3-block-public-policy",
+        "aws-s3-ignore-public-acls",
+        "aws-s3-no-public-access-with-acl",
+        "aws-s3-no-public-buckets"
       ]
     },
     {
@@ -77,7 +74,7 @@
       "label": "secure",
       "predicted": 0,
       "n_mapped_findings": 0,
-      "n_all_findings": 6,
+      "n_all_findings": 4,
       "mapped_check_ids": []
     },
     {
@@ -86,7 +83,7 @@
       "label": "secure",
       "predicted": 0,
       "n_mapped_findings": 0,
-      "n_all_findings": 6,
+      "n_all_findings": 4,
       "mapped_check_ids": []
     },
     {
@@ -94,14 +91,13 @@
       "category": "public_storage",
       "label": "insecure",
       "predicted": 1,
-      "n_mapped_findings": 5,
-      "n_all_findings": 11,
+      "n_mapped_findings": 4,
+      "n_all_findings": 8,
       "mapped_check_ids": [
-        "CKV2_AWS_6",
-        "CKV_AWS_53",
-        "CKV_AWS_54",
-        "CKV_AWS_55",
-        "CKV_AWS_56"
+        "aws-s3-block-public-acls",
+        "aws-s3-block-public-policy",
+        "aws-s3-ignore-public-acls",
+        "aws-s3-no-public-buckets"
       ]
     },
     {
@@ -109,14 +105,13 @@
       "category": "public_storage",
       "label": "insecure",
       "predicted": 1,
-      "n_mapped_findings": 5,
-      "n_all_findings": 11,
+      "n_mapped_findings": 4,
+      "n_all_findings": 8,
       "mapped_check_ids": [
-        "CKV2_AWS_6",
-        "CKV_AWS_53",
-        "CKV_AWS_54",
-        "CKV_AWS_55",
-        "CKV_AWS_56"
+        "aws-s3-block-public-acls",
+        "aws-s3-block-public-policy",
+        "aws-s3-ignore-public-acls",
+        "aws-s3-no-public-buckets"
       ]
     },
     {
@@ -124,14 +119,13 @@
       "category": "public_storage",
       "label": "insecure",
       "predicted": 1,
-      "n_mapped_findings": 5,
-      "n_all_findings": 11,
+      "n_mapped_findings": 4,
+      "n_all_findings": 8,
       "mapped_check_ids": [
-        "CKV2_AWS_6",
-        "CKV_AWS_53",
-        "CKV_AWS_54",
-        "CKV_AWS_55",
-        "CKV_AWS_56"
+        "aws-s3-block-public-acls",
+        "aws-s3-block-public-policy",
+        "aws-s3-ignore-public-acls",
+        "aws-s3-no-public-buckets"
       ]
     },
     {
@@ -140,7 +134,7 @@
       "label": "secure",
       "predicted": 0,
       "n_mapped_findings": 0,
-      "n_all_findings": 6,
+      "n_all_findings": 4,
       "mapped_check_ids": []
     },
     {
@@ -149,7 +143,7 @@
       "label": "secure",
       "predicted": 0,
       "n_mapped_findings": 0,
-      "n_all_findings": 6,
+      "n_all_findings": 4,
       "mapped_check_ids": []
     },
     {
@@ -157,14 +151,13 @@
       "category": "public_storage",
       "label": "insecure",
       "predicted": 1,
-      "n_mapped_findings": 5,
-      "n_all_findings": 12,
+      "n_mapped_findings": 4,
+      "n_all_findings": 8,
       "mapped_check_ids": [
-        "CKV2_AWS_6",
-        "CKV_AWS_53",
-        "CKV_AWS_54",
-        "CKV_AWS_55",
-        "CKV_AWS_56"
+        "aws-s3-block-public-acls",
+        "aws-s3-block-public-policy",
+        "aws-s3-ignore-public-acls",
+        "aws-s3-no-public-buckets"
       ]
     },
     {
@@ -172,14 +165,13 @@
       "category": "public_storage",
       "label": "insecure",
       "predicted": 1,
-      "n_mapped_findings": 5,
-      "n_all_findings": 12,
+      "n_mapped_findings": 4,
+      "n_all_findings": 8,
       "mapped_check_ids": [
-        "CKV2_AWS_6",
-        "CKV_AWS_53",
-        "CKV_AWS_54",
-        "CKV_AWS_55",
-        "CKV_AWS_56"
+        "aws-s3-block-public-acls",
+        "aws-s3-block-public-policy",
+        "aws-s3-ignore-public-acls",
+        "aws-s3-no-public-buckets"
       ]
     },
     {
@@ -187,14 +179,13 @@
       "category": "public_storage",
       "label": "insecure",
       "predicted": 1,
-      "n_mapped_findings": 5,
-      "n_all_findings": 12,
+      "n_mapped_findings": 4,
+      "n_all_findings": 8,
       "mapped_check_ids": [
-        "CKV2_AWS_6",
-        "CKV_AWS_53",
-        "CKV_AWS_54",
-        "CKV_AWS_55",
-        "CKV_AWS_56"
+        "aws-s3-block-public-acls",
+        "aws-s3-block-public-policy",
+        "aws-s3-ignore-public-acls",
+        "aws-s3-no-public-buckets"
       ]
     },
     {
@@ -203,7 +194,7 @@
       "label": "secure",
       "predicted": 0,
       "n_mapped_findings": 0,
-      "n_all_findings": 7,
+      "n_all_findings": 3,
       "mapped_check_ids": []
     },
     {
@@ -212,7 +203,7 @@
       "label": "secure",
       "predicted": 0,
       "n_mapped_findings": 0,
-      "n_all_findings": 7,
+      "n_all_findings": 3,
       "mapped_check_ids": []
     },
     {
@@ -220,10 +211,11 @@
       "category": "public_storage",
       "label": "insecure",
       "predicted": 1,
-      "n_mapped_findings": 1,
-      "n_all_findings": 8,
+      "n_mapped_findings": 2,
+      "n_all_findings": 5,
       "mapped_check_ids": [
-        "CKV_AWS_17"
+        "aws-rds-enable-public-access",
+        "aws-rds-no-public-db-access"
       ]
     },
     {
@@ -231,10 +223,11 @@
       "category": "public_storage",
       "label": "insecure",
       "predicted": 1,
-      "n_mapped_findings": 1,
-      "n_all_findings": 8,
+      "n_mapped_findings": 2,
+      "n_all_findings": 5,
       "mapped_check_ids": [
-        "CKV_AWS_17"
+        "aws-rds-enable-public-access",
+        "aws-rds-no-public-db-access"
       ]
     },
     {
@@ -242,66 +235,57 @@
       "category": "public_storage",
       "label": "insecure",
       "predicted": 1,
-      "n_mapped_findings": 1,
-      "n_all_findings": 8,
+      "n_mapped_findings": 2,
+      "n_all_findings": 5,
       "mapped_check_ids": [
-        "CKV_AWS_17"
+        "aws-rds-enable-public-access",
+        "aws-rds-no-public-db-access"
       ]
     },
     {
       "module_id": "ps-021-ps-redshift-public-s01",
       "category": "public_storage",
       "label": "secure",
-      "predicted": 1,
-      "n_mapped_findings": 1,
-      "n_all_findings": 5,
-      "mapped_check_ids": [
-        "CKV_AWS_321"
-      ]
+      "predicted": 0,
+      "n_mapped_findings": 0,
+      "n_all_findings": 2,
+      "mapped_check_ids": []
     },
     {
       "module_id": "ps-022-ps-redshift-public-s02",
       "category": "public_storage",
       "label": "secure",
-      "predicted": 1,
-      "n_mapped_findings": 1,
-      "n_all_findings": 5,
-      "mapped_check_ids": [
-        "CKV_AWS_321"
-      ]
+      "predicted": 0,
+      "n_mapped_findings": 0,
+      "n_all_findings": 2,
+      "mapped_check_ids": []
     },
     {
       "module_id": "ps-023-ps-redshift-public-i01",
       "category": "public_storage",
       "label": "insecure",
-      "predicted": 1,
-      "n_mapped_findings": 1,
-      "n_all_findings": 6,
-      "mapped_check_ids": [
-        "CKV_AWS_321"
-      ]
+      "predicted": 0,
+      "n_mapped_findings": 0,
+      "n_all_findings": 2,
+      "mapped_check_ids": []
     },
     {
       "module_id": "ps-024-ps-redshift-public-i02",
       "category": "public_storage",
       "label": "insecure",
-      "predicted": 1,
-      "n_mapped_findings": 1,
-      "n_all_findings": 6,
-      "mapped_check_ids": [
-        "CKV_AWS_321"
-      ]
+      "predicted": 0,
+      "n_mapped_findings": 0,
+      "n_all_findings": 2,
+      "mapped_check_ids": []
     },
     {
       "module_id": "ps-025-ps-redshift-public-i03",
       "category": "public_storage",
       "label": "insecure",
-      "predicted": 1,
-      "n_mapped_findings": 1,
-      "n_all_findings": 6,
-      "mapped_check_ids": [
-        "CKV_AWS_321"
-      ]
+      "predicted": 0,
+      "n_mapped_findings": 0,
+      "n_all_findings": 2,
+      "mapped_check_ids": []
     },
     {
       "module_id": "ps-026-ps-sqs-policy-s01",
@@ -325,34 +309,28 @@
       "module_id": "ps-028-ps-sqs-policy-i01",
       "category": "public_storage",
       "label": "insecure",
-      "predicted": 1,
-      "n_mapped_findings": 1,
-      "n_all_findings": 2,
-      "mapped_check_ids": [
-        "CKV_AWS_387"
-      ]
+      "predicted": 0,
+      "n_mapped_findings": 0,
+      "n_all_findings": 0,
+      "mapped_check_ids": []
     },
     {
       "module_id": "ps-029-ps-sqs-policy-i02",
       "category": "public_storage",
       "label": "insecure",
-      "predicted": 1,
-      "n_mapped_findings": 1,
-      "n_all_findings": 2,
-      "mapped_check_ids": [
-        "CKV_AWS_387"
-      ]
+      "predicted": 0,
+      "n_mapped_findings": 0,
+      "n_all_findings": 0,
+      "mapped_check_ids": []
     },
     {
       "module_id": "ps-030-ps-sqs-policy-i03",
       "category": "public_storage",
       "label": "insecure",
-      "predicted": 1,
-      "n_mapped_findings": 1,
-      "n_all_findings": 2,
-      "mapped_check_ids": [
-        "CKV_AWS_387"
-      ]
+      "predicted": 0,
+      "n_mapped_findings": 0,
+      "n_all_findings": 0,
+      "mapped_check_ids": []
     },
     {
       "module_id": "ps-031-ps-sns-policy-s01",
@@ -360,7 +338,7 @@
       "label": "secure",
       "predicted": 0,
       "n_mapped_findings": 0,
-      "n_all_findings": 0,
+      "n_all_findings": 1,
       "mapped_check_ids": []
     },
     {
@@ -369,63 +347,53 @@
       "label": "secure",
       "predicted": 0,
       "n_mapped_findings": 0,
-      "n_all_findings": 0,
+      "n_all_findings": 1,
       "mapped_check_ids": []
     },
     {
       "module_id": "ps-033-ps-sns-policy-i01",
       "category": "public_storage",
       "label": "insecure",
-      "predicted": 1,
-      "n_mapped_findings": 1,
+      "predicted": 0,
+      "n_mapped_findings": 0,
       "n_all_findings": 1,
-      "mapped_check_ids": [
-        "CKV_AWS_169"
-      ]
+      "mapped_check_ids": []
     },
     {
       "module_id": "ps-034-ps-sns-policy-i02",
       "category": "public_storage",
       "label": "insecure",
-      "predicted": 1,
-      "n_mapped_findings": 1,
+      "predicted": 0,
+      "n_mapped_findings": 0,
       "n_all_findings": 1,
-      "mapped_check_ids": [
-        "CKV_AWS_169"
-      ]
+      "mapped_check_ids": []
     },
     {
       "module_id": "ps-035-ps-sns-policy-i03",
       "category": "public_storage",
       "label": "insecure",
-      "predicted": 1,
-      "n_mapped_findings": 1,
+      "predicted": 0,
+      "n_mapped_findings": 0,
       "n_all_findings": 1,
-      "mapped_check_ids": [
-        "CKV_AWS_169"
-      ]
+      "mapped_check_ids": []
     },
     {
       "module_id": "ps-036-ps-ecr-policy-s01",
       "category": "public_storage",
       "label": "secure",
-      "predicted": 1,
-      "n_mapped_findings": 1,
+      "predicted": 0,
+      "n_mapped_findings": 0,
       "n_all_findings": 1,
-      "mapped_check_ids": [
-        "CKV_AWS_136"
-      ]
+      "mapped_check_ids": []
     },
     {
       "module_id": "ps-037-ps-ecr-policy-s02",
       "category": "public_storage",
       "label": "secure",
-      "predicted": 1,
-      "n_mapped_findings": 1,
+      "predicted": 0,
+      "n_mapped_findings": 0,
       "n_all_findings": 1,
-      "mapped_check_ids": [
-        "CKV_AWS_136"
-      ]
+      "mapped_check_ids": []
     },
     {
       "module_id": "ps-038-ps-ecr-policy-i01",
@@ -435,7 +403,7 @@
       "n_mapped_findings": 1,
       "n_all_findings": 2,
       "mapped_check_ids": [
-        "CKV_AWS_136"
+        "aws-ecr-no-public-access"
       ]
     },
     {
@@ -446,7 +414,7 @@
       "n_mapped_findings": 1,
       "n_all_findings": 2,
       "mapped_check_ids": [
-        "CKV_AWS_136"
+        "aws-ecr-no-public-access"
       ]
     },
     {
@@ -457,7 +425,7 @@
       "n_mapped_findings": 1,
       "n_all_findings": 2,
       "mapped_check_ids": [
-        "CKV_AWS_136"
+        "aws-ecr-no-public-access"
       ]
     },
     {
@@ -482,34 +450,28 @@
       "module_id": "ps-043-ps-ami-public-i01",
       "category": "public_storage",
       "label": "insecure",
-      "predicted": 1,
-      "n_mapped_findings": 1,
-      "n_all_findings": 2,
-      "mapped_check_ids": [
-        "CKV_AWS_205"
-      ]
+      "predicted": 0,
+      "n_mapped_findings": 0,
+      "n_all_findings": 1,
+      "mapped_check_ids": []
     },
     {
       "module_id": "ps-044-ps-ami-public-i02",
       "category": "public_storage",
       "label": "insecure",
-      "predicted": 1,
-      "n_mapped_findings": 1,
-      "n_all_findings": 2,
-      "mapped_check_ids": [
-        "CKV_AWS_205"
-      ]
+      "predicted": 0,
+      "n_mapped_findings": 0,
+      "n_all_findings": 1,
+      "mapped_check_ids": []
     },
     {
       "module_id": "ps-045-ps-ami-public-i03",
       "category": "public_storage",
       "label": "insecure",
-      "predicted": 1,
-      "n_mapped_findings": 1,
-      "n_all_findings": 2,
-      "mapped_check_ids": [
-        "CKV_AWS_205"
-      ]
+      "predicted": 0,
+      "n_mapped_findings": 0,
+      "n_all_findings": 1,
+      "mapped_check_ids": []
     },
     {
       "module_id": "ps-046-ps-ec2-public-ip-s01",
@@ -517,7 +479,7 @@
       "label": "secure",
       "predicted": 0,
       "n_mapped_findings": 0,
-      "n_all_findings": 2,
+      "n_all_findings": 0,
       "mapped_check_ids": []
     },
     {
@@ -526,41 +488,35 @@
       "label": "secure",
       "predicted": 0,
       "n_mapped_findings": 0,
-      "n_all_findings": 2,
+      "n_all_findings": 0,
       "mapped_check_ids": []
     },
     {
       "module_id": "ps-048-ps-ec2-public-ip-i01",
       "category": "public_storage",
       "label": "insecure",
-      "predicted": 1,
-      "n_mapped_findings": 1,
-      "n_all_findings": 3,
-      "mapped_check_ids": [
-        "CKV_AWS_88"
-      ]
+      "predicted": 0,
+      "n_mapped_findings": 0,
+      "n_all_findings": 0,
+      "mapped_check_ids": []
     },
     {
       "module_id": "ps-049-ps-ec2-public-ip-i02",
       "category": "public_storage",
       "label": "insecure",
-      "predicted": 1,
-      "n_mapped_findings": 1,
-      "n_all_findings": 3,
-      "mapped_check_ids": [
-        "CKV_AWS_88"
-      ]
+      "predicted": 0,
+      "n_mapped_findings": 0,
+      "n_all_findings": 0,
+      "mapped_check_ids": []
     },
     {
       "module_id": "ps-050-ps-ec2-public-ip-i03",
       "category": "public_storage",
       "label": "insecure",
-      "predicted": 1,
-      "n_mapped_findings": 1,
-      "n_all_findings": 3,
-      "mapped_check_ids": [
-        "CKV_AWS_88"
-      ]
+      "predicted": 0,
+      "n_mapped_findings": 0,
+      "n_all_findings": 0,
+      "mapped_check_ids": []
     },
     {
       "module_id": "ps-051-ps-opensearch-public-s01",
@@ -568,7 +524,7 @@
       "label": "secure",
       "predicted": 0,
       "n_mapped_findings": 0,
-      "n_all_findings": 7,
+      "n_all_findings": 0,
       "mapped_check_ids": []
     },
     {
@@ -577,132 +533,108 @@
       "label": "secure",
       "predicted": 0,
       "n_mapped_findings": 0,
-      "n_all_findings": 7,
+      "n_all_findings": 0,
       "mapped_check_ids": []
     },
     {
       "module_id": "ps-053-ps-opensearch-public-i01",
       "category": "public_storage",
       "label": "insecure",
-      "predicted": 1,
-      "n_mapped_findings": 1,
-      "n_all_findings": 9,
-      "mapped_check_ids": [
-        "CKV_AWS_248"
-      ]
+      "predicted": 0,
+      "n_mapped_findings": 0,
+      "n_all_findings": 0,
+      "mapped_check_ids": []
     },
     {
       "module_id": "ps-054-ps-opensearch-public-i02",
       "category": "public_storage",
       "label": "insecure",
-      "predicted": 1,
-      "n_mapped_findings": 1,
-      "n_all_findings": 9,
-      "mapped_check_ids": [
-        "CKV_AWS_248"
-      ]
+      "predicted": 0,
+      "n_mapped_findings": 0,
+      "n_all_findings": 0,
+      "mapped_check_ids": []
     },
     {
       "module_id": "ps-055-ps-opensearch-public-i03",
       "category": "public_storage",
       "label": "insecure",
-      "predicted": 1,
-      "n_mapped_findings": 1,
-      "n_all_findings": 9,
-      "mapped_check_ids": [
-        "CKV_AWS_248"
-      ]
+      "predicted": 0,
+      "n_mapped_findings": 0,
+      "n_all_findings": 0,
+      "mapped_check_ids": []
     },
     {
       "module_id": "ps-056-ps-neptune-public-s01",
       "category": "public_storage",
       "label": "secure",
-      "predicted": 1,
-      "n_mapped_findings": 1,
-      "n_all_findings": 4,
-      "mapped_check_ids": [
-        "CKV2_AWS_58"
-      ]
+      "predicted": 0,
+      "n_mapped_findings": 0,
+      "n_all_findings": 2,
+      "mapped_check_ids": []
     },
     {
       "module_id": "ps-057-ps-neptune-public-s02",
       "category": "public_storage",
       "label": "secure",
-      "predicted": 1,
-      "n_mapped_findings": 1,
-      "n_all_findings": 4,
-      "mapped_check_ids": [
-        "CKV2_AWS_58"
-      ]
+      "predicted": 0,
+      "n_mapped_findings": 0,
+      "n_all_findings": 2,
+      "mapped_check_ids": []
     },
     {
       "module_id": "ps-058-ps-neptune-public-i01",
       "category": "public_storage",
       "label": "insecure",
-      "predicted": 1,
-      "n_mapped_findings": 1,
-      "n_all_findings": 5,
-      "mapped_check_ids": [
-        "CKV2_AWS_58"
-      ]
+      "predicted": 0,
+      "n_mapped_findings": 0,
+      "n_all_findings": 2,
+      "mapped_check_ids": []
     },
     {
       "module_id": "ps-059-ps-neptune-public-i02",
       "category": "public_storage",
       "label": "insecure",
-      "predicted": 1,
-      "n_mapped_findings": 1,
-      "n_all_findings": 5,
-      "mapped_check_ids": [
-        "CKV2_AWS_58"
-      ]
+      "predicted": 0,
+      "n_mapped_findings": 0,
+      "n_all_findings": 2,
+      "mapped_check_ids": []
     },
     {
       "module_id": "ps-060-ps-neptune-public-i03",
       "category": "public_storage",
       "label": "insecure",
-      "predicted": 1,
-      "n_mapped_findings": 1,
-      "n_all_findings": 5,
-      "mapped_check_ids": [
-        "CKV2_AWS_58"
-      ]
+      "predicted": 0,
+      "n_mapped_findings": 0,
+      "n_all_findings": 2,
+      "mapped_check_ids": []
     },
     {
       "module_id": "oa-001-oa-sg-ssh-s01",
       "category": "overpermissive_access",
       "label": "secure",
-      "predicted": 1,
-      "n_mapped_findings": 2,
-      "n_all_findings": 2,
-      "mapped_check_ids": [
-        "CKV2_AWS_5",
-        "CKV_AWS_23"
-      ]
+      "predicted": 0,
+      "n_mapped_findings": 0,
+      "n_all_findings": 1,
+      "mapped_check_ids": []
     },
     {
       "module_id": "oa-002-oa-sg-ssh-s02",
       "category": "overpermissive_access",
       "label": "secure",
-      "predicted": 1,
-      "n_mapped_findings": 2,
-      "n_all_findings": 2,
-      "mapped_check_ids": [
-        "CKV2_AWS_5",
-        "CKV_AWS_23"
-      ]
+      "predicted": 0,
+      "n_mapped_findings": 0,
+      "n_all_findings": 1,
+      "mapped_check_ids": []
     },
     {
       "module_id": "oa-003-oa-sg-ssh-i01",
       "category": "overpermissive_access",
       "label": "insecure",
       "predicted": 1,
-      "n_mapped_findings": 3,
-      "n_all_findings": 3,
+      "n_mapped_findings": 1,
+      "n_all_findings": 2,
       "mapped_check_ids": [
-        "CKV2_AWS_5",
-        "CKV_AWS_23",
-        "CKV_AWS_24"
+        "aws-ec2-no-public-ingress-sgr"
       ]
     },
     {
@@ -710,12 +642,10 @@
       "category": "overpermissive_access",
       "label": "insecure",
       "predicted": 1,
-      "n_mapped_findings": 3,
-      "n_all_findings": 3,
+      "n_mapped_findings": 1,
+      "n_all_findings": 2,
       "mapped_check_ids": [
-        "CKV2_AWS_5",
-        "CKV_AWS_23",
-        "CKV_AWS_24"
+        "aws-ec2-no-public-ingress-sgr"
       ]
     },
     {
@@ -723,47 +653,39 @@
       "category": "overpermissive_access",
       "label": "insecure",
       "predicted": 1,
-      "n_mapped_findings": 2,
+      "n_mapped_findings": 1,
       "n_all_findings": 2,
       "mapped_check_ids": [
-        "CKV2_AWS_5",
-        "CKV_AWS_23"
+        "aws-ec2-no-public-ingress-sgr"
       ]
     },
     {
       "module_id": "oa-006-oa-sg-all-s01",
       "category": "overpermissive_access",
       "label": "secure",
-      "predicted": 1,
-      "n_mapped_findings": 1,
-      "n_all_findings": 1,
-      "mapped_check_ids": [
-        "CKV2_AWS_5"
-      ]
+      "predicted": 0,
+      "n_mapped_findings": 0,
+      "n_all_findings": 0,
+      "mapped_check_ids": []
     },
     {
       "module_id": "oa-007-oa-sg-all-s02",
       "category": "overpermissive_access",
       "label": "secure",
-      "predicted": 1,
-      "n_mapped_findings": 1,
-      "n_all_findings": 1,
-      "mapped_check_ids": [
-        "CKV2_AWS_5"
-      ]
+      "predicted": 0,
+      "n_mapped_findings": 0,
+      "n_all_findings": 0,
+      "mapped_check_ids": []
     },
     {
       "module_id": "oa-008-oa-sg-all-i01",
       "category": "overpermissive_access",
       "label": "insecure",
       "predicted": 1,
-      "n_mapped_findings": 4,
-      "n_all_findings": 5,
+      "n_mapped_findings": 1,
+      "n_all_findings": 1,
       "mapped_check_ids": [
-        "CKV2_AWS_5",
-        "CKV_AWS_24",
-        "CKV_AWS_25",
-        "CKV_AWS_260"
+        "aws-ec2-no-public-ingress-sgr"
       ]
     },
     {
@@ -771,13 +693,10 @@
       "category": "overpermissive_access",
       "label": "insecure",
       "predicted": 1,
-      "n_mapped_findings": 4,
-      "n_all_findings": 5,
+      "n_mapped_findings": 1,
+      "n_all_findings": 1,
       "mapped_check_ids": [
-        "CKV2_AWS_5",
-        "CKV_AWS_24",
-        "CKV_AWS_25",
-        "CKV_AWS_260"
+        "aws-ec2-no-public-ingress-sgr"
       ]
     },
     {
@@ -785,50 +704,39 @@
       "category": "overpermissive_access",
       "label": "insecure",
       "predicted": 1,
-      "n_mapped_findings": 4,
-      "n_all_findings": 5,
+      "n_mapped_findings": 1,
+      "n_all_findings": 1,
       "mapped_check_ids": [
-        "CKV2_AWS_5",
-        "CKV_AWS_24",
-        "CKV_AWS_25",
-        "CKV_AWS_260"
+        "aws-ec2-no-public-ingress-sgr"
       ]
     },
     {
       "module_id": "oa-011-oa-sg-rdp-s01",
       "category": "overpermissive_access",
       "label": "secure",
-      "predicted": 1,
-      "n_mapped_findings": 2,
-      "n_all_findings": 2,
-      "mapped_check_ids": [
-        "CKV2_AWS_5",
-        "CKV_AWS_23"
-      ]
+      "predicted": 0,
+      "n_mapped_findings": 0,
+      "n_all_findings": 1,
+      "mapped_check_ids": []
     },
     {
       "module_id": "oa-012-oa-sg-rdp-s02",
       "category": "overpermissive_access",
       "label": "secure",
-      "predicted": 1,
-      "n_mapped_findings": 2,
-      "n_all_findings": 2,
-      "mapped_check_ids": [
-        "CKV2_AWS_5",
-        "CKV_AWS_23"
-      ]
+      "predicted": 0,
+      "n_mapped_findings": 0,
+      "n_all_findings": 1,
+      "mapped_check_ids": []
     },
     {
       "module_id": "oa-013-oa-sg-rdp-i01",
       "category": "overpermissive_access",
       "label": "insecure",
       "predicted": 1,
-      "n_mapped_findings": 3,
-      "n_all_findings": 3,
+      "n_mapped_findings": 1,
+      "n_all_findings": 2,
       "mapped_check_ids": [
-        "CKV2_AWS_5",
-        "CKV_AWS_23",
-        "CKV_AWS_25"
+        "aws-ec2-no-public-ingress-sgr"
       ]
     },
     {
@@ -836,12 +744,10 @@
       "category": "overpermissive_access",
       "label": "insecure",
       "predicted": 1,
-      "n_mapped_findings": 3,
-      "n_all_findings": 3,
+      "n_mapped_findings": 1,
+      "n_all_findings": 2,
       "mapped_check_ids": [
-        "CKV2_AWS_5",
-        "CKV_AWS_23",
-        "CKV_AWS_25"
+        "aws-ec2-no-public-ingress-sgr"
       ]
     },
     {
@@ -849,11 +755,10 @@
       "category": "overpermissive_access",
       "label": "insecure",
       "predicted": 1,
-      "n_mapped_findings": 2,
+      "n_mapped_findings": 1,
       "n_all_findings": 2,
       "mapped_check_ids": [
-        "CKV2_AWS_5",
-        "CKV_AWS_23"
+        "aws-ec2-no-public-ingress-sgr"
       ]
     },
     {
@@ -880,10 +785,9 @@
       "label": "insecure",
       "predicted": 1,
       "n_mapped_findings": 2,
-      "n_all_findings": 9,
+      "n_all_findings": 2,
       "mapped_check_ids": [
-        "CKV_AWS_62",
-        "CKV_AWS_63"
+        "aws-iam-no-policy-wildcards"
       ]
     },
     {
@@ -892,10 +796,9 @@
       "label": "insecure",
       "predicted": 1,
       "n_mapped_findings": 2,
-      "n_all_findings": 9,
+      "n_all_findings": 2,
       "mapped_check_ids": [
-        "CKV_AWS_62",
-        "CKV_AWS_63"
+        "aws-iam-no-policy-wildcards"
       ]
     },
     {
@@ -904,10 +807,9 @@
       "label": "insecure",
       "predicted": 1,
       "n_mapped_findings": 2,
-      "n_all_findings": 9,
+      "n_all_findings": 2,
       "mapped_check_ids": [
-        "CKV_AWS_62",
-        "CKV_AWS_63"
+        "aws-iam-no-policy-wildcards"
       ]
     },
     {
@@ -934,7 +836,7 @@
       "label": "insecure",
       "predicted": 0,
       "n_mapped_findings": 0,
-      "n_all_findings": 1,
+      "n_all_findings": 0,
       "mapped_check_ids": []
     },
     {
@@ -943,7 +845,7 @@
       "label": "insecure",
       "predicted": 0,
       "n_mapped_findings": 0,
-      "n_all_findings": 1,
+      "n_all_findings": 0,
       "mapped_check_ids": []
     },
     {
@@ -952,7 +854,7 @@
       "label": "insecure",
       "predicted": 0,
       "n_mapped_findings": 0,
-      "n_all_findings": 1,
+      "n_all_findings": 0,
       "mapped_check_ids": []
     },
     {
@@ -961,7 +863,7 @@
       "label": "secure",
       "predicted": 0,
       "n_mapped_findings": 0,
-      "n_all_findings": 1,
+      "n_all_findings": 0,
       "mapped_check_ids": []
     },
     {
@@ -970,59 +872,59 @@
       "label": "secure",
       "predicted": 0,
       "n_mapped_findings": 0,
-      "n_all_findings": 1,
+      "n_all_findings": 0,
       "mapped_check_ids": []
     },
     {
       "module_id": "oa-028-oa-nacl-all-i01",
       "category": "overpermissive_access",
       "label": "insecure",
-      "predicted": 1,
-      "n_mapped_findings": 1,
-      "n_all_findings": 6,
-      "mapped_check_ids": [
-        "CKV_AWS_230"
-      ]
+      "predicted": 0,
+      "n_mapped_findings": 0,
+      "n_all_findings": 2,
+      "mapped_check_ids": []
     },
     {
       "module_id": "oa-029-oa-nacl-all-i02",
       "category": "overpermissive_access",
       "label": "insecure",
-      "predicted": 1,
-      "n_mapped_findings": 1,
-      "n_all_findings": 6,
-      "mapped_check_ids": [
-        "CKV_AWS_230"
-      ]
+      "predicted": 0,
+      "n_mapped_findings": 0,
+      "n_all_findings": 2,
+      "mapped_check_ids": []
     },
     {
       "module_id": "oa-030-oa-nacl-all-i03",
       "category": "overpermissive_access",
       "label": "insecure",
-      "predicted": 1,
-      "n_mapped_findings": 1,
-      "n_all_findings": 6,
-      "mapped_check_ids": [
-        "CKV_AWS_230"
-      ]
+      "predicted": 0,
+      "n_mapped_findings": 0,
+      "n_all_findings": 2,
+      "mapped_check_ids": []
     },
     {
       "module_id": "oa-031-oa-lambda-principal-s01",
       "category": "overpermissive_access",
       "label": "secure",
-      "predicted": 0,
-      "n_mapped_findings": 0,
-      "n_all_findings": 6,
-      "mapped_check_ids": []
+      "predicted": 1,
+      "n_mapped_findings": 2,
+      "n_all_findings": 2,
+      "mapped_check_ids": [
+        "aws-lambda-enable-tracing",
+        "aws-lambda-restrict-source-arn"
+      ]
     },
     {
       "module_id": "oa-032-oa-lambda-principal-s02",
       "category": "overpermissive_access",
       "label": "secure",
-      "predicted": 0,
-      "n_mapped_findings": 0,
-      "n_all_findings": 6,
-      "mapped_check_ids": []
+      "predicted": 1,
+      "n_mapped_findings": 2,
+      "n_all_findings": 2,
+      "mapped_check_ids": [
+        "aws-lambda-enable-tracing",
+        "aws-lambda-restrict-source-arn"
+      ]
     },
     {
       "module_id": "oa-033-oa-lambda-principal-i01",
@@ -1030,9 +932,9 @@
       "label": "insecure",
       "predicted": 1,
       "n_mapped_findings": 1,
-      "n_all_findings": 6,
+      "n_all_findings": 1,
       "mapped_check_ids": [
-        "CKV_AWS_301"
+        "aws-lambda-enable-tracing"
       ]
     },
     {
@@ -1041,9 +943,9 @@
       "label": "insecure",
       "predicted": 1,
       "n_mapped_findings": 1,
-      "n_all_findings": 6,
+      "n_all_findings": 1,
       "mapped_check_ids": [
-        "CKV_AWS_301"
+        "aws-lambda-enable-tracing"
       ]
     },
     {
@@ -1052,9 +954,9 @@
       "label": "insecure",
       "predicted": 1,
       "n_mapped_findings": 1,
-      "n_all_findings": 6,
+      "n_all_findings": 1,
       "mapped_check_ids": [
-        "CKV_AWS_301"
+        "aws-lambda-enable-tracing"
       ]
     },
     {
@@ -1079,56 +981,46 @@
       "module_id": "oa-038-oa-kms-policy-i01",
       "category": "overpermissive_access",
       "label": "insecure",
-      "predicted": 1,
-      "n_mapped_findings": 1,
-      "n_all_findings": 1,
-      "mapped_check_ids": [
-        "CKV_AWS_33"
-      ]
+      "predicted": 0,
+      "n_mapped_findings": 0,
+      "n_all_findings": 0,
+      "mapped_check_ids": []
     },
     {
       "module_id": "oa-039-oa-kms-policy-i02",
       "category": "overpermissive_access",
       "label": "insecure",
-      "predicted": 1,
-      "n_mapped_findings": 1,
-      "n_all_findings": 1,
-      "mapped_check_ids": [
-        "CKV_AWS_33"
-      ]
+      "predicted": 0,
+      "n_mapped_findings": 0,
+      "n_all_findings": 0,
+      "mapped_check_ids": []
     },
     {
       "module_id": "oa-040-oa-kms-policy-i03",
       "category": "overpermissive_access",
       "label": "insecure",
-      "predicted": 1,
-      "n_mapped_findings": 1,
-      "n_all_findings": 1,
-      "mapped_check_ids": [
-        "CKV_AWS_33"
-      ]
+      "predicted": 0,
+      "n_mapped_findings": 0,
+      "n_all_findings": 0,
+      "mapped_check_ids": []
     },
     {
       "module_id": "oa-041-oa-iam-s3-star-s01",
       "category": "overpermissive_access",
       "label": "secure",
-      "predicted": 1,
-      "n_mapped_findings": 1,
-      "n_all_findings": 2,
-      "mapped_check_ids": [
-        "CKV_AWS_40"
-      ]
+      "predicted": 0,
+      "n_mapped_findings": 0,
+      "n_all_findings": 1,
+      "mapped_check_ids": []
     },
     {
       "module_id": "oa-042-oa-iam-s3-star-s02",
       "category": "overpermissive_access",
       "label": "secure",
-      "predicted": 1,
-      "n_mapped_findings": 1,
-      "n_all_findings": 2,
-      "mapped_check_ids": [
-        "CKV_AWS_40"
-      ]
+      "predicted": 0,
+      "n_mapped_findings": 0,
+      "n_all_findings": 1,
+      "mapped_check_ids": []
     },
     {
       "module_id": "oa-043-oa-iam-s3-star-i01",
@@ -1138,7 +1030,7 @@
       "n_mapped_findings": 1,
       "n_all_findings": 2,
       "mapped_check_ids": [
-        "CKV_AWS_40"
+        "aws-iam-no-policy-wildcards"
       ]
     },
     {
@@ -1149,7 +1041,7 @@
       "n_mapped_findings": 1,
       "n_all_findings": 2,
       "mapped_check_ids": [
-        "CKV_AWS_40"
+        "aws-iam-no-policy-wildcards"
       ]
     },
     {
@@ -1157,46 +1049,39 @@
       "category": "overpermissive_access",
       "label": "insecure",
       "predicted": 1,
-      "n_mapped_findings": 1,
-      "n_all_findings": 2,
+      "n_mapped_findings": 2,
+      "n_all_findings": 3,
       "mapped_check_ids": [
-        "CKV_AWS_40"
+        "aws-iam-no-policy-wildcards"
       ]
     },
     {
       "module_id": "oa-046-oa-sg-postgres-s01",
       "category": "overpermissive_access",
       "label": "secure",
-      "predicted": 1,
-      "n_mapped_findings": 2,
-      "n_all_findings": 2,
-      "mapped_check_ids": [
-        "CKV2_AWS_5",
-        "CKV_AWS_23"
-      ]
+      "predicted": 0,
+      "n_mapped_findings": 0,
+      "n_all_findings": 1,
+      "mapped_check_ids": []
     },
     {
       "module_id": "oa-047-oa-sg-postgres-s02",
       "category": "overpermissive_access",
       "label": "secure",
-      "predicted": 1,
-      "n_mapped_findings": 2,
-      "n_all_findings": 2,
-      "mapped_check_ids": [
-        "CKV2_AWS_5",
-        "CKV_AWS_23"
-      ]
+      "predicted": 0,
+      "n_mapped_findings": 0,
+      "n_all_findings": 1,
+      "mapped_check_ids": []
     },
     {
       "module_id": "oa-048-oa-sg-postgres-i01",
       "category": "overpermissive_access",
       "label": "insecure",
       "predicted": 1,
-      "n_mapped_findings": 2,
+      "n_mapped_findings": 1,
       "n_all_findings": 2,
       "mapped_check_ids": [
-        "CKV2_AWS_5",
-        "CKV_AWS_23"
+        "aws-ec2-no-public-ingress-sgr"
       ]
     },
     {
@@ -1204,11 +1089,10 @@
       "category": "overpermissive_access",
       "label": "insecure",
       "predicted": 1,
-      "n_mapped_findings": 2,
+      "n_mapped_findings": 1,
       "n_all_findings": 2,
       "mapped_check_ids": [
-        "CKV2_AWS_5",
-        "CKV_AWS_23"
+        "aws-ec2-no-public-ingress-sgr"
       ]
     },
     {
@@ -1216,41 +1100,45 @@
       "category": "overpermissive_access",
       "label": "insecure",
       "predicted": 1,
-      "n_mapped_findings": 2,
+      "n_mapped_findings": 1,
       "n_all_findings": 2,
       "mapped_check_ids": [
-        "CKV2_AWS_5",
-        "CKV_AWS_23"
+        "aws-ec2-no-public-ingress-sgr"
       ]
     },
     {
       "module_id": "oa-051-oa-eks-public-s01",
       "category": "overpermissive_access",
       "label": "secure",
-      "predicted": 0,
-      "n_mapped_findings": 0,
-      "n_all_findings": 2,
-      "mapped_check_ids": []
+      "predicted": 1,
+      "n_mapped_findings": 1,
+      "n_all_findings": 3,
+      "mapped_check_ids": [
+        "aws-eks-encrypt-secrets"
+      ]
     },
     {
       "module_id": "oa-052-oa-eks-public-s02",
       "category": "overpermissive_access",
       "label": "secure",
-      "predicted": 0,
-      "n_mapped_findings": 0,
-      "n_all_findings": 2,
-      "mapped_check_ids": []
+      "predicted": 1,
+      "n_mapped_findings": 1,
+      "n_all_findings": 3,
+      "mapped_check_ids": [
+        "aws-eks-encrypt-secrets"
+      ]
     },
     {
       "module_id": "oa-053-oa-eks-public-i01",
       "category": "overpermissive_access",
       "label": "insecure",
       "predicted": 1,
-      "n_mapped_findings": 2,
-      "n_all_findings": 4,
+      "n_mapped_findings": 3,
+      "n_all_findings": 5,
       "mapped_check_ids": [
-        "CKV_AWS_38",
-        "CKV_AWS_39"
+        "aws-eks-encrypt-secrets",
+        "aws-eks-no-public-cluster-access",
+        "aws-eks-no-public-cluster-access-to-cidr"
       ]
     },
     {
@@ -1258,11 +1146,12 @@
       "category": "overpermissive_access",
       "label": "insecure",
       "predicted": 1,
-      "n_mapped_findings": 2,
-      "n_all_findings": 4,
+      "n_mapped_findings": 3,
+      "n_all_findings": 5,
       "mapped_check_ids": [
-        "CKV_AWS_38",
-        "CKV_AWS_39"
+        "aws-eks-encrypt-secrets",
+        "aws-eks-no-public-cluster-access",
+        "aws-eks-no-public-cluster-access-to-cidr"
       ]
     },
     {
@@ -1270,95 +1159,91 @@
       "category": "overpermissive_access",
       "label": "insecure",
       "predicted": 1,
-      "n_mapped_findings": 2,
-      "n_all_findings": 4,
+      "n_mapped_findings": 3,
+      "n_all_findings": 5,
       "mapped_check_ids": [
-        "CKV_AWS_38",
-        "CKV_AWS_39"
+        "aws-eks-encrypt-secrets",
+        "aws-eks-no-public-cluster-access",
+        "aws-eks-no-public-cluster-access-to-cidr"
       ]
     },
     {
       "module_id": "oa-056-oa-secrets-policy-s01",
       "category": "overpermissive_access",
       "label": "secure",
-      "predicted": 1,
-      "n_mapped_findings": 1,
-      "n_all_findings": 2,
-      "mapped_check_ids": [
-        "CKV2_AWS_57"
-      ]
+      "predicted": 0,
+      "n_mapped_findings": 0,
+      "n_all_findings": 1,
+      "mapped_check_ids": []
     },
     {
       "module_id": "oa-057-oa-secrets-policy-s02",
       "category": "overpermissive_access",
       "label": "secure",
-      "predicted": 1,
-      "n_mapped_findings": 1,
-      "n_all_findings": 2,
-      "mapped_check_ids": [
-        "CKV2_AWS_57"
-      ]
+      "predicted": 0,
+      "n_mapped_findings": 0,
+      "n_all_findings": 1,
+      "mapped_check_ids": []
     },
     {
       "module_id": "oa-058-oa-secrets-policy-i01",
       "category": "overpermissive_access",
       "label": "insecure",
-      "predicted": 1,
-      "n_mapped_findings": 1,
-      "n_all_findings": 2,
-      "mapped_check_ids": [
-        "CKV2_AWS_57"
-      ]
+      "predicted": 0,
+      "n_mapped_findings": 0,
+      "n_all_findings": 1,
+      "mapped_check_ids": []
     },
     {
       "module_id": "oa-059-oa-secrets-policy-i02",
       "category": "overpermissive_access",
       "label": "insecure",
-      "predicted": 1,
-      "n_mapped_findings": 1,
-      "n_all_findings": 2,
-      "mapped_check_ids": [
-        "CKV2_AWS_57"
-      ]
+      "predicted": 0,
+      "n_mapped_findings": 0,
+      "n_all_findings": 1,
+      "mapped_check_ids": []
     },
     {
       "module_id": "oa-060-oa-secrets-policy-i03",
       "category": "overpermissive_access",
       "label": "insecure",
-      "predicted": 1,
-      "n_mapped_findings": 1,
-      "n_all_findings": 2,
-      "mapped_check_ids": [
-        "CKV2_AWS_57"
-      ]
+      "predicted": 0,
+      "n_mapped_findings": 0,
+      "n_all_findings": 1,
+      "mapped_check_ids": []
     },
     {
       "module_id": "enc-001-enc-s3-sse-s01",
       "category": "encryption_at_rest",
       "label": "secure",
-      "predicted": 0,
-      "n_mapped_findings": 0,
-      "n_all_findings": 5,
-      "mapped_check_ids": []
+      "predicted": 1,
+      "n_mapped_findings": 1,
+      "n_all_findings": 3,
+      "mapped_check_ids": [
+        "aws-s3-encryption-customer-key"
+      ]
     },
     {
       "module_id": "enc-002-enc-s3-sse-s02",
       "category": "encryption_at_rest",
       "label": "secure",
-      "predicted": 0,
-      "n_mapped_findings": 0,
-      "n_all_findings": 5,
-      "mapped_check_ids": []
+      "predicted": 1,
+      "n_mapped_findings": 1,
+      "n_all_findings": 3,
+      "mapped_check_ids": [
+        "aws-s3-encryption-customer-key"
+      ]
     },
     {
       "module_id": "enc-003-enc-s3-sse-i01",
       "category": "encryption_at_rest",
       "label": "insecure",
       "predicted": 1,
-      "n_mapped_findings": 1,
-      "n_all_findings": 6,
+      "n_mapped_findings": 2,
+      "n_all_findings": 4,
       "mapped_check_ids": [
-        "CKV_AWS_145"
+        "aws-s3-enable-bucket-encryption",
+        "aws-s3-encryption-customer-key"
       ]
     },
     {
@@ -1366,10 +1251,11 @@
       "category": "encryption_at_rest",
       "label": "insecure",
       "predicted": 1,
-      "n_mapped_findings": 1,
-      "n_all_findings": 6,
+      "n_mapped_findings": 2,
+      "n_all_findings": 4,
       "mapped_check_ids": [
-        "CKV_AWS_145"
+        "aws-s3-enable-bucket-encryption",
+        "aws-s3-encryption-customer-key"
       ]
     },
     {
@@ -1377,10 +1263,11 @@
       "category": "encryption_at_rest",
       "label": "insecure",
       "predicted": 1,
-      "n_mapped_findings": 1,
-      "n_all_findings": 6,
+      "n_mapped_findings": 2,
+      "n_all_findings": 4,
       "mapped_check_ids": [
-        "CKV_AWS_145"
+        "aws-s3-enable-bucket-encryption",
+        "aws-s3-encryption-customer-key"
       ]
     },
     {
@@ -1405,34 +1292,28 @@
       "module_id": "enc-008-enc-ebs-i01",
       "category": "encryption_at_rest",
       "label": "insecure",
-      "predicted": 1,
-      "n_mapped_findings": 1,
+      "predicted": 0,
+      "n_mapped_findings": 0,
       "n_all_findings": 2,
-      "mapped_check_ids": [
-        "CKV_AWS_3"
-      ]
+      "mapped_check_ids": []
     },
     {
       "module_id": "enc-009-enc-ebs-i02",
       "category": "encryption_at_rest",
       "label": "insecure",
-      "predicted": 1,
-      "n_mapped_findings": 1,
+      "predicted": 0,
+      "n_mapped_findings": 0,
       "n_all_findings": 2,
-      "mapped_check_ids": [
-        "CKV_AWS_3"
-      ]
+      "mapped_check_ids": []
     },
     {
       "module_id": "enc-010-enc-ebs-i03",
       "category": "encryption_at_rest",
       "label": "insecure",
-      "predicted": 1,
-      "n_mapped_findings": 1,
+      "predicted": 0,
+      "n_mapped_findings": 0,
       "n_all_findings": 2,
-      "mapped_check_ids": [
-        "CKV_AWS_3"
-      ]
+      "mapped_check_ids": []
     },
     {
       "module_id": "enc-011-enc-rds-s01",
@@ -1440,7 +1321,7 @@
       "label": "secure",
       "predicted": 0,
       "n_mapped_findings": 0,
-      "n_all_findings": 9,
+      "n_all_findings": 3,
       "mapped_check_ids": []
     },
     {
@@ -1449,7 +1330,7 @@
       "label": "secure",
       "predicted": 0,
       "n_mapped_findings": 0,
-      "n_all_findings": 9,
+      "n_all_findings": 3,
       "mapped_check_ids": []
     },
     {
@@ -1458,9 +1339,9 @@
       "label": "insecure",
       "predicted": 1,
       "n_mapped_findings": 1,
-      "n_all_findings": 10,
+      "n_all_findings": 4,
       "mapped_check_ids": [
-        "CKV_AWS_16"
+        "aws-rds-encrypt-instance-storage-data"
       ]
     },
     {
@@ -1469,9 +1350,9 @@
       "label": "insecure",
       "predicted": 1,
       "n_mapped_findings": 1,
-      "n_all_findings": 10,
+      "n_all_findings": 4,
       "mapped_check_ids": [
-        "CKV_AWS_16"
+        "aws-rds-encrypt-instance-storage-data"
       ]
     },
     {
@@ -1480,9 +1361,9 @@
       "label": "insecure",
       "predicted": 1,
       "n_mapped_findings": 1,
-      "n_all_findings": 10,
+      "n_all_findings": 4,
       "mapped_check_ids": [
-        "CKV_AWS_16"
+        "aws-rds-encrypt-instance-storage-data"
       ]
     },
     {
@@ -1509,9 +1390,9 @@
       "label": "insecure",
       "predicted": 1,
       "n_mapped_findings": 1,
-      "n_all_findings": 2,
+      "n_all_findings": 1,
       "mapped_check_ids": [
-        "CKV_AWS_42"
+        "aws-efs-enable-at-rest-encryption"
       ]
     },
     {
@@ -1520,9 +1401,9 @@
       "label": "insecure",
       "predicted": 1,
       "n_mapped_findings": 1,
-      "n_all_findings": 2,
+      "n_all_findings": 1,
       "mapped_check_ids": [
-        "CKV_AWS_42"
+        "aws-efs-enable-at-rest-encryption"
       ]
     },
     {
@@ -1531,39 +1412,41 @@
       "label": "insecure",
       "predicted": 1,
       "n_mapped_findings": 1,
-      "n_all_findings": 2,
+      "n_all_findings": 1,
       "mapped_check_ids": [
-        "CKV_AWS_42"
+        "aws-efs-enable-at-rest-encryption"
       ]
     },
     {
       "module_id": "enc-021-enc-sns-s01",
       "category": "encryption_at_rest",
       "label": "secure",
-      "predicted": 0,
-      "n_mapped_findings": 0,
-      "n_all_findings": 0,
-      "mapped_check_ids": []
+      "predicted": 1,
+      "n_mapped_findings": 1,
+      "n_all_findings": 1,
+      "mapped_check_ids": [
+        "aws-sns-topic-encryption-use-cmk"
+      ]
     },
     {
       "module_id": "enc-022-enc-sns-s02",
       "category": "encryption_at_rest",
       "label": "secure",
-      "predicted": 0,
-      "n_mapped_findings": 0,
-      "n_all_findings": 0,
-      "mapped_check_ids": []
+      "predicted": 1,
+      "n_mapped_findings": 1,
+      "n_all_findings": 1,
+      "mapped_check_ids": [
+        "aws-sns-topic-encryption-use-cmk"
+      ]
     },
     {
       "module_id": "enc-023-enc-sns-i01",
       "category": "encryption_at_rest",
       "label": "insecure",
-      "predicted": 1,
-      "n_mapped_findings": 1,
-      "n_all_findings": 1,
-      "mapped_check_ids": [
-        "CKV_AWS_26"
-      ]
+      "predicted": 0,
+      "n_mapped_findings": 0,
+      "n_all_findings": 0,
+      "mapped_check_ids": []
     },
     {
       "module_id": "enc-024-enc-sns-i02",
@@ -1573,19 +1456,17 @@
       "n_mapped_findings": 1,
       "n_all_findings": 1,
       "mapped_check_ids": [
-        "CKV_AWS_26"
+        "aws-sns-enable-topic-encryption"
       ]
     },
     {
       "module_id": "enc-025-enc-sns-i03",
       "category": "encryption_at_rest",
       "label": "insecure",
-      "predicted": 1,
-      "n_mapped_findings": 1,
-      "n_all_findings": 1,
-      "mapped_check_ids": [
-        "CKV_AWS_26"
-      ]
+      "predicted": 0,
+      "n_mapped_findings": 0,
+      "n_all_findings": 0,
+      "mapped_check_ids": []
     },
     {
       "module_id": "enc-026-enc-sqs-s01",
@@ -1613,7 +1494,7 @@
       "n_mapped_findings": 1,
       "n_all_findings": 1,
       "mapped_check_ids": [
-        "CKV_AWS_27"
+        "aws-sqs-enable-queue-encryption"
       ]
     },
     {
@@ -1624,7 +1505,7 @@
       "n_mapped_findings": 1,
       "n_all_findings": 1,
       "mapped_check_ids": [
-        "CKV_AWS_27"
+        "aws-sqs-enable-queue-encryption"
       ]
     },
     {
@@ -1635,7 +1516,7 @@
       "n_mapped_findings": 1,
       "n_all_findings": 1,
       "mapped_check_ids": [
-        "CKV_AWS_27"
+        "aws-sqs-enable-queue-encryption"
       ]
     },
     {
@@ -1644,7 +1525,7 @@
       "label": "secure",
       "predicted": 0,
       "n_mapped_findings": 0,
-      "n_all_findings": 1,
+      "n_all_findings": 0,
       "mapped_check_ids": []
     },
     {
@@ -1653,19 +1534,17 @@
       "label": "secure",
       "predicted": 0,
       "n_mapped_findings": 0,
-      "n_all_findings": 1,
+      "n_all_findings": 0,
       "mapped_check_ids": []
     },
     {
       "module_id": "enc-033-enc-logs-i01",
       "category": "encryption_at_rest",
       "label": "insecure",
-      "predicted": 1,
-      "n_mapped_findings": 1,
-      "n_all_findings": 2,
-      "mapped_check_ids": [
-        "CKV_AWS_158"
-      ]
+      "predicted": 0,
+      "n_mapped_findings": 0,
+      "n_all_findings": 0,
+      "mapped_check_ids": []
     },
     {
       "module_id": "enc-034-enc-logs-i02",
@@ -1673,21 +1552,19 @@
       "label": "insecure",
       "predicted": 1,
       "n_mapped_findings": 1,
-      "n_all_findings": 2,
+      "n_all_findings": 1,
       "mapped_check_ids": [
-        "CKV_AWS_158"
+        "aws-cloudwatch-log-group-customer-key"
       ]
     },
     {
       "module_id": "enc-035-enc-logs-i03",
       "category": "encryption_at_rest",
       "label": "insecure",
-      "predicted": 1,
-      "n_mapped_findings": 1,
-      "n_all_findings": 2,
-      "mapped_check_ids": [
-        "CKV_AWS_158"
-      ]
+      "predicted": 0,
+      "n_mapped_findings": 0,
+      "n_all_findings": 0,
+      "mapped_check_ids": []
     },
     {
       "module_id": "enc-036-enc-dynamodb-s01",
@@ -1697,7 +1574,7 @@
       "n_mapped_findings": 1,
       "n_all_findings": 1,
       "mapped_check_ids": [
-        "CKV_AWS_119"
+        "aws-dynamodb-table-customer-key"
       ]
     },
     {
@@ -1708,7 +1585,7 @@
       "n_mapped_findings": 1,
       "n_all_findings": 1,
       "mapped_check_ids": [
-        "CKV_AWS_119"
+        "aws-dynamodb-table-customer-key"
       ]
     },
     {
@@ -1716,10 +1593,11 @@
       "category": "encryption_at_rest",
       "label": "insecure",
       "predicted": 1,
-      "n_mapped_findings": 1,
-      "n_all_findings": 1,
+      "n_mapped_findings": 2,
+      "n_all_findings": 2,
       "mapped_check_ids": [
-        "CKV_AWS_119"
+        "aws-dynamodb-enable-at-rest-encryption",
+        "aws-dynamodb-table-customer-key"
       ]
     },
     {
@@ -1727,10 +1605,11 @@
       "category": "encryption_at_rest",
       "label": "insecure",
       "predicted": 1,
-      "n_mapped_findings": 1,
-      "n_all_findings": 1,
+      "n_mapped_findings": 2,
+      "n_all_findings": 2,
       "mapped_check_ids": [
-        "CKV_AWS_119"
+        "aws-dynamodb-enable-at-rest-encryption",
+        "aws-dynamodb-table-customer-key"
       ]
     },
     {
@@ -1738,10 +1617,11 @@
       "category": "encryption_at_rest",
       "label": "insecure",
       "predicted": 1,
-      "n_mapped_findings": 1,
-      "n_all_findings": 1,
+      "n_mapped_findings": 2,
+      "n_all_findings": 2,
       "mapped_check_ids": [
-        "CKV_AWS_119"
+        "aws-dynamodb-enable-at-rest-encryption",
+        "aws-dynamodb-table-customer-key"
       ]
     },
     {
@@ -1750,9 +1630,9 @@
       "label": "secure",
       "predicted": 1,
       "n_mapped_findings": 1,
-      "n_all_findings": 5,
+      "n_all_findings": 2,
       "mapped_check_ids": [
-        "CKV_AWS_321"
+        "aws-redshift-encryption-customer-key"
       ]
     },
     {
@@ -1761,9 +1641,9 @@
       "label": "secure",
       "predicted": 1,
       "n_mapped_findings": 1,
-      "n_all_findings": 5,
+      "n_all_findings": 2,
       "mapped_check_ids": [
-        "CKV_AWS_321"
+        "aws-redshift-encryption-customer-key"
       ]
     },
     {
@@ -1772,9 +1652,9 @@
       "label": "insecure",
       "predicted": 1,
       "n_mapped_findings": 1,
-      "n_all_findings": 6,
+      "n_all_findings": 2,
       "mapped_check_ids": [
-        "CKV_AWS_321"
+        "aws-redshift-encryption-customer-key"
       ]
     },
     {
@@ -1783,9 +1663,9 @@
       "label": "insecure",
       "predicted": 1,
       "n_mapped_findings": 1,
-      "n_all_findings": 6,
+      "n_all_findings": 2,
       "mapped_check_ids": [
-        "CKV_AWS_321"
+        "aws-redshift-encryption-customer-key"
       ]
     },
     {
@@ -1794,32 +1674,28 @@
       "label": "insecure",
       "predicted": 1,
       "n_mapped_findings": 1,
-      "n_all_findings": 6,
+      "n_all_findings": 2,
       "mapped_check_ids": [
-        "CKV_AWS_321"
+        "aws-redshift-encryption-customer-key"
       ]
     },
     {
       "module_id": "enc-046-enc-elasticache-s01",
       "category": "encryption_at_rest",
       "label": "secure",
-      "predicted": 1,
-      "n_mapped_findings": 1,
-      "n_all_findings": 3,
-      "mapped_check_ids": [
-        "CKV_AWS_31"
-      ]
+      "predicted": 0,
+      "n_mapped_findings": 0,
+      "n_all_findings": 0,
+      "mapped_check_ids": []
     },
     {
       "module_id": "enc-047-enc-elasticache-s02",
       "category": "encryption_at_rest",
       "label": "secure",
-      "predicted": 1,
-      "n_mapped_findings": 1,
-      "n_all_findings": 3,
-      "mapped_check_ids": [
-        "CKV_AWS_31"
-      ]
+      "predicted": 0,
+      "n_mapped_findings": 0,
+      "n_all_findings": 0,
+      "mapped_check_ids": []
     },
     {
       "module_id": "enc-048-enc-elasticache-i01",
@@ -1827,9 +1703,9 @@
       "label": "insecure",
       "predicted": 1,
       "n_mapped_findings": 1,
-      "n_all_findings": 4,
+      "n_all_findings": 1,
       "mapped_check_ids": [
-        "CKV_AWS_31"
+        "aws-elasticache-enable-at-rest-encryption"
       ]
     },
     {
@@ -1838,9 +1714,9 @@
       "label": "insecure",
       "predicted": 1,
       "n_mapped_findings": 1,
-      "n_all_findings": 4,
+      "n_all_findings": 1,
       "mapped_check_ids": [
-        "CKV_AWS_31"
+        "aws-elasticache-enable-at-rest-encryption"
       ]
     },
     {
@@ -1849,65 +1725,55 @@
       "label": "insecure",
       "predicted": 1,
       "n_mapped_findings": 1,
-      "n_all_findings": 4,
+      "n_all_findings": 1,
       "mapped_check_ids": [
-        "CKV_AWS_31"
+        "aws-elasticache-enable-at-rest-encryption"
       ]
     },
     {
       "module_id": "enc-051-enc-glue-s01",
       "category": "encryption_at_rest",
       "label": "secure",
-      "predicted": 1,
-      "n_mapped_findings": 1,
-      "n_all_findings": 1,
-      "mapped_check_ids": [
-        "CKV_AWS_94"
-      ]
+      "predicted": 0,
+      "n_mapped_findings": 0,
+      "n_all_findings": 0,
+      "mapped_check_ids": []
     },
     {
       "module_id": "enc-052-enc-glue-s02",
       "category": "encryption_at_rest",
       "label": "secure",
-      "predicted": 1,
-      "n_mapped_findings": 1,
-      "n_all_findings": 1,
-      "mapped_check_ids": [
-        "CKV_AWS_94"
-      ]
+      "predicted": 0,
+      "n_mapped_findings": 0,
+      "n_all_findings": 0,
+      "mapped_check_ids": []
     },
     {
       "module_id": "enc-053-enc-glue-i01",
       "category": "encryption_at_rest",
       "label": "insecure",
-      "predicted": 1,
-      "n_mapped_findings": 1,
-      "n_all_findings": 1,
-      "mapped_check_ids": [
-        "CKV_AWS_94"
-      ]
+      "predicted": 0,
+      "n_mapped_findings": 0,
+      "n_all_findings": 0,
+      "mapped_check_ids": []
     },
     {
       "module_id": "enc-054-enc-glue-i02",
       "category": "encryption_at_rest",
       "label": "insecure",
-      "predicted": 1,
-      "n_mapped_findings": 1,
-      "n_all_findings": 1,
-      "mapped_check_ids": [
-        "CKV_AWS_94"
-      ]
+      "predicted": 0,
+      "n_mapped_findings": 0,
+      "n_all_findings": 0,
+      "mapped_check_ids": []
     },
     {
       "module_id": "enc-055-enc-glue-i03",
       "category": "encryption_at_rest",
       "label": "insecure",
-      "predicted": 1,
-      "n_mapped_findings": 1,
-      "n_all_findings": 1,
-      "mapped_check_ids": [
-        "CKV_AWS_94"
-      ]
+      "predicted": 0,
+      "n_mapped_findings": 0,
+      "n_all_findings": 0,
+      "mapped_check_ids": []
     },
     {
       "module_id": "enc-056-enc-kinesis-s01",
@@ -1933,9 +1799,9 @@
       "label": "insecure",
       "predicted": 1,
       "n_mapped_findings": 1,
-      "n_all_findings": 2,
+      "n_all_findings": 1,
       "mapped_check_ids": [
-        "CKV_AWS_43"
+        "aws-kinesis-enable-in-transit-encryption"
       ]
     },
     {
@@ -1944,9 +1810,9 @@
       "label": "insecure",
       "predicted": 1,
       "n_mapped_findings": 1,
-      "n_all_findings": 2,
+      "n_all_findings": 1,
       "mapped_check_ids": [
-        "CKV_AWS_43"
+        "aws-kinesis-enable-in-transit-encryption"
       ]
     },
     {
@@ -1955,9 +1821,9 @@
       "label": "insecure",
       "predicted": 1,
       "n_mapped_findings": 1,
-      "n_all_findings": 2,
+      "n_all_findings": 1,
       "mapped_check_ids": [
-        "CKV_AWS_43"
+        "aws-kinesis-enable-in-transit-encryption"
       ]
     },
     {
@@ -1965,11 +1831,10 @@
       "category": "weak_logging",
       "label": "secure",
       "predicted": 1,
-      "n_mapped_findings": 4,
-      "n_all_findings": 9,
+      "n_mapped_findings": 1,
+      "n_all_findings": 6,
       "mapped_check_ids": [
-        "CKV2_AWS_61",
-        "CKV_AWS_21"
+        "aws-s3-enable-bucket-logging"
       ]
     },
     {
@@ -1977,11 +1842,10 @@
       "category": "weak_logging",
       "label": "secure",
       "predicted": 1,
-      "n_mapped_findings": 4,
-      "n_all_findings": 9,
+      "n_mapped_findings": 1,
+      "n_all_findings": 6,
       "mapped_check_ids": [
-        "CKV2_AWS_61",
-        "CKV_AWS_21"
+        "aws-s3-enable-bucket-logging"
       ]
     },
     {
@@ -1989,12 +1853,10 @@
       "category": "weak_logging",
       "label": "insecure",
       "predicted": 1,
-      "n_mapped_findings": 3,
-      "n_all_findings": 5,
+      "n_mapped_findings": 1,
+      "n_all_findings": 3,
       "mapped_check_ids": [
-        "CKV2_AWS_61",
-        "CKV_AWS_18",
-        "CKV_AWS_21"
+        "aws-s3-enable-bucket-logging"
       ]
     },
     {
@@ -2002,12 +1864,10 @@
       "category": "weak_logging",
       "label": "insecure",
       "predicted": 1,
-      "n_mapped_findings": 3,
-      "n_all_findings": 5,
+      "n_mapped_findings": 1,
+      "n_all_findings": 3,
       "mapped_check_ids": [
-        "CKV2_AWS_61",
-        "CKV_AWS_18",
-        "CKV_AWS_21"
+        "aws-s3-enable-bucket-logging"
       ]
     },
     {
@@ -2015,12 +1875,10 @@
       "category": "weak_logging",
       "label": "insecure",
       "predicted": 1,
-      "n_mapped_findings": 3,
-      "n_all_findings": 5,
+      "n_mapped_findings": 1,
+      "n_all_findings": 3,
       "mapped_check_ids": [
-        "CKV2_AWS_61",
-        "CKV_AWS_18",
-        "CKV_AWS_21"
+        "aws-s3-enable-bucket-logging"
       ]
     },
     {
@@ -2028,11 +1886,10 @@
       "category": "weak_logging",
       "label": "secure",
       "predicted": 1,
-      "n_mapped_findings": 2,
-      "n_all_findings": 3,
+      "n_mapped_findings": 1,
+      "n_all_findings": 2,
       "mapped_check_ids": [
-        "CKV_AWS_252",
-        "CKV_AWS_35"
+        "aws-cloudtrail-ensure-cloudwatch-integration"
       ]
     },
     {
@@ -2040,11 +1897,10 @@
       "category": "weak_logging",
       "label": "secure",
       "predicted": 1,
-      "n_mapped_findings": 2,
-      "n_all_findings": 3,
+      "n_mapped_findings": 1,
+      "n_all_findings": 2,
       "mapped_check_ids": [
-        "CKV_AWS_252",
-        "CKV_AWS_35"
+        "aws-cloudtrail-ensure-cloudwatch-integration"
       ]
     },
     {
@@ -2052,12 +1908,11 @@
       "category": "weak_logging",
       "label": "insecure",
       "predicted": 1,
-      "n_mapped_findings": 3,
-      "n_all_findings": 4,
+      "n_mapped_findings": 2,
+      "n_all_findings": 3,
       "mapped_check_ids": [
-        "CKV_AWS_252",
-        "CKV_AWS_35",
-        "CKV_AWS_36"
+        "aws-cloudtrail-enable-log-validation",
+        "aws-cloudtrail-ensure-cloudwatch-integration"
       ]
     },
     {
@@ -2065,12 +1920,11 @@
       "category": "weak_logging",
       "label": "insecure",
       "predicted": 1,
-      "n_mapped_findings": 3,
-      "n_all_findings": 4,
+      "n_mapped_findings": 2,
+      "n_all_findings": 3,
       "mapped_check_ids": [
-        "CKV_AWS_252",
-        "CKV_AWS_35",
-        "CKV_AWS_36"
+        "aws-cloudtrail-enable-log-validation",
+        "aws-cloudtrail-ensure-cloudwatch-integration"
       ]
     },
     {
@@ -2078,12 +1932,11 @@
       "category": "weak_logging",
       "label": "insecure",
       "predicted": 1,
-      "n_mapped_findings": 3,
-      "n_all_findings": 4,
+      "n_mapped_findings": 2,
+      "n_all_findings": 3,
       "mapped_check_ids": [
-        "CKV_AWS_252",
-        "CKV_AWS_35",
-        "CKV_AWS_36"
+        "aws-cloudtrail-enable-log-validation",
+        "aws-cloudtrail-ensure-cloudwatch-integration"
       ]
     },
     {
@@ -2092,9 +1945,9 @@
       "label": "secure",
       "predicted": 1,
       "n_mapped_findings": 1,
-      "n_all_findings": 3,
+      "n_all_findings": 1,
       "mapped_check_ids": [
-        "CKV_AWS_338"
+        "aws-cloudwatch-log-group-customer-key"
       ]
     },
     {
@@ -2103,9 +1956,9 @@
       "label": "secure",
       "predicted": 1,
       "n_mapped_findings": 1,
-      "n_all_findings": 3,
+      "n_all_findings": 1,
       "mapped_check_ids": [
-        "CKV_AWS_338"
+        "aws-cloudwatch-log-group-customer-key"
       ]
     },
     {
@@ -2114,9 +1967,9 @@
       "label": "insecure",
       "predicted": 1,
       "n_mapped_findings": 1,
-      "n_all_findings": 2,
+      "n_all_findings": 1,
       "mapped_check_ids": [
-        "CKV2_AWS_11"
+        "aws-ec2-require-vpc-flow-logs-for-all-vpcs"
       ]
     },
     {
@@ -2125,9 +1978,9 @@
       "label": "insecure",
       "predicted": 1,
       "n_mapped_findings": 1,
-      "n_all_findings": 2,
+      "n_all_findings": 1,
       "mapped_check_ids": [
-        "CKV2_AWS_11"
+        "aws-ec2-require-vpc-flow-logs-for-all-vpcs"
       ]
     },
     {
@@ -2136,9 +1989,9 @@
       "label": "insecure",
       "predicted": 1,
       "n_mapped_findings": 1,
-      "n_all_findings": 2,
+      "n_all_findings": 1,
       "mapped_check_ids": [
-        "CKV2_AWS_11"
+        "aws-ec2-require-vpc-flow-logs-for-all-vpcs"
       ]
     },
     {
@@ -2147,7 +2000,7 @@
       "label": "secure",
       "predicted": 0,
       "n_mapped_findings": 0,
-      "n_all_findings": 1,
+      "n_all_findings": 0,
       "mapped_check_ids": []
     },
     {
@@ -2156,41 +2009,35 @@
       "label": "secure",
       "predicted": 0,
       "n_mapped_findings": 0,
-      "n_all_findings": 1,
+      "n_all_findings": 0,
       "mapped_check_ids": []
     },
     {
       "module_id": "log-018-log-alb-access-i01",
       "category": "weak_logging",
       "label": "insecure",
-      "predicted": 1,
-      "n_mapped_findings": 1,
-      "n_all_findings": 2,
-      "mapped_check_ids": [
-        "CKV_AWS_91"
-      ]
+      "predicted": 0,
+      "n_mapped_findings": 0,
+      "n_all_findings": 0,
+      "mapped_check_ids": []
     },
     {
       "module_id": "log-019-log-alb-access-i02",
       "category": "weak_logging",
       "label": "insecure",
-      "predicted": 1,
-      "n_mapped_findings": 1,
-      "n_all_findings": 2,
-      "mapped_check_ids": [
-        "CKV_AWS_91"
-      ]
+      "predicted": 0,
+      "n_mapped_findings": 0,
+      "n_all_findings": 0,
+      "mapped_check_ids": []
     },
     {
       "module_id": "log-020-log-alb-access-i03",
       "category": "weak_logging",
       "label": "insecure",
-      "predicted": 1,
-      "n_mapped_findings": 1,
-      "n_all_findings": 2,
-      "mapped_check_ids": [
-        "CKV_AWS_91"
-      ]
+      "predicted": 0,
+      "n_mapped_findings": 0,
+      "n_all_findings": 0,
+      "mapped_check_ids": []
     },
     {
       "module_id": "log-021-log-rds-cw-s01",
@@ -2198,9 +2045,9 @@
       "label": "secure",
       "predicted": 1,
       "n_mapped_findings": 1,
-      "n_all_findings": 8,
+      "n_all_findings": 3,
       "mapped_check_ids": [
-        "CKV_AWS_118"
+        "aws-rds-enable-performance-insights"
       ]
     },
     {
@@ -2209,9 +2056,9 @@
       "label": "secure",
       "predicted": 1,
       "n_mapped_findings": 1,
-      "n_all_findings": 8,
+      "n_all_findings": 3,
       "mapped_check_ids": [
-        "CKV_AWS_118"
+        "aws-rds-enable-performance-insights"
       ]
     },
     {
@@ -2220,9 +2067,9 @@
       "label": "insecure",
       "predicted": 1,
       "n_mapped_findings": 1,
-      "n_all_findings": 9,
+      "n_all_findings": 3,
       "mapped_check_ids": [
-        "CKV_AWS_118"
+        "aws-rds-enable-performance-insights"
       ]
     },
     {
@@ -2231,9 +2078,9 @@
       "label": "insecure",
       "predicted": 1,
       "n_mapped_findings": 1,
-      "n_all_findings": 9,
+      "n_all_findings": 3,
       "mapped_check_ids": [
-        "CKV_AWS_118"
+        "aws-rds-enable-performance-insights"
       ]
     },
     {
@@ -2242,9 +2089,9 @@
       "label": "insecure",
       "predicted": 1,
       "n_mapped_findings": 1,
-      "n_all_findings": 9,
+      "n_all_findings": 3,
       "mapped_check_ids": [
-        "CKV_AWS_118"
+        "aws-rds-enable-performance-insights"
       ]
     },
     {
@@ -2252,12 +2099,11 @@
       "category": "weak_logging",
       "label": "secure",
       "predicted": 1,
-      "n_mapped_findings": 3,
-      "n_all_findings": 9,
+      "n_mapped_findings": 2,
+      "n_all_findings": 3,
       "mapped_check_ids": [
-        "CKV_AWS_120",
-        "CKV_AWS_338",
-        "CKV_AWS_76"
+        "aws-api-gateway-enable-access-logging",
+        "aws-cloudwatch-log-group-customer-key"
       ]
     },
     {
@@ -2265,12 +2111,11 @@
       "category": "weak_logging",
       "label": "secure",
       "predicted": 1,
-      "n_mapped_findings": 3,
-      "n_all_findings": 9,
+      "n_mapped_findings": 2,
+      "n_all_findings": 3,
       "mapped_check_ids": [
-        "CKV_AWS_120",
-        "CKV_AWS_338",
-        "CKV_AWS_76"
+        "aws-api-gateway-enable-access-logging",
+        "aws-cloudwatch-log-group-customer-key"
       ]
     },
     {
@@ -2279,10 +2124,10 @@
       "label": "insecure",
       "predicted": 1,
       "n_mapped_findings": 2,
-      "n_all_findings": 8,
+      "n_all_findings": 2,
       "mapped_check_ids": [
-        "CKV_AWS_120",
-        "CKV_AWS_76"
+        "aws-api-gateway-enable-access-logging",
+        "aws-api-gateway-enable-tracing"
       ]
     },
     {
@@ -2291,10 +2136,10 @@
       "label": "insecure",
       "predicted": 1,
       "n_mapped_findings": 2,
-      "n_all_findings": 8,
+      "n_all_findings": 2,
       "mapped_check_ids": [
-        "CKV_AWS_120",
-        "CKV_AWS_76"
+        "aws-api-gateway-enable-access-logging",
+        "aws-api-gateway-enable-tracing"
       ]
     },
     {
@@ -2303,43 +2148,39 @@
       "label": "insecure",
       "predicted": 1,
       "n_mapped_findings": 2,
-      "n_all_findings": 8,
+      "n_all_findings": 2,
       "mapped_check_ids": [
-        "CKV_AWS_120",
-        "CKV_AWS_76"
+        "aws-api-gateway-enable-access-logging",
+        "aws-api-gateway-enable-tracing"
       ]
     },
     {
       "module_id": "log-031-log-eks-control-s01",
       "category": "weak_logging",
       "label": "secure",
-      "predicted": 1,
-      "n_mapped_findings": 1,
+      "predicted": 0,
+      "n_mapped_findings": 0,
       "n_all_findings": 1,
-      "mapped_check_ids": [
-        "CKV_AWS_58"
-      ]
+      "mapped_check_ids": []
     },
     {
       "module_id": "log-032-log-eks-control-s02",
       "category": "weak_logging",
       "label": "secure",
-      "predicted": 1,
-      "n_mapped_findings": 1,
+      "predicted": 0,
+      "n_mapped_findings": 0,
       "n_all_findings": 1,
-      "mapped_check_ids": [
-        "CKV_AWS_58"
-      ]
+      "mapped_check_ids": []
     },
     {
       "module_id": "log-033-log-eks-control-i01",
       "category": "weak_logging",
       "label": "insecure",
       "predicted": 1,
-      "n_mapped_findings": 1,
-      "n_all_findings": 1,
+      "n_mapped_findings": 5,
+      "n_all_findings": 6,
       "mapped_check_ids": [
-        "CKV_AWS_58"
+        "aws-eks-enable-control-plane-logging"
       ]
     },
     {
@@ -2347,10 +2188,10 @@
       "category": "weak_logging",
       "label": "insecure",
       "predicted": 1,
-      "n_mapped_findings": 1,
-      "n_all_findings": 1,
+      "n_mapped_findings": 5,
+      "n_all_findings": 6,
       "mapped_check_ids": [
-        "CKV_AWS_58"
+        "aws-eks-enable-control-plane-logging"
       ]
     },
     {
@@ -2358,10 +2199,10 @@
       "category": "weak_logging",
       "label": "insecure",
       "predicted": 1,
-      "n_mapped_findings": 1,
-      "n_all_findings": 1,
+      "n_mapped_findings": 5,
+      "n_all_findings": 6,
       "mapped_check_ids": [
-        "CKV_AWS_58"
+        "aws-eks-enable-control-plane-logging"
       ]
     },
     {
@@ -2369,14 +2210,11 @@
       "category": "weak_logging",
       "label": "secure",
       "predicted": 1,
-      "n_mapped_findings": 5,
-      "n_all_findings": 9,
+      "n_mapped_findings": 2,
+      "n_all_findings": 6,
       "mapped_check_ids": [
-        "CKV2_AWS_61",
-        "CKV_AWS_18",
-        "CKV_AWS_21",
-        "CKV_AWS_252",
-        "CKV_AWS_35"
+        "aws-cloudtrail-ensure-cloudwatch-integration",
+        "aws-s3-enable-bucket-logging"
       ]
     },
     {
@@ -2384,14 +2222,11 @@
       "category": "weak_logging",
       "label": "secure",
       "predicted": 1,
-      "n_mapped_findings": 5,
-      "n_all_findings": 9,
+      "n_mapped_findings": 2,
+      "n_all_findings": 6,
       "mapped_check_ids": [
-        "CKV2_AWS_61",
-        "CKV_AWS_18",
-        "CKV_AWS_21",
-        "CKV_AWS_252",
-        "CKV_AWS_35"
+        "aws-cloudtrail-ensure-cloudwatch-integration",
+        "aws-s3-enable-bucket-logging"
       ]
     },
     {
@@ -2399,12 +2234,10 @@
       "category": "weak_logging",
       "label": "insecure",
       "predicted": 1,
-      "n_mapped_findings": 3,
-      "n_all_findings": 6,
+      "n_mapped_findings": 1,
+      "n_all_findings": 4,
       "mapped_check_ids": [
-        "CKV2_AWS_61",
-        "CKV_AWS_18",
-        "CKV_AWS_21"
+        "aws-s3-enable-bucket-logging"
       ]
     },
     {
@@ -2412,12 +2245,10 @@
       "category": "weak_logging",
       "label": "insecure",
       "predicted": 1,
-      "n_mapped_findings": 3,
-      "n_all_findings": 6,
+      "n_mapped_findings": 1,
+      "n_all_findings": 4,
       "mapped_check_ids": [
-        "CKV2_AWS_61",
-        "CKV_AWS_18",
-        "CKV_AWS_21"
+        "aws-s3-enable-bucket-logging"
       ]
     },
     {
@@ -2425,68 +2256,56 @@
       "category": "weak_logging",
       "label": "insecure",
       "predicted": 1,
-      "n_mapped_findings": 3,
-      "n_all_findings": 6,
+      "n_mapped_findings": 1,
+      "n_all_findings": 4,
       "mapped_check_ids": [
-        "CKV2_AWS_61",
-        "CKV_AWS_18",
-        "CKV_AWS_21"
+        "aws-s3-enable-bucket-logging"
       ]
     },
     {
       "module_id": "log-041-log-redshift-audit-s01",
       "category": "weak_logging",
       "label": "secure",
-      "predicted": 1,
-      "n_mapped_findings": 1,
-      "n_all_findings": 4,
-      "mapped_check_ids": [
-        "CKV_AWS_321"
-      ]
+      "predicted": 0,
+      "n_mapped_findings": 0,
+      "n_all_findings": 2,
+      "mapped_check_ids": []
     },
     {
       "module_id": "log-042-log-redshift-audit-s02",
       "category": "weak_logging",
       "label": "secure",
-      "predicted": 1,
-      "n_mapped_findings": 1,
-      "n_all_findings": 4,
-      "mapped_check_ids": [
-        "CKV_AWS_321"
-      ]
+      "predicted": 0,
+      "n_mapped_findings": 0,
+      "n_all_findings": 2,
+      "mapped_check_ids": []
     },
     {
       "module_id": "log-043-log-redshift-audit-i01",
       "category": "weak_logging",
       "label": "insecure",
-      "predicted": 1,
-      "n_mapped_findings": 1,
-      "n_all_findings": 5,
-      "mapped_check_ids": [
-        "CKV_AWS_321"
-      ]
+      "predicted": 0,
+      "n_mapped_findings": 0,
+      "n_all_findings": 2,
+      "mapped_check_ids": []
     },
     {
       "module_id": "log-044-log-redshift-audit-i02",
       "category": "weak_logging",
       "label": "insecure",
-      "predicted": 1,
-      "n_mapped_findings": 1,
-      "n_all_findings": 5,
-      "mapped_check_ids": [
-        "CKV_AWS_321"
-      ]
+      "predicted": 0,
+      "n_mapped_findings": 0,
+      "n_all_findings": 2,
+      "mapped_check_ids": []
     },
     {
       "module_id": "log-045-log-redshift-audit-i03",
       "category": "weak_logging",
       "label": "insecure",
-      "predicted": 1,
-      "n_mapped_findings": 1,
-      "n_all_findings": 5,
-      "mapped_check_ids": [
-        "CKV_AWS_321"
-      ]
+      "predicted": 0,
+      "n_mapped_findings": 0,
+      "n_all_findings": 2,
+      "mapped_check_ids": []
     },
     {
       "module_id": "log-046-log-msk-broker-s01",
@@ -2494,7 +2313,7 @@
       "label": "secure",
       "predicted": 0,
       "n_mapped_findings": 0,
-      "n_all_findings": 0,
+      "n_all_findings": 1,
       "mapped_check_ids": []
     },
     {
@@ -2503,35 +2322,41 @@
       "label": "secure",
       "predicted": 0,
       "n_mapped_findings": 0,
-      "n_all_findings": 0,
+      "n_all_findings": 1,
       "mapped_check_ids": []
     },
     {
       "module_id": "log-048-log-msk-broker-i01",
       "category": "weak_logging",
       "label": "insecure",
-      "predicted": 0,
-      "n_mapped_findings": 0,
-      "n_all_findings": 1,
-      "mapped_check_ids": []
+      "predicted": 1,
+      "n_mapped_findings": 1,
+      "n_all_findings": 2,
+      "mapped_check_ids": [
+        "aws-msk-enable-logging"
+      ]
     },
     {
       "module_id": "log-049-log-msk-broker-i02",
       "category": "weak_logging",
       "label": "insecure",
-      "predicted": 0,
-      "n_mapped_findings": 0,
-      "n_all_findings": 1,
-      "mapped_check_ids": []
+      "predicted": 1,
+      "n_mapped_findings": 1,
+      "n_all_findings": 2,
+      "mapped_check_ids": [
+        "aws-msk-enable-logging"
+      ]
     },
     {
       "module_id": "log-050-log-msk-broker-i03",
       "category": "weak_logging",
       "label": "insecure",
-      "predicted": 0,
-      "n_mapped_findings": 0,
-      "n_all_findings": 1,
-      "mapped_check_ids": []
+      "predicted": 1,
+      "n_mapped_findings": 1,
+      "n_all_findings": 2,
+      "mapped_check_ids": [
+        "aws-msk-enable-logging"
+      ]
     },
     {
       "module_id": "log-051-log-waf-s01",
@@ -2539,7 +2364,7 @@
       "label": "secure",
       "predicted": 0,
       "n_mapped_findings": 0,
-      "n_all_findings": 2,
+      "n_all_findings": 0,
       "mapped_check_ids": []
     },
     {
@@ -2548,7 +2373,7 @@
       "label": "secure",
       "predicted": 0,
       "n_mapped_findings": 0,
-      "n_all_findings": 2,
+      "n_all_findings": 0,
       "mapped_check_ids": []
     },
     {
@@ -2557,7 +2382,7 @@
       "label": "insecure",
       "predicted": 0,
       "n_mapped_findings": 0,
-      "n_all_findings": 3,
+      "n_all_findings": 0,
       "mapped_check_ids": []
     },
     {
@@ -2566,7 +2391,7 @@
       "label": "insecure",
       "predicted": 0,
       "n_mapped_findings": 0,
-      "n_all_findings": 3,
+      "n_all_findings": 0,
       "mapped_check_ids": []
     },
     {
@@ -2575,7 +2400,7 @@
       "label": "insecure",
       "predicted": 0,
       "n_mapped_findings": 0,
-      "n_all_findings": 3,
+      "n_all_findings": 0,
       "mapped_check_ids": []
     },
     {
@@ -2584,7 +2409,7 @@
       "label": "secure",
       "predicted": 0,
       "n_mapped_findings": 0,
-      "n_all_findings": 2,
+      "n_all_findings": 0,
       "mapped_check_ids": []
     },
     {
@@ -2593,7 +2418,7 @@
       "label": "secure",
       "predicted": 0,
       "n_mapped_findings": 0,
-      "n_all_findings": 2,
+      "n_all_findings": 0,
       "mapped_check_ids": []
     },
     {
@@ -2602,7 +2427,7 @@
       "label": "insecure",
       "predicted": 0,
       "n_mapped_findings": 0,
-      "n_all_findings": 3,
+      "n_all_findings": 0,
       "mapped_check_ids": []
     },
     {
@@ -2611,7 +2436,7 @@
       "label": "insecure",
       "predicted": 0,
       "n_mapped_findings": 0,
-      "n_all_findings": 3,
+      "n_all_findings": 0,
       "mapped_check_ids": []
     },
     {
@@ -2620,175 +2445,109 @@
       "label": "insecure",
       "predicted": 0,
       "n_mapped_findings": 0,
-      "n_all_findings": 3,
+      "n_all_findings": 0,
       "mapped_check_ids": []
     }
   ],
   "unmatched_check_ids": {
-    "CKV2_AWS_65": 5,
-    "CKV2_AWS_62": 32,
-    "CKV2_AWS_61": 20,
-    "CKV_AWS_18": 20,
-    "CKV_AWS_145": 22,
-    "CKV_AWS_144": 32,
-    "CKV_AWS_21": 20,
-    "CKV_AWS_57": 1,
-    "CKV_AWS_70": 3,
-    "CKV_AWS_161": 15,
-    "CKV_AWS_293": 15,
-    "CKV_AWS_157": 15,
-    "CKV_AWS_129": 13,
-    "CKV_AWS_226": 15,
-    "CKV_AWS_118": 10,
-    "CKV2_AWS_60": 15,
-    "CKV_AWS_320": 15,
-    "CKV_AWS_154": 15,
-    "CKV_AWS_71": 13,
-    "CKV_AWS_142": 15,
-    "CKV_AWS_87": 3,
-    "CKV_AWS_168": 3,
-    "CKV_AWS_32": 3,
-    "CKV_AWS_189": 10,
-    "CKV_AWS_135": 5,
-    "CKV2_AWS_41": 5,
-    "CKV_AWS_317": 5,
-    "CKV_AWS_228": 5,
-    "CKV_AWS_247": 5,
-    "CKV_AWS_84": 5,
-    "CKV_AWS_318": 5,
-    "CKV2_AWS_52": 5,
-    "CKV2_AWS_59": 5,
-    "CKV_AWS_137": 3,
-    "CKV_AWS_101": 5,
-    "CKV_AWS_362": 5,
-    "CKV_AWS_347": 5,
-    "CKV_AWS_102": 3,
-    "CKV_AWS_277": 3,
-    "CKV_AWS_288": 3,
-    "CKV_AWS_290": 3,
-    "CKV_AWS_287": 3,
-    "CKV_AWS_289": 3,
-    "CKV_AWS_355": 3,
-    "CKV_AWS_286": 3,
-    "CKV2_AWS_40": 3,
-    "CKV_AWS_274": 2,
-    "CKV2_AWS_56": 1,
-    "CKV2_AWS_1": 5,
-    "CKV_AWS_229": 3,
-    "CKV_AWS_231": 3,
-    "CKV_AWS_232": 3,
-    "CKV_AWS_352": 3,
-    "CKV_AWS_50": 5,
-    "CKV_AWS_117": 5,
-    "CKV_AWS_116": 5,
-    "CKV_AWS_272": 5,
-    "CKV_AWS_115": 5,
-    "CKV_AWS_364": 2,
-    "CKV_AWS_273": 5,
-    "CKV_AWS_58": 5,
-    "CKV_AWS_37": 5,
-    "CKV_AWS_149": 5,
-    "CKV_AWS_353": 10,
-    "CKV2_AWS_30": 10,
-    "CKV_AWS_184": 3,
-    "CKV_AWS_338": 5,
-    "CKV_AWS_64": 3,
-    "CKV_AWS_191": 5,
-    "CKV2_AWS_50": 5,
-    "CKV_AWS_29": 3,
-    "CKV_AWS_185": 3,
-    "CKV2_AWS_10": 7,
-    "CKV_AWS_158": 4,
-    "CKV2_AWS_12": 5,
-    "CKV_AWS_150": 5,
-    "CKV_AWS_237": 5,
-    "CKV_AWS_217": 5,
-    "CKV_AWS_225": 2,
-    "CKV2_AWS_51": 5,
-    "CKV2_AWS_29": 5,
-    "CKV_AWS_73": 3,
-    "CKV2_AWS_4": 3,
-    "CKV_AWS_80": 3,
-    "CKV_AWS_192": 5,
-    "CKV_AWS_175": 5,
-    "CKV2_AWS_31": 3,
-    "CKV_AWS_127": 5,
-    "CKV_AWS_376": 5,
-    "CKV_AWS_92": 3
+    "aws-s3-enable-bucket-encryption": 22,
+    "aws-s3-enable-bucket-logging": 20,
+    "aws-s3-enable-versioning": 32,
+    "aws-s3-encryption-customer-key": 27,
+    "aws-rds-enable-deletion-protection": 15,
+    "aws-rds-enable-iam-auth": 15,
+    "aws-rds-enable-performance-insights": 10,
+    "aws-redshift-encryption-customer-key": 10,
+    "aws-redshift-use-vpc": 15,
+    "aws-sns-topic-encryption-use-cmk": 5,
+    "aws-ecr-repository-customer-key": 5,
+    "aws-ec2-volume-encryption-customer-key": 10,
+    "aws-neptune-enable-log-export": 5,
+    "aws-neptune-encryption-customer-key": 5,
+    "aws-ec2-add-description-to-security-group-rule": 15,
+    "aws-ec2-no-excessive-port-access": 3,
+    "aws-ec2-no-public-ingress-acl": 3,
+    "aws-iam-no-user-attached-policies": 5,
+    "aws-eks-enable-control-plane-logging": 10,
+    "aws-ssm-secret-use-customer-key": 5,
+    "aws-ec2-enable-volume-encryption": 3,
+    "aws-cloudtrail-enable-at-rest-encryption": 7,
+    "aws-api-gateway-enable-cache": 2,
+    "aws-eks-encrypt-secrets": 5,
+    "aws-msk-enable-at-rest-encryption": 5
   },
   "sample_times": [
     {
       "module_id": "ps-003-ps-s3-acl-i01",
       "category": "public_storage",
       "label": "insecure",
-      "seconds": 3.087294041994028
+      "seconds": 0.24560058399219997
     },
     {
       "module_id": "ps-004-ps-s3-acl-i02",
       "category": "public_storage",
       "label": "insecure",
-      "seconds": 3.091860499989707
+      "seconds": 0.24296354097896256
     },
     {
       "module_id": "ps-001-ps-s3-acl-s01",
       "category": "public_storage",
       "label": "secure",
-      "seconds": 2.9915337919956073
+      "seconds": 0.24434254202060401
     },
     {
       "module_id": "oa-003-oa-sg-ssh-i01",
       "category": "overpermissive_access",
       "label": "insecure",
-      "seconds": 3.083469542005332
+      "seconds": 0.24390166698140092
     },
     {
       "module_id": "oa-004-oa-sg-ssh-i02",
       "category": "overpermissive_access",
       "label": "insecure",
-      "seconds": 3.1840105410083197
+      "seconds": 0.24572691600769758
     },
     {
       "module_id": "oa-001-oa-sg-ssh-s01",
       "category": "overpermissive_access",
       "label": "secure",
-      "seconds": 3.134283499995945
+      "seconds": 0.2479961669887416
     },
     {
       "module_id": "enc-003-enc-s3-sse-i01",
       "category": "encryption_at_rest",
       "label": "insecure",
-      "seconds": 3.0502378329983912
+      "seconds": 0.25074029198731296
     },
     {
       "module_id": "enc-004-enc-s3-sse-i02",
       "category": "encryption_at_rest",
       "label": "insecure",
-      "seconds": 3.1821971670142375
+      "seconds": 0.24598583398619667
     },
     {
       "module_id": "enc-001-enc-s3-sse-s01",
       "category": "encryption_at_rest",
       "label": "secure",
-      "seconds": 2.9754766250262037
+      "seconds": 0.24310341599630192
     },
     {
       "module_id": "log-003-log-s3-access-i01",
       "category": "weak_logging",
       "label": "insecure",
-      "seconds": 3.1468770829960704
+      "seconds": 0.24501858299481682
     },
     {
       "module_id": "log-004-log-s3-access-i02",
       "category": "weak_logging",
       "label": "insecure",
-      "seconds": 3.0806712089979555
+      "seconds": 0.24473529099486768
     },
     {
       "module_id": "log-001-log-s3-access-s01",
       "category": "weak_logging",
       "label": "secure",
-      "seconds": 3.212452082982054
+      "seconds": 0.2448650419828482
     }
-  ],
-  "mapping_fix": "2026-09-23_fn_undercount_classify"
+  ]
 }

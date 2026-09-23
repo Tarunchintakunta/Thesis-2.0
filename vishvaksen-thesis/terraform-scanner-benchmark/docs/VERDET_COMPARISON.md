@@ -16,8 +16,9 @@ with per-category precision / recall / F1 / FN for:
 - static union (Checkov ∨ tfsec),
 - OPA 1.4.2 category gate.
 
-RQ “% identified” (recall on labelled insecure): checklist 81.2%,
-Checkov 56.2%, tfsec 61.8%, union 70.8%, OPA 60.4%.
+RQ “% identified” (recall on labelled insecure; live `metrics_per_category.csv`):
+checklist 81.2%, Checkov **91.7%** (after 2026-09-23 catalog-ID mapping classify;
+pre-fix undercount was 56.2%), tfsec 61.8%, union 93.8%, OPA 60.4%.
 
 ## McNemar (exact two-sided) on insecure modules (n=144)
 
