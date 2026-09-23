@@ -103,4 +103,27 @@ Generated data is saved under `results/`.
 - Delete the stack (`sam delete`) between days of work.
 - Validate `report_batch_item_failures` is correctly minimizing redundant batch retries (avoiding dual charging on unchanged messages).
 
+## Scoped_E / full-IV remediable audit (move gate)
+
+**ONE-file SoT:** [`../../CA2_PROPOSED_VS_ARTEFACT.md`](../../CA2_PROPOSED_VS_ARTEFACT.md)  
+**Dated soft N:** [`../../DATED_WONTFIX_N_Anji_2026-09-23.md`](../../DATED_WONTFIX_N_Anji_2026-09-23.md)
+
+Scripted — not manual chat. Must EXIT 0 before MOVE.
+
+```bash
+cd anji-thesis/sqs-reliability-recovery
+python3 scripts/audit_scoped_e_root_causes.py
+# Writes results/live/scoped_E_guidance_1/scoped_e_audit_report.{json,md}
+# EXIT 0 required; remediable_total must be 0
+```
+
+Disposition when clean: `DATED_WONTFIX_FULL_IV_LIVE_AMENDED` (scoped_E 20/20 landed; full IV live matrix amended out).
+
+| Pack | Path |
+|------|------|
+| Scoped E guidance | `results/live/scoped_E_guidance_1/` (20/20) |
+| Live lite finals | `results/live/final_{1,2,3}/` |
+| Live n=3 key cells | `results/live/key_cells_n3/` |
+| Audit report | `results/live/scoped_E_guidance_1/scoped_e_audit_report.md` |
+
 Anjaneya Reddy Gurram

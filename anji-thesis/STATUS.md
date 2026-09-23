@@ -1,17 +1,24 @@
 # Anji — status gate (CA2 / live eval)
 
-**Updated:** 2026-09-21  
+**Updated:** 2026-09-23  
 **Thesis:** Reliability and Recovery of Amazon SQS Messaging under Injected Consumer and Downstream Failures  
-**Artefact:** `sqs-reliability-recovery/`
+**Artefact:** `sqs-reliability-recovery/`  
+**ONE-file SoT:** `CA2_PROPOSED_VS_ARTEFACT.md`  
+**Audit:** `sqs-reliability-recovery/scripts/audit_scoped_e_root_causes.py` → EXIT 0 / `DATED_WONTFIX_FULL_IV_LIVE_AMENDED`  
+**MOVE ALLOWED:** **yes** (remediable_total=0)
 
 ## Gates
 
 ```
-CA2_ALIGNMENT=100
+CA2_ALIGNMENT=~78_lite_plus_scoped_E
 INITIAL_EVAL_PASS=yes
-FINAL3=not_started
+FINAL3=done_3of3
+SCOPED_E_GUIDANCE_1=20of20
+FULL_IV_LIVE=amended_wontfix
 DESTROY_CONFIRMED=yes
-GENAI_HANDOFF=deferred
+GENAI_HANDOFF=present
+SOT=CA2_PROPOSED_VS_ARTEFACT.md
+AUDIT_EXIT=0
 ```
 
 ## Initial live evaluation (ONE)

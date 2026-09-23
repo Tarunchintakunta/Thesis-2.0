@@ -1,11 +1,14 @@
 # mqtt-qos-iot-core — formal CA2 artefact status
 
-**Last updated:** 2026-09-21  
+**Last updated:** 2026-09-23  
 **Formal contract:** `uday-thesis/CA2_COMMITMENTS.md`  
+**ONE-file SoT:** `uday-thesis/CA2_PROPOSED_VS_ARTEFACT.md`  
+**Audit (binding):** `scripts/audit_holm_root_causes.py` → EXIT 0 / remediable_total=0 (Holm d300>d60 dated WONTFIX)  
 **Alignment residual:** `_analysis_extract/reports/uday_alignment.md`  
 **Design rationale:** `uday-thesis/DESIGN_RATIONALE_BEYOND_CA2.md`  
-**CA2 align % (honest):** **100 / 100** (research-scope floor)  
-**INITIAL_EVAL_PASS:** **yes** (lite 16-cell live treated as initial eval; CA2 still 100%). Final-3 **not** started.  
+**CA2 align % (honest):** **~70 under disclosed lite** (not marketing 100 / formal complete)  
+**INITIAL_EVAL_PASS:** **yes** (lite finals + `confirmatory_1`)  
+**MOVE ALLOWED:** **yes** — audit remediable=0 (2026-09-23)  
 **READY_FOR_AWS:** **YES** (lite/smoke only; formal still free-tier-blocked as single-month apply)
 
 ## What this artefact is
