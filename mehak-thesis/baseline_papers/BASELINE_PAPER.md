@@ -1,27 +1,29 @@
-# Baseline paper — Mehak (CA2-mapped)
+# Baseline paper — Mehak (formal CA2)
 
 **Student folder:** `mehak-thesis`  
-**Citation:** Thapliyal (2026) — *A Multi-Head Attention Approach for SLA Compliance Monitoring in Data Centers*  
-**Identifier:** arXiv:2605.05354 · `doi: 10.48550/arXiv.2605.05354` (ICDCS 2026 acceptance claim; prefer VoR when available)
+**Citation:** Aldomi, Suleiman, Shatnawi & Alawneh (2026) — *A deep learning approach for early prediction of task failures in cloud computing environments.* Systems and Soft Computing 8:200442. doi:10.1016/j.sasc.2026.200442  
+**Binding:** formal CA2 baseline family = **Aldomi hybrid** + classical RF/KNN/SVM monitors.  
+**Not binding for CA2:** Thapliyal (2026) MHSA SLA paper — related architecture only (`Thapliyal_2026_MHSA_SLA_baseline.pdf` may remain on disk).
 
 ## File
-- `PRESENT: Thapliyal_2026_MHSA_SLA_baseline.pdf`
+- Formal CA2 names Aldomi et al.; PDF VoR preferred when available.
+- Proxy-era Thapliyal PDF (if present) is **not** the CA2 baseline.
 
 ## Problem → CA2 commitment
-Colocation/SLA MHSA with **strict one-head-per-metric** underpredicts volatile metrics during correlated transients because heads do not share information.
+Predict cloud task/cluster failures early from multi-metric telemetry; compare hybrid deep learning (feature selection + GRU + ML head) against classical monitors and the proposed MHSA-TDL.
 
 ## Solution (paper)
-Per-entity multi-head transformer; one head per telemetry rule; proactive violation prediction.
+Aldomi et al.: SelectKBest feature selection + GRU temporal extractor + RF/KNN classifiers on Google Cluster Trace.
 
 ## Gap (paper’s own / adapted)
-Underprediction during high-load transients; no cross-head exchange. Commitments adapt colo SLA → **cluster telemetry** and test a **cross-head fusion** fix.
+Hybrid GRU+selection is competitive; CA2 asks whether **MHSA multi-head fusion** improves Acc/Prec/Rec/F1/ROC-AUC/latency on GCT vs that hybrid family. On the disclosed 2011 subset the answer is **negative** (RF/Aldomi lead).
 
 ## Metrics mapped to eval
 | Paper / commitment metric | Ours (CSV) |
 |---------------------------|------------|
-| Prediction accuracy | Accuracy |
-| Class quality | Macro-F1 |
-| Transient anticipation | Transient Violation Recall |
-| Severity underprediction | Transient Underprediction Bias |
+| Accuracy | Accuracy |
+| Precision / Recall / F1 | Precision, Recall, Macro-F1, Fail-F1 |
+| ROC-AUC | ROC-AUC / Fail-ROC-AUC |
+| Latency | Latency (ms) |
 
-Evidence: `mhsa-tdl-framework/results/results_summary.csv` (seeds 42–46).
+Evidence: `mhsa-tdl-framework/results/gct/{final_1,final_2,final_3,hard_verify_1..5}/` — **not** synthetic-only CSVs.

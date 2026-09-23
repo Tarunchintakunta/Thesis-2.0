@@ -1,6 +1,6 @@
 # Pooja Cost Explorer / LIST_PRICE remediable audit (scripted)
 
-Generated: `2026-09-23T07:57:50.030986+00:00`
+Generated: `2026-09-23T07:59:39.203341+00:00`
 Live root: `/Users/valletivarish/Documents/Thesis-2.0/pooja-thesis/paks-framework/results/live`
 
 ## Move gate

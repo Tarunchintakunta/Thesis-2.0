@@ -1,6 +1,6 @@
 # Chaitanya H3/H4 remediable audit (scripted)
 
-Generated: `2026-09-23T07:58:58.585086+00:00`
+Generated: `2026-09-23T07:59:39.857102+00:00`
 Root: `/Users/valletivarish/Documents/Thesis-2.0/chaitanya-thesis/lambda-coldstart-isolation`
 
 ## Move gate

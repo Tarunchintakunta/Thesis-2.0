@@ -284,11 +284,24 @@ def main() -> int:
         findings.append({"kind": "missing_metrics_py", "remediable": True})
 
     # --- no Cost Explorer success artefact ---
+    # Exclude this audit's own reports and dated-WONTFIX docs (name contains cost_explorer).
     ce_hits = []
+    skip_parts = {"analysis", "docs"}
+    skip_name_substrings = (
+        "audit_report",
+        "dated_wontfix",
+        "wontfix",
+        "audit_cost_explorer",
+    )
     for p in RESULTS.rglob("*") if RESULTS.exists() else []:
         if not p.is_file():
             continue
+        rel = p.relative_to(ROOT)
+        if any(part in skip_parts for part in rel.parts):
+            continue
         low = p.name.lower()
+        if any(s in low for s in skip_name_substrings):
+            continue
         if any(
             tok in low
             for tok in (
@@ -298,7 +311,7 @@ def main() -> int:
                 "billing_linked_cost_live",
             )
         ):
-            ce_hits.append(str(p.relative_to(ROOT)))
+            ce_hits.append(str(rel))
     if ce_hits:
         remediable["undeclared_cost_explorer_artefact"] += len(ce_hits)
         findings.append(

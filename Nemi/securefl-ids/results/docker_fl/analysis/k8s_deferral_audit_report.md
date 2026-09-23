@@ -1,6 +1,6 @@
 # Nemi K8s-deferral / Docker FL remediable audit (scripted)
 
-Generated: `2026-09-23T07:57:49.992667+00:00`
+Generated: `2026-09-23T07:58:57.394916+00:00`
 Live root: `/Users/valletivarish/Documents/Thesis-2.0/Nemi/securefl-ids/results/live`
 Docker root: `/Users/valletivarish/Documents/Thesis-2.0/Nemi/securefl-ids/results/docker_fl`
 

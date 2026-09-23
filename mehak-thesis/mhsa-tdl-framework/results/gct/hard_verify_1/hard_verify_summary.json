@@ -1,0 +1,31 @@
+{
+  "round": "hard_verify_1",
+  "mhsa_fused": {
+    "Accuracy": 0.9223,
+    "Precision": 0.6841,
+    "Recall": 0.5809,
+    "Macro-F1": 0.613,
+    "ROC-AUC": 0.6172,
+    "Fail-F1": 0.4116
+  },
+  "aldomi_gru_rf": {
+    "Accuracy": 0.9425,
+    "Precision": 0.8332,
+    "Recall": 0.6197,
+    "Macro-F1": 0.6764,
+    "ROC-AUC": 0.7531,
+    "Fail-F1": 0.5244
+  },
+  "rf": {
+    "Accuracy": 0.9439,
+    "Precision": 0.8805,
+    "Recall": 0.6087,
+    "Macro-F1": 0.6701,
+    "ROC-AUC": 0.8123,
+    "Fail-F1": 0.5154
+  },
+  "mhsa_beats_aldomi_acc": false,
+  "mhsa_beats_rf_acc": false,
+  "same_metrics_present": true,
+  "source": "parsed_from_run.log_summary"
+}

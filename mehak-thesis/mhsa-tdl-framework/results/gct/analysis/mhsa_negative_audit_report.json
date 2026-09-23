@@ -1,0 +1,124 @@
+{
+  "generated_at": "2026-09-23T07:59:39.778339+00:00",
+  "thesis": "mehak",
+  "artefact": "mhsa-tdl-framework",
+  "findings": [
+    {
+      "kind": "final_pack_ok",
+      "remediable": false,
+      "pack": "final_1"
+    },
+    {
+      "kind": "final_pack_ok",
+      "remediable": false,
+      "pack": "final_2"
+    },
+    {
+      "kind": "final_pack_ok",
+      "remediable": false,
+      "pack": "final_3"
+    },
+    {
+      "kind": "hv_negative_ok",
+      "remediable": false,
+      "pack": "hard_verify_1",
+      "mhsa_acc": 0.9223,
+      "aldomi_acc": 0.9425,
+      "rf_acc": 0.9439
+    },
+    {
+      "kind": "hv_negative_ok",
+      "remediable": false,
+      "pack": "hard_verify_2",
+      "mhsa_acc": 0.9223,
+      "aldomi_acc": 0.9425,
+      "rf_acc": 0.9439
+    },
+    {
+      "kind": "hv_negative_ok",
+      "remediable": false,
+      "pack": "hard_verify_3",
+      "mhsa_acc": 0.9223,
+      "aldomi_acc": 0.9425,
+      "rf_acc": 0.9439
+    },
+    {
+      "kind": "hv_negative_ok",
+      "remediable": false,
+      "pack": "hard_verify_4",
+      "mhsa_acc": 0.9223,
+      "aldomi_acc": 0.9425,
+      "rf_acc": 0.9439
+    },
+    {
+      "kind": "hv_negative_ok",
+      "remediable": false,
+      "pack": "hard_verify_5",
+      "mhsa_acc": 0.9223,
+      "aldomi_acc": 0.9425,
+      "rf_acc": 0.9439
+    },
+    {
+      "kind": "baseline_aldomi_ok",
+      "remediable": false
+    },
+    {
+      "kind": "channel_honesty_ok",
+      "remediable": false
+    },
+    {
+      "kind": "netbytes_wontfix_ok",
+      "remediable": false,
+      "paths": [
+        "/Users/valletivarish/Documents/Thesis-2.0/mehak-thesis/DATED_WONTFIX_M2_M3_2026-09-23.md",
+        "/Users/valletivarish/Documents/Thesis-2.0/mehak-thesis/DATED_WONTFIX_M2_M3_2026-09-23.md",
+        "/Users/valletivarish/Documents/Thesis-2.0/mehak-thesis/DATED_WONTFIX_M2_M3_2026-09-23.md"
+      ]
+    },
+    {
+      "kind": "net_channel_flag_ok",
+      "remediable": false,
+      "path": "results/gct/gct_load_meta.json"
+    },
+    {
+      "kind": "sot_ok",
+      "remediable": false
+    },
+    {
+      "kind": "configuration_manual_ok",
+      "remediable": false
+    }
+  ],
+  "remediable": {},
+  "remediable_total": 0,
+  "move_blocker": false,
+  "disposition": "DATED_WONTFIX_NET_BYTES_SCHEMA",
+  "hard_verify_negative_ok": 5,
+  "same_metrics_snapshot": {
+    "MHSA-Fused": {
+      "Accuracy": 0.9223,
+      "Precision": 0.6841,
+      "Recall": 0.5809,
+      "Macro-F1": 0.613,
+      "ROC-AUC": 0.6172,
+      "Fail-F1": 0.4116
+    },
+    "Aldomi GRU-RF": {
+      "Accuracy": 0.9425,
+      "Precision": 0.8332,
+      "Recall": 0.6197,
+      "Macro-F1": 0.6764,
+      "ROC-AUC": 0.7531,
+      "Fail-F1": 0.5244
+    },
+    "RF (classical)": {
+      "Accuracy": 0.9439,
+      "Precision": 0.8805,
+      "Recall": 0.6087,
+      "Macro-F1": 0.6701,
+      "ROC-AUC": 0.8123,
+      "Fail-F1": 0.5154
+    }
+  },
+  "n_mehak_close": true
+}
