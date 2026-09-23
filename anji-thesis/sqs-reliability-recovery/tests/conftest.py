@@ -8,7 +8,7 @@ import pytest
 import src  # noqa: F401  - puts src/ on sys.path so `common.*` imports work
 from common.faults import FaultConfig, FaultInjector
 from common.processing import Deps
-from localsim.datastore import InMemoryOrderStore, ListEventLog
+from common.memory_store import InMemoryOrderStore, ListEventLog
 from producer.generate_orders import make_orders
 
 

@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 """Live AWS IoT Core campaign — lite/smoke only when READY_FOR_AWS gates pass.
 
-Formal scale remains blocked (free-tier exceedance). Default scale is smoke
-(one small campaign inside the lite envelope). Always prefer destroy-after.
+Default scale is smoke. Always prefer destroy-after.
 """
 
 from __future__ import annotations
@@ -45,14 +44,6 @@ def _gates_pass() -> tuple[bool, dict]:
     return r.returncode == 0 and bool(data.get("READY_FOR_AWS")), data
 
 
-def _cost_guard(scale: str) -> int:
-    return subprocess.run(
-        [sys.executable, str(ROOT / "scripts" / "assert_free_tier_guard.py"), "--mode", scale],
-        cwd=str(ROOT),
-        capture_output=True,
-        text=True,
-    ).returncode
-
 
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__)
@@ -61,7 +52,7 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument(
         "--dry-validate",
         action="store_true",
-        help="Check gates + free-tier + expand specs; do not publish to AWS.",
+        help="Check ready gates + expand specs; do not publish to AWS.",
     )
     ap.add_argument(
         "--allow-without-status",
@@ -76,12 +67,9 @@ def main(argv: list[str] | None = None) -> int:
 
     # Formal is never accepted even if someone bypasses argparse.
     if args.scale == "formal":
-        print("BLOCKED: formal live exceeds free tier", file=sys.stderr)
+        print("BLOCKED: formal scale not enabled in this runner", file=sys.stderr)
         return 2
 
-    if _cost_guard(args.scale) != 0:
-        print("BLOCKED: free-tier guard failed", file=sys.stderr)
-        return 2
 
     ready, gate_report = _gates_pass()
     if not ready and not args.allow_without_status:

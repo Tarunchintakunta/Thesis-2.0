@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Aggregate per-cell mean/sd from experiment manifests (localsim or live)."""
+"""Aggregate per-cell mean/sd from experiment manifests."""
 from __future__ import annotations
 
 import argparse

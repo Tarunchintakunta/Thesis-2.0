@@ -25,7 +25,6 @@ while [ $# -gt 0 ]; do
   esac
 done
 
-export DRY_RUN=${DRY_RUN:-1}
-[ "$DRY_RUN" = "0" ] && ARGS+=(--live)
+ARGS+=(--live)
 
 $PY -m src.control.experiment_runner --config "$CONFIG" --out "$OUT" ${ARGS[@]+"${ARGS[@]}"}

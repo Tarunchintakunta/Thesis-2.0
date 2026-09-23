@@ -54,9 +54,6 @@ def build_item(event: dict[str, Any], ingest_ms: int | None = None) -> dict[str,
 
 def handler(event: Any, context: Any) -> dict[str, Any]:
     item = build_item(event if isinstance(event, dict) else {})
-    if os.environ.get("DRY_RUN_HANDLER") == "1":
-        return {"ok": True, "dry_run": True, "item": item}
-
     import boto3  # provided on Lambda
 
     table_name = os.environ.get("DELIVERED_TABLE", TABLE_NAME)

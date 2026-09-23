@@ -1,16 +1,6 @@
-"""Experiment runner: config matrix -> randomised runs -> manifests.
+"""Experiment runner: config matrix -> randomised live AWS runs -> manifests.
 
-Examples (from the project root)::
-
-    DRY_RUN=1 python -m src.control.experiment_runner --config configs/pilot.yaml
-    python -m src.control.experiment_runner --config configs/baseline_kyrchenko.yaml \
-        --fault none --randomise-order --repeats 5 --out results/baseline/
-    python -m src.control.experiment_runner --config configs/fault_campaigns.yaml \
-        --fault consumer_kill --vary visibility_timeout --out results/campaigns/
-    python -m src.control.experiment_runner --arm sync --load normal --fault none --repeats 5
-
-DRY_RUN defaults to 1 (local simulator). Live runs need DRY_RUN=0 *and*
-``--live`` *and* a stack name, and they go through the cost guard first.
+Live only. Requires ``--live`` and a deployed stack (terraform outputs or CFN).
 """
 from __future__ import annotations
 
@@ -25,7 +15,6 @@ from typing import Any
 from control.collect_metrics import estimate_cost, load_pricing, metrics_from_result, write_raw
 from control.config import load_yaml, plan_runs
 from control.manifest import build_manifest, git_commit, now_iso, write_manifest
-from localsim.engine import simulate
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_CONFIG = PROJECT_ROOT / "configs" / "pilot.yaml"
@@ -39,7 +28,7 @@ SUMMARY_FIELDS = [
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
-    p = argparse.ArgumentParser(description="run SQS reliability experiments")
+    p = argparse.ArgumentParser(description="run SQS reliability experiments (live AWS)")
     p.add_argument("--config", default=str(DEFAULT_CONFIG))
     p.add_argument("--campaign", action="append", help="campaign name inside the config (repeatable)")
     p.add_argument("--fault", help="fault mode: filters campaigns, or overrides a single config")
@@ -53,17 +42,18 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     p.add_argument("--no-raw", action="store_true", help="do not write results/raw dumps")
     p.add_argument("--list", action="store_true", help="only print the planned runs")
     p.add_argument("--limit", type=int, help="stop after N runs (smoke tests)")
-    p.add_argument("--live", action="store_true", help="really use AWS (also needs DRY_RUN=0)")
+    p.add_argument("--live", action="store_true", required=False,
+                   help="required for execution (live AWS); omit only with --list")
     p.add_argument("--stack-name", default=os.environ.get("STACK_NAME", "sqs-rr-dev"))
     p.add_argument(
         "--terraform-dir",
         default=os.environ.get("TERRAFORM_DIR", str(PROJECT_ROOT / "terraform")),
-        help="load StackOutputs from terraform output -json (preferred over CloudFormation)",
+        help="load StackOutputs from terraform output -json",
     )
     p.add_argument(
         "--from-cfn",
         action="store_true",
-        help="use CloudFormation stack outputs instead of terraform (legacy)",
+        help="use CloudFormation stack outputs instead of terraform",
     )
     p.add_argument("--pricing", default=str(PROJECT_ROOT / "configs" / "pricing.yaml"))
     p.add_argument("--from-env", action="store_true", help="one ad-hoc run built from .env / environment variables")
@@ -85,7 +75,6 @@ ENV_KEYS = {
 
 
 def config_from_env(env: dict[str, str] | None = None) -> dict[str, Any]:
-    """The .env variables (see .env.example) as a one-run config."""
     env = dict(os.environ) if env is None else env
     fixed: dict[str, Any] = {}
     for var, (key, cast) in ENV_KEYS.items():
@@ -104,8 +93,6 @@ def load_dotenv_if_present() -> None:
 
 
 def rebuild_summary(out_dir: Path) -> Path:
-    """summary.csv is always rebuilt from every manifest in out_dir, so several
-    invocations into the same folder do not overwrite each other."""
     from control.manifest import read_manifests
 
     rows = []
@@ -123,11 +110,6 @@ def rebuild_summary(out_dir: Path) -> Path:
 
 
 def select_campaigns(config: dict[str, Any], args: argparse.Namespace) -> tuple[list[str] | None, dict[str, Any]]:
-    """Decide which campaigns to run and what to override.
-
-    For a file with several campaigns ``--fault``/``--vary`` *pick* campaigns.
-    For a single experiment file they *override* the settings.
-    """
     overrides: dict[str, Any] = {
         "arm": args.arm,
         "load_profile": args.load,
@@ -149,18 +131,12 @@ def select_campaigns(config: dict[str, Any], args: argparse.Namespace) -> tuple[
             matrix = camp.get("matrix") or {}
             if args.fault and fixed_fault != args.fault and args.fault not in (matrix.get("fault_mode") or []):
                 continue
-            # --vary X means "the campaign whose one primary IV is X", so the
-            # two-factor campaigns (E, H) are only run by name or with --all
             if args.vary and set(matrix) != {args.vary}:
                 continue
             select.append(name)
         if not select:
             raise SystemExit(f"no campaign matches --fault {args.fault} --vary {args.vary}")
     return select, overrides
-
-
-def dry_run_enabled() -> bool:
-    return os.environ.get("DRY_RUN", "1") != "0"
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -178,9 +154,7 @@ def main(argv: list[str] | None = None) -> int:
     if args.limit:
         specs = specs[: args.limit]
 
-    live = args.live and not dry_run_enabled()
-    backend = "live" if live else "localsim"
-
+    backend = "live"
     if args.list:
         for i, s in enumerate(specs):
             print(f"{i:4d} {s.campaign:22s} {s.arm:5s} {s.load_profile:6s} {s.fault_mode:17s} "
@@ -188,34 +162,29 @@ def main(argv: list[str] | None = None) -> int:
         print(f"{len(specs)} runs planned ({backend})")
         return 0
 
-    pricing = load_pricing(args.pricing)
-    outputs = None
-    if live:
-        from control.cost_guard import check_plan
-        from control.live_backend import StackOutputs
+    if not args.live:
+        print("ERROR: live AWS only. Pass --live (and deploy the stack first).", file=sys.stderr)
+        return 2
 
-        estimate = check_plan(specs, pricing)
-        print(f"[cost guard] ~${estimate['usd_total']:.2f} for {estimate['runs']} runs "
-              f"(~{estimate['est_wall_hours']:.1f} h), limit ${estimate['limit_usd']:.2f}")
-        if args.from_cfn:
-            outputs = StackOutputs.from_stack(args.stack_name)
-        else:
-            outputs = StackOutputs.from_terraform(args.terraform_dir)
-            print(f"[live] stack from terraform dir {args.terraform_dir}")
-    elif args.live:
-        print("[info] --live given but DRY_RUN is not 0 -> staying on the local simulator")
+    pricing = load_pricing(args.pricing)
+    from control.cost_guard import check_plan
+    from control.live_backend import StackOutputs, run_live
+
+    estimate = check_plan(specs, pricing)
+    print(f"[cost guard] ~${estimate['usd_total']:.2f} for {estimate['runs']} runs "
+          f"(~{estimate['est_wall_hours']:.1f} h), limit ${estimate['limit_usd']:.2f}")
+    if args.from_cfn:
+        outputs = StackOutputs.from_stack(args.stack_name)
+    else:
+        outputs = StackOutputs.from_terraform(args.terraform_dir)
+        print(f"[live] stack from terraform dir {args.terraform_dir}")
 
     git = git_commit()
     out_dir = Path(args.out)
     t_start = time.time()
     for pos, spec in enumerate(specs):
         started = now_iso()
-        if live:
-            from control.live_backend import run_live
-
-            result = run_live(spec, outputs)
-        else:
-            result = simulate(spec)
+        result = run_live(spec, outputs)
         metrics = metrics_from_result(spec, result)
         cost = estimate_cost(result.counters, pricing)
         manifest = build_manifest(

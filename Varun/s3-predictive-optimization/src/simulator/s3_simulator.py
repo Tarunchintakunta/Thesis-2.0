@@ -12,7 +12,7 @@ class S3Simulator:
         self.bucket_name = bucket_name
         self.objects: Dict[str, Dict] = {}
         self.access_log: List[Dict] = []
-        self.dry_run = os.getenv("DRY_RUN", "1") == "1"
+        self.dry_run = os.getenv("DRY_RUN", "0") == "1"
     
     def put_object(self, key: str, metadata: Dict) -> None:
         """Simulate putting an object to S3."""

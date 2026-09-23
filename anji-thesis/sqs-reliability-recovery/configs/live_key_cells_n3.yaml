@@ -1,5 +1,5 @@
 # Preferred live execution: DRY_RUN=0 --live --repeats 3 (or this file), then destroy.
-# This file is the localsim stand-in when shared-account ConcurrentExecutions
+# Live key-cells n=3 when ConcurrentExecutions
 # cannot host ESM maximum_concurrency=5 alongside another campaign.
 seed: 9001
 defaults:

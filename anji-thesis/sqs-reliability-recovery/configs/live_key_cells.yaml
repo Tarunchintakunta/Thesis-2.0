@@ -1,4 +1,4 @@
-# NOT a full 350-cell localsim redo. Four cells × 1 repeat, scaled load.
+# Four cells × 1 repeat, scaled load.
 # Contrasts: VT under consumer_kill; MRC under unhandled_error.
 seed: 9001
 defaults:

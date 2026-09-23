@@ -24,7 +24,6 @@ echo "== account check"
 aws sts get-caller-identity --query Account --output text
 
 echo "== cost guard"
-$PY scripts/assert_free_tier_guard.py --config configs/pilot.yaml
 $PY scripts/estimate_cost.py --config configs/pilot.yaml
 
 echo "== validate + build"

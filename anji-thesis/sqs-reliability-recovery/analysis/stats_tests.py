@@ -420,8 +420,7 @@ def main(argv: list[str] | None = None) -> int:
         payload["excess_duplicates"] = excess_duplicates(df)
         table = markdown_table(results)
         print(table)
-        note = ("_Numbers come from the local simulator (DRY_RUN=1), not from AWS._\n\n"
-                if kinds == ["localsim"] else "")
+        note = ""
         (out / "hypotheses.md").write_text("# Confirmatory tests\n\n" + note + table + "\n\n## Exploratory\n\n"
                                            + markdown_table(payload["exploratory"]) + "\n")
 

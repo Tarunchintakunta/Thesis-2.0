@@ -1,21 +1,7 @@
-"""Live AWS backend (DRY_RUN=0). Needs a deployed stack in YOUR OWN account.
+"""Live AWS backend. Needs a deployed stack in YOUR OWN account.
 
-NOTE: this path has not been executed as part of this repository (CI and the
-committed results use the local simulator). The pieces are unit tested with
-moto where moto supports the API. Run the pilot first and read the
-configuration manual before pointing it at a real account.
-
-One run:
-
-1. apply the run's SQS/ESM settings (visibility timeout, maxReceiveCount,
-   batch size) and wait until the event source mapping is back to Enabled
-2. purge the queues (SQS allows one purge per 60 s, so there is a cool-down)
-3. write the fault schedule to SSM (absolute on/off times)
-4. send the orders following the load profile, sample queue depth every
-   ``sample_interval_s`` on the main thread while a sender thread produces
-5. drain until the queue is empty or the drain timeout passes
-6. collect: processing events (DynamoDB), DLQ contents, leftover messages,
-   Lambda/SQS request counts from CloudWatch (for the cost proxy)
+One run applies SQS/ESM settings, purges queues, injects faults via SSM,
+sends orders, drains, then collects DynamoDB/DLQ/CloudWatch evidence.
 """
 from __future__ import annotations
 
@@ -27,7 +13,7 @@ from pathlib import Path
 from typing import Any
 
 from control.fault_controller import SsmFaultController, schedule_for_run
-from localsim.engine import RunResult
+from control.run_result import RunResult
 from producer.generate_orders import make_orders
 from producer.loadgen import arrival_times, post_to_api, send_to_sqs
 

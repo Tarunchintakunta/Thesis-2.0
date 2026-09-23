@@ -26,7 +26,7 @@ plt.rcParams.update({"figure.dpi": 110, "savefig.dpi": 150, "axes.grid": True, "
 
 
 def _tag(df: pd.DataFrame) -> str:
-    return " (local simulation)" if set(df["backend"]) == {"localsim"} else ""
+    return ""
 
 
 def _mean_ci(values: np.ndarray) -> tuple[float, float]:

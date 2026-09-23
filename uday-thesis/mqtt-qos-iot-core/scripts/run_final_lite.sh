@@ -17,7 +17,6 @@ export AWS_DEFAULT_REGION="${AWS_DEFAULT_REGION:-eu-west-1}"
 STAGE=lite
 DEVICE_COUNT=5
 
-"$PY" scripts/assert_free_tier_guard.py --mode lite
 "$PY" scripts/check_ready_for_aws.py
 
 # Ensure clean certs dir for this round

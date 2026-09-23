@@ -1,10 +1,10 @@
 # Makefile for S3 Predictive Cost Optimization Framework
 # Student: Varun Gampa (23398639)
-# Default: DRY_RUN=1 (local simulator, no AWS required)
+# Default: DRY_RUN=0 (live AWS)
 
 PY ?= .venv/bin/python
 PYTEST ?= .venv/bin/pytest
-export DRY_RUN ?= 1
+export DRY_RUN ?= 0
 
 .PHONY: help setup test lint pilot baseline improved experiments stats figures gates clean pdf
 

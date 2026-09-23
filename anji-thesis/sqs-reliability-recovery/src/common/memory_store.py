@@ -1,4 +1,4 @@
-"""In-memory stand-ins for the Orders table and the events log."""
+"""In-memory stand-ins for the Orders table and the events log (tests)."""
 from __future__ import annotations
 
 from collections import Counter
@@ -14,7 +14,6 @@ class InMemoryOrderStore:
         self.items: dict[str, dict[str, Any]] = {}
         self.writes = 0
         self.conditional_failures = 0
-        # how many times each order was actually applied (should stay at 1)
         self.apply_count: Counter[str] = Counter()
 
     def put_if_absent(self, order: Order, meta: dict[str, Any]) -> bool:
