@@ -46,7 +46,7 @@
 | V9  | Soft bucket “Vish FN” still listed under N1–N8 OPEN | Close as evidenced negative (not invent) | **CLOSED** — `vishvaksen-thesis/CA2_PROPOSED_VS_ARTEFACT.md` §5 |
 | V10 | Examiner: Acc missing vs Verdet; IRR silent; design only Partly | Acc column + honest IRR + §0/§6 complete before next thesis | **CLOSED** — design **Yes**; efficacy still **No** |
 | V11 | Outstanding 70%+ remediable cells (alts/lit/synth/config); Acc on hv2–4 | Close artefact/eval only; report/viva fold-later does not block move | **CLOSED** — then **reopened** when efficacy mapping gap found |
-| V12 | Premature move despite remediable Checkov FN mapping undercount | Scripted audit + fix maps/OPA; hv6; do not move while audit fails | **CLOSED** — `scripts/audit_fn_root_causes.py` EXIT 0; Checkov R=0.917; OPA R=1.0; hv6 |
+| V12 | Premature move despite remediable Checkov FN mapping undercount | Scripted audit + fix maps; hv6; do not move while audit fails | **CLOSED** — Checkov R **0.917** (mapping rematch; labels unchanged). **Do not cite prior chat “OPA R=1.0 / Acc≈0.808”** — packs show OPA R **0.604**, Checkov Acc **0.775**. Audit remediable_total=0. |
 | M1  | Mehak MHSA Acc/Fail-F1 below RF/Aldomi (was “soft neg”) | Keep as evidenced negative in same-metrics table; no invent win | **CLOSED** — SoT §2/§4; hv1–5 `mhsa_beats_*=false` |
 | M5  | Mehak BASELINE_PAPER still Thapliyal | Rewrite to Aldomi (formal CA2) | **CLOSED** — `baseline_papers/BASELINE_PAPER.md` |
 | M6  | Mehak Outstanding remediable + config + hv4–5 | Config manual; SoT §7–§11; ×5 packs | **CLOSED** — **MOVE ALLOWED** (report fold-later) |

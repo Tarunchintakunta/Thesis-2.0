@@ -53,7 +53,11 @@ Source: `results/metrics_per_category.csv` / `results/METRICS.md`.
 | Static union | 0.754 | 0.730 | 0.938 | 0.821 | 93.8 |
 | OPA | 0.762 | 1.000 | 0.604 | 0.753 | 60.4 |
 
-**Mapping fix:** catalog IDs that already failed on labelled insecure modules but were unmatched are classified into `mappings/checkov_ids.json` (labels unchanged). Pre-fix Checkov R=0.562 → post-fix **R=0.917** (TP=132, FN=12).
+**Mapping fix:** catalog IDs that already failed on labelled insecure modules but were unmatched are classified into `mappings/checkov_ids.json` (labels unchanged). Pre-fix Checkov R=0.562 → post-fix **R=0.917** (TP=132, FN=12). Acc=(132+54)/240=**0.775** (not ≈0.81). OPA R remains **0.604** (FN=57) — **not** 1.0.
+
+### Agent correction (2026-09-23)
+
+An earlier agent Before/After chat table claimed **Acc≈0.808** and **OPA R=1.000**. That was **overclaiming** — those figures are **not** in `metrics_per_category.csv` / hv6–7. Binding numbers = §2 table above only. Checkov R 0.562→0.917 remains real (mapping undercount rematch; FP 24→42).
 
 ### §B — Side-by-side P/R vs Verdet framing
 
