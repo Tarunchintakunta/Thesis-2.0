@@ -14,7 +14,7 @@
 | final_3 | 0.472 |
 
 ## Verdict
-- **Positive:** three independent live lite Leg-3 rounds; stacks destroyed (0 Lambdas left).
-- **Negative/mixed:** reduction varies across rounds (lite n windows); not confirmatory 30-min cells.
+- **Positive:** three independent live lite Leg-3 rounds; stacks destroyed (0 Lambdas left); amended ≥0.35 floor met on all three.
+- **Negative/mixed:** original ≥0.50 **fails** on 3/3 (0.383/0.422/0.472); lite n windows; not confirmatory 30-min cells; detection F1 gap to Xing retained (see SoT).
 
-**CA2 floor:** still **100%**.
+**Honest CA2 floor:** **~72** (do not market 100). SoT: `../../CA2_PROPOSED_VS_ARTEFACT.md`.

@@ -29,4 +29,4 @@ Source: `results/live/final3_init_summary.json`.
 - **Negative/mixed:** lite n=5/cell (not confirmatory n≥30); H2 package_size / H3 warming / H4 memory not re-run in these finals (covered in initial_eval Init/H3/H4 lite under `data/processed/live/`); posthoc python↔nodejs fails Holm once (final_2).
 - Finals are method-scale smoke + H1 stability, not a new Holm family on H2–H3.
 
-**CA2 floor:** still **100%** after final-3. Soft confirmatory n remains beyond-CA2.
+**Honest CA2 floor:** **~78** after final-3 + confirmatory H1/H2 (do not market 100). Soft confirmatory H3/H4 depth remains beyond-CA2; N-H4 practical null dated WONTFIX.

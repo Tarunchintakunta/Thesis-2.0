@@ -3,21 +3,25 @@
 **Project:** Lambda Cold-Start Isolation  
 **Student:** Kondragunta Lakshmi Chaitanya (25171216)  
 **Programme:** MSc Cloud Computing, National College of Ireland  
-**Date:** September 19, 2026
+**Date:** September 23, 2026  
+**Honest CA2 floor:** **~78** — confirmatory H1/H2; H3 Holm null; H4 practical null (N-H4). Do **not** market 100.  
+**SoT:** `../CA2_PROPOSED_VS_ARTEFACT.md` · **N-H4 WONTFIX:** `../DATED_WONTFIX_N_H4_2026-09-23.md`  
+**MOVE ALLOWED:** **yes** — `scripts/audit_h3_h4_root_causes.py` EXIT 0; remediable_total=0 (2026-09-23).
 
 ---
 
-## Overall Status: **CA2 FLOOR COMPLETE** — INITIAL_EVAL_PASS=yes
+## Overall Status: **CA2 FLOOR COMPLETE (honest ~78)** — INITIAL_EVAL_PASS=yes
 
-**Hard Init residual closed (lite):** CloudWatch REPORT *Init Duration* collected for Python/Node/Java package cells, H4 Python memory sweep, and H3-lite EventBridge warming (30m sparse). Evidence: `data/processed/live/` (`live_summary.json`, `init_summary_by_cell.csv`, `h3_warming_summary.csv`/`.json`, `adopt_lite_matrix.csv`). Proxy ≠ Init Duration. ROI/ADOPT rows are **lite point estimates** (not Holm-confirmatory). Soft confirmatory $n{\ge}30$ / longer H3 are **beyond-CA2** (`DESIGN_RATIONALE_BEYOND_CA2.md`).
+**Hard Init residual closed (lite):** CloudWatch REPORT *Init Duration* collected for Python/Node/Java package cells, H4 Python memory sweep, and H3-lite EventBridge warming (30m sparse). Evidence: `data/processed/live/` (`live_summary.json`, `init_summary_by_cell.csv`, `h3_warming_summary.csv`/`.json`, `adopt_lite_matrix.csv`). Proxy ≠ Init Duration. ROI/ADOPT rows are **lite point estimates** (not Holm-confirmatory). Soft confirmatory $n{\ge}30$ / longer H3 are **beyond-CA2** (`DESIGN_RATIONALE_BEYOND_CA2.md`). **N-H4:** memory = practical null (HOLD/avoid).
 
-**INITIAL_EVAL_PASS:** **yes** (live Init/H3/H4 lite treated as initial eval; CA2 still 100%). Final-3 **DONE**.  
-Gate: `data/processed/live/initial_eval_1/`. Finals: `results/live/final_{1,2,3}/` + `FINAL3_BASELINE.md`.
+**INITIAL_EVAL_PASS:** **yes** (live Init/H3/H4 lite + confirmatory_n30 H1/H2). Final-3 **DONE**.  
+Gate: `data/processed/live/initial_eval_1/`. Finals: `results/live/final_{1,2,3}/` + `FINAL3_BASELINE.md`. Audit: `results/live/analysis/h3_h4_audit_report.*`.
 
 ```
-COMPLETE=yes ALIGNMENT=100 CA2_FLOOR=met
+COMPLETE=yes ALIGNMENT=~78 CA2_FLOOR=met
 INITIAL_EVAL_PASS=yes FINAL3=done
 SOLE_AWS_RESIDUAL=closed LIVE_INITIAL_EVAL_1=yes
+MOVE_ALLOWED=yes AUDIT_H3_H4=EXIT0
 ```
 
 ### Rubric quality notes (aim 70–100; Eval 25% + Artefact 27% dominate)
@@ -26,9 +30,10 @@ Folded from `results/live/FINAL3_BASELINE.md` + `data/processed/live/` (Init/H3/
 
 - **Artefact justification:** Free controls only (runtime / package prune / memory / EventBridge warming) vs paid provisioned concurrency; identical SHA-256 workload; REPORT-line Init isolated from Duration; bytecode cell **dropped** (Unhandled) with ASSUMPTIONS W7.
 - **Pos (final-3 H1):** Init p50 ordering **java ≫ nodejs ≳ python** (optimised @1024 MB) stable across final_1–3; H1 rejects every round; destroy-after each pack; cost ≈$0.0027–0.0028/round.
-- **Neg / mixed retained:** lite n=5/cell on finals (not confirmatory n≥30); final_2 python↔nodejs posthoc fails Holm once; H2/H3/H4 not re-run in finals (covered in initial_eval lite); H3-lite cold-rate drop 0.20 is directional only.
+- **Neg / mixed retained:** lite n=5/cell on finals (not confirmatory n≥30); final_2 python↔nodejs posthoc fails Holm once; H3-lite Holm **fail to reject** (directional drop only); H4 memory = **practical null** (HOLD/avoid; N-H4 dated WONTFIX); H2/H3/H4 not re-run in finals (covered in initial_eval lite).
 - **vs Bluemke & Zdanowski (2025):** baseline measures configuration duration/cost; this thesis **isolates Init Duration** across three runtimes and free controls — not a re-run of their Python-only aggregate Duration claims.
 - **Limitations / implications:** lite n underpowers Holm for H3; proxy ≠ Lambda Init; ROI/ADOPT rows are point estimates. Soft confirmatory n≥30 remains beyond-CA2.
+- **Scripted audit:** `results/live/analysis/h3_h4_audit_report.{json,md}` — disposition `DATED_WONTFIX_H4_PRACTICAL_NULL_H3_UNDERPOWERED`.
 
 This project investigates cold-start latency reduction in AWS Lambda across runtime languages (Python 3.12, Node.js 20, Java 21), deployment package sizes, memory allocations, and low-frequency EventBridge warming strategies.
 
