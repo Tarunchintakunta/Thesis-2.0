@@ -52,7 +52,8 @@ def calculate_metrics(y_true, y_pred, y_proba=None, binary=True) -> Dict[str, fl
                     y_true, y_proba, multi_class='ovr', average='weighted'
                 )
         except Exception:
-            metrics['roc_auc'] = 0.0
+            # Do not invent AUC; omit when undefined.
+            metrics['roc_auc'] = float('nan')
     
     return metrics
 

@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
-"""
-Merge centralised comparator into results/comparison/results.json.
+"""Merge centralised comparator into results/comparison/results.json.
 
-Keeps locked synthetic FL baseline/improved metrics unchanged; only adds
-(or refreshes) the 'centralised' key from results/centralised/summary.json.
+Reads computed metrics only from results/centralised/summary.json.
+Does not invent or preserve synthetic FL numbers.
 """
 import json
 import os
@@ -27,7 +26,6 @@ def main():
     else:
         comparison = {}
 
-    # Preserve locked synthetic FL arms verbatim
     comparison["centralised"] = central
 
     os.makedirs(os.path.dirname(comparison_path), exist_ok=True)

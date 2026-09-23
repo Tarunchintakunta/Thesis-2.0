@@ -2,8 +2,8 @@
 """
 Run a documented real-UNSW experiment (stratified sample of the training partition).
 
-Does NOT overwrite the locked synthetic PoC at results/comparison/results.json.
-Writes evidence under results/unsw_real/.
+Writes computed metrics under results/unsw_real/ and updates
+results/comparison/results.json from those measurements only.
 """
 import json
 import os
@@ -119,6 +119,22 @@ def run_unsw_real(
     with open(os.path.join(out_dir, "history_improved.pkl"), "wb") as f:
         pickle.dump(improved.history, f)
 
+    # Comparison file = freshly computed arms only (no locked synthetic PoC).
+    comparison = {
+        "centralised": results["centralised"],
+        "baseline": results["baseline_fl"],
+        "improved": results["improved_fl"],
+        "source": "unsw_real",
+        "config": {
+            "sample_size": sample_size,
+            "num_rounds": num_rounds,
+            "epochs_centralised": epochs_central,
+        },
+    }
+    os.makedirs("results/comparison", exist_ok=True)
+    with open("results/comparison/results.json", "w") as f:
+        json.dump(comparison, f, indent=2)
+
     print("\n" + "=" * 70)
     print("REAL UNSW RESULTS (stratified sample)")
     print("=" * 70)
@@ -128,7 +144,7 @@ def run_unsw_real(
             f"f1={summary['f1_score']:.4f} "
             f"comm={summary['avg_communication_cost']:.2f} MB"
         )
-    print(f"\nSaved under {out_dir}/ (synthetic PoC JSON left unchanged).")
+    print(f"\nSaved under {out_dir}/ and results/comparison/results.json")
     print("=" * 70)
     return results
 
