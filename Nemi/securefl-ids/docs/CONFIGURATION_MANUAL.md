@@ -153,11 +153,12 @@ Outputs to `figures/`:
 
 ## Cloud / container deployment
 
-**Honesty:** 30-round PoC campaigns are local simulation. A **live AWS lite** FL round was executed (Free-Tier `t3.micro` + S3 + CloudWatch) and destroyed; see `results/live/cloud_lite_summary.json`.
+**Honesty:** 30-round PoC campaigns are local simulation. **Live AWS lite** FL finals (`results/live/final_{1,2,3}/`) used Free-Tier `t3.micro` + S3 + CloudWatch and were destroyed after each round.
 
-- No Docker Compose or Helm chart is committed in this repository (beyond-CA2).
+- **Docker Compose multi-container FL ×3** is present: `docker-compose.yml` + `results/docker_fl/final_{1,2,3}/` (FedAvg via shared volume; **Not K8s**). See `DOCKER_FINAL3_BASELINE.md`.
+- **Kubernetes / EKS** is **dated deferred** (beyond-CA2) — see `../../DATED_WONTFIX_N_Nemi_2026-09-23.md` and `DESIGN_RATIONALE_BEYOND_CA2.md`. Do not treat Kubernetes / Helm / EKS steps as tested.
 - `terraform/` under `securefl-ids/` is the live-lite IaC; apply only via `make live-cloud-fl` (destroy-after-round).
-- Do not treat ECS / Kubernetes / Docker steps as tested.
+- SoT + remediable audit: `../../CA2_PROPOSED_VS_ARTEFACT.md` · `python3 scripts/audit_k8s_deferral_root_causes.py` (EXIT 0).
 
 ## Troubleshooting
 

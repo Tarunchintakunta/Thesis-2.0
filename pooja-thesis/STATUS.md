@@ -1,4 +1,9 @@
-**INITIAL_EVAL_PASS:** **yes** (live AWS k3s PAKS vs HPA; CA2 re-check still 100%)
+**INITIAL_EVAL_PASS:** **yes** (live AWS k3s PAKS vs HPA)
+
+**ONE source of truth:** `CA2_PROPOSED_VS_ARTEFACT.md` (same-metrics vs HPA; LIST_PRICE cost).  
+**Scripted audit:** `paks-framework/scripts/audit_cost_explorer_root_causes.py` → EXIT 0 / remediable_total=0.  
+**N-Pooja (Cost Explorer soft):** `DATED_WONTFIX_N_Pooja_2026-09-23.md`.
+
 INITIAL_EVAL_PASS=yes
 Evidence: `paks-framework/results/formal_k8s_live_aws.json`. Final-3 **DONE** (`results/live/final_{1,2,3}/` + `FINAL3_BASELINE.md`).
 
@@ -6,18 +11,18 @@ Evidence: `paks-framework/results/formal_k8s_live_aws.json`. Final-3 **DONE** (`
 
 From `paks-framework/results/live/FINAL3_BASELINE.md` + TRACE prediction tables.
 
-- **Artefact:** PAKS (NumPy LSTM + adaptive scale) vs reactive HPA on Free-Tier **1× t3.micro + k3s** with S3/CW; destroy-after; Venkat fleet never in this state.
+- **Artefact:** PAKS (NumPy LSTM + adaptive scale) vs reactive **HPA** on Free-Tier **1× t3.micro + k3s** with S3/CW; destroy-after; Venkat fleet never in this state.
 - **Pos (final-3):** all three rounds live-apply + `destroy_confirmed`; scale latency p50 ≈0.14 s both policies; method closed under Free-Tier.
 - **Neg retained:** mean HPA↔PAKS ordering **not** monotone (PAKS faster f1/f3, HPA on f2); TRACE LSTM MAE **worse** than persistence on GCT 2011 / Alibaba RANGE slices — prediction gain not automatic.
-- **vs reactive HPA baseline:** live latency parity at lite n=16 single-node — do **not** claim confirmatory superiority; cost/SLA fields partly SIMULATED.
+- **vs reactive HPA baseline:** live latency parity at lite n=16 single-node — do **not** claim confirmatory superiority; cost = **LIST_PRICE** `$0.04`/pod-hour SIMULATED — **Cost Explorer dated WONTFIX** (not measured).
 - **Limitations:** single-node k3s; steps=16; full multi-GB dumps scoped beyond-CA2 (`DESIGN_RATIONALE_BEYOND_CA2.md`).
 
 # Project Status: pooja-thesis
 
-**Last Updated:** 2026-09-21  
-**Branch:** `main`  
-**Research Alignment to CA2:** **100%** (formal `Pooja_25120921_CA2.docx`; research-scope floor — not perfect marks)  
-**Status:** **CA2 floor COMPLETE** — soft residuals (full GCT/Alibaba dumps, larger live campaign, TF runtime, billing-linked cost, Gantt figure) are **explicitly scoped out** with rationale in `DESIGN_RATIONALE_BEYOND_CA2.md`
+**Last Updated:** 2026-09-23  
+**Branch:** `cursor/rasool-ca2-sot-audit-9837`  
+**Research Alignment to CA2:** floor complete under disclosed scope (SoT audit EXIT 0) — **not** perfect marks / not Cost Explorer–validated cost  
+**Status:** **CA2 floor COMPLETE** — soft residuals (full dumps, larger live campaign, TF runtime, **Cost Explorer**, Gantt) are **explicitly scoped out** / dated WONTFIX in `DATED_WONTFIX_N_Pooja_2026-09-23.md` + `DESIGN_RATIONALE_BEYOND_CA2.md`
 
 ## Summary
 
@@ -70,16 +75,17 @@ Source: `results/results_summary.csv`. NimbusGuard-framed synthetic MLP only.
 - GCT v1 + GCT 2011 part-00000 + Alibaba RANGE samples with SHA provenance
 - NumPy LSTM; TensorFlow requested → ImportError (fail-closed)
 - Dry-run adaptive scaler vs HPA v2 **and** **live** k3s Scale apply on AWS
-- Metric harness: MAE/RMSE TRACE; live scale latency LIVE; util/cost/SLA model still partly SIMULATED
+- Metric harness: MAE/RMSE TRACE; live scale latency LIVE; util/SLA model still partly SIMULATED; **cost = LIST_PRICE `$0.04`/pod-hour** (Cost Explorer WONTFIX)
 - AWS EC2 + S3 + CloudWatch experimental environment (destroyed after)
 - Proxy labelled (`src/proxy/`, `results/PROXY_NIMBUSGUARD.md`)
-- DESIGN_RATIONALE maps floor vs scoped-out optional dumps
+- DESIGN_RATIONALE + **DATED_WONTFIX_N_Pooja** map floor vs scoped-out Cost Explorer / dumps
+- SoT `CA2_PROPOSED_VS_ARTEFACT.md` + scripted audit EXIT 0
 
 ## Soft residuals (optional beyond-CA2 — not floor blockers)
 
 1. Remaining GCT 2011 parts / 2019 Borg cells / full Alibaba ~1.7 GiB dump (coverage only)
 2. Larger multi-intensity / multi-node live campaign
-3. TensorFlow runtime; billing-linked cost; Gantt figure
+3. TensorFlow runtime; **Cost Explorer / billing-linked cost** (dated WONTFIX — LIST_PRICE used); Gantt figure
 
 ## AWS
 

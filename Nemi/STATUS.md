@@ -6,17 +6,23 @@
 
 **Project:** SecureFL-IDS — Privacy-Preserving Federated Intrusion Detection for Cloud-Native Environments
 
-## Overall status: **COMPLETE** (CA2 floor 100%; beyond-CA2 optional)
+## Overall status: **COMPLETE** (CA2 floor; beyond-CA2 optional)
 
-**Research alignment:** **100%** vs CA2 floor — centralised comparator + real UNSW training-partition sample locked locally; **live cloud FL lite** executed on Free-Tier EC2+S3+CloudWatch and **destroyed**. Soft items (full 2.5M-flow, 50-round campaigns, Docker/K8s, improved-arm plateau) are **beyond-CA2** (`securefl-ids/DESIGN_RATIONALE_BEYOND_CA2.md`) — not blockers. **AWS residual: closed.**
+**ONE source of truth:** `CA2_PROPOSED_VS_ARTEFACT.md` (same-metrics vs Saklani).  
+**Scripted audit:** `securefl-ids/scripts/audit_k8s_deferral_root_causes.py` → EXIT 0 / remediable_total=0.  
+**N-Nemi (K8s deferred):** `DATED_WONTFIX_N_Nemi_2026-09-23.md`.
 
-**INITIAL_EVAL_PASS:** **yes** (live cloud FL lite treated as initial eval; CA2 still 100%). Final-3 **DONE** (`results/live/final_1|2|3/`; baseline `FINAL3_BASELINE.md`).
+**Research alignment:** CA2 floor met — centralised comparator + real UNSW sample; **live cloud FL lite** final_1–3 destroy-after; **Docker FL ×3** closed packaging. Soft items (full 2.5M-flow, 50-round, **K8s/EKS**, improved-arm plateau) are **beyond-CA2** / dated WONTFIX — not blockers. **AWS residual: closed.**
+
+**INITIAL_EVAL_PASS:** **yes** (live cloud FL lite treated as initial eval). Final-3 **DONE** (`results/live/final_1|2|3/`; baseline `FINAL3_BASELINE.md`). Docker final-3 **DONE** (`results/docker_fl/`).
 
 ```
-COMPLETE=yes ALIGNMENT=100 CA2_FLOOR=met SOLE_AWS_RESIDUAL=closed BEYOND_CA2=optional
+COMPLETE=yes CA2_FLOOR=met SOLE_AWS_RESIDUAL=closed BEYOND_CA2=optional
+K8S=dated_wontfix_2026-09-23 DOCKER_FL=done_3of3
 INITIAL_EVAL_PASS=yes
 FINAL3=done_3of3
 LIVE_INITIAL_EVAL_1=yes
+SOT_AUDIT=EXIT_0
 ```
 
 Authoritative live lite: `securefl-ids/results/live/cloud_lite_summary.json`.  
@@ -29,9 +35,9 @@ From `securefl-ids/results/live/FINAL3_BASELINE.md` + centralised comparator.
 
 - **Artefact:** SecureFL-IDS FL vs **centralised** IDS; live Free-Tier EC2+S3+CW FL lite; destroy-after; real UNSW training-partition sample locked locally.
 - **Pos:** three destroy-after live finals completed; centralised comparator present; privacy-preserving FL method executed on cloud lite path.
-- **Neg / mixed retained:** lite rounds are method-scale (not 50-round / 2.5M-flow confirmatory); improved-arm plateau and Docker/K8s remain soft beyond-CA2 — do not over-claim production FL performance.
-- **vs Saklani et al. (2026) baseline framing:** this thesis adds live cloud FL lite + centralised comparator under Free-Tier constraints — not a full reproduction of large-scale FL campaigns.
-- **Limitations:** Free-Tier depth; soft residuals listed in `DESIGN_RATIONALE_BEYOND_CA2.md`.
+- **Neg / mixed retained:** lite rounds are method-scale (not 50-round / 2.5M-flow confirmatory); improved-arm plateau retained; **K8s dated WONTFIX** (Docker FL ×3 closed packaging) — do not over-claim production FL / K8s performance.
+- **vs Saklani et al. (2026) baseline framing:** same-metrics acc/F1/comm under Free-Tier + Docker×3 — **not** a clone of Saklani ~91.8% depth numbers.
+- **Limitations:** Free-Tier depth; K8s deferred — `DATED_WONTFIX_N_Nemi_2026-09-23.md`.
 
 ---
 
@@ -98,8 +104,8 @@ Instance `i-012ae234495584077` **terminated**. Bucket `securefl-ids-artifacts-0f
 | Local multi-process simulation | **Yes** — default PoC / real-sample mode |
 | Real UNSW training-partition sample | **Yes** — `results/unsw_real/` |
 | Live AWS EC2 + S3 + CloudWatch FL | **Yes (lite)** — measured then destroyed |
-| Docker / docker-compose | **No committed compose/Helm charts** — beyond-CA2 |
-| Kubernetes / Helm | **Not present / not tested** — beyond-CA2 |
+| Docker / docker-compose | **Yes** — `docker-compose.yml` + docker_fl final_1–3 (Not K8s) |
+| Kubernetes / Helm | **Not present / not tested** — **DATED_WONTFIX 2026-09-23** |
 | Lambda | **Not used** |
 
 ---
@@ -110,13 +116,13 @@ Instance `i-012ae234495584077` **terminated**. Bucket `securefl-ids-artifacts-0f
 2. Improved FL uses **more** communication MB/round than baseline on local campaigns
 3. Improved FL **did not beat** baseline FL on the 30-round real-UNSW sample (0.680 vs 0.893 accuracy)
 4. Live cloud FL is **lite** (3 rounds / 2 clients / 2500 rows); 3-round accuracies ~0.50–0.55 are expected under DP noise
-5. Docker/K8s not executed (beyond-CA2)
+5. Kubernetes / EKS not executed (dated WONTFIX 2026-09-23); Docker FL ×3 is present
 
 ---
 
 ## Remaining blockers to 100%
 
-**None at CA2 floor.** Optional beyond-CA2: full 2.5M-flow corpus, 50-round campaigns, multi-instance WAN FL, Docker/K8s, improved-arm tuning.
+**None at CA2 floor.** Optional beyond-CA2: full 2.5M-flow corpus, 50-round campaigns, multi-instance WAN FL, **K8s/EKS** (dated deferred), improved-arm tuning.
 
 ---
 
@@ -131,5 +137,5 @@ make test
 # make live-cloud-fl
 ```
 
-**Last Updated:** 2026-09-20  
-**Status:** COMPLETE at CA2 floor (live lite cloud FL + destroy). Alignment **100%**.
+**Last Updated:** 2026-09-23  
+**Status:** COMPLETE at CA2 floor (live lite + Docker×3 + destroy). K8s dated WONTFIX. SoT audit EXIT 0.

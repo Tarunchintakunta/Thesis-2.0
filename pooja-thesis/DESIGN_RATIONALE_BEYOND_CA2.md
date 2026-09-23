@@ -22,7 +22,7 @@ These are **optional beyond-CA2 enhancements**, not open formal-scope holes:
 2. **GCT 2019 Borg cells** — formal CA2 names *Google Cluster Trace*, not “2019 eight-cell.” Optional generation upgrade.
 3. **Full Alibaba v2018 `machine_usage.tar.gz` (~1.7 GiB)** — formal CA2 requires Alibaba (or GCT) family evidence; the disclosed **HTTP RANGE 64 MiB** sample already yields TRACE cluster LSTM metrics with provenance. Fetching the full dump is optional beyond floor; do **not** invent a download that was never landed.
 4. **Large multi-intensity / multi-node live campaign** — soft validity upgrade; Free-Tier single-node k3s already closes the AWS+K8s method commitment.
-5. **TensorFlow runtime / billing-linked cost / Gantt figure** — resources-table / packaging soft items; NumPy LSTM fail-closed TF path and assumed $/pod-hour are disclosed.
+5. **TensorFlow runtime / billing-linked cost / Gantt figure** — resources-table / packaging soft items; NumPy LSTM fail-closed TF path and assumed `$0.04`/pod-hour **LIST_PRICE** are disclosed. **AWS Cost Explorer / GetCostAndUsage not run** — **DATED_WONTFIX 2026-09-23** (`DATED_WONTFIX_N_Pooja_2026-09-23.md`).
 
 **Rationale:** inventing full-dump coverage or silently swapping synthetic workloads for TRACE claims would break evidence rules. Disclosing sample limits and retaining LSTM-vs-persistence honesty (persistence often lower MAE on these slices) meets research-scope alignment better than chasing optional multi-GB dumps.
 

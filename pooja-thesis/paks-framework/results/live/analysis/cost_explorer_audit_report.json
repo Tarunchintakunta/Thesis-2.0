@@ -1,0 +1,207 @@
+{
+  "generated_at": "2026-09-23T07:57:50.030986+00:00",
+  "live_root": "/Users/valletivarish/Documents/Thesis-2.0/pooja-thesis/paks-framework/results/live",
+  "live_finals": [
+    {
+      "pack": "final_1",
+      "hpa_cost_usd": 0.0026666666666666666,
+      "paks_cost_usd": 0.0026666666666666666,
+      "evidence_cost": "SIMULATED",
+      "live_apply": true,
+      "aws_deployed": true
+    },
+    {
+      "pack": "final_2",
+      "hpa_cost_usd": 0.0026666666666666666,
+      "paks_cost_usd": 0.0026666666666666666,
+      "evidence_cost": "SIMULATED",
+      "live_apply": true,
+      "aws_deployed": true
+    },
+    {
+      "pack": "final_3",
+      "hpa_cost_usd": 0.0026666666666666666,
+      "paks_cost_usd": 0.0026666666666666666,
+      "evidence_cost": "SIMULATED",
+      "live_apply": true,
+      "aws_deployed": true
+    }
+  ],
+  "latency_rows": [
+    {
+      "round": "final_1",
+      "hpa_lat_mean": 0.3341,
+      "paks_lat_mean": 0.279,
+      "hpa_p50": 0.1405,
+      "paks_p50": 0.1418,
+      "n_steps": 16,
+      "destroy_confirmed": true,
+      "seed": 41
+    },
+    {
+      "round": "final_2",
+      "hpa_lat_mean": 0.2956,
+      "paks_lat_mean": 0.3191,
+      "hpa_p50": 0.1406,
+      "paks_p50": 0.1371,
+      "n_steps": 16,
+      "destroy_confirmed": true,
+      "seed": 42
+    },
+    {
+      "round": "final_3",
+      "hpa_lat_mean": 0.3951,
+      "paks_lat_mean": 0.3119,
+      "hpa_p50": 0.1431,
+      "paks_p50": 0.1451,
+      "n_steps": 16,
+      "destroy_confirmed": true,
+      "seed": 43
+    }
+  ],
+  "prediction_rows": [
+    {
+      "dataset": "gct2011",
+      "mae_test": 0.10245627032965798,
+      "mae_persistence_test": 0.047700192164420493,
+      "lstm_worse_than_persistence": true
+    },
+    {
+      "dataset": "alibaba",
+      "mae_test": 3.4349288717377107,
+      "mae_persistence_test": 2.8025914934601657,
+      "lstm_worse_than_persistence": true
+    }
+  ],
+  "findings": [
+    {
+      "kind": "live_final_ok",
+      "remediable": false,
+      "pack": "final_1",
+      "hpa_cost_usd": 0.0026666666666666666,
+      "paks_cost_usd": 0.0026666666666666666,
+      "evidence_cost": "SIMULATED",
+      "live_apply": true,
+      "aws_deployed": true
+    },
+    {
+      "kind": "live_cost_list_price_simulated_ok",
+      "remediable": false,
+      "pack": "final_1"
+    },
+    {
+      "kind": "destroy_ok",
+      "remediable": false,
+      "pack": "final_1"
+    },
+    {
+      "kind": "live_final_ok",
+      "remediable": false,
+      "pack": "final_2",
+      "hpa_cost_usd": 0.0026666666666666666,
+      "paks_cost_usd": 0.0026666666666666666,
+      "evidence_cost": "SIMULATED",
+      "live_apply": true,
+      "aws_deployed": true
+    },
+    {
+      "kind": "live_cost_list_price_simulated_ok",
+      "remediable": false,
+      "pack": "final_2"
+    },
+    {
+      "kind": "destroy_ok",
+      "remediable": false,
+      "pack": "final_2"
+    },
+    {
+      "kind": "live_final_ok",
+      "remediable": false,
+      "pack": "final_3",
+      "hpa_cost_usd": 0.0026666666666666666,
+      "paks_cost_usd": 0.0026666666666666666,
+      "evidence_cost": "SIMULATED",
+      "live_apply": true,
+      "aws_deployed": true
+    },
+    {
+      "kind": "live_cost_list_price_simulated_ok",
+      "remediable": false,
+      "pack": "final_3"
+    },
+    {
+      "kind": "destroy_ok",
+      "remediable": false,
+      "pack": "final_3"
+    },
+    {
+      "kind": "final3_latency_summary_ok",
+      "remediable": false,
+      "n": 3
+    },
+    {
+      "kind": "final3_baseline_hpa_present",
+      "remediable": false
+    },
+    {
+      "kind": "lstm_worse_than_persistence_ok",
+      "remediable": false,
+      "dataset": "gct2011",
+      "mae_test": 0.10245627032965798,
+      "mae_persistence_test": 0.047700192164420493
+    },
+    {
+      "kind": "lstm_worse_than_persistence_ok",
+      "remediable": false,
+      "dataset": "alibaba",
+      "mae_test": 3.4349288717377107,
+      "mae_persistence_test": 2.8025914934601657
+    },
+    {
+      "kind": "list_price_constant_present",
+      "remediable": false
+    },
+    {
+      "kind": "no_cost_explorer_success_pack",
+      "remediable": false
+    },
+    {
+      "kind": "cost_explorer_amendment_present",
+      "remediable": false,
+      "design": "/Users/valletivarish/Documents/Thesis-2.0/pooja-thesis/DESIGN_RATIONALE_BEYOND_CA2.md",
+      "wontfix": "/Users/valletivarish/Documents/Thesis-2.0/pooja-thesis/DATED_WONTFIX_N_Pooja_2026-09-23.md"
+    },
+    {
+      "kind": "hpa_baseline_present",
+      "remediable": false
+    },
+    {
+      "kind": "sot_same_metrics_present",
+      "remediable": false
+    },
+    {
+      "kind": "config_cost_disclosure_ok",
+      "remediable": false
+    },
+    {
+      "kind": "status_cost_honesty_ok",
+      "remediable": false
+    },
+    {
+      "kind": "status_lstm_persistence_negative_ok",
+      "remediable": false
+    }
+  ],
+  "remediable": {},
+  "remediable_total": 0,
+  "move_blocker": false,
+  "disposition": "DATED_WONTFIX_COST_EXPLORER",
+  "same_metrics_snapshot": {
+    "scaling_latency_mean_s": true,
+    "scaling_latency_p50_s": true,
+    "mae_rmse_vs_persistence": true,
+    "cost_usd_list_price": true,
+    "baseline_hpa_contrast": "Binding baseline = Kubernetes HPA (reactive); ours add predictive PAKS Scale + TRACE MAE/RMSE + LIST_PRICE $/pod-hour (Cost Explorer bill validation dated WONTFIX)",
+    "live_finals_n": 3
+  }
+}
