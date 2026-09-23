@@ -101,4 +101,16 @@ Result tables group by `workload` x `configuration` (`<K>-<M>`), 30 rows each.
 | `terraform apply` fails on `filebase64sha256` | build the zip first: `make build` |
 | moto smoke runs but every p-value is large | expected - moto has no capacity model; smoke numbers are not DynamoDB data |
 
+## 10. Soft-limbs remediable audit (move gate)
+
+ONE-file SoT: `rassool-thesis/CA2_PROPOSED_VS_ARTEFACT.md`.  
+Docs pointer: `docs/CONFIGURATION_MANUAL.md`.
+
+```bash
+cd rassool-thesis/dynamodb-pk-capacity-eval
+python3 scripts/audit_soft_limbs_root_causes.py
+# Writes results/analysis/soft_limbs_audit_report.{json,md}
+# EXIT 0 required; remediable_total must be 0 before MOVE
+```
+
 Rasool Basha Durbesula
