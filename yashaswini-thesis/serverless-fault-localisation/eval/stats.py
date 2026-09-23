@@ -2,7 +2,7 @@
 
 Continuous outcomes (detection delay, rank, end-to-end latency): Shapiro-Wilk
 decides between Welch's t-test with Cohen's d and Mann-Whitney U with the
-rank-biserial correlation (master prompt 4.5). F1 and top-k come from per-case
+rank-biserial correlation . F1 and top-k come from per-case
 binary outcomes on the SAME cases for both arms, so they get paired tests: a
 permutation test and a paired bootstrap interval for the F1 difference, and
 McNemar's exact test for top-k. Holm-Bonferroni over the family.

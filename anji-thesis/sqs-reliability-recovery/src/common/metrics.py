@@ -1,7 +1,7 @@
 """Raw evidence -> dependent variables.
 
 The simulator and the live collector both call ``compute_run_metrics`` so the
-maths is exactly the same in both modes. Definitions follow the master prompt
+maths is exactly the same in both modes. Definitions follow the 
 (section 4.4):
 
 * loss rate        = (produced - |processed unique  U  DLQ unique|) / produced

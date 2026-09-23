@@ -44,7 +44,6 @@ def render(region: str, publication: str, p: dict) -> str:
 # publicationDate {publication}, table class Standard.
 # Refresh with: python analysis/fetch_prices.py --region {region}
 # Cost per 10k ops leaves out storage, backups and data transfer on purpose
-# (master prompt 2.3) - only the request path the configuration controls.
 region: {region}
 source: AWS Price List API (AmazonDynamoDB offer file)
 publication_date: "{publication}"

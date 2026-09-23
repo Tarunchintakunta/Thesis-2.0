@@ -32,7 +32,7 @@ decision_rule: >
 repeats_per_cell: 5         # checked against the pilot, see analysis/stats_tests.py --power
 
 primary_recovery_dv: recovery_time_s          # backlog = visible + in flight + delayed
-sensitivity_recovery_dv: recovery_time_visible_s # the master prompt wording (visible only)
+sensitivity_recovery_dv: recovery_time_visible_s # the 
 censoring: >
   Runs that never get back into the band before the horizon are set to the
   time they were watched for (a lower bound) and only rank based tests are

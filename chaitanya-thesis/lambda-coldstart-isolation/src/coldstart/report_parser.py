@@ -3,7 +3,7 @@
     REPORT RequestId: 3f5a...  Duration: 12.34 ms  Billed Duration: 13 ms  Memory Size: 512 MB
     Max Memory Used: 71 MB  Init Duration: 245.67 ms  [XRAY TraceId: ...]
 
-Classification rule (master prompt 3.7): an invocation is COLD if and only if
+Classification rule : an invocation is COLD if and only if
 its REPORT line carries an ``Init Duration``. What the invoker *intended*
 (an idle gap meant to force a cold start) does not matter - platform reuse is
 outside the experimenter's control, so intended-cold invocations that came

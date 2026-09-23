@@ -1,4 +1,4 @@
-"""Pilot rule: the campaign N comes from the pilot's variance (master prompt 5, step 2).
+"""Pilot rule: the campaign N comes from the pilot's variance .
 
     python analysis/pilot_size.py --run data/runs/live/pilot --out results/live
 

@@ -1,7 +1,7 @@
 """Statistical helpers for the S3 FinOps evaluation (Wilcoxon signed-rank).
 
 Wraps the existing MetricsCalculator.wilcoxon_test so analysis/statistics.py
-exists as the CA2-named module. Does not invent multi-workload live campaigns.
+exists as the named module. Does not invent multi-workload live campaigns.
 """
 from __future__ import annotations
 
@@ -15,7 +15,7 @@ def wilcoxon_paired(sample1: Sequence[float], sample2: Sequence[float], alpha: f
 
 
 def multi_workload_protocol(results_by_workload: Dict[str, Dict], alpha: float = 0.05) -> Dict:
-    """CA2 success: significant cost cut on ≥2/3 named workloads.
+ """Success criterion: significant cost cut on ≥2/3 named workloads.
 
     Each value must already contain paired cost arrays `baseline` and `improved`.
     Missing workloads are reported, not filled.

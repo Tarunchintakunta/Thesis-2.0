@@ -67,7 +67,7 @@ stats:
   bootstrap: 2000
   permutations: 10000
 
-expectations: # pre-committed (master prompt 1)
+expectations: # pre-committed 
   f1_concession_pp: 10           # rule arm within 10 pp of the strongest reproducible baseline
   top3_concession_pp: 10         # rule arm concedes MORE than 10 pp in top-3
   telemetry_reduction: 0.5       # rule policy cuts telemetry volume by at least half vs full

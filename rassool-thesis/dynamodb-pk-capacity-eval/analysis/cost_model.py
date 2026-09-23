@@ -6,7 +6,7 @@ provisioned    (mean provisioned RCU x RCU-hour price + mean provisioned WCU x W
 provisioned,   consumed units priced at the hourly rate as if capacity were sized perfectly
 consumed-eq.   (sensitivity only - shows how much of C2's cost is idle headroom)
 
-Storage, backups and data transfer are left out on purpose (master prompt 2.3).
+Storage, backups and data transfer are left out on purpose .
 Every figure can be recomputed by hand from prices.yaml and results/batches.csv:
 
     cost_per_10k = batch_cost / succeeded * 10,000

@@ -5,7 +5,7 @@
     DATA_MODE=live python scripts/invoke_burst.py --phase burst --out data/raw/phaseB/burst/
 
 Concurrency stays at 20 so the run is far below the default account limit
-(master prompt 11: do not stress shared capacity).
+.
 """
 import sys
 from pathlib import Path

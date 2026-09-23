@@ -4,7 +4,7 @@ Rank r = 1..N is drawn with probability r^-s / H(N, s). Ranks are mapped to
 order indexes through a fixed random permutation, so the hot orders are not
 neighbours in the key space and not simply the first ones loaded. The exponent
 s is calibrated so that about 90% of operations fall on the hottest 10% of keys
-(master prompt 2.2) - uniform access is not allowed for primary runs.
+ - uniform access is not allowed for primary runs.
 """
 from __future__ import annotations
 

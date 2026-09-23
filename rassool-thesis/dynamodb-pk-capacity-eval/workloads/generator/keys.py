@@ -5,7 +5,7 @@ K2 composite  partition key customerId, sort key orderTs   (10,000 partition-key
 K3 sharded    partition key shardKey = "<orderId>#<shard>" with shard in 0..N-1
 K4 adaptive   partition key shardKey = "<orderId>#<shard>" with shard in 0..N-1 for HOT keys, 1 for COLD keys
 
-K3 shard rule (master prompt 2.1 asks for it to be documented):
+K3 shard rule :
   * write: shard is drawn uniformly at random for every PutItem, so repeated
     writes to one hot order are spread over N partition-key values
   * read: BatchGetItem of all N shard keys, newest `version` wins
