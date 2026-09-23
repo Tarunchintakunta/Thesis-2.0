@@ -1,0 +1,22 @@
+{
+    "CommandId": "85a467b1-3241-48a5-bb1e-39137cc4c3ac",
+    "InstanceId": "i-0c93eb05d495809ff",
+    "Comment": "",
+    "DocumentName": "AWS-RunShellScript",
+    "DocumentVersion": "$DEFAULT",
+    "PluginName": "aws:runShellScript",
+    "ResponseCode": 0,
+    "ExecutionStartDateTime": "2026-09-22T17:07:24.735Z",
+    "ExecutionElapsedTime": "PT0.851S",
+    "ExecutionEndDateTime": "2026-09-22T17:07:24.735Z",
+    "Status": "Success",
+    "StatusDetails": "Success",
+    "StandardOutputContent": "{\n  \"role\": \"scale-out\",\n  \"mode\": \"dask_localcluster_on_node\",\n  \"size\": 100,\n  \"workers\": 1,\n  \"status\": \"ok\",\n  \"elapsed_s\": 0.5291558589999568,\n  \"peak_rss_mb\": 71.8046875,\n  \"avg_cpu_percent\": 42.20909090909091,\n  \"checksum\": 24.695150240295042,\n  \"hostname\": \"ip-172-31-5-119.eu-west-1.compute.internal\",\n  \"error\": null\n}\n",
+    "StandardOutputUrl": "",
+    "StandardErrorContent": "",
+    "StandardErrorUrl": "",
+    "CloudWatchOutputConfig": {
+        "CloudWatchLogGroupName": "",
+        "CloudWatchOutputEnabled": false
+    }
+}

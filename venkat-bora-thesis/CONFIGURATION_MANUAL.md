@@ -1,18 +1,22 @@
 # Configuration Manual — Venkat Bora (25164414)
 
 **Artefact:** `venkat-bora-thesis/distributed-matrix-scaling/`  
-**Scope:** Local reproduction only. **AWS EC2 is not configured or executed** in this deliverable.
+**Scope:** Local Dask suite **and** live Free-Tier EC2 matched-vCPU campaigns (eu-west-1).  
+**Date:** 2026-09-23.
+
+Live evidence packs (destroy-after each): `results/live/final_{1,2,3}/`, `rss_size_final_{1,2,3}/`, `size_ladder_ladder1/`. Authority baselines: `FINAL3_BASELINE.md`, `RSS_FINAL3_BASELINE.md`, `SIZE_LADDER_BASELINE.md`.
 
 ## 1. Purpose
 
-This manual documents how to install, configure, run, and verify the local matrix-scaling benchmark harness. It does **not** provide live cloud credentials, Terraform/CloudFormation stacks, or measured EC2 results.
+Install, configure, run, and verify (a) the **local** matrix-scaling harness and (b) the **live EC2** scale-up vs scale-out campaigns under Free-Tier matched aggregate 2 vCPU (`1× t3.small` vs `2× t3.micro`).
 
 ## 2. Prerequisites
 
 - Python 3.12+
 - `pip` / `venv`
-- macOS or Linux (developed on Ubuntu-class / Darwin environments)
+- macOS or Linux
 - Optional: `make`
+- **Live only:** AWS CLI credentials, Terraform ≥1.5, SSM Session Manager plugin; region `eu-west-1`
 
 ## 3. Install (local)
 
@@ -26,7 +30,7 @@ pip install -r requirements.txt
 
 ## 4. Environment controls
 
-For fair threading comparisons, pin BLAS/OpenMP internal threads (as in methodology):
+For fair threading comparisons, pin BLAS/OpenMP internal threads:
 
 ```bash
 export OMP_NUM_THREADS=1
@@ -51,43 +55,54 @@ make quick-test    # subset
 make benchmark     # full local suite (long)
 ```
 
-Distributed mode uses Dask **`LocalCluster` on one machine**. This is **not** multi-instance AWS EC2 and does **not** satisfy CA2 matched-vCPU cloud execution.
+Distributed mode uses Dask **`LocalCluster` on one machine**. Local JSON is **not** a substitute for multi-instance EC2 timings; cite `results/live/` for cloud claims.
 
 ### CLI note
 
-`src/main.py` does **not** currently expose `--scheduler-address`. Older docs that claim remote-scheduler CLI wiring are incorrect for this tree. Remote multi-node runs require code changes plus provisioned hosts; neither is delivered here.
+`src/main.py` does **not** currently expose `--scheduler-address`. Live multi-instance runs use `scripts/dist_bench.py` + SSM on Terraform-provisioned hosts.
 
-## 7. Outputs
+## 7. Live EC2 campaigns (Free-Tier)
+
+Topology (Terraform defaults): **1× t3.small** (scale-up numpy) vs **2× t3.micro** (scale-out Dask multi-instance); aggregate 2 vCPU; destroy-after.
+
+| Script | Pack / role |
+|--------|-------------|
+| `scripts/run_ec2_final_{1,2,3}.sh` | Time-only finals ×3 (`final_*`) |
+| `scripts/run_ec2_rss_size_final.sh` | RSS/CPU instrumented ×3 (`rss_size_final_*`) |
+| `scripts/run_ec2_size_ladder.sh` | Growing orders 100/250/500 (`size_ladder_ladder1`) |
+
+Same metrics across live packs: `elapsed_s`, `peak_rss_mb`, `avg_cpu_percent` (RSS/CPU on instrumented packs + ladder).
+
+Destroy confirmation: each pack’s `destroy_confirmed.txt` must contain `destroy_confirmed=yes`.
+
+### Remediable audit (binding)
+
+```bash
+cd venkat-bora-thesis/distributed-matrix-scaling
+python3 scripts/audit_size_ladder_root_causes.py
+# expect EXIT 0; remediable_total=0
+```
+
+## 8. Outputs
 
 | Path | Contents |
 |------|----------|
-| `results/data/benchmark_results.json` / `.csv` | Per-iteration raw metrics |
-| `results/data/summary_statistics.json` | Mean/std per config; **`n_iterations: 3`** |
-| `results/figures/*.png` | Evaluation plots |
+| `results/data/benchmark_results.json` / `.csv` | Local per-iteration raw metrics |
+| `results/data/summary_statistics.json` | Local mean/std; **`n_iterations: 3`** |
+| `results/live/final_{1,2,3}/summary.json` | Live time finals |
+| `results/live/rss_size_final_{1,2,3}/summary.json` | Live RSS/CPU |
+| `results/live/size_ladder_ladder1/campaign_summary.json` | Live size ladder |
+| `results/live/size_ladder_ladder1/analysis/size_ladder_audit_report.{json,md}` | Scripted remediable audit |
 
-Authoritative numbers for the report are those in `summary_statistics.json`.
+Authoritative **local** numbers: `summary_statistics.json`. Authoritative **live** numbers: the `results/live/` packs above (not local proxies).
 
-## 8. Visualizations
+## 9. What is intentionally absent / dated WONTFIX
 
-```bash
-make visualize
-# or: python src/visualize_results.py
-```
+- Full live six-point order set **200–2000** on EC2 (local suite covers it; Free-Tier live subset = 100/250/500) — see `DESIGN_RATIONALE_BEYOND_CA2.md` (2026-09-22/23)
+- Implemented Shapiro / t-test / Holm pipelines across orders (descriptive ladder retained)
+- Fabricated crossover wins (anti-crossover retained on live + local)
+- Lingering EC2 fleets (destroy-after required)
 
-## 9. What is intentionally absent
+## 10. CA2 status
 
-- AWS credentials / account setup
-- EC2 instance launch / destroy IaC
-- CloudWatch dashboards / spend reports
-- Implemented Shapiro / t-test / Holm pipelines (methodology describes them; code does not ship them)
-- Fabricated multi-node timings
-
-## 10. CA2 residual
-
-To close the cloud half of the CA2 research question, a future campaign must:
-
-1. Provision matched aggregate vCPU EC2 topologies
-2. Run multi-threaded on one instance vs distributed across instances with the same total cores
-3. Replace LocalCluster evidence with that campaign’s metrics
-
-Until then, treat all published numbers as **local proxy evidence only**.
+Cloud half of the RQ is **closed under disclosed Free-Tier scope**: time finals + RSS/CPU ×3 + size ladder lite; anti-crossover retained. One-file SoT: `venkat-bora-thesis/CA2_PROPOSED_VS_ARTEFACT.md`. Honest floor ~85 — do **not** market ALIGNMENT=100.

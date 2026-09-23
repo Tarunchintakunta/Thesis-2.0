@@ -1,0 +1,107 @@
+{
+  "collected_at": "2026-09-22T17:10:56.804743+00:00",
+  "region": "eu-west-1",
+  "pack": "size_ladder_ladder1",
+  "protocol_note": "CA2 growing-order limb on Free-Tier matched vCPU; timeouts-as-outcomes.",
+  "topology": {
+    "scale_up": {
+      "instance_id": "i-0b160c488efd87bf2",
+      "instance_type": "t3.small",
+      "vcpus": 2,
+      "count": 1
+    },
+    "scale_out": {
+      "instance_ids": [
+        "i-0286de2da2d38f6b9",
+        "i-0c93eb05d495809ff"
+      ],
+      "instance_type": "t3.micro",
+      "vcpus": 1,
+      "count": 2,
+      "aggregate_vcpus": 2,
+      "private_ips": [
+        "172.31.5.153",
+        "172.31.5.119"
+      ],
+      "scheduler_private_ip": "172.31.5.153"
+    }
+  },
+  "matrix_size": 500,
+  "scale_up": {
+    "role": "scale-up",
+    "mode": "numpy_matmul",
+    "size": 500,
+    "workers": 2,
+    "status": "ok",
+    "elapsed_s": 0.007587699999987763,
+    "peak_rss_mb": 42.40234375,
+    "avg_cpu_percent": 0.0,
+    "checksum": 126.14327700322924,
+    "hostname": "ip-172-31-9-39.eu-west-1.compute.internal",
+    "error": null
+  },
+  "scale_out_on_node": [
+    {
+      "role": "scale-out",
+      "mode": "dask_localcluster_on_node",
+      "size": 500,
+      "workers": 1,
+      "status": "ok",
+      "elapsed_s": 0.49299143299998605,
+      "peak_rss_mb": 78.73046875,
+      "avg_cpu_percent": 46.910000000000004,
+      "checksum": 126.14327700322924,
+      "hostname": "ip-172-31-5-153.eu-west-1.compute.internal",
+      "error": null
+    },
+    {
+      "role": "scale-out",
+      "mode": "dask_localcluster_on_node",
+      "size": 500,
+      "workers": 1,
+      "status": "ok",
+      "elapsed_s": 0.5000209279999694,
+      "peak_rss_mb": 78.7890625,
+      "avg_cpu_percent": 47.57,
+      "checksum": 126.14327700322924,
+      "hostname": "ip-172-31-5-119.eu-west-1.compute.internal",
+      "error": null
+    }
+  ],
+  "scale_out_multi_instance": {
+    "status": "ok",
+    "workers_registered": 2,
+    "futures_smoke": [
+      0,
+      1,
+      4,
+      9
+    ],
+    "dask_array_matmul": "ok",
+    "mode": "dask_multi_instance_matmul",
+    "size": 500,
+    "elapsed_s": 0.28550101500002256,
+    "peak_rss_mb": 80.83984375,
+    "avg_cpu_percent": 46.06666666666666,
+    "checksum": 126.14327700322926,
+    "error": null,
+    "scheduler": "tcp://172.31.5.153:8786",
+    "hostname": "ip-172-31-5-153.eu-west-1.compute.internal",
+    "worker_addrs": [
+      "tcp://172.31.5.119:38709",
+      "tcp://172.31.5.153:37529"
+    ],
+    "note": "size_ladder_ladder1 n=500; timeouts are outcomes."
+  },
+  "comparison": {
+    "scale_up_elapsed_s": 0.007587699999987763,
+    "scale_up_peak_rss_mb": 42.40234375,
+    "scale_out_on_node_mean_elapsed_s": 0.49650618049997775,
+    "scale_out_multi_instance_elapsed_s": 0.28550101500002256,
+    "scale_out_multi_instance_status": "ok",
+    "scale_out_multi_peak_rss_mb": 80.83984375,
+    "scale_out_multi_avg_cpu_percent": 46.06666666666666
+  },
+  "ami_id": "ami-0ee768eb261a01ed2",
+  "destroy_after_campaign": true
+}

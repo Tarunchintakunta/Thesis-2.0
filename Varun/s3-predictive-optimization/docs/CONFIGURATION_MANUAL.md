@@ -345,6 +345,41 @@ savings:
     - aws_intelligent_tiering
 ```
 
+## Scripted independence remediable audit (binding)
+
+Do **not** decide MOVE / r4–r5 independence by hand. After any pack or summary change:
+
+```bash
+cd Varun/s3-predictive-optimization
+python3 scripts/audit_independence_root_causes.py
+```
+
+**Outputs:**
+- `results/live/analysis/independence_audit_report.json`
+- `results/live/analysis/independence_audit_report.md`
+
+| EXIT | Meaning |
+|-----:|---------|
+| 0 | `remediable_total=0` — move gate clear for independence / meets_ca2 / destroy / Wilcoxon consistency |
+| 2 | Remediable gaps remain — fix artefacts before SoT MOVE |
+
+Expect on current disk: disposition **`DATED_WONTFIX_ALLOC_ACC`** (cost limb OK; allocation Acc vs Lifecycle negative — see `results/live/analysis/DATED_WONTFIX_N_Varun_alloc_acc_2026-09-23.md`).
+
+**Checks covered:** distinct r4/r5 `raw_costs` SHA vs archival r1–r3; `rebuilt_from_run_log=false`; `meets_ca2_two_of_three`; Wilcoxon recompute; empty terraform + destroy evidence; dated WONTFIX present when alloc-acc is weak.
+
+### Troubleshooting (audit)
+
+| Symptom | Action |
+|---------|--------|
+| EXIT 2 `r4_r5_not_independent` | Re-run fresh live eval with distinct seeds; do not copy raw_costs |
+| EXIT 2 `rebuilt_from_run_log_true` on r4/r5 | Confirmatory packs must be fresh writes, not log rebuilds |
+| EXIT 2 `meets_ca2_false` / Wilcoxon mismatch | Re-run `scripts/live_full_evaluation.py`; do not hand-edit p-values |
+| EXIT 2 `destroy_not_confirmed` | `terraform destroy` until `terraform.tfstate` resources=[]; refresh `destroy_confirmed.txt` |
+| EXIT 2 `missing_dated_wontfix_alloc_acc` | Keep alloc negative honest — write dated WONTFIX; do not invent Acc wins |
+| Alloc Acc ≪ Lifecycle | Expected; cite SoT §2 / dated WONTFIX — not a cost-gate failure |
+
+**Authority SoT:** `Varun/CA2_PROPOSED_VS_ARTEFACT.md`
+
 ## Support
 
 For questions or issues:

@@ -141,4 +141,17 @@ Commit `data/runs/live/` and `results/live/` - they are the raw and analysed res
 | "request ids are already in the table" | that phase was run before - pass a new `--seed` |
 | `N` is empty in `make campaign` | run `make pilot-size` first or pass `N=...` |
 
+## 12. Remediable audit (move gate)
+
+Before claiming MOVE ALLOWED / folding viva claims, run the scripted campaign audit:
+
+```bash
+cd vikas-thesis/lambda-idempotency-eval
+python3 scripts/audit_campaign_root_causes.py
+# EXIT 0 and remediable_total=0 required
+# Report: results/live/campaign_audit_report.{json,md}
+```
+
+ONE-file SoT: `vikas-thesis/CA2_PROPOSED_VS_ARTEFACT.md`. P4 remains quarantined (A12).
+
 Vikas Reddy Amanagantti

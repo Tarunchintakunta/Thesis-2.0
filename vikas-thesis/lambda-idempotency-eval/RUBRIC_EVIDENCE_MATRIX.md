@@ -1,7 +1,7 @@
 # Rubric evidence matrix — Vikas (Lambda idempotency)
 
 **Driver:** `/RUBRIC_70_TO_100_STRATEGY.md` · **Artefact:** `vikas-thesis/lambda-idempotency-eval/`  
-**CA2:** 100% · **Final pack:** live campaign N=1000×3×3 · **Rubric:** raised→yes path
+**CA2:** honest ~88% (P4 quarantined; do not market 100) · **Final pack:** live campaign N=1000×3×3 · **Rubric:** raised→yes path
 
 | Rubric requirement | Evidence | Concrete | Gap |
 |--------------------|----------|----------|-----|

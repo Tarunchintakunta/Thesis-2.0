@@ -1,6 +1,8 @@
-**INITIAL_EVAL_PASS:** **yes** (full live campaign N=1000×3×3 as initial confirmation; CA2 still 100%)
+**INITIAL_EVAL_PASS:** **yes** (full live campaign as confirmation; honest floor ~88 — not market 100)
 INITIAL_EVAL_PASS=yes
-Final-3: not started as separate post-gate series (campaign is the factorial evidence pack).
+Final-3: campaign factorial is the evidence pack (P4 quarantined).
+**MOVE ALLOWED:** **yes** — `scripts/audit_campaign_root_causes.py` EXIT 0; remediable_total=0 (2026-09-23).
+**ONE-file SoT:** `vikas-thesis/CA2_PROPOSED_VS_ARTEFACT.md`
 
 ### Rubric quality notes (aim 70–100; Eval 25% + Artefact 27%)
 
@@ -8,16 +10,18 @@ From live campaign `results/live/summary.md` (N=1000×3×3 = 24000 deliveries).
 
 - **Artefact:** P1 plain put / P2 conditional / P3 idempotency-key on Lambda+DynamoDB; Streams ground truth; destroy-after; P4 TransactWrite **quarantined** (ASSUMPTIONS A12).
 - **Pos:** E1–E3 **supported** on live campaign; P2/P3 cut duplicates vs P1; sensitivity `p3_between` supports E2 crash-between contrast; stack destroyed.
-- **Neg retained:** P1 remains the duplicate-risk control (expected); moto latency/capacity **must not** be cited as AWS; pilot mult=2 only was directional — full campaign is the answer.
+- **Neg retained:** P1 remains the duplicate-risk control (expected); moto latency/capacity **must not** be cited as AWS; P4 quarantined — not a perfect-marks claim.
 - **vs retry/idempotency literature:** application-level keys beat plain put under injected retries; conditional put is not free (contention) — disclose in eval.
 - **Limitations:** no separate final-3 series (campaign is the pack); soft LaTeX polish optional.
+- **Scripted audit:** `results/live/campaign_audit_report.{json,md}` — disposition `DATED_WONTFIX_P4_QUARANTINED`.
 
 # Project Status — Artefact and Evaluation
 
 **Student:** Vikas Reddy Amanagantti (X25178849)  
 **Project:** An Empirical Evaluation of Application-Level Idempotency Strategies for Retry Correctness on AWS Lambda and Amazon DynamoDB  
-**Last updated:** 2026-09-21  
-**CA2 alignment (formal):** **100/100** — live full campaign complete (`_analysis_extract/reports/vikas_alignment.md`)
+**Last updated:** 2026-09-23  
+**Honest CA2 floor:** **~88** — E1–E3 campaign; P4 quarantined; do **not** market 100. Authority: `CA2_ALIGNMENT_SCOREBOARD.md`.
+**SoT:** `../CA2_PROPOSED_VS_ARTEFACT.md` · **P4 WONTFIX:** `../DATED_WONTFIX_N_Vikas_P4_2026-09-23.md`
 
 ---
 
@@ -78,6 +82,7 @@ Controlled retry experiment for **P1 / P2 / P3 only** (plain put, conditional pu
 - CA2, master prompt, ASSUMPTIONS A12, and `config/experiment.yaml` register **P1, P2, P3 only**
 - Any `TransactWriteItems` / P4 narrative in `vikas_final_report.md` is **NON-AUTHORITATIVE**
 - Multi-item transactions remain **future work** in the LaTeX report
+- Dated WONTFIX: `../DATED_WONTFIX_N_Vikas_P4_2026-09-23.md`
 
 ---
 

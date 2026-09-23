@@ -1,0 +1,57 @@
+{
+  "collected_at": "2026-09-22T17:10:56.826312+00:00",
+  "pack": "size_ladder_ladder1",
+  "region": "eu-west-1",
+  "ca2_alignment": {
+    "objective": "growing matrix orders at matched aggregate vCPU (1xt3.small vs 2xt3.micro)",
+    "live_subset": [
+      100,
+      250,
+      500
+    ],
+    "local_full_range_note": "local Dask suite covers 200\u20132000; this pack is Free-Tier live limb",
+    "timeouts_as_outcomes": true,
+    "metrics": [
+      "elapsed_s",
+      "peak_rss_mb",
+      "avg_cpu_percent"
+    ]
+  },
+  "sizes": [
+    100,
+    250,
+    500
+  ],
+  "rows": [
+    {
+      "matrix_size": 100,
+      "scale_up_elapsed_s": 0.00021330399999897054,
+      "scale_up_peak_rss_mb": 35.32421875,
+      "multi_status": "ok",
+      "multi_elapsed_s": 0.24420632400000386,
+      "multi_peak_rss_mb": 71.79296875,
+      "multi_avg_cpu_percent": 43.8
+    },
+    {
+      "matrix_size": 250,
+      "scale_up_elapsed_s": 0.0021006999999713116,
+      "scale_up_peak_rss_mb": 37.37890625,
+      "multi_status": "ok",
+      "multi_elapsed_s": 0.2548897239999519,
+      "multi_peak_rss_mb": 72.578125,
+      "multi_avg_cpu_percent": 42.0
+    },
+    {
+      "matrix_size": 500,
+      "scale_up_elapsed_s": 0.007587699999987763,
+      "scale_up_peak_rss_mb": 42.40234375,
+      "multi_status": "ok",
+      "multi_elapsed_s": 0.28550101500002256,
+      "multi_peak_rss_mb": 80.83984375,
+      "multi_avg_cpu_percent": 46.06666666666666
+    }
+  ],
+  "crossover_order_descriptive": null,
+  "anti_crossover_retained": true,
+  "destroy_after": true
+}

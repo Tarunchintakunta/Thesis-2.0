@@ -1,0 +1,5 @@
+destroy_confirmed=yes
+date=2026-09-22
+bucket=s3-pred-opt-6f20925a7e37bceee781030afa
+note=terraform.tfstate resources=[] after r5; see FINAL3_NOTE.md Destroy-after
+packs=evaluation_r4,evaluation_r5
