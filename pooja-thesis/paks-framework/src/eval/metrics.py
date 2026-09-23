@@ -73,8 +73,8 @@ def simulated_scaling_latency_s(pods: np.ndarray, bin_seconds: float) -> Dict[st
     return {
         "assumed_interval_s": float(bin_seconds),
         "n_scaling_events": float(events),
-        "mean_scale_apply_s": float(bin_seconds) if events else 0.0,
-        "evidence": 0.0,  # placeholder so callers can overwrite with tags
+        "mean_scale_apply_s": float(bin_seconds) if events else float("nan"),
+        "evidence": "SIMULATED_ASSUMED_INTERVAL",
     }
 
 
@@ -105,7 +105,7 @@ def evaluate_policy(
         "response_time_ms_mean": float(np.mean(rt)),
         "throughput_mean": float(np.mean(tp)),
         "throughput_sum": float(np.sum(tp)),
-        "scaling_latency_s_mean": float(bin_seconds) if scaling_events(pods) else 0.0,
+        "scaling_latency_s_mean": float(bin_seconds) if scaling_events(pods) else float("nan"),
         "cost_usd": simulated_cost_usd(pods, bin_seconds),
         "sla_violations": sla_violations(workload, pods, capacity),
         "sla_compliance": sla_compliance(workload, pods, capacity),

@@ -37,7 +37,7 @@ def rates(c: dict[str, int]) -> dict[str, float]:
 
 def wilson_ci(successes: int, n: int, z: float = 1.96) -> tuple[float, float]:
     if n == 0:
-        return (0.0, 0.0)
+        return (float("nan"), float("nan"))
     phat = successes / n
     z2 = z * z
     denom = 1.0 + z2 / n

@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from collections import Counter
+
 import uuid
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
@@ -250,13 +252,8 @@ def run_spec_live(spec: ExperimentSpec, *, settle_s: float = 3.0) -> SpecRun:
         "publishes_attempted_connected": 0,
         "pubacks": 0,
         "reached_broker": 0,
-        "rule_invocations": 0,
-        "rule_failures": 0,
-        "ddb_puts": 0,
         "qos0_dropped_disconnected": 0,
         "qos1_queued": 0,
-        "qos1_dropped_cap": 0,
-        "duplicates_injected": 0,
     }
     reconnect_times: list[float] = []
 
@@ -349,7 +346,12 @@ def run_spec_live(spec: ExperimentSpec, *, settle_s: float = 3.0) -> SpecRun:
     delivered = query_delivered(table_name, run_id, region)
     counter_sum["rule_invocations"] = len(delivered)
     counter_sum["ddb_puts"] = len(delivered)
-
+    msg_ids = [str(d.get("msg_id") or "") for d in delivered if d.get("msg_id")]
+    unique_delivered = len(set(msg_ids))
+    reached = int(counter_sum["reached_broker"])
+    counter_sum["rule_failures"] = max(0, reached - unique_delivered)
+    id_counts = Counter(msg_ids)
+    counter_sum["duplicates_injected"] = int(sum(c - 1 for c in id_counts.values() if c > 1))
     finished = _utc_now()
     if reconnect_times:
         recon_acc.reconnect_time_ms = float(np.mean(reconnect_times))

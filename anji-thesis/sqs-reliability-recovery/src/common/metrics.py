@@ -148,7 +148,7 @@ def compute_run_metrics(
         throughput = unique_success / wall
     else:
         wall = NAN
-        throughput = 0.0
+        throughput = NAN
 
     def rate(x: float) -> float:
         return x / n if n else NAN
@@ -167,7 +167,7 @@ def compute_run_metrics(
         "loss_rate": rate(n - len(accounted)),
         "success_rate": rate(unique_success),
         "dlq_capture_rate": rate(len(dlq_ids)),
-        "duplicate_rate": duplicate_events / unique_success if unique_success else 0.0,
+        "duplicate_rate": duplicate_events / unique_success if unique_success else NAN,
         "stranded_rate": rate(stranded),
         # gone without being processed, dead-lettered or still queued
         "true_loss_rate": rate(n - len(accounted) - stranded),

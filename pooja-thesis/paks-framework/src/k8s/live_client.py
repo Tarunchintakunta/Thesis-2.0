@@ -172,7 +172,7 @@ class LiveKubectlClient:
     def latency_summary(self) -> Dict[str, Any]:
         xs = self.apply_latencies_s
         if not xs:
-            return {"n": 0, "mean_s": 0.0, "p50_s": 0.0, "max_s": 0.0, "evidence": "LIVE"}
+            return {"n": 0, "mean_s": float("nan"), "p50_s": float("nan"), "max_s": float("nan"), "evidence": "LIVE_NO_SAMPLES"}
         xs_sorted = sorted(xs)
         mid = xs_sorted[len(xs_sorted) // 2]
         return {

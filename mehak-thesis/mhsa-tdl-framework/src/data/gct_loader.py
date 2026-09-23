@@ -245,11 +245,10 @@ def _read_usage_series(
     return series
 
 
-def _label_future(future: np.ndarray, force_fail: bool) -> np.ndarray:
+def _label_future(future: np.ndarray, force_fail: bool = False) -> np.ndarray:
+    """Label each channel from future usage peaks only."""
+    del force_fail  # FAIL events recorded separately; do not override channel labels.
     labels = np.zeros(len(METRIC_NAMES), dtype=np.int64)
-    if force_fail:
-        labels[:] = 2
-        return labels
     for i, name in enumerate(METRIC_NAMES):
         l1, l2 = THRESHOLDS[name]
         peak = float(future[:, i].max())
