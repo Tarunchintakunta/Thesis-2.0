@@ -11,11 +11,6 @@ seed: 20260101
 force_cold: update_env            # update_env (new env var value -> new environments) or idle
 idle_gap_min: 30                  # only used with force_cold: idle
 
-# daily spend cap checked before every invocation (scripts/budget_guard.py)
-budget:
-  daily_usd: 25.00
-  spend_log: data/spend_log.csv
-
 phases:
   baseline:                       # Phase A - Bluemke-style warm duration + cost, python default
     kind: warm

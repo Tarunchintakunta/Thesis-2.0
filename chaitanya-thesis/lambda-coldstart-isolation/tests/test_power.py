@@ -35,7 +35,6 @@ def test_replace_section_keeps_the_rest():
 def pilot(tmp_path_factory):
     tmp = tmp_path_factory.mktemp("pilot")
     cfg = load_config("configs/pilot.yaml")
-    cfg["budget"]["spend_log"] = str(tmp / "spend.csv")
     cfg["phases"]["pilot_cold"]["reps"] = 8
     cfg["phases"]["idle_probe"]["reps"] = 6
     b = MockBackend(seed=31)

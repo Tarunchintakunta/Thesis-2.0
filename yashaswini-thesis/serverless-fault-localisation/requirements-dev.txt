@@ -3,4 +3,3 @@ pytest>=8.0
 ruff>=0.5
 moto[dynamodb,ssm,cloudwatch,xray,logs]>=5.0
 aws-xray-sdk>=2.14
-cfn-lint>=1.0

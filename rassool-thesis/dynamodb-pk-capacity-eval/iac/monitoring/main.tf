@@ -1,5 +1,5 @@
-# CloudWatch dashboard for the six tables, a throttle-storm alarm per table
-# (the abort condition in RUNBOOK.md) and an optional AWS Budgets alert.
+# CloudWatch dashboard for the six tables and a throttle-storm alarm per table
+# (the abort condition in RUNBOOK.md).
 
 variable "tables" {
   description = "configuration id => table name"
@@ -11,14 +11,6 @@ variable "function_name" {
 }
 
 variable "region" {
-  type = string
-}
-
-variable "monthly_budget_usd" {
-  type = number
-}
-
-variable "budget_email" {
   type = string
 }
 
@@ -100,31 +92,6 @@ resource "aws_cloudwatch_metric_alarm" "throttle_storm" {
       period      = 60
       stat        = "Sum"
     }
-  }
-}
-
-resource "aws_budgets_budget" "spend" {
-  count        = var.budget_email == "" ? 0 : 1
-  name         = "ddbpk-monthly"
-  budget_type  = "COST"
-  limit_amount = tostring(var.monthly_budget_usd)
-  limit_unit   = "USD"
-  time_unit    = "MONTHLY"
-
-  notification {
-    comparison_operator        = "GREATER_THAN"
-    threshold                  = 80
-    threshold_type             = "PERCENTAGE"
-    notification_type          = "ACTUAL"
-    subscriber_email_addresses = [var.budget_email]
-  }
-
-  notification {
-    comparison_operator        = "GREATER_THAN"
-    threshold                  = 100
-    threshold_type             = "PERCENTAGE"
-    notification_type          = "FORECASTED"
-    subscriber_email_addresses = [var.budget_email]
   }
 }
 

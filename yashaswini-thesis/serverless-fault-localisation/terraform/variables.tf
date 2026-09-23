@@ -67,14 +67,3 @@ variable "notifications_package" {
   type    = string
   default = "../build/notifications.zip"
 }
-
-variable "alert_email" {
-  description = "Empty = no budget resource."
-  type        = string
-  default     = ""
-}
-
-variable "monthly_budget_usd" {
-  type    = number
-  default = 20
-}

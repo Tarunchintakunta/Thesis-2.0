@@ -31,28 +31,8 @@ class StackOutputs:
     fault_param: str
 
     @classmethod
-    def from_stack(cls, stack_name: str, cfn_client=None) -> "StackOutputs":
-        if cfn_client is None:
-            import boto3
-
-            cfn_client = boto3.client("cloudformation")
-        stack = cfn_client.describe_stacks(StackName=stack_name)["Stacks"][0]
-        out = {o["OutputKey"]: o["OutputValue"] for o in stack.get("Outputs", [])}
-        return cls(
-            queue_url=out["OrdersQueueUrl"],
-            dlq_url=out["OrdersDlqUrl"],
-            queue_arn=out["OrdersQueueArn"],
-            api_url=out["SyncApiUrl"],
-            orders_table=out["OrdersTableName"],
-            events_table=out["EventsTableName"],
-            consumer_function=out["QueueConsumerFunctionName"],
-            mapping_id=out["ConsumerMappingId"],
-            fault_param=out["FaultParamName"],
-        )
-
-    @classmethod
     def from_terraform(cls, terraform_dir: str | Path) -> "StackOutputs":
-        """Load outputs from ``terraform output -json`` (preferred live IaC path)."""
+        """Load outputs from ``terraform output -json``."""
         import subprocess
 
         tf_dir = Path(terraform_dir)

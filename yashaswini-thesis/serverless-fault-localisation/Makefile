@@ -1,10 +1,10 @@
-# Yashaswini Penumarthi (24262404) - serverless-fault-localisation
+# Yashaswini Penumarthi - serverless-fault-localisation (Terraform only)
 PY ?= .venv/bin/python
 RC ?= .venv-rcaeval/bin/python
 STACK ?= faultlab
 RUN ?= data/runs/live
 
-.PHONY: setup test lint cfn-lint check-bib sim budget rcaeval-data rcaeval-venv leg2-rules leg2-baselines leg2 \
+.PHONY: setup test lint check-bib sim budget rcaeval-data rcaeval-venv leg2-rules leg2-baselines leg2 \
 	build deploy seed calibration steady peak collect rig destroy aws-verify \
 	tf-package tf-init tf-validate tf-plan lite-overhead-help
 
@@ -17,9 +17,6 @@ test:
 
 lint:
 	$(PY) -m ruff check detector eval baseline_runner injector workloads scripts src sim tests
-
-cfn-lint:
-	.venv/bin/cfn-lint template.yaml
 
 check-bib:
 	$(PY) scripts/check_bib.py --offline
@@ -49,11 +46,10 @@ leg2-baselines:
 leg2: leg2-rules leg2-baselines
 	$(PY) -m eval.leg2 --raw results/rcaeval/raw --out results/rcaeval --figures figures/rcaeval
 
-build:
-	sam build
+build: tf-package
 
-deploy: build
-	sam deploy --stack-name $(STACK) --capabilities CAPABILITY_IAM --resolve-s3
+deploy: tf-validate
+	cd terraform && terraform apply -auto-approve -input=false -var="name_prefix=$(STACK)"
 
 calibration steady peak:
 	$(PY) scripts/campaign.py --phase $@ --url "$(API_URL)" --run $(RUN) --stack $(STACK)
@@ -65,9 +61,8 @@ rig:
 	$(PY) -m eval.rig --source live --run $(RUN) --out results/live --figures figures/live
 
 destroy:
-	sam delete --stack-name $(STACK)
+	cd terraform && terraform destroy -auto-approve -input=false -var="name_prefix=$(STACK)"
 
-# Terraform path (preferred when SAM CLI is unavailable). Packages → validate → apply.
 tf-package:
 	bash scripts/package_terraform.sh
 
@@ -78,10 +73,9 @@ tf-validate: tf-package
 	cd terraform && terraform init -input=false && terraform validate
 
 tf-plan: tf-validate
-	cd terraform && terraform plan -input=false
+	cd terraform && terraform plan -input=false -var="name_prefix=$(STACK)"
 
 lite-overhead-help:
 	@echo "Lite Leg 3: configs/experiment_lite_overhead.yaml (5 min x 3 conditions @ 1 rps)"
 	@echo "See docs/LITE_LEG3_OVERHEAD.md — destroy after; tags: project/managed_by/purpose/data only"
 	@echo "Gate: account ConcurrentExecutions headroom before apply (shared student account)."
-

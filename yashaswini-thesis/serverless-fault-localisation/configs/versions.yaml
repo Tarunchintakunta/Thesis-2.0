@@ -1,5 +1,5 @@
 region: eu-west-1
-iac: AWS SAM (template.yaml), cfn-lint in CI
+iac: Terraform (terraform/), validated via terraform validate
 lambda:
   runtime: python3.12
   architecture: arm64

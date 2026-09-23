@@ -24,7 +24,6 @@ spec.loader.exec_module(cost_cli)
 def campaign(tmp_path_factory):
     tmp = tmp_path_factory.mktemp("campaign")
     cfg = load_config("configs/experiment.yaml")
-    cfg["budget"]["spend_log"] = str(tmp / "spend.csv")
     small = {"baseline": 6, "runtime_compare": 10, "package_size": 10, "memory": 6, "burst": 2, "combined": 8}
     for name, reps in small.items():
         cfg["phases"][name]["reps"] = reps

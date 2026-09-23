@@ -11,10 +11,6 @@ payload: payloads/fixed_payload.json
 seed: 20260101
 force_cold: update_env
 
-budget:
-  daily_usd: 2.00
-  spend_log: data/spend_log.csv
-
 phases:
   warming:
     kind: warming

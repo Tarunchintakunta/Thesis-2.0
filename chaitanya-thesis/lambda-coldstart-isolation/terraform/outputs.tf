@@ -1,5 +1,17 @@
-output "function_name" {
-  value = try(aws_lambda_function.python_default[0].function_name, null)
+output "name_prefix" {
+  value = var.name_prefix
 }
-output "log_group" { value = aws_cloudwatch_log_group.python_default.name }
-output "role_arn" { value = aws_iam_role.fn.arn }
+
+output "warmer_rule" {
+  value = aws_cloudwatch_event_rule.warmer.name
+}
+
+output "function_names" {
+  value = {
+    for k, f in aws_lambda_function.fn : k => f.function_name
+  }
+}
+
+output "role_arn" {
+  value = aws_iam_role.fn.arn
+}

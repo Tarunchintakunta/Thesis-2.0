@@ -2,7 +2,7 @@ import pytest
 
 from control.collect_metrics import DEFAULT_PRICING, estimate_cost, load_pricing
 from control.config import RunSpec
-from control.cost_guard import CostGuardError, check_plan, estimate_plan
+from control.cost_guard import estimate_plan
 
 
 def test_cost_math():
@@ -18,20 +18,6 @@ def test_pricing_file_overrides_defaults(tmp_path):
     path.write_text("prices:\n  sqs_per_million_requests: 0.5\n")
     assert load_pricing(path)["sqs_per_million_requests"] == 0.5
     assert load_pricing(tmp_path / "missing.yaml") == DEFAULT_PRICING
-
-
-def test_guard_blocks_expensive_plans(monkeypatch):
-    monkeypatch.setenv("MAX_ESTIMATED_USD", "0.0000001")
-    monkeypatch.setenv("ENABLE_COST_GUARD", "1")
-    with pytest.raises(CostGuardError):
-        check_plan([RunSpec(run_id="g", order_count=500)], DEFAULT_PRICING)
-
-
-def test_guard_can_be_switched_off(monkeypatch):
-    monkeypatch.setenv("MAX_ESTIMATED_USD", "0.0000001")
-    monkeypatch.setenv("ENABLE_COST_GUARD", "0")
-    est = check_plan([RunSpec(run_id="g", order_count=500)], DEFAULT_PRICING)
-    assert est["usd_total"] > 0
 
 
 def test_pilot_sized_plan_is_cheap():

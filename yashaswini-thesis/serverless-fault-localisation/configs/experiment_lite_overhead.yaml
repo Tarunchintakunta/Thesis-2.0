@@ -74,6 +74,3 @@ expectations:
   f1_concession_pp: 10
   top3_concession_pp: 10
   telemetry_reduction: 0.5
-
-budget:
-  daily_usd: 10

@@ -75,8 +75,8 @@ def main(argv=None) -> int:
         print(f"{r['phase']:12s} {r['requests']:9d} {r['invocations']:12d} {r['timeouts']:9d} {r['wru']:12.0f} "
               f"{r['gb_s']:9.0f} {r['usd']:8.3f}")
     inv = sum(r["invocations"] for r in rows)
-    print(f"total USD {total:.2f} for {inv} invocations (cap {cfg['budget']['max_invocations']}, "
-          f"daily budget USD {cfg['budget']['daily_usd']}); logs, stream reads and free tier not included")
+    print(f"total USD {total:.2f} for {inv} invocations (cap {cfg['budget']['max_invocations']}); "
+          f"logs, stream reads and free tier not included")
     return 0 if inv <= cfg["budget"]["max_invocations"] else 1
 
 

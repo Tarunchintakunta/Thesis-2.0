@@ -1,18 +1,27 @@
 #!/usr/bin/env bash
-# Tear the stack down after a campaign and check that it is really gone.
-#   scripts/destroy.sh                 (STACK_NAME or sqs-rr-dev)
-#   scripts/destroy.sh sqs-rr-pilot
+# Tear the terraform stack down after a campaign and verify resources are gone.
+#   scripts/destroy.sh                 (stage from STACK_NAME or dev)
+#   scripts/destroy.sh pilot
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
-STACK=${1:-${STACK_NAME:-sqs-rr-dev}}
+ARG=${1:-${STACK_NAME:-dev}}
+case "$ARG" in
+  sqs-rr-dev|dev|default) STAGE=dev ;;
+  sqs-rr-pilot|pilot)     STAGE=pilot ;;
+  sqs-rr-exp|exp)         STAGE=exp ;;
+  *) STAGE=$ARG ;;
+esac
 REGION=${AWS_REGION:-eu-west-1}
+TF_DIR=terraform
 
-sam delete --stack-name "$STACK" --region "$REGION" --no-prompts
-
-if aws cloudformation describe-stacks --stack-name "$STACK" --region "$REGION" >/dev/null 2>&1; then
-  echo "stack $STACK still exists - check the CloudFormation console"
-  exit 1
+cd "$TF_DIR"
+if [[ ! -d .terraform ]]; then
+  terraform init -input=false
 fi
-mkdir -p results
-echo "$(date -u +%Y-%m-%dT%H:%M:%SZ) teardown verified: $STACK ($REGION) is gone" | tee -a results/teardown_log.txt
+terraform destroy -auto-approve -input=false \
+  -var="stage=$STAGE" \
+  -var="region=$REGION"
+
+mkdir -p ../results
+echo "$(date -u +%Y-%m-%dT%H:%M:%SZ) teardown verified: terraform destroy stage=$STAGE ($REGION)" | tee -a ../results/teardown_log.txt

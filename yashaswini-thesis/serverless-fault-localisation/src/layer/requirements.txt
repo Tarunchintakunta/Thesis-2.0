@@ -1,2 +1,2 @@
-# built into the layer by `sam build` (BuildMethod python3.12)
+# built into the layer by scripts/package_terraform.sh
 aws-xray-sdk==2.14.0

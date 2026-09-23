@@ -15,7 +15,6 @@ from __future__ import annotations
 
 import argparse
 import csv
-import datetime as dt
 import json
 import sys
 import time
@@ -154,17 +153,12 @@ def run(cfg: dict, cells: list[dict], backend, out: Path, rate_scale: float, tim
     thr_limit, streak_needed = cfg["abort"]["throttle_rate"], cfg["abort"]["consecutive_batches"]
     streak: dict = {}
     aborted: set = set()
-    spent: dict = {}
     scaled = rate_scale != 1.0 or time_scale != 1.0
     n_done = 0
     for cell in cells:
         key = (cell["configuration"], cell["workload"])
         if cell["batch_id"] in skip or key in aborted:
             continue
-        day = dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%d")
-        if spent.get(day, 0.0) > cfg["abort"]["daily_budget_usd"]:
-            log(f"daily budget reached ({day}) - stopping")
-            return 3
         prof = scaled_profile(cell["workload"], rate_scale, time_scale) if scaled else None
         settle = cfg["settling_seconds"] * time_scale
         for _ in range(int(cfg["warmup_invocations"])):
@@ -187,7 +181,6 @@ def run(cfg: dict, cells: list[dict], backend, out: Path, rate_scale: float, tim
         append_row(batches, row)
         cost = on_demand_cost(m["rcu"], m["wcu"], prices) if prov is None else \
             provisioned_cost(row["prov_rcu_avg"], row["prov_wcu_avg"], m["wall_s"] + settle, prices)
-        spent[day] = spent.get(day, 0.0) + cost
         streak[key] = streak.get(key, 0) + 1 if m["throttle_rate"] > thr_limit else 0
         if streak[key] >= streak_needed:
             aborted.add(key)

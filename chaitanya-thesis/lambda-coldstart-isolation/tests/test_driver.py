@@ -11,9 +11,7 @@ from coldstart.driver import randomised_blocks, run_phase
 
 
 def cfg_for(tmp_path, path="configs/experiment.yaml"):
-    cfg = load_config(path)
-    cfg["budget"]["spend_log"] = str(tmp_path / "spend.csv")
-    return cfg
+    return load_config(path)
 
 
 def rows(path):
@@ -34,7 +32,7 @@ def test_cold_phase_measure_rows_are_cold(tmp_path):
     cfg["phases"]["package_size"]["reps"] = 3
     info = run_phase(MockBackend(seed=1), cfg, "package_size", tmp_path, seed=1)
     rs = rows(tmp_path / "package_size/invocations.jsonl")
-    assert info["status"] == "complete" and info["invocations"] == 6 * 3 * 2
+    assert info["status"] == "complete" and info["invocations"] == 7 * 3 * 2
     assert all(r["tail_report"]["cold"] for r in rs if r["role"] == "measure")
     assert not any(r["tail_report"]["cold"] for r in rs if r["role"] == "follow_up")
     assert {r["data_mode"] for r in rs} == {"mock"}
@@ -82,13 +80,6 @@ def test_idle_probe_records_gap(tmp_path):
     run_phase(MockBackend(seed=5), cfg, "idle_probe", tmp_path, seed=5)
     rs = [r for r in rows(tmp_path / "idle_probe/invocations.jsonl") if r["role"] == "measure"]
     assert sorted({r["idle_gap_min"] for r in rs}) == [5, 10, 20, 30, 45]
-
-
-def test_budget_cap_stops_the_run(tmp_path):
-    cfg = cfg_for(tmp_path)
-    cfg["budget"]["daily_usd"] = 0.00001
-    info = run_phase(MockBackend(seed=6), cfg, "runtime_compare", tmp_path, seed=6)
-    assert info["status"].startswith("stopped")
 
 
 def test_existing_output_is_not_overwritten(tmp_path):

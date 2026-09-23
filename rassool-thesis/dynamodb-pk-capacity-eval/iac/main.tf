@@ -101,9 +101,7 @@ module "lambda" {
 module "monitoring" {
   source = "./monitoring"
 
-  tables             = { for k, t in module.tables : k => t.name }
-  function_name      = module.lambda.function_name
-  region             = var.region
-  monthly_budget_usd = var.monthly_budget_usd
-  budget_email       = var.budget_email
+  tables        = { for k, t in module.tables : k => t.name }
+  function_name = module.lambda.function_name
+  region        = var.region
 }

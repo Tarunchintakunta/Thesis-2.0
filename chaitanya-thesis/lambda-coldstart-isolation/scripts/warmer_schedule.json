@@ -1,5 +1,5 @@
 {
-  "_comment": "Low-frequency warmer (H3). The same rule is created by infra/template.yaml (WarmTargetFunction > Events > Warmer); this file is the plain EventBridge form for `aws events put-rule --cli-input-json`. It is NOT provisioned concurrency.",
+  "_comment": "Low-frequency warmer (H3). The same rule is created by terraform (aws_cloudwatch_event_rule.warmer); this file is the plain EventBridge form for `aws events put-rule --cli-input-json`. It is NOT provisioned concurrency.",
   "Name": "coldstart-study-warmer",
   "ScheduleExpression": "rate(5 minutes)",
   "State": "DISABLED",

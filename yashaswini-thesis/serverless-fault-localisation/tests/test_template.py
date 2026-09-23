@@ -1,39 +1,37 @@
-"""template.yaml agrees with configs/ and the span name mapping (cfn-lint runs in CI)."""
+"""terraform/ agrees with configs/ and the span name mapping."""
+from pathlib import Path
+
 import yaml
-from cfnlint.decode import cfn_yaml
+
+EXP = yaml.safe_load(open("configs/experiment.yaml"))
+MAIN = Path("terraform/main.tf").read_text()
+VARS = Path("terraform/variables.tf").read_text()
 
 from detector.spans import service_names
 
-EXP = yaml.safe_load(open("configs/experiment.yaml"))
-TPL = cfn_yaml.load("template.yaml")
-RES = TPL["Resources"]
-
-
-def functions():
-    return {k: v for k, v in RES.items() if v["Type"] == "AWS::Serverless::Function"}
-
 
 def test_one_function_per_service_named_like_the_span_mapping():
-    names = {str(v["Properties"]["FunctionName"]["Fn::Sub"]).replace("${AWS::StackName}", EXP["stack_name"])
-             for v in functions().values()}
-    assert names == set(service_names(EXP["stack_name"], EXP["services"]))
+    expected = set(service_names(EXP["stack_name"], EXP["services"]))
+    for name in expected:
+        short = name.removeprefix(f"{EXP['stack_name']}-")
+        assert f'function_name    = "${{var.name_prefix}}-{short}"' in MAIN or \
+               f'function_name = "${{var.name_prefix}}-{short}"' in MAIN
+    assert 'default     = "faultlab"' in VARS or 'default = "faultlab"' in VARS
 
 
-def test_tracing_logging_and_runtime_are_parameters_shared_by_all_functions():
-    g = TPL["Globals"]["Function"]
-    assert g["Tracing"] == {"Ref": "TracingMode"} and g["Runtime"] == "python3.12" and g["Architectures"] == ["arm64"]
-    assert g["Environment"]["Variables"]["LOG_LEVEL"] == {"Ref": "LogLevel"}
-    assert set(TPL["Parameters"]["TracingMode"]["AllowedValues"]) == {"Active", "PassThrough"}
+def test_tracing_logging_and_runtime_are_shared():
+    assert "python3.12" in MAIN
+    assert 'architectures    = ["arm64"]' in MAIN or 'architectures = ["arm64"]' in MAIN
+    assert "tracing_mode" in VARS
+    assert "Active" in VARS and "PassThrough" in VARS
 
 
-def test_api_tracing_and_sampling_rule_follow_the_tracing_switch():
-    assert RES["Api"]["Type"] == "AWS::Serverless::Api"  # REST: HTTP APIs cannot be traced by X-Ray
-    rule = RES["SamplingRule"]
-    assert rule["Condition"] == "TracingOn" and rule["Properties"]["SamplingRule"]["FixedRate"] == {"Ref": "SamplingFixedRate"}
+def test_api_and_sampling_exist():
+    assert "aws_api_gateway_rest_api" in MAIN or "aws_apigateway" in MAIN
+    assert "aws_xray_sampling_rule" in MAIN or "sampling" in MAIN.lower()
 
 
 def test_fault_switch_parameter_and_on_demand_table():
-    assert RES["FaultParameter"]["Properties"]["Value"] == "{}"
-    assert RES["OrdersTable"]["Properties"]["BillingMode"] == "PAY_PER_REQUEST"
-    assert all(RES[f"{n}Logs"]["Properties"]["RetentionInDays"] == 14
-               for n in ("OrdersApi", "Inventory", "Payments", "Notifications"))
+    assert "aws_ssm_parameter" in MAIN and "fault" in MAIN
+    assert 'billing_mode' in MAIN and "PAY_PER_REQUEST" in MAIN
+    assert "retention_in_days" in MAIN

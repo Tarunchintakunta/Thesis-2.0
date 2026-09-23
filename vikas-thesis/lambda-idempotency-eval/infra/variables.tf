@@ -43,25 +43,3 @@ variable "reserved_concurrency" {
   type        = number
   default     = -1
 }
-
-variable "max_daily_invocations" {
-  description = "alarm threshold; the whole campaign needs about 26 000"
-  type        = number
-  default     = 30000
-}
-
-variable "max_daily_write_units" {
-  type    = number
-  default = 60000
-}
-
-variable "monthly_budget_usd" {
-  type    = number
-  default = 10
-}
-
-variable "alert_email" {
-  description = "empty = no SNS topic, no budget"
-  type        = string
-  default     = ""
-}

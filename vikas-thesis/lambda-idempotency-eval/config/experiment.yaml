@@ -31,5 +31,4 @@ warmup_rounds: 2             # waves of no-op calls (one per worker) before a ph
 
 budget:
   max_invocations: 60000     # hard stop in the driver (warm-up calls count too)
-  daily_usd: 5
 # Vikas Reddy Amanagantti

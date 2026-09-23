@@ -19,9 +19,6 @@ PY=.venv/bin/python
 export DATA_MODE=live PYTHONPATH="$ROOT/src${PYTHONPATH:+:$PYTHONPATH}"
 export PATH="$ROOT/.venv/bin:$PATH"
 
-# Raise daily budget for confirmatory (credits available)
-# budget_guard reads configs/experiment.yaml — leave file; set env if supported else rely on $2 default * careful monitoring
-
 cleanup() {
   echo "=== teardown $(date -u +%Y-%m-%dT%H:%M:%SZ) ==="
   bash scripts/teardown.sh || true

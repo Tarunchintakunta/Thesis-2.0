@@ -1,21 +1,17 @@
-"""Cost estimate for a planned set of live runs, and the budget check.
+"""Cost estimate for a planned set of live runs.
 
-Estimates from order counts and pricing only (no local simulator).
+Estimates from order counts and pricing only (planning aid; does not block runs).
 """
 from __future__ import annotations
 
-import os
 from typing import Any
+
 
 SAFETY_FACTOR = 2.0
 LIVE_OVERHEAD_S = 90.0
 # Rough per-order request proxy when no simulator is available.
 REQ_PER_ORDER = 4.0
 SEC_PER_ORDER = 0.05
-
-
-class CostGuardError(RuntimeError):
-    pass
 
 
 def estimate_plan(specs: list, pricing: dict[str, float]) -> dict[str, Any]:
@@ -38,26 +34,3 @@ def estimate_plan(specs: list, pricing: dict[str, float]) -> dict[str, Any]:
         "safety_factor": SAFETY_FACTOR,
         "est_wall_hours": wall_s / 3600.0,
     }
-
-
-def guard_settings() -> tuple[bool, float]:
-    enabled = os.environ.get("ENABLE_COST_GUARD", "1") != "0"
-    limit = float(os.environ.get("MAX_ESTIMATED_USD", "5.00"))
-    return enabled, limit
-
-
-def check_plan(specs: list, pricing: dict[str, float], max_usd: float | None = None) -> dict[str, Any]:
-    enabled, limit = guard_settings()
-    if max_usd is not None:
-        limit = max_usd
-    estimate = estimate_plan(specs, pricing)
-    estimate["limit_usd"] = limit
-    if not enabled:
-        print("[warn] ENABLE_COST_GUARD=0, not enforcing the budget")
-        return estimate
-    if estimate["usd_total"] > limit:
-        raise CostGuardError(
-            f"estimated ${estimate['usd_total']:.2f} for {estimate['runs']} runs is above "
-            f"MAX_ESTIMATED_USD=${limit:.2f}. Cut orders/repeats or raise the limit on purpose."
-        )
-    return estimate

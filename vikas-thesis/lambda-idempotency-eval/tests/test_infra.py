@@ -27,11 +27,10 @@ def variables():
 
 def resources():
     out = {}
-    for f in ("main.tf", "monitoring.tf"):
-        for block in load(f).get("resource", []):
-            for rtype, named in block.items():
-                for name, body in named.items():
-                    out[(unq(rtype), unq(name))] = body
+    for block in load("main.tf").get("resource", []):
+        for rtype, named in block.items():
+            for name, body in named.items():
+                out[(unq(rtype), unq(name))] = body
     return out
 
 
@@ -59,9 +58,3 @@ def test_table_is_on_demand_with_streams_and_destroyable():
 
 def test_platform_retries_are_off():
     assert resources()[("aws_lambda_function_event_invoke_config", "no_retries")]["maximum_retry_attempts"] == 0
-
-
-def test_spend_alarm_covers_the_campaign():
-    per_n = len(E["paths"]) * sum(E["multiplicities"])
-    campaign = per_n * E["campaign"]["provisional_requests_per_cell"]
-    assert campaign < variables()["max_daily_invocations"] <= E["budget"]["max_invocations"]

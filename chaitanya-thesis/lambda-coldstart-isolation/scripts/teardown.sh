@@ -1,9 +1,18 @@
 #!/usr/bin/env bash
-# Remove the study stack when the live campaign is finished (stops any cost).
-# CloudWatch log groups are part of the stack and go with it - run
-# scripts/collect_logs.py BEFORE this.
+# Tear down the study stack when the live campaign is finished (stops any cost).
+# Collect CloudWatch logs BEFORE this (scripts/collect_logs.py).
 set -euo pipefail
+cd "$(dirname "$0")/.."
 STACK=${STACK:-coldstart-study}
 REGION=${REGION:-eu-west-1}
+TF_DIR=terraform
+
 aws events disable-rule --name "$STACK-warmer" --region "$REGION" || true
-sam delete --stack-name "$STACK" --region "$REGION" --no-prompts
+
+cd "$TF_DIR"
+if [[ ! -d .terraform ]]; then
+  terraform init -input=false
+fi
+terraform destroy -auto-approve -input=false \
+  -var="name_prefix=$STACK" \
+  -var="region=$REGION"

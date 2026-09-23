@@ -1,6 +1,6 @@
 """Backends behind the invokers: live AWS (boto3) or the mock.
 
-DATA_MODE=live  -> LiveBackend, real Lambda functions from infra/template.yaml
+DATA_MODE=live  -> LiveBackend, real Lambda functions from terraform/
 DATA_MODE=mock  -> MockBackend, synthetic REPORT lines on a virtual clock (default,
                    so nobody spends money by accident)
 

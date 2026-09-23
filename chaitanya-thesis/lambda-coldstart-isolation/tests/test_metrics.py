@@ -12,7 +12,6 @@ STACK = "coldstart-study"
 
 def run(tmp_path, phases, edits=None):
     cfg = load_config("configs/experiment.yaml")
-    cfg["budget"]["spend_log"] = str(tmp_path / "spend.csv")
     for (phase, key), value in (edits or {}).items():
         cfg["phases"][phase][key] = value
     b = MockBackend(seed=11)
@@ -50,7 +49,6 @@ def test_warmer_pings_are_kept_but_flagged(tmp_path):
 def test_idle_method_can_come_back_warm_and_is_counted(tmp_path):
     cfg_edit = {("runtime_compare", "reps"): 6}
     cfg = load_config("configs/experiment.yaml")
-    cfg["budget"]["spend_log"] = str(tmp_path / "spend.csv")
     cfg["force_cold"] = "idle"
     cfg["idle_gap_min"] = 6  # shorter than the mock's typical idle lifetime -> some stay warm
     cfg["phases"]["runtime_compare"]["reps"] = cfg_edit[("runtime_compare", "reps")]

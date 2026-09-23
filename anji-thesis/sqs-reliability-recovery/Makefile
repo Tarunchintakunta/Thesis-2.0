@@ -1,6 +1,6 @@
-# Live AWS experiment shortcuts (no local simulator).
+# Live AWS experiment shortcuts (Terraform only).
 PY     ?= .venv/bin/python
-STACK  ?= sqs-rr-dev
+STAGE  ?= dev
 
 .PHONY: help setup test lint validate build deploy destroy cost pilot baseline arms \
         campaigns burst experiments gates clean
@@ -20,16 +20,16 @@ lint:
 	$(PY) -m ruff check src tests scripts
 
 validate:
-	.venv/bin/cfn-lint template.yaml
+	cd terraform && terraform init -input=false && terraform validate
 
 build:
-	sam build
+	bash scripts/build_lambda_zips.sh
 
 deploy:
-	scripts/deploy.sh
+	scripts/deploy.sh $(STAGE)
 
 destroy:
-	scripts/destroy.sh $(STACK)
+	scripts/destroy.sh $(STAGE)
 
 cost:
 	$(PY) scripts/estimate_cost.py --config configs/fault_campaigns.yaml
@@ -55,4 +55,4 @@ gates: test validate
 	@echo "gates passed"
 
 clean:
-	rm -rf .aws-sam .pytest_cache results/raw
+	rm -rf .pytest_cache results/raw

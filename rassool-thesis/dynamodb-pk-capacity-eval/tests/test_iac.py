@@ -73,6 +73,7 @@ def test_tfvars_match_the_capacity_plan():
     assert json.loads((IAC / "terraform.tfvars.json").read_text()) == render(cfg)
 
 
-def test_throttle_alarm_and_budget_exist():
+def test_throttle_storm_alarm_exists():
     t = text("monitoring/main.tf")
-    assert "throttle-storm" in t and "aws_budgets_budget" in t and "ReadThrottleEvents" in t
+    assert "throttle-storm" in t and "ReadThrottleEvents" in t
+    assert "aws_budgets_budget" not in t

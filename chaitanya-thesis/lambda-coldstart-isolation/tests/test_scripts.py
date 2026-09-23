@@ -1,4 +1,4 @@
-"""Command-line scripts: budget estimate, mock log printer, and the whole CLI chain."""
+"""Command-line scripts: mock log printer and the whole CLI chain."""
 import importlib.util
 import json
 from pathlib import Path
@@ -6,8 +6,6 @@ from pathlib import Path
 import pandas as pd
 
 from coldstart.cli import main as invoke_main
-from coldstart.config import load_config
-from coldstart.cost_model import load_prices
 from coldstart.report_parser import parse_log_text
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -18,14 +16,6 @@ def load(name):
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
     return mod
-
-
-def test_budget_estimate_covers_every_phase():
-    cfg = load_config("configs/experiment.yaml")
-    est = load("budget_guard").estimate(cfg, load_prices(None))
-    assert set(est["phase"]) == set(cfg["phases"])
-    assert (est["typical_usd"] < est["worst_case_usd"]).all()
-    assert est["typical_usd"].sum() < cfg["budget"]["daily_usd"]
 
 
 def test_mock_cloudwatch_lines():

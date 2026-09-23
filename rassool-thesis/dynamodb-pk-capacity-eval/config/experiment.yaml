@@ -49,7 +49,6 @@ sensitivity:                     # item size, not part of the factorial
 abort:
   throttle_rate: 0.5             # stop a cell after this many batches in a row above 50% throttled
   consecutive_batches: 3
-  daily_budget_usd: 25
 
 analysis:
   alpha: 0.05

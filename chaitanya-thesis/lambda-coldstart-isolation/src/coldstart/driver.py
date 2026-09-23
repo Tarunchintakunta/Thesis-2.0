@@ -15,7 +15,6 @@ import time
 from pathlib import Path
 
 from .backends import FUNCTIONS
-from .budget import BudgetExceeded, BudgetGuard
 from .config import ROOT, phase_cells, resolve
 from .report_parser import parse_log_text
 
@@ -34,17 +33,15 @@ def randomised_blocks(cells: list, reps: int, rng: random.Random) -> list[tuple[
 
 
 class Recorder:
-    def __init__(self, out_dir: Path, backend, phase: str, guard: BudgetGuard):
+    def __init__(self, out_dir: Path, backend, phase: str):
         self.out = Path(out_dir)
         self.out.mkdir(parents=True, exist_ok=True)
         self.path = self.out / "invocations.jsonl"
         self.backend = backend
         self.phase = phase
-        self.guard = guard
         self.rows = 0
 
     def invoke(self, fn: str, payload: dict, **meta) -> dict:
-        self.guard.check(self.backend.now(), self.backend.memory_of(fn))
         return self.add(self.backend.invoke(fn, payload), fn, **meta)
 
     def add(self, res: dict, fn: str, **meta) -> dict:
@@ -64,8 +61,6 @@ class Recorder:
         with open(self.path, "a", encoding="utf-8") as fh:
             fh.write(json.dumps(row) + "\n")
         self.rows += 1
-        billed = (rep.billed_ms + (rep.init_ms or 0.0)) if rep else res["rtt_ms"]
-        self.guard.charge(res["t_start"], fn, row["memory_mb"], billed)
         return row
 
 
@@ -141,7 +136,6 @@ def run_burst(backend, cfg, ph, rec, rng, payload):
     for rep, (r, v, m) in randomised_blocks(phase_cells(ph), int(ph["reps"]), rng):
         fn = f"{r}-{v}"
         _make_cold(backend, cfg, fn, m)  # quiet state: no warm environment left
-        rec.guard.check(backend.now(), m)
         for i, res in enumerate(backend.invoke_concurrent(fn, payload, n)):
             rec.add(res, fn, role="measure", intended_cold=True, pattern="burst", warming="off",
                     rep=rep, burst_id=f"{fn}-{rep}", burst_slot=i)
@@ -167,9 +161,7 @@ def run_phase(backend, cfg: dict, name: str, out_root: str | Path, seed: int) ->
     out = Path(out_root) / name
     if (out / "invocations.jsonl").exists():
         raise FileExistsError(f"{out} already has data - use a new --out folder")
-    guard_log = resolve(cfg["budget"]["spend_log"]) if backend.mode == "live" else out / "spend_log_mock.csv"
-    guard = BudgetGuard(cfg["budget"]["daily_usd"], guard_log, backend.mode, arch=cfg["arch"])
-    rec = Recorder(out, backend, name, guard)
+    rec = Recorder(out, backend, name)
     rng = random.Random(f"{seed}-{name}")
     info = {"phase": name, "kind": ph["kind"], "data_mode": backend.mode, "seed": seed,
             "phase_config": ph, "force_cold": cfg["force_cold"], "arch": cfg["arch"],
@@ -178,13 +170,9 @@ def run_phase(backend, cfg: dict, name: str, out_root: str | Path, seed: int) ->
             "wall_start_utc": iso(time.time())}
     if backend.mode == "mock":
         info["label"] = "SYNTHETIC mock data - not measured"
-    status = "complete"
-    try:
-        RUNNERS[ph["kind"]](backend, cfg, ph, rec, rng, load_payload(cfg))
-    except BudgetExceeded as exc:
-        status = f"stopped: {exc}"
+    RUNNERS[ph["kind"]](backend, cfg, ph, rec, rng, load_payload(cfg))
     info.update(t_end=backend.now(), t_end_utc=iso(backend.now()), wall_end_utc=iso(time.time()),
-                invocations=rec.rows, status=status,
+                invocations=rec.rows, status="complete",
                 mock_log_events=backend.export_logs(out / "logs"))
     (out / "run_info.json").write_text(json.dumps(info, indent=2) + "\n")
     return info

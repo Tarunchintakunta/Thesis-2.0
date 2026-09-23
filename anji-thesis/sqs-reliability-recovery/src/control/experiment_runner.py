@@ -50,11 +50,6 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         default=os.environ.get("TERRAFORM_DIR", str(PROJECT_ROOT / "terraform")),
         help="load StackOutputs from terraform output -json",
     )
-    p.add_argument(
-        "--from-cfn",
-        action="store_true",
-        help="use CloudFormation stack outputs instead of terraform",
-    )
     p.add_argument("--pricing", default=str(PROJECT_ROOT / "configs" / "pricing.yaml"))
     p.add_argument("--from-env", action="store_true", help="one ad-hoc run built from .env / environment variables")
     p.add_argument("--quiet", action="store_true")
@@ -167,17 +162,14 @@ def main(argv: list[str] | None = None) -> int:
         return 2
 
     pricing = load_pricing(args.pricing)
-    from control.cost_guard import check_plan
+    from control.cost_guard import estimate_plan
     from control.live_backend import StackOutputs, run_live
 
-    estimate = check_plan(specs, pricing)
-    print(f"[cost guard] ~${estimate['usd_total']:.2f} for {estimate['runs']} runs "
-          f"(~{estimate['est_wall_hours']:.1f} h), limit ${estimate['limit_usd']:.2f}")
-    if args.from_cfn:
-        outputs = StackOutputs.from_stack(args.stack_name)
-    else:
-        outputs = StackOutputs.from_terraform(args.terraform_dir)
-        print(f"[live] stack from terraform dir {args.terraform_dir}")
+    estimate = estimate_plan(specs, pricing)
+    print(f"[cost estimate] ~${estimate['usd_total']:.2f} for {estimate['runs']} runs "
+          f"(~{estimate['est_wall_hours']:.1f} h)")
+    outputs = StackOutputs.from_terraform(args.terraform_dir)
+    print(f"[live] stack from terraform dir {args.terraform_dir}")
 
     git = git_commit()
     out_dir = Path(args.out)

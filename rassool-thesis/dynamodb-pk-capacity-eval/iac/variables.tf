@@ -51,14 +51,3 @@ variable "lambda_memory" {
   type    = number
   default = 1769
 }
-
-variable "monthly_budget_usd" {
-  type    = number
-  default = 60
-}
-
-variable "budget_email" {
-  description = "Where AWS Budgets sends the 80% / 100% alerts. Empty = no budget resource."
-  type        = string
-  default     = ""
-}
