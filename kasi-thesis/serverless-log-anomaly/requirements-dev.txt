@@ -1,6 +1,0 @@
--r requirements.txt
-pytest>=8.0
-ruff>=0.5
-moto[dynamodb,logs]>=5.0
-cfn-lint>=1.0
-# for the LocalStack path (optional): pip install localstack awscli-local aws-sam-cli-local
