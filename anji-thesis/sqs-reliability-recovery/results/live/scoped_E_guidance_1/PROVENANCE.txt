@@ -1,0 +1,7 @@
+pack=scoped_E_guidance_1
+campaign=E_guidance_transfer
+backend=localsim
+n_runs=20
+expected=20
+full_iv_live_matrix=amended_out
+generated_at=2026-09-23T07:56:39.607470+00:00

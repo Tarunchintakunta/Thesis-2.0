@@ -1,0 +1,332 @@
+{
+  "cells": [
+    {
+      "qos": 0,
+      "disconnect_s": 0,
+      "rate_mode": "bursty",
+      "cell_id": "qos0_d0_bursty",
+      "n_lost": 0,
+      "n_published": 500,
+      "n_duplicate_ids": 0,
+      "loss_rates": [
+        0.0,
+        0.0
+      ],
+      "packs": [
+        "final_1",
+        "final_2"
+      ],
+      "loss_rate": 0.0,
+      "duplicate_id_rate": 0.0,
+      "n_packs": 2
+    },
+    {
+      "qos": 0,
+      "disconnect_s": 0,
+      "rate_mode": "steady",
+      "cell_id": "qos0_d0_steady",
+      "n_lost": 0,
+      "n_published": 500,
+      "n_duplicate_ids": 0,
+      "loss_rates": [
+        0.0,
+        0.0
+      ],
+      "packs": [
+        "final_1",
+        "final_2"
+      ],
+      "loss_rate": 0.0,
+      "duplicate_id_rate": 0.0,
+      "n_packs": 2
+    },
+    {
+      "qos": 0,
+      "disconnect_s": 15,
+      "rate_mode": "bursty",
+      "cell_id": "qos0_d15_bursty",
+      "n_lost": 150,
+      "n_published": 500,
+      "n_duplicate_ids": 0,
+      "loss_rates": [
+        0.3,
+        0.3
+      ],
+      "packs": [
+        "final_1",
+        "final_2"
+      ],
+      "loss_rate": 0.3,
+      "duplicate_id_rate": 0.0,
+      "n_packs": 2
+    },
+    {
+      "qos": 0,
+      "disconnect_s": 15,
+      "rate_mode": "steady",
+      "cell_id": "qos0_d15_steady",
+      "n_lost": 150,
+      "n_published": 500,
+      "n_duplicate_ids": 0,
+      "loss_rates": [
+        0.3,
+        0.3
+      ],
+      "packs": [
+        "final_1",
+        "final_2"
+      ],
+      "loss_rate": 0.3,
+      "duplicate_id_rate": 0.0,
+      "n_packs": 2
+    },
+    {
+      "qos": 0,
+      "disconnect_s": 300,
+      "rate_mode": "bursty",
+      "cell_id": "qos0_d300_bursty",
+      "n_lost": 340,
+      "n_published": 500,
+      "n_duplicate_ids": 0,
+      "loss_rates": [
+        0.68,
+        0.68
+      ],
+      "packs": [
+        "final_1",
+        "final_2"
+      ],
+      "loss_rate": 0.68,
+      "duplicate_id_rate": 0.0,
+      "n_packs": 2
+    },
+    {
+      "qos": 0,
+      "disconnect_s": 300,
+      "rate_mode": "steady",
+      "cell_id": "qos0_d300_steady",
+      "n_lost": 340,
+      "n_published": 500,
+      "n_duplicate_ids": 0,
+      "loss_rates": [
+        0.68,
+        0.68
+      ],
+      "packs": [
+        "final_1",
+        "final_2"
+      ],
+      "loss_rate": 0.68,
+      "duplicate_id_rate": 0.0,
+      "n_packs": 2
+    },
+    {
+      "qos": 0,
+      "disconnect_s": 60,
+      "rate_mode": "bursty",
+      "cell_id": "qos0_d60_bursty",
+      "n_lost": 340,
+      "n_published": 500,
+      "n_duplicate_ids": 0,
+      "loss_rates": [
+        0.68,
+        0.68
+      ],
+      "packs": [
+        "final_1",
+        "final_2"
+      ],
+      "loss_rate": 0.68,
+      "duplicate_id_rate": 0.0,
+      "n_packs": 2
+    },
+    {
+      "qos": 0,
+      "disconnect_s": 60,
+      "rate_mode": "steady",
+      "cell_id": "qos0_d60_steady",
+      "n_lost": 340,
+      "n_published": 500,
+      "n_duplicate_ids": 0,
+      "loss_rates": [
+        0.68,
+        0.68
+      ],
+      "packs": [
+        "final_1",
+        "final_2"
+      ],
+      "loss_rate": 0.68,
+      "duplicate_id_rate": 0.0,
+      "n_packs": 2
+    },
+    {
+      "qos": 1,
+      "disconnect_s": 0,
+      "rate_mode": "bursty",
+      "cell_id": "qos1_d0_bursty",
+      "n_lost": 0,
+      "n_published": 500,
+      "n_duplicate_ids": 0,
+      "loss_rates": [
+        0.0,
+        0.0
+      ],
+      "packs": [
+        "final_1",
+        "final_2"
+      ],
+      "loss_rate": 0.0,
+      "duplicate_id_rate": 0.0,
+      "n_packs": 2
+    },
+    {
+      "qos": 1,
+      "disconnect_s": 0,
+      "rate_mode": "steady",
+      "cell_id": "qos1_d0_steady",
+      "n_lost": 0,
+      "n_published": 500,
+      "n_duplicate_ids": 0,
+      "loss_rates": [
+        0.0,
+        0.0
+      ],
+      "packs": [
+        "final_1",
+        "final_2"
+      ],
+      "loss_rate": 0.0,
+      "duplicate_id_rate": 0.0,
+      "n_packs": 2
+    },
+    {
+      "qos": 1,
+      "disconnect_s": 15,
+      "rate_mode": "bursty",
+      "cell_id": "qos1_d15_bursty",
+      "n_lost": 0,
+      "n_published": 500,
+      "n_duplicate_ids": 0,
+      "loss_rates": [
+        0.0,
+        0.0
+      ],
+      "packs": [
+        "final_1",
+        "final_2"
+      ],
+      "loss_rate": 0.0,
+      "duplicate_id_rate": 0.0,
+      "n_packs": 2
+    },
+    {
+      "qos": 1,
+      "disconnect_s": 15,
+      "rate_mode": "steady",
+      "cell_id": "qos1_d15_steady",
+      "n_lost": 0,
+      "n_published": 500,
+      "n_duplicate_ids": 0,
+      "loss_rates": [
+        0.0,
+        0.0
+      ],
+      "packs": [
+        "final_1",
+        "final_2"
+      ],
+      "loss_rate": 0.0,
+      "duplicate_id_rate": 0.0,
+      "n_packs": 2
+    },
+    {
+      "qos": 1,
+      "disconnect_s": 300,
+      "rate_mode": "bursty",
+      "cell_id": "qos1_d300_bursty",
+      "n_lost": 0,
+      "n_published": 500,
+      "n_duplicate_ids": 0,
+      "loss_rates": [
+        0.0,
+        0.0
+      ],
+      "packs": [
+        "final_1",
+        "final_2"
+      ],
+      "loss_rate": 0.0,
+      "duplicate_id_rate": 0.0,
+      "n_packs": 2
+    },
+    {
+      "qos": 1,
+      "disconnect_s": 300,
+      "rate_mode": "steady",
+      "cell_id": "qos1_d300_steady",
+      "n_lost": 0,
+      "n_published": 500,
+      "n_duplicate_ids": 0,
+      "loss_rates": [
+        0.0,
+        0.0
+      ],
+      "packs": [
+        "final_1",
+        "final_2"
+      ],
+      "loss_rate": 0.0,
+      "duplicate_id_rate": 0.0,
+      "n_packs": 2
+    },
+    {
+      "qos": 1,
+      "disconnect_s": 60,
+      "rate_mode": "bursty",
+      "cell_id": "qos1_d60_bursty",
+      "n_lost": 0,
+      "n_published": 500,
+      "n_duplicate_ids": 0,
+      "loss_rates": [
+        0.0,
+        0.0
+      ],
+      "packs": [
+        "final_1",
+        "final_2"
+      ],
+      "loss_rate": 0.0,
+      "duplicate_id_rate": 0.0,
+      "n_packs": 2
+    },
+    {
+      "qos": 1,
+      "disconnect_s": 60,
+      "rate_mode": "steady",
+      "cell_id": "qos1_d60_steady",
+      "n_lost": 0,
+      "n_published": 500,
+      "n_duplicate_ids": 0,
+      "loss_rates": [
+        0.0,
+        0.0
+      ],
+      "packs": [
+        "final_1",
+        "final_2"
+      ],
+      "loss_rate": 0.0,
+      "duplicate_id_rate": 0.0,
+      "n_packs": 2
+    }
+  ],
+  "qos0_mean_loss": 0.41500000000000004,
+  "qos1_mean_loss": 0.0,
+  "qos0_loss_by_disconnect": {
+    "0": 0.0,
+    "15": 0.3,
+    "60": 0.68,
+    "300": 0.68
+  }
+}

@@ -1,0 +1,737 @@
+{
+  "generated_at": "2026-09-23T07:56:39.526510+00:00",
+  "pack": "confirmatory_1",
+  "source_packs": [
+    "final_1",
+    "final_2"
+  ],
+  "note": "final_3 absent on disk; confirmatory_1 pools available lite finals only \u2014 not formal N",
+  "source_pack_meta": [
+    {
+      "pack": "final_1",
+      "n_cells": 16,
+      "destroy": "destroy_confirmed=yes"
+    },
+    {
+      "pack": "final_2",
+      "n_cells": 16,
+      "destroy": "destroy_confirmed=yes"
+    }
+  ],
+  "n_pooled_cells": 16,
+  "holm_family": {
+    "alpha": 0.05,
+    "adjustment": "holm-bonferroni",
+    "n_tests": 17,
+    "measurement_kind": "Mock or live according to measurement_kind. Mock results are not AWS evidence.",
+    "confirmatory": [
+      {
+        "name": "loss_qos0_gt_qos1_d0_bursty",
+        "family": "primary",
+        "metric": "loss_rate",
+        "z": 0.0,
+        "p": 1.0,
+        "p1": 0.0,
+        "p2": 0.0,
+        "note": "degenerate_se0",
+        "p_adjusted": 1.0,
+        "decision": "fail to reject H0"
+      },
+      {
+        "name": "dup_qos1_gt_qos0_d0_bursty",
+        "family": "secondary",
+        "metric": "duplicate_id_rate",
+        "z": 0.0,
+        "p": 1.0,
+        "p1": 0.0,
+        "p2": 0.0,
+        "note": "degenerate_se0",
+        "p_adjusted": 1.0,
+        "decision": "fail to reject H0"
+      },
+      {
+        "name": "latency_qos_diff_d0_bursty",
+        "family": "secondary",
+        "metric": "e2e_latency_ms",
+        "u": NaN,
+        "p": NaN,
+        "rbc": NaN,
+        "note": "empty"
+      },
+      {
+        "name": "loss_qos0_gt_qos1_d0_steady",
+        "family": "primary",
+        "metric": "loss_rate",
+        "z": 0.0,
+        "p": 1.0,
+        "p1": 0.0,
+        "p2": 0.0,
+        "note": "degenerate_se0",
+        "p_adjusted": 1.0,
+        "decision": "fail to reject H0"
+      },
+      {
+        "name": "dup_qos1_gt_qos0_d0_steady",
+        "family": "secondary",
+        "metric": "duplicate_id_rate",
+        "z": 0.0,
+        "p": 1.0,
+        "p1": 0.0,
+        "p2": 0.0,
+        "note": "degenerate_se0",
+        "p_adjusted": 1.0,
+        "decision": "fail to reject H0"
+      },
+      {
+        "name": "latency_qos_diff_d0_steady",
+        "family": "secondary",
+        "metric": "e2e_latency_ms",
+        "u": NaN,
+        "p": NaN,
+        "rbc": NaN,
+        "note": "empty"
+      },
+      {
+        "name": "loss_qos0_gt_qos1_d15_bursty",
+        "family": "primary",
+        "metric": "loss_rate",
+        "z": 13.284223283101428,
+        "p": 1.4290436017097274e-40,
+        "p1": 0.3,
+        "p2": 0.0,
+        "p_adjusted": 1.714852322051673e-39,
+        "decision": "reject H0"
+      },
+      {
+        "name": "dup_qos1_gt_qos0_d15_bursty",
+        "family": "secondary",
+        "metric": "duplicate_id_rate",
+        "z": 0.0,
+        "p": 1.0,
+        "p1": 0.0,
+        "p2": 0.0,
+        "note": "degenerate_se0",
+        "p_adjusted": 1.0,
+        "decision": "fail to reject H0"
+      },
+      {
+        "name": "latency_qos_diff_d15_bursty",
+        "family": "secondary",
+        "metric": "e2e_latency_ms",
+        "u": NaN,
+        "p": NaN,
+        "rbc": NaN,
+        "note": "empty"
+      },
+      {
+        "name": "loss_qos0_gt_qos1_d15_steady",
+        "family": "primary",
+        "metric": "loss_rate",
+        "z": 13.284223283101428,
+        "p": 1.4290436017097274e-40,
+        "p1": 0.3,
+        "p2": 0.0,
+        "p_adjusted": 1.714852322051673e-39,
+        "decision": "reject H0"
+      },
+      {
+        "name": "dup_qos1_gt_qos0_d15_steady",
+        "family": "secondary",
+        "metric": "duplicate_id_rate",
+        "z": 0.0,
+        "p": 1.0,
+        "p1": 0.0,
+        "p2": 0.0,
+        "note": "degenerate_se0",
+        "p_adjusted": 1.0,
+        "decision": "fail to reject H0"
+      },
+      {
+        "name": "latency_qos_diff_d15_steady",
+        "family": "secondary",
+        "metric": "e2e_latency_ms",
+        "u": NaN,
+        "p": NaN,
+        "rbc": NaN,
+        "note": "empty"
+      },
+      {
+        "name": "loss_qos0_gt_qos1_d60_bursty",
+        "family": "primary",
+        "metric": "loss_rate",
+        "z": 22.69694946796849,
+        "p": 2.400896277348288e-114,
+        "p1": 0.68,
+        "p2": 0.0,
+        "p_adjusted": 3.841434043757261e-113,
+        "decision": "reject H0"
+      },
+      {
+        "name": "dup_qos1_gt_qos0_d60_bursty",
+        "family": "secondary",
+        "metric": "duplicate_id_rate",
+        "z": 0.0,
+        "p": 1.0,
+        "p1": 0.0,
+        "p2": 0.0,
+        "note": "degenerate_se0",
+        "p_adjusted": 1.0,
+        "decision": "fail to reject H0"
+      },
+      {
+        "name": "latency_qos_diff_d60_bursty",
+        "family": "secondary",
+        "metric": "e2e_latency_ms",
+        "u": NaN,
+        "p": NaN,
+        "rbc": NaN,
+        "note": "empty"
+      },
+      {
+        "name": "loss_qos0_gt_qos1_d60_steady",
+        "family": "primary",
+        "metric": "loss_rate",
+        "z": 22.69694946796849,
+        "p": 2.400896277348288e-114,
+        "p1": 0.68,
+        "p2": 0.0,
+        "p_adjusted": 3.841434043757261e-113,
+        "decision": "reject H0"
+      },
+      {
+        "name": "dup_qos1_gt_qos0_d60_steady",
+        "family": "secondary",
+        "metric": "duplicate_id_rate",
+        "z": 0.0,
+        "p": 1.0,
+        "p1": 0.0,
+        "p2": 0.0,
+        "note": "degenerate_se0",
+        "p_adjusted": 1.0,
+        "decision": "fail to reject H0"
+      },
+      {
+        "name": "latency_qos_diff_d60_steady",
+        "family": "secondary",
+        "metric": "e2e_latency_ms",
+        "u": NaN,
+        "p": NaN,
+        "rbc": NaN,
+        "note": "empty"
+      },
+      {
+        "name": "loss_qos0_gt_qos1_d300_bursty",
+        "family": "primary",
+        "metric": "loss_rate",
+        "z": 22.69694946796849,
+        "p": 2.400896277348288e-114,
+        "p1": 0.68,
+        "p2": 0.0,
+        "p_adjusted": 3.841434043757261e-113,
+        "decision": "reject H0"
+      },
+      {
+        "name": "dup_qos1_gt_qos0_d300_bursty",
+        "family": "secondary",
+        "metric": "duplicate_id_rate",
+        "z": 0.0,
+        "p": 1.0,
+        "p1": 0.0,
+        "p2": 0.0,
+        "note": "degenerate_se0",
+        "p_adjusted": 1.0,
+        "decision": "fail to reject H0"
+      },
+      {
+        "name": "latency_qos_diff_d300_bursty",
+        "family": "secondary",
+        "metric": "e2e_latency_ms",
+        "u": NaN,
+        "p": NaN,
+        "rbc": NaN,
+        "note": "empty"
+      },
+      {
+        "name": "loss_qos0_gt_qos1_d300_steady",
+        "family": "primary",
+        "metric": "loss_rate",
+        "z": 22.69694946796849,
+        "p": 2.400896277348288e-114,
+        "p1": 0.68,
+        "p2": 0.0,
+        "p_adjusted": 3.841434043757261e-113,
+        "decision": "reject H0"
+      },
+      {
+        "name": "dup_qos1_gt_qos0_d300_steady",
+        "family": "secondary",
+        "metric": "duplicate_id_rate",
+        "z": 0.0,
+        "p": 1.0,
+        "p1": 0.0,
+        "p2": 0.0,
+        "note": "degenerate_se0",
+        "p_adjusted": 1.0,
+        "decision": "fail to reject H0"
+      },
+      {
+        "name": "latency_qos_diff_d300_steady",
+        "family": "secondary",
+        "metric": "e2e_latency_ms",
+        "u": NaN,
+        "p": NaN,
+        "rbc": NaN,
+        "note": "empty"
+      },
+      {
+        "name": "loss_qos_x_disconnect",
+        "family": "primary",
+        "metric": "loss_count",
+        "chi2": 4076.46991752499,
+        "p": 0.0,
+        "dof": 7,
+        "labels": [
+          "qos0_d0",
+          "qos0_d15",
+          "qos0_d60",
+          "qos0_d300",
+          "qos1_d0",
+          "qos1_d15",
+          "qos1_d60",
+          "qos1_d300"
+        ],
+        "table": [
+          [
+            0.0,
+            1000.0
+          ],
+          [
+            300.0,
+            700.0
+          ],
+          [
+            680.0,
+            320.0
+          ],
+          [
+            680.0,
+            320.0
+          ],
+          [
+            0.0,
+            1000.0
+          ],
+          [
+            0.0,
+            1000.0
+          ],
+          [
+            0.0,
+            1000.0
+          ],
+          [
+            0.0,
+            1000.0
+          ]
+        ],
+        "p_adjusted": 0.0,
+        "decision": "reject H0"
+      }
+    ],
+    "p_adjusted": {
+      "loss_qos_x_disconnect": 0.0,
+      "loss_qos0_gt_qos1_d60_bursty": 3.841434043757261e-113,
+      "loss_qos0_gt_qos1_d60_steady": 3.841434043757261e-113,
+      "loss_qos0_gt_qos1_d300_bursty": 3.841434043757261e-113,
+      "loss_qos0_gt_qos1_d300_steady": 3.841434043757261e-113,
+      "loss_qos0_gt_qos1_d15_bursty": 1.714852322051673e-39,
+      "loss_qos0_gt_qos1_d15_steady": 1.714852322051673e-39,
+      "loss_qos0_gt_qos1_d0_bursty": 1.0,
+      "dup_qos1_gt_qos0_d0_bursty": 1.0,
+      "loss_qos0_gt_qos1_d0_steady": 1.0,
+      "dup_qos1_gt_qos0_d0_steady": 1.0,
+      "dup_qos1_gt_qos0_d15_bursty": 1.0,
+      "dup_qos1_gt_qos0_d15_steady": 1.0,
+      "dup_qos1_gt_qos0_d60_bursty": 1.0,
+      "dup_qos1_gt_qos0_d60_steady": 1.0,
+      "dup_qos1_gt_qos0_d300_bursty": 1.0,
+      "dup_qos1_gt_qos0_d300_steady": 1.0
+    },
+    "note": "Mock or live according to measurement_kind. Mock results are not AWS evidence."
+  },
+  "holm_d300_gt_d60_limb": {
+    "name": "holm_d300_gt_d60",
+    "status": "FAIL",
+    "reason": "QoS0 loss d60\u2261d300=0.68 under lite ~49s publish schedule; two-proportion z degenerate/identical; cannot reject d300>d60",
+    "by_rate": {
+      "steady": {
+        "hypothesis": "loss_qos0_d300_gt_d60",
+        "rate_mode": "steady",
+        "d300_loss_rate": 0.68,
+        "d60_loss_rate": 0.68,
+        "identical": true,
+        "z": 0.0,
+        "p": 0.5,
+        "p1": 0.68,
+        "p2": 0.68,
+        "decision": "fail to reject H0 (schedule ceiling / identical loss under lite)"
+      },
+      "bursty": {
+        "hypothesis": "loss_qos0_d300_gt_d60",
+        "rate_mode": "bursty",
+        "d300_loss_rate": 0.68,
+        "d60_loss_rate": 0.68,
+        "identical": true,
+        "z": 0.0,
+        "p": 0.5,
+        "p1": 0.68,
+        "p2": 0.68,
+        "decision": "fail to reject H0 (schedule ceiling / identical loss under lite)"
+      }
+    },
+    "disposition": "DATED_WONTFIX"
+  },
+  "same_metrics_snapshot": {
+    "baseline_literature": "Shvaika et al. (2025) TBMQ \u2014 self-hosted steady high load; disconnect/multi-QoS = future work",
+    "retained_metrics": [
+      "loss_rate",
+      "duplicate_id_rate",
+      "e2e_latency_ms"
+    ],
+    "gap_fill": [
+      "managed IoT Core broker",
+      "controlled publisher disconnect",
+      "per-message device-log match"
+    ],
+    "qos0_mean_loss": 0.41500000000000004,
+    "qos1_mean_loss": 0.0,
+    "qos0_loss_by_disconnect": {
+      "0": 0.0,
+      "15": 0.3,
+      "60": 0.68,
+      "300": 0.68
+    }
+  },
+  "cells": [
+    {
+      "qos": 0,
+      "disconnect_s": 0,
+      "rate_mode": "bursty",
+      "cell_id": "qos0_d0_bursty",
+      "n_lost": 0,
+      "n_published": 500,
+      "n_duplicate_ids": 0,
+      "loss_rates": [
+        0.0,
+        0.0
+      ],
+      "packs": [
+        "final_1",
+        "final_2"
+      ],
+      "loss_rate": 0.0,
+      "duplicate_id_rate": 0.0,
+      "n_packs": 2
+    },
+    {
+      "qos": 0,
+      "disconnect_s": 0,
+      "rate_mode": "steady",
+      "cell_id": "qos0_d0_steady",
+      "n_lost": 0,
+      "n_published": 500,
+      "n_duplicate_ids": 0,
+      "loss_rates": [
+        0.0,
+        0.0
+      ],
+      "packs": [
+        "final_1",
+        "final_2"
+      ],
+      "loss_rate": 0.0,
+      "duplicate_id_rate": 0.0,
+      "n_packs": 2
+    },
+    {
+      "qos": 0,
+      "disconnect_s": 15,
+      "rate_mode": "bursty",
+      "cell_id": "qos0_d15_bursty",
+      "n_lost": 150,
+      "n_published": 500,
+      "n_duplicate_ids": 0,
+      "loss_rates": [
+        0.3,
+        0.3
+      ],
+      "packs": [
+        "final_1",
+        "final_2"
+      ],
+      "loss_rate": 0.3,
+      "duplicate_id_rate": 0.0,
+      "n_packs": 2
+    },
+    {
+      "qos": 0,
+      "disconnect_s": 15,
+      "rate_mode": "steady",
+      "cell_id": "qos0_d15_steady",
+      "n_lost": 150,
+      "n_published": 500,
+      "n_duplicate_ids": 0,
+      "loss_rates": [
+        0.3,
+        0.3
+      ],
+      "packs": [
+        "final_1",
+        "final_2"
+      ],
+      "loss_rate": 0.3,
+      "duplicate_id_rate": 0.0,
+      "n_packs": 2
+    },
+    {
+      "qos": 0,
+      "disconnect_s": 300,
+      "rate_mode": "bursty",
+      "cell_id": "qos0_d300_bursty",
+      "n_lost": 340,
+      "n_published": 500,
+      "n_duplicate_ids": 0,
+      "loss_rates": [
+        0.68,
+        0.68
+      ],
+      "packs": [
+        "final_1",
+        "final_2"
+      ],
+      "loss_rate": 0.68,
+      "duplicate_id_rate": 0.0,
+      "n_packs": 2
+    },
+    {
+      "qos": 0,
+      "disconnect_s": 300,
+      "rate_mode": "steady",
+      "cell_id": "qos0_d300_steady",
+      "n_lost": 340,
+      "n_published": 500,
+      "n_duplicate_ids": 0,
+      "loss_rates": [
+        0.68,
+        0.68
+      ],
+      "packs": [
+        "final_1",
+        "final_2"
+      ],
+      "loss_rate": 0.68,
+      "duplicate_id_rate": 0.0,
+      "n_packs": 2
+    },
+    {
+      "qos": 0,
+      "disconnect_s": 60,
+      "rate_mode": "bursty",
+      "cell_id": "qos0_d60_bursty",
+      "n_lost": 340,
+      "n_published": 500,
+      "n_duplicate_ids": 0,
+      "loss_rates": [
+        0.68,
+        0.68
+      ],
+      "packs": [
+        "final_1",
+        "final_2"
+      ],
+      "loss_rate": 0.68,
+      "duplicate_id_rate": 0.0,
+      "n_packs": 2
+    },
+    {
+      "qos": 0,
+      "disconnect_s": 60,
+      "rate_mode": "steady",
+      "cell_id": "qos0_d60_steady",
+      "n_lost": 340,
+      "n_published": 500,
+      "n_duplicate_ids": 0,
+      "loss_rates": [
+        0.68,
+        0.68
+      ],
+      "packs": [
+        "final_1",
+        "final_2"
+      ],
+      "loss_rate": 0.68,
+      "duplicate_id_rate": 0.0,
+      "n_packs": 2
+    },
+    {
+      "qos": 1,
+      "disconnect_s": 0,
+      "rate_mode": "bursty",
+      "cell_id": "qos1_d0_bursty",
+      "n_lost": 0,
+      "n_published": 500,
+      "n_duplicate_ids": 0,
+      "loss_rates": [
+        0.0,
+        0.0
+      ],
+      "packs": [
+        "final_1",
+        "final_2"
+      ],
+      "loss_rate": 0.0,
+      "duplicate_id_rate": 0.0,
+      "n_packs": 2
+    },
+    {
+      "qos": 1,
+      "disconnect_s": 0,
+      "rate_mode": "steady",
+      "cell_id": "qos1_d0_steady",
+      "n_lost": 0,
+      "n_published": 500,
+      "n_duplicate_ids": 0,
+      "loss_rates": [
+        0.0,
+        0.0
+      ],
+      "packs": [
+        "final_1",
+        "final_2"
+      ],
+      "loss_rate": 0.0,
+      "duplicate_id_rate": 0.0,
+      "n_packs": 2
+    },
+    {
+      "qos": 1,
+      "disconnect_s": 15,
+      "rate_mode": "bursty",
+      "cell_id": "qos1_d15_bursty",
+      "n_lost": 0,
+      "n_published": 500,
+      "n_duplicate_ids": 0,
+      "loss_rates": [
+        0.0,
+        0.0
+      ],
+      "packs": [
+        "final_1",
+        "final_2"
+      ],
+      "loss_rate": 0.0,
+      "duplicate_id_rate": 0.0,
+      "n_packs": 2
+    },
+    {
+      "qos": 1,
+      "disconnect_s": 15,
+      "rate_mode": "steady",
+      "cell_id": "qos1_d15_steady",
+      "n_lost": 0,
+      "n_published": 500,
+      "n_duplicate_ids": 0,
+      "loss_rates": [
+        0.0,
+        0.0
+      ],
+      "packs": [
+        "final_1",
+        "final_2"
+      ],
+      "loss_rate": 0.0,
+      "duplicate_id_rate": 0.0,
+      "n_packs": 2
+    },
+    {
+      "qos": 1,
+      "disconnect_s": 300,
+      "rate_mode": "bursty",
+      "cell_id": "qos1_d300_bursty",
+      "n_lost": 0,
+      "n_published": 500,
+      "n_duplicate_ids": 0,
+      "loss_rates": [
+        0.0,
+        0.0
+      ],
+      "packs": [
+        "final_1",
+        "final_2"
+      ],
+      "loss_rate": 0.0,
+      "duplicate_id_rate": 0.0,
+      "n_packs": 2
+    },
+    {
+      "qos": 1,
+      "disconnect_s": 300,
+      "rate_mode": "steady",
+      "cell_id": "qos1_d300_steady",
+      "n_lost": 0,
+      "n_published": 500,
+      "n_duplicate_ids": 0,
+      "loss_rates": [
+        0.0,
+        0.0
+      ],
+      "packs": [
+        "final_1",
+        "final_2"
+      ],
+      "loss_rate": 0.0,
+      "duplicate_id_rate": 0.0,
+      "n_packs": 2
+    },
+    {
+      "qos": 1,
+      "disconnect_s": 60,
+      "rate_mode": "bursty",
+      "cell_id": "qos1_d60_bursty",
+      "n_lost": 0,
+      "n_published": 500,
+      "n_duplicate_ids": 0,
+      "loss_rates": [
+        0.0,
+        0.0
+      ],
+      "packs": [
+        "final_1",
+        "final_2"
+      ],
+      "loss_rate": 0.0,
+      "duplicate_id_rate": 0.0,
+      "n_packs": 2
+    },
+    {
+      "qos": 1,
+      "disconnect_s": 60,
+      "rate_mode": "steady",
+      "cell_id": "qos1_d60_steady",
+      "n_lost": 0,
+      "n_published": 500,
+      "n_duplicate_ids": 0,
+      "loss_rates": [
+        0.0,
+        0.0
+      ],
+      "packs": [
+        "final_1",
+        "final_2"
+      ],
+      "loss_rate": 0.0,
+      "duplicate_id_rate": 0.0,
+      "n_packs": 2
+    }
+  ]
+}

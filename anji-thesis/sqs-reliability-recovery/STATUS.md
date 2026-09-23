@@ -1,6 +1,12 @@
-## Alignment note (2026-09-21 — initial_eval_1 gate)
+## Alignment note (2026-09-23 — SoT + scoped_E audit)
 
-**CA2 research alignment = 100% (floor).** **COMPLETE.** Re-checked after **ONE** live initial evaluation; still 100 → `INITIAL_EVAL_PASS=yes`.  
+**ONE-file SoT:** `../CA2_PROPOSED_VS_ARTEFACT.md`  
+**Audit (binding):** `scripts/audit_scoped_e_root_causes.py` → EXIT 0 / remediable_total=0 / `DATED_WONTFIX_FULL_IV_LIVE_AMENDED`  
+**Honest CA2 floor:** **~78 under disclosed lite + scoped_E** (do **not** market ALIGNMENT=100 / full IV complete).  
+**MOVE ALLOWED:** **yes** (2026-09-23).  
+**Scoped E:** `results/live/scoped_E_guidance_1/` **20/20** (`E_guidance_transfer` localsim).  
+**Full IV live matrix:** dated WONTFIX — `../DATED_WONTFIX_N_Anji_2026-09-23.md`.
+
 **Final-3 progress:** `results/live/final_1/` + `final_2/` + `final_3/` **DONE (3/3)** — each 4/4 destroyed. Baseline: `results/live/FINAL3_BASELINE.md`.
 
 Authoritative confirmatory stats remain packaging-deduped localsim: `results/summary/stats_H1_H2_H3.json` (`runs: 350`, `backend: localsim`). Live smoke: prior `results/live/key_cells/` plus **initial_eval_1** under `results/live/initial_eval_1/` (both destroyed after round). No live $n{>}1$ numbers exist.
@@ -61,9 +67,14 @@ Authoritative confirmatory stats remain packaging-deduped localsim: `results/sum
 - Live $n{=}3$ plan: `DESIGN_RATIONALE_BEYOND_CA2.md`
 
 ```
-COMPLETE=yes ALIGNMENT=100 CA2_FLOOR=met
+COMPLETE=yes ALIGNMENT=~78 CA2_FLOOR=met_lite_scoped_E
 INITIAL_EVAL_PASS=yes
 FINAL3=done_3of3
+SCOPED_E=20of20
+FULL_IV_LIVE=amended_wontfix
+SOT=CA2_PROPOSED_VS_ARTEFACT.md
+AUDIT_EXIT=0
+MOVE_ALLOWED=yes
 LIVE_FINAL_1=yes
 LIVE_FINAL_2=yes
 LIVE_FINAL_3=yes
@@ -74,23 +85,23 @@ AWS_CLASS=required
 GATE_READY=yes
 LIVE_LITE_COMPLETE=yes
 LIVE_INITIAL_EVAL_1=yes
-LIVE_CONFIRMATORY=not_run
+LIVE_CONFIRMATORY=key_cells_n3_and_scoped_E
 LOCALSIM_N3=yes
 DESTROY_AFTER_ROUND=yes
-BEYOND_CA2=localsim_n3_done_live_n3_deferred
+BEYOND_CA2=localsim_n3_done_live_n3_partial_full_iv_amended
 ```
 ---
 # Project Status: Simulation vs Live AWS
 
 **Student:** Anjaneya Reddy Gurram (24288853)  
 **Project:** Reliability and Recovery of Amazon SQS Messaging under Injected Consumer and Downstream Failures  
-**Last Updated:** September 21, 2026
+**Last Updated:** September 23, 2026
 
 ## Executive Summary
 
-Primary experimental evidence is the **local simulator** (350 packaging-deduplicated design cells). Live AWS lite key-cell smoke: prior `results/live/key_cells/` plus gate **`results/live/initial_eval_1/`** (both 4/4, n=1, eu-west-1, destroyed after round). Live numbers are directional smoke only; confirmatory hypothesis tests remain localsim-only. **DIVE/adaptive_vt was not enabled** in the committed experiment matrix.
+Primary experimental evidence is the **local simulator** (350 packaging-deduplicated design cells) plus **scoped_E_guidance_1 (20/20)** guidance-transfer under fault. Live AWS lite key-cell smoke: prior `results/live/key_cells/` plus gate **`results/live/initial_eval_1/`** and finals (both destroyed after round). Live numbers are directional smoke only; confirmatory hypothesis tests remain localsim-only (null after Holm). Full IV live matrix is **dated WONTFIX**. Authority: `../CA2_PROPOSED_VS_ARTEFACT.md`.
 
-**2026-09-21:** ONE initial live evaluation completed; CA2 re-check still **100%** → `INITIAL_EVAL_PASS=yes`. Final-3 not started. Beyond-CA2 live $n{=}3$ still deferred (keep concurrency low on shared account).
+**2026-09-23:** SoT + scripted audit EXIT 0; MOVE ALLOWED.
 ## Implementation Status
 
 ### Completed (Simulated)

@@ -146,13 +146,10 @@ def _scan_fabricated(remediable: dict[str, int], findings: list[dict]) -> None:
                         "≡",
                         "rejected",
                         "overstated",
-                        "no fabricated",
-                        "fabricated",
-                        "dated wontfix",
-                        "soft n",
-                    )
                         "honest",
                         "not market",
+                        "dated wontfix",
+                        "soft n",
                     )
                 ):
                     continue
