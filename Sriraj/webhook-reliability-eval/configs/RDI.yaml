@@ -1,0 +1,7 @@
+mode: RDI
+description: Full stack — retry + DLQ + Redis idempotency (CA2 integrated framework)
+retry: true
+dlq: true
+idempotency: true
+max_receive_count: 3
+idempotency_ttl_s: 86400

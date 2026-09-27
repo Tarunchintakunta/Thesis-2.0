@@ -1,0 +1,5 @@
+mode: B
+description: Baseline — HMAC ingest + single process attempt; no retry/DLQ/idempotency
+retry: false
+dlq: false
+idempotency: false

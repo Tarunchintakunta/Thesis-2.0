@@ -1,0 +1,6 @@
+mode: R
+description: Retry with exponential backoff + full jitter; no DLQ; no idempotency
+retry: true
+dlq: false
+idempotency: false
+max_receive_count: 3
