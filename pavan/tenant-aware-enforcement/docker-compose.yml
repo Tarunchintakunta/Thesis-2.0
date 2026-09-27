@@ -1,0 +1,17 @@
+# Optional local Postgres + Redis for fuller evaluation.
+# Floor tests do NOT require docker — they use in-memory stand-ins.
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: tenant
+      POSTGRES_PASSWORD: tenant
+      POSTGRES_DB: tenant_enforcement
+    ports:
+      - "54329:5432"
+    volumes:
+      - ./sql/rls_policies.sql:/docker-entrypoint-initdb.d/01_rls.sql:ro
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "63799:6379"

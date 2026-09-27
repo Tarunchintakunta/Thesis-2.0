@@ -1,0 +1,85 @@
+{
+  "generated_at": "2026-09-27T13:19:12+0530",
+  "mode": "local_sim",
+  "note": "LOCAL_SIM / in-memory JWT+RLS+quota \u2014 NOT live AWS RDS/ElastiCache. No real PII.",
+  "dataset": {
+    "type": "synthetic_tenants",
+    "pii": false,
+    "n_tenants": 20,
+    "requests_per_tenant": 100,
+    "cross_tenant_probes": 10000,
+    "generator": "sim.runner.run_pilot"
+  },
+  "aws_mapping": {
+    "auth": "API Gateway / Cognito JWT (local HS256 stand-in)",
+    "app": "Lambda / ECS middleware (local Python)",
+    "db": "RDS PostgreSQL RLS (in-memory + sql/ policies)",
+    "quota": "ElastiCache Redis (in-memory counters)",
+    "evaluation": "local_only_floor"
+  },
+  "metrics": {
+    "mode": "local_sim",
+    "note": "LOCAL_SIM \u2014 not live AWS",
+    "tenants": 20,
+    "requests": 2000,
+    "cross_tenant_attempts": 10031,
+    "cross_tenant_blocked": 10031,
+    "cross_tenant_leaked": 0,
+    "zero_unauthorized_access": true,
+    "jain_fairness_index": 0.993103,
+    "auth_latency_ms": {
+      "p50": 0.0098,
+      "p95": 0.0102,
+      "p99": 0.0125,
+      "n": 2000
+    },
+    "quota_latency_ms": {
+      "p50": 0.0001,
+      "p95": 0.0002,
+      "p99": 0.0002,
+      "n": 2000
+    },
+    "auth_budget_50ms_ok": true,
+    "quota_budget_5ms_ok": true,
+    "hard_rejects": 80,
+    "tenant_api_usage": {
+      "tenant-000": 80,
+      "tenant-001": 100,
+      "tenant-002": 100,
+      "tenant-003": 100,
+      "tenant-004": 100,
+      "tenant-005": 80,
+      "tenant-006": 100,
+      "tenant-007": 100,
+      "tenant-008": 100,
+      "tenant-009": 100,
+      "tenant-010": 80,
+      "tenant-011": 100,
+      "tenant-012": 100,
+      "tenant-013": 100,
+      "tenant-014": 100,
+      "tenant-015": 80,
+      "tenant-016": 100,
+      "tenant-017": 100,
+      "tenant-018": 100,
+      "tenant-019": 100
+    }
+  },
+  "pen_test_10k": {
+    "attempts": 10000,
+    "blocked": 10000,
+    "leaked": 0,
+    "zero_unauthorized": true
+  },
+  "quota_abuse_sample": {
+    "allowed": 50,
+    "rejected": 150,
+    "hard_cap": 50
+  },
+  "targets": {
+    "zero_unauthorized_access": true,
+    "jain_gt_0_9": true,
+    "auth_p95_lt_50ms": true,
+    "quota_p95_lt_5ms": true
+  }
+}

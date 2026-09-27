@@ -1,0 +1,14 @@
+name: tenant-aware-enforcement
+mode_default: local_sim
+n_tenants: 20
+requests_per_tenant: 100
+cross_tenant_probes: 10000
+targets:
+  unauthorized_access: 0
+  jain_fairness_index: 0.9
+  auth_p95_ms: 50
+  quota_p95_ms: 5
+dataset:
+  type: synthetic_tenants
+  pii: false
+note: LOCAL_SIM results are not live AWS.
