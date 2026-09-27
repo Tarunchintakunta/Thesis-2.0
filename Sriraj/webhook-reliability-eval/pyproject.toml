@@ -1,0 +1,9 @@
+[project]
+name = "webhook-reliability-eval"
+version = "0.1.0"
+description = "Serverless webhook retry + DLQ + idempotency evaluation (Sriraj Gannavaram)"
+requires-python = ">=3.11"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
