@@ -1,0 +1,6 @@
+mode: RD
+description: Retry + DLQ capture/replay; no Redis idempotency
+retry: true
+dlq: true
+idempotency: false
+max_receive_count: 3

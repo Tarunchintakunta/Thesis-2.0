@@ -1,0 +1,27 @@
+# Local / pilot experiment plan (CA2-aligned). Live AWS not required for floor.
+name: webhook-reliability-eval
+mode_default: local_sim
+n_events_pilot: 200
+configs: [B, R, RD, RDI]
+fault_rates: [0.0, 0.10, 0.25, 0.50]
+duplicate_rate: 0.10
+permanent_fraction_of_faults: 0.15
+max_receive_count: 3
+backoff:
+  base_ms: 100
+  max_ms: 30000
+  multiplier: 2.0
+  jitter: full
+idempotency_ttl_s: 86400
+hmac_algo: HMAC-SHA256
+metrics:
+  - delivery_success_rate
+  - duplicate_suppression_ratio
+  - latency_p50_p95_p99
+  - dlq_recovery_rate
+dataset:
+  type: synthetic_webhook_payloads
+  pii: false
+note: >
+  Results under results/local_sim are LOCAL_SIM only.
+  Do not present them as live AWS production numbers.
