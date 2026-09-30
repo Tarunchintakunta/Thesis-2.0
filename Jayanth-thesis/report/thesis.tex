@@ -11,6 +11,7 @@
 \setlength{\parindent}{0pt}
 \captionsetup{font=small}
 
+\newcommand{\pdash}{-}
 \begin{document}
 
 % ------------------------------------------------------------------ title
@@ -23,7 +24,7 @@
 \vspace{1.5cm}
 {\large Jayanth Akarapu\par}
 \vspace{0.6cm}
-Research Practicum --- Open Data Practice\par
+Research Practicum, Open Data Practice\par
 Supervisor: Dr.\ Prasanth Nayak\par
 \vfill
 {\large September 2026\par}
@@ -35,13 +36,13 @@ Irish banks process a fast-growing volume of digital transactions. Rule-based se
 
 Following a quantitative experimental design, the study builds one reproducible pipeline. The pipeline covers data cleaning, feature engineering, stratified 80:20 splitting, 5-fold cross-validated hyper-parameter tuning and statistical comparison. It compares the three models in the proposal, Decision Tree, Random Forest and a Support Vector Machine. Logistic Regression, gradient boosting and a transparent two-condition rule serve as baselines.
 
-On the held-out test set, the Decision Tree and the Random Forest perform the same: F1 is 0.996, with a 95\% bootstrap confidence interval of 0.994--0.998. Recall is 0.9996 and ROC-AUC is 0.997--0.998. Both are significantly better than the SVM (F1 0.989) and Logistic Regression (F1 0.991), with McNemar $p<0.001$. The SVM is also the slowest model, taking about 80 times longer than the Decision Tree to train.
+On the held-out test set, the Decision Tree and the Random Forest perform the same: F1 is 0.996, with a 95\% bootstrap confidence interval of 0.994 to 0.998. Recall is 0.9996 and ROC-AUC is 0.997 to 0.998. Both are significantly better than the SVM (F1 0.989) and Logistic Regression (F1 0.991), with McNemar $p<0.001$. The SVM is also the slowest model, taking about 80 times longer than the Decision Tree to train.
 
 A set of robustness experiments puts these near-perfect scores in context:
 \begin{itemize}[nosep]
 \item A two-condition rule learnt from the training data reaches F1 0.995: \emph{merchant has a suspicious history} and \emph{amount $>$ 197{,}827}. The labels therefore follow a nearly deterministic pattern.
 \item Removing merchant information lowers F1 to 0.80.
-\item For merchants that the model never saw in training, F1 falls to 0.86--0.88.
+\item For merchants that the model never saw in training, F1 falls to 0.86 to 0.88.
 \end{itemize}
 
 Big Data Analytics works best in this setting as a way to find and then operationalise simple, auditable risk patterns. Black-box accuracy on its own adds little here. The report ends with recommendations for Irish banks that link these findings to GDPR, DORA and the EU AI Act.
@@ -114,27 +115,35 @@ Traditional signature-based and rule-based controls are good at catching known, 
 \subsection{Big Data Analytics in cybersecurity}
 \citet{buczak2016survey} surveyed data-mining and ML methods for intrusion detection. They showed that hidden patterns in large security datasets support better detection than hand-written signatures. \citet{martinez2019machine} argued that ML reduces reliance on rule-based approaches by automating threat detection. They also warned that results depend on good data and features.
 
-\citet{ofoegbu2024realtime} described how streaming BDA platforms combined with ML enable real-time threat detection in high-volume environments. \citet{zaharia2016spark} set out the distributed-computing engine that makes such workloads practical. Most of this work is \emph{sector-agnostic}, however. Banking brings its own constraints: strict latency limits, heavy regulation, and a high cost for false alarms.
+\citet{ofoegbu2024realtime} described how streaming BDA platforms combined with ML enable real-time threat detection in high-volume environments. \citet{zaharia2016spark} set out the distributed-computing engine that makes such workloads practical. \citet{kumar2025bigdata} tested ML models on 500{,}000 security incidents and reported 96.8\% accuracy for deep learning, 94.1\% for Random Forest and 92.3\% for SVM, with 35\% fewer false positives when big data analytics was combined with blockchain. \citet{kokogho2025fintech} reviewed how predictive modelling and behaviour analytics support cyber risk management in fintech.
+
+Banking brings its own constraints: strict latency limits, heavy regulation, and a high cost for false alarms. \citet{sathupadi2025banknet} addressed these directly with BankNet, which combines Apache Spark and Kafka with a BiLSTM model to score internet banking transactions in real time. It reached 98.5\% fraud detection accuracy at up to 1000 Mbps. It is the closest example of a big data architecture built for banking, and it guides the design side of this project.
 
 \subsection{Machine learning for cyber threat detection}
-Early deep-learning IDS work \citep{javaid2016deep, vinayakumar2019deep} and hybrid CNN--LSTM designs \citep{khan2019scalable} showed accuracy gains over classical IDS. The systematic study by \citet{ahmad2021network} found that ML and deep learning beat conventional security strategies consistently. It also listed recurring problems: class imbalance, computational cost and model maintenance.
+Early deep-learning IDS work \citep{javaid2016deep, vinayakumar2019deep} and hybrid CNN-LSTM designs \citep{khan2019scalable} showed accuracy gains over classical IDS. The systematic study by \citet{ahmad2021network} found that ML and deep learning beat conventional security strategies consistently. It also listed recurring problems: class imbalance, computational cost and model maintenance.
 
 \citet{hozouri2025comprehensive} reviewed a large body of IDS research, covering signature-, anomaly- and hybrid-based detection. They named adversarial robustness, real-time latency, scalability, explainability (SHAP, LIME) and imbalanced data as open challenges.
 
-\citet{zhang2025intelligent} built an ensemble of deep networks on the BoT-IoT dataset. The ensemble reached 99.985\% accuracy and 99.54\% F1. The authors handled severe class imbalance with SMOTE and class-weighted loss. These results are impressive, but they come from network-traffic benchmarks, not financial transactions.
+\citet{zhang2025intelligent} built an ensemble of deep networks on the BoT-IoT dataset. The ensemble reached 99.985\% accuracy and 99.54\% F1. These results are impressive, but they come from network-traffic benchmarks, not financial transactions.
 
 \subsection{Intrusion detection systems and datasets}
 \citet{ring2019survey} and \citet{ferrag2020deep} showed that published detection performance depends heavily on the dataset. Many benchmark datasets are dated, synthetic or unrepresentative, and models tuned on them may not transfer to real deployments. This point is central to the present study. Section~\ref{sec:eval} tests directly how far performance on a public transaction dataset reflects a learnable, general signal rather than dataset artefacts.
 
 Privacy is another IDS concern. \citet{laddi2025federated} proposed a federated-learning IDS in which organisations train collaboratively without pooling raw data. It reached 94.16\% accuracy and 93.82\% F1. This design is attractive under GDPR \citep{gdpr2016}.
 
+\citet{pospichal2026rf} show how a Random Forest IDS should be evaluated carefully. On UNSW-NB15 they combined mutual-information feature selection, randomised hyper-parameter search and SMOTE, and reported F1 between 0.93 and 0.98 across five attack types. Their protocol of tuning on training data only and reporting per-class F1 is followed in this study.
+
 \subsection{Cyber threat intelligence and predictive analytics}
 \citet{montasari2020application} argued that AI and ML turn large volumes of security telemetry into actionable cyber threat intelligence. This supports proactive rather than reactive defence.
 
-\citet{padmanaban2026actp} proposed a banking-specific framework, the Automated Cyber Threat Detection and Prevention (ACTP) tool. It combines reinforcement learning, ethical-hacking simulation and adversarial training. The tool reported 88.2\% accuracy, a 5.1\% false-positive rate and 42\% fewer false negatives than baseline IDS. This highlights that attackers adapt, and that robustness matters as much as accuracy on a static test set.
+\citet{padmanaban2026actp} proposed a banking-specific framework, the Automated Cyber Threat Detection and Prevention (ACTP) tool. It combines reinforcement learning, ethical-hacking simulation and adversarial training. The tool reported 88.2\% accuracy and a 5.1\% false-positive rate. This highlights that attackers adapt, and that robustness matters as much as accuracy on a static test set. \citet{kovacevic2025ai} make the same point conceptually, describing data poisoning and evasion attacks against banking AI and the dual use of AI by attackers.
+
+\citet{eshra2025threat} studied threat intelligence in financial institutions and reported that more mature threat intelligence was associated with 33.7\% lower breach likelihood and 28\% faster incident response. \citet{ullah2026risk} proposed a risk assessment framework for US banks with a hybrid XGBoost and LSTM model (96.4\% accuracy, ROC-AUC 0.982), although on simulated data.
 
 \subsection{Big Data Analytics in banking security and fraud detection}
-\citet{hasan2023bigdata} reviewed Big Data in banking operations. They found clear benefits for fraud monitoring and risk management, along with persistent concerns about privacy, regulation and governance. The systematic review of ML-based financial fraud detection by \citet{ali2022financial} found that Random Forest, Decision Tree and SVM are the most frequently used and best-performing classical algorithms.
+\citet{hasan2023bigdata} reviewed Big Data in banking operations. They found clear benefits for fraud monitoring and risk management, along with persistent concerns about privacy, regulation and governance. The systematic review of ML-based financial fraud detection by \citet{ali2022financial} covered 93 articles and found that credit card fraud is the most studied fraud type and that SVM and artificial neural networks are the most popular algorithms.
+
+Recent banking studies point to tree ensembles. \citet{sanda2026banking} compared Logistic Regression, Random Forest, SVM, gradient boosting and a neural network on a Kaggle banking fraud dataset with SMOTE and a 70:15:15 split; Random Forest was best with 97.2\% accuracy and 98.4\% AUC. \citet{dhammayogi2026early} compared Random Forest, XGBoost and SVM under extreme imbalance and found ROC-AUC of 0.992, 0.995 and 0.935 respectively, with SHAP showing transaction frequency and amount spikes as the key features. \citet{baisholan2025fraudx} combined Random Forest and XGBoost with threshold tuning and SHAP on credit card data, reaching 95\% recall and 97\% AUC-PR.
 
 \citet{naeem2026mlfraud} compared rule-based, ML and AI-driven fraud detection in digital banking. In their simulated set-ups, gradient boosting (XGBoost) scored best, ahead of Random Forest, SVM and Logistic Regression. They stressed explainability for regulators. Their results are based on a \emph{theoretical simulation} rather than real transactions, which reinforces the need for empirical comparisons on actual transaction data.
 
@@ -157,8 +166,12 @@ Study & Domain / data & Method & Key limitation for this project \\
 \citet{ahmad2021network} & Network IDS & ML vs DL systematic study & Imbalance, maintenance cost \\
 \citet{hozouri2025comprehensive} & IDS benchmarks & Survey (ML, DL, XAI) & No banking focus \\
 \citet{zhang2025intelligent} & BoT-IoT & DL ensemble + SMOTE & Network traffic, not transactions \\
-\citet{laddi2025federated} & Network IDS & Federated ML & Unnamed dataset, no banking \\
-\citet{padmanaban2026actp} & Banking attacks & Adversarial ML / RL & Conceptual prototype \\
+\citet{laddi2025federated} & Network IDS & Federated ML & No banking data \\
+\citet{sathupadi2025banknet} & Internet banking & BiLSTM with Spark and Kafka & Deep model, hard to audit \\
+\citet{pospichal2026rf} & UNSW-NB15 & RF, feature selection, SMOTE & Network traffic, not transactions \\
+\citet{sanda2026banking} & Banking fraud & LR, RF, SVM, GB, NN & Accuracy-led reporting \\
+\citet{dhammayogi2026early} & Digital banking & RF, XGBoost, SVM, SHAP & No rule baseline \\
+\citet{padmanaban2026actp} & Banking attacks & Adversarial ML and RL & Lower accuracy (88.2\%) \\
 \citet{ali2022financial} & Financial fraud & Systematic review & No new experiments \\
 \citet{naeem2026mlfraud} & Digital banking & RF, XGB, SVM, LR & Simulated results only \\
 \bottomrule
@@ -208,7 +221,7 @@ Feature(s) & Definition / rationale \\
 \subsection{Models}
 Three models come from the proposal:
 \begin{itemize}[nosep]
-\item \textbf{Decision Tree} (CART) \citep{breiman1984classification}: interpretable if--then rules.
+\item \textbf{Decision Tree} (CART) \citep{breiman1984classification}: interpretable if-then rules.
 \item \textbf{Random Forest} \citep{breiman2001random}: a bagged ensemble of 300 trees.
 \item \textbf{Support Vector Machine} with an RBF kernel \citep{cortes1995support}.
 \end{itemize}
@@ -359,12 +372,12 @@ SVM (RBF) & 0.9909 & 0.9857 & 0.9930 & 0.9893 [0.987, 0.992] & 0.9965 & 0.9911 &
 
 All models are highly accurate. The two tree-based models from the proposal make exactly the same predictions on the test set: 22 false alarms and a single missed suspicious transaction out of 2{,}841. Gradient boosting misses none but raises two extra false alarms, and it has the best ranking quality (ROC-AUC 0.9987). The SVM is clearly the weakest of the proposal's models. It misses 20 suspicious transactions, twenty times as many as the tree models.
 
-Figure~\ref{fig:roc} shows the ROC and precision--recall curves, and Figure~\ref{fig:cm} the confusion matrices.
+Figure~\ref{fig:roc} shows the ROC and precision-recall curves, and Figure~\ref{fig:cm} the confusion matrices.
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.95\linewidth]{roc_pr_curves}
-\caption{ROC (left) and precision--recall (right) curves on the test set. The dashed line on the right is the prevalence baseline.}\label{fig:roc}
+\caption{ROC (left) and precision-recall (right) curves on the test set. The dashed line on the right is the prevalence baseline.}\label{fig:roc}
 \end{figure}
 
 \begin{figure}[H]
@@ -446,12 +459,12 @@ Random Forest gives the same F1 of 0.9960 with no re-balancing, with balanced cl
 \subsection{Temporal robustness}
 In production, a model is trained on the past and used on the future. The models were therefore retrained on transactions before 17~March~2024 and tested on all later ones. The later period has a much lower suspicious rate, 19.6\%.
 
-The tree models and gradient boosting hold up fully: F1 is 0.999--1.000. The SVM with calendar features degrades sharply: F1 falls to 0.855 and recall to 0.750. Once calendar features are removed, its F1 recovers to 0.994.
+The tree models and gradient boosting hold up fully: F1 is 0.999 to 1.000. The SVM with calendar features degrades sharply: F1 falls to 0.855 and recall to 0.750. Once calendar features are removed, its F1 recovers to 0.994.
 
 \emph{Calendar features are a liability for drift-sensitive models.} Year and month encode the historic base rate, and that rate changes over time. For deployment, they should be left out or monitored.
 
 \subsection{Generalisation to unseen merchants}
-The hardest test holds out whole merchant descriptions, using 5-fold \texttt{GroupKFold}. The model must then judge transactions at merchants it has never seen, using only channel, amount, balance and date. Table~\ref{tab:group} shows that F1 falls to 0.86--0.88 and varies more across folds (sd $\approx$ 0.05). The ranking quality stays good, with ROC-AUC 0.95--0.97.
+The hardest test holds out whole merchant descriptions, using 5-fold \texttt{GroupKFold}. The model must then judge transactions at merchants it has never seen, using only channel, amount, balance and date. Table~\ref{tab:group} shows that F1 falls to 0.86 to 0.88 and varies more across folds (sd $\approx$ 0.05). The ranking quality stays good, with ROC-AUC 0.95 to 0.97.
 
 Gradient boosting and Random Forest generalise best. This is the most realistic estimate of how the models would handle a new e-commerce or crypto platform, and it shows why continuous retraining matters.
 
