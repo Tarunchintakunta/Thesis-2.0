@@ -1,0 +1,29 @@
+Sources for Kasi_Recent_Articles (24 Sep 2026 IST)
+
+1) Zhao et al. (2025) ELFA-Log
+   File: 1_Zhao_2025_ELFA-Log.pdf
+   Source: Reused verified MDPI OA copy from
+           Desktop/Thesis2.0/kasi-thesis/baseline_papers/Zhao_et_al_2025_ELFA-Log_baseline.pdf
+   Status: FULL TEXT (publisher OA). Title/authors verified via pdftotext page 1. 21 pages.
+   DOI: 10.3390/computers14070272
+
+2) Ali et al. (2025) A Comprehensive Study of Machine Learning Techniques for Log-Based Anomaly Detection
+   File: 2_Ali_2025_ML_Log_Anomaly_Detection.pdf
+   Source: University of Luxembourg ORBilu Author Accepted Manuscript
+           https://orbilu.uni.lu/bitstream/10993/57622/1/emse2025.pdf
+   Note: Springer content/pdf gateway returned HTML from the agent environment.
+         ORBilu AAM is post-peer-review and cites VoR DOI 10.1007/s10664-025-10669-3.
+         Matching arXiv preprint also exists: arXiv:2307.16714.
+   Status: FULL TEXT (legal AAM / institutional OA). 68 pages. Title/authors verified.
+
+3) Nguyen et al. (2025) Silent Failures in Stateless Systems: Rethinking Anomaly Detection for Serverless Computing
+   File: 3_Nguyen_2025_Silent_Failures_Serverless.pdf
+   Source: arXiv preprint arXiv:2507.04969v3 (https://arxiv.org/pdf/2507.04969.pdf)
+   Note: IEEE Xplore likely paywalled; arXiv is authors' legal open preprint (Umeå University).
+   Status: FULL TEXT (legal preprint). 12 pages. Title/authors verified.
+   IEEE DOI: 10.1109/SOSE67019.2025.00006
+
+Explainer: Kasi_Articles_Plain_Explanation.pdf (+ .md)
+   Built with pandoc + xelatex, mainfont Times New Roman, 12pt, 8 pages.
+   Fonts (pdffonts): TimesNewRomanPS-BoldMT, TimesNewRomanPSMT, TimesNewRomanPS-ItalicMT embedded;
+   LMMono used only for inline code spans.
