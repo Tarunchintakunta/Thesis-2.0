@@ -1,0 +1,12 @@
+\usepackage{fontspec}
+\setmainfont{Times New Roman}
+\usepackage[margin=1in]{geometry}
+\usepackage{setspace}
+\setstretch{1.5}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.6em}
+\usepackage{titlesec}
+\titleformat{\section}{\normalfont\bfseries\fontsize{12.5}{16}\selectfont}{\thesection}{0em}{}
+\titleformat{\subsection}{\normalfont\bfseries\fontsize{12.5}{16}\selectfont}{\thesubsection}{0em}{}
+% pandoc uses \section* for ## 
+\renewcommand{\normalsize}{\fontsize{12}{18}\selectfont}

@@ -1,0 +1,43 @@
+/* Shared Abstract+Introduction style — Times New Roman throughout */
+body {
+  font-family: "Times New Roman", Times, serif;
+  font-size: 12pt;
+  line-height: 1.5;
+  margin: 1in;
+  color: #000;
+}
+h1 {
+  font-family: "Times New Roman", Times, serif;
+  font-size: 15pt;
+  font-weight: bold;
+  line-height: 1.3;
+  margin: 0 0 0.6em 0;
+  text-align: left;
+  color: #000;
+}
+h2 {
+  font-family: "Times New Roman", Times, serif;
+  font-size: 12.5pt;
+  font-weight: bold;
+  line-height: 1.3;
+  margin: 1.2em 0 0.5em 0;
+  color: #000;
+}
+p {
+  font-family: "Times New Roman", Times, serif;
+  font-size: 12pt;
+  line-height: 1.5;
+  margin: 0 0 0.75em 0;
+  text-align: justify;
+}
+/* Quiet identity line under title (first non-heading paragraph before Abstract) */
+body > p:first-of-type {
+  text-align: left;
+  font-size: 11pt;
+  margin-bottom: 1em;
+  color: #222;
+}
+code, tt {
+  font-family: "Times New Roman", Times, serif;
+  font-size: 11pt;
+}
