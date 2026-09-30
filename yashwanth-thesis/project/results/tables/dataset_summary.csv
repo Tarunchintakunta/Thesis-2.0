@@ -1,0 +1,17 @@
+Metric,Value
+Total Transactions,"284,807"
+Features,30
+Legitimate Transactions,"284,315"
+Fraudulent Transactions,492
+Fraud Percentage,0.1727%
+Missing Values,0
+Duplicate Rows,1081
+Mean Amount,€88.35
+Max Amount,€25691.16
+Fraud Mean Amount,€122.21
+Legit Mean Amount,€88.29
+Training Samples,"198,608"
+Testing Samples,"85,118"
+Best Model,Random Forest
+Best F1 Score,0.8235
+Best ROC AUC,0.9473
