@@ -141,26 +141,24 @@ def figures(df, date, by_desc):
 
 # ---------------------------------------------------------------- report
 ss = getSampleStyleSheet()
-H1 = ParagraphStyle("H1", parent=ss["Heading1"], fontSize=15, textColor=colors.HexColor("#1F3864"), spaceAfter=6)
-H2 = ParagraphStyle("H2", parent=ss["Heading2"], fontSize=12, textColor=colors.HexColor("#2E75B6"), spaceBefore=8)
-B = ParagraphStyle("B", parent=ss["BodyText"], fontSize=9.5, leading=13.5, alignment=TA_JUSTIFY, spaceAfter=5)
-C = ParagraphStyle("C", parent=B, fontSize=8, leading=10, alignment=0, spaceAfter=0)
-CAP = ParagraphStyle("CAP", parent=B, fontSize=8.5, textColor=colors.grey, alignment=1)
+H1 = ParagraphStyle("H1", parent=ss["Heading1"], fontName="Times-Bold", fontSize=14, spaceBefore=10, spaceAfter=6)
+H2 = ParagraphStyle("H2", parent=ss["Heading2"], fontName="Times-Bold", fontSize=12, spaceBefore=8, spaceAfter=4)
+B = ParagraphStyle("B", parent=ss["BodyText"], fontName="Times-Roman", fontSize=11.5, leading=16, alignment=TA_JUSTIFY, spaceAfter=7)
+C = ParagraphStyle("C", parent=B, fontSize=9.5, leading=12, alignment=0, spaceAfter=0)
+CAP = ParagraphStyle("CAP", parent=B, fontSize=10, alignment=1)
+REF = ParagraphStyle("REF", parent=B, fontSize=10.5, leading=14, alignment=0, leftIndent=14, firstLineIndent=-14)
 
 
-def table(rows, widths, head=True):
-    t = Table([[Paragraph(str(c), C) for c in r] for r in rows], colWidths=[w * cm for w in widths], repeatRows=1)
-    st = [("GRID", (0, 0), (-1, -1), .4, colors.HexColor("#BFBFBF")), ("VALIGN", (0, 0), (-1, -1), "TOP"),
-          ("ROWBACKGROUNDS", (0, 1), (-1, -1), [colors.white, colors.HexColor("#F2F6FC")])]
-    if head:
-        st.append(("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#DCE6F2")))
-    t.setStyle(TableStyle(st))
+def table(rows, widths):
+    t = Table([[Paragraph(f"<b>{c}</b>" if i == 0 else str(c), C) for c in r] for i, r in enumerate(rows)],
+              colWidths=[w * cm for w in widths], repeatRows=1)
+    t.setStyle(TableStyle([("GRID", (0, 0), (-1, -1), .5, colors.black), ("VALIGN", (0, 0), (-1, -1), "TOP")]))
     return t
 
 
-def fig(name, caption, w=15):
+def fig(name, caption, w=14):
     img = Image(str(FIG / name)); img.drawHeight = img.drawHeight * (w * cm) / img.drawWidth; img.drawWidth = w * cm
-    return [img, Paragraph(caption, CAP), Spacer(1, 6)]
+    return [Spacer(1, 4), img, Paragraph(caption, CAP), Spacer(1, 6)]
 
 
 def P(text):
@@ -168,236 +166,153 @@ def P(text):
 
 
 def footer(canvas, doc):
-    canvas.saveState(); canvas.setFont("Helvetica", 7.5); canvas.setFillColor(colors.grey)
-    canvas.drawString(2 * cm, 1.2 * cm, "Week 2 - Literature Review (continued) and Dataset Collection | Jayanth Akarapu")
-    canvas.drawRightString(A4[0] - 2 * cm, 1.2 * cm, f"Page {doc.page}"); canvas.restoreState()
+    canvas.saveState(); canvas.setFont("Times-Roman", 9)
+    canvas.drawCentredString(A4[0] / 2, 1.2 * cm, str(doc.page)); canvas.restoreState()
 
 
 def report(p, dd):
-    s = []
-    s += [Spacer(1, 3 * cm), Paragraph("Week 2 Progress Report", H1),
-          Paragraph("Literature Review (continued) and Dataset Collection", H2), Spacer(1, 10),
-          P("<b>Project:</b> Analysing the Role of Big Data Analytics for Cyber Threat Detection and Prevention in "
-            "Banking Organisations of Ireland"),
-          P("<b>Student:</b> Jayanth Akarapu"), P("<b>Course:</b> Open Data Practice - Research Practicum"),
-          P("<b>Supervisor:</b> Dr. Prasanth Nayak"),
-          P("<b>Gantt activities this week:</b> Literature Review (continued), Dataset Collection"),
-          Spacer(1, 14),
-          table([["Section", "Content"],
-                 ["1", "Week 2 scope against the project Gantt chart"],
-                 ["2", "Literature review: thematic synthesis, method comparison matrix, refined gaps"],
-                 ["3", "Dataset collection: selection, acquisition, data dictionary, quality audit, first look"],
-                 ["4", "Ethics and data governance"],
-                 ["5", "Progress status, risks and Week 3 plan"]], [2, 13]),
-          PageBreak()]
-
-    # 1 scope
-    s += [Paragraph("1. Week 2 Scope", H1),
-          P("The project Gantt chart (CA1 proposal, Section 3.8) runs Literature Review from August to the end of "
-            "September and Dataset Collection across August. Data Preprocessing begins in September. Week 2 therefore "
-            "has two tasks: move the literature review from paper-by-paper summaries to a critical synthesis, and "
-            "obtain, document and audit the dataset that the experiments will use."),
-          table([["Gantt activity", "Planned window", "Week 2 target", "Status"],
-                 ["Literature Review", "Aug - end Sep", "Thematic synthesis, comparison matrix, refined gaps", "On track"],
-                 ["Dataset Collection", "Aug", "Dataset selected, downloaded, verified and profiled", "Complete"],
-                 ["Data Preprocessing", "Sep - end Oct", "Not started; issues logged in Section 3.6 feed it", "Next"]],
-                [3.5, 3, 6.5, 2])]
-
-    # 2 literature
-    s += [Paragraph("2. Literature Review (continued)", H1),
-          Paragraph("2.1 Thematic synthesis", H2),
-          P("Week 1 summarised 15 papers (2025-2026) individually. This week the papers were read against each other "
-            "to find where they agree, where they disagree and what none of them tests. Five findings shape the "
-            "study design."),
-          P("<b>(a) Tree ensembles are the consistent winner on tabular security data.</b> Random Forest is the best "
-            "or joint-best model in Papers 4, 10, 11 and 12, and the IDS survey (Paper 7) reports the same across "
-            "NSL-KDD, UNSW-NB15 and CICIDS2017. SVM is competitive but costs more compute (Paper 12). This supports "
-            "the proposal's choice of Decision Tree, Random Forest and SVM, with Random Forest as the expected leader "
-            "and Decision Tree as the interpretable reference."),
-          P("<b>(b) Reported scores are high and hard to compare.</b> Accuracy values of 96-99% (Papers 4, 9, 10, 11) "
-            "come from different datasets, splits and imbalance treatments. Only Paper 10 states its resampling method "
-            "(SMOTE). None reports a simple rule-based comparator, so it is unclear how much the ML adds over the "
-            "rules banks already run. This study will therefore report precision, recall, F1 and ROC-AUC on one "
-            "fixed held-out split, and include a rule baseline."),
-          P("<b>(c) Big data architecture is described more than it is measured.</b> Papers 1 and 2 argue for "
-            "Kafka/Spark/Flink pipelines, and Paper 1 reports sub-second latency, but on simulated data and without "
-            "a model-by-model cost comparison. Measuring training and scoring time as data size grows gives a "
-            "practical, testable answer to RQ1 on the scale this project can run."),
-          P("<b>(d) Robustness and drift are named as open problems.</b> Paper 7 lists concept drift and adversarial "
-            "robustness as unresolved; Paper 6 shows adversarial training helps but only on synthetic attack "
-            "scenarios. A time-ordered split (train on earlier months, test on later ones) and a test on entities "
-            "unseen in training are cheap ways to probe this within scope."),
-          P("<b>(e) Governance is the Irish and EU angle.</b> Papers 8, 13, 14 and 15 connect detection to GDPR, "
-            "federated learning, DORA/NIS2 and the EU AI Act. For Irish banks, an explainable model is a compliance "
-            "need, not an extra. Feature importance (and SHAP where feasible) will be reported to answer RQ3 and RQ4."),
-          Paragraph("2.2 Method comparison matrix", H2),
-          table([["#", "Study", "Models", "Data", "Class balance", "Metrics / result", "Use here"],
-                 ["1*", "Sathupadi et al. 2025", "Kafka + ML classifiers", "Simulated banking", "n/s", "Sub-second latency", "Pipeline design"],
-                 ["2", "Kumar et al. 2025", "RF, SVM, NN (review)", "Security datasets", "n/s", "Up to 40% over rules", "Big data framing"],
-                 ["3", "Kokogho et al. 2025", "Predictive risk scoring", "Fintech transactions", "n/s", "+35% early detection", "Risk context"],
-                 ["4*", "Ali et al. 2025", "RF, SVM, DT, GB", "CICIDS2017", "n/s", "RF Acc 98.4%, F1 0.97", "Evaluation protocol"],
-                 ["5", "Mizanur et al. 2025", "IF, AE, K-Means + RF, SVM, NB", "Network traffic", "Analysed", "P 0.96, R 0.94", "Anomaly option"],
-                 ["6", "Padmanaban et al. 2026", "RF, SVM + adversarial training", "Synthetic banking attacks", "n/s", "+42% robustness", "Robustness"],
-                 ["7*", "Hozouri et al. 2025", "Survey, 150+ IDS papers", "NSL-KDD, UNSW-NB15, CICIDS2017", "Discussed", "RF, CNN-LSTM best", "Theory; model choice"],
-                 ["8", "Laddi et al. 2025", "Federated IDS", "Network nodes", "n/s", "95.6% Acc; within 2-3% of central", "GDPR angle"],
-                 ["9", "Zhang 2025", "CNN-LSTM", "CIC-IoT2023", "n/s", "99.1% Acc, FPR < 0.4%", "DL contrast"],
-                 ["10*", "Naeem et al. 2026", "DT, RF, SVM", "Digital banking", "SMOTE", "RF AUC 0.987", "Benchmark to beat"],
-                 ["11", "Dhammayogi & Pramartha 2026", "RF (50-500 trees)", "Banking transactions", "n/s", "Acc 98.7% at 200 trees", "Tuning range"],
-                 ["12", "Sanda et al. 2026", "DT, RF, SVM, LR, KNN, NB", "Banking fraud", "n/s", "RF best overall", "Extra baselines"],
-                 ["13", "Eshra et al. 2025", "CTI + ML prioritisation", "SOC simulation", "n/a", "MTTD -58%", "Prevention side"],
-                 ["14", "Ullah et al. 2026", "Predictive cyber-risk", "Financial + cyber events", "n/a", "Losses -31%", "Risk quantification"],
-                 ["15", "Kovacevic et al. 2025", "Review of AI tools", "Banking cases", "n/a", "Fraud losses -52%", "Governance risks"]],
-                [0.8, 2.8, 2.9, 2.6, 1.5, 2.6, 2.2]),
-          Paragraph("* baseline paper. n/s = not stated in the paper; n/a = not a classification study.", CAP),
-          Paragraph("2.3 Refined research gaps and link to research questions", H2),
-          table([["Gap from the synthesis", "How this study responds", "RQ"],
-                 ["G1. High scores are not compared with the simple rules banks already use",
-                  "Add a transparent rule baseline next to DT, RF and SVM on the same split", "RQ2"],
-                 ["G2. Results mix splits and imbalance methods, so they cannot be compared",
-                  "One fixed stratified 80/20 split and seed; imbalance treatment stated and compared", "RQ2"],
-                 ["G3. Big data claims lack cost measurements",
-                  "Record training and scoring time as sample size grows", "RQ1, RQ3"],
-                 ["G4. Drift and generalisation are named but rarely tested",
-                  "Time-ordered split and a held-out-entity test", "RQ2, RQ3"],
-                 ["G5. Little Irish/EU regulatory grounding of the models",
-                  "Explainability outputs and GDPR / AI Act discussion in recommendations", "RQ3, RQ4"]],
-                [5.5, 7.5, 2]),
-          Paragraph("2.4 Datasets used in the literature", H2),
-          P("Most reviewed studies use network-intrusion benchmarks (CICIDS2017, NSL-KDD, UNSW-NB15, CIC-IoT2023) or "
-            "unnamed banking datasets. Network-flow data does not describe banking transactions, and unnamed datasets "
-            "cannot be reproduced. This pushed the selection in Section 3 toward an open, labelled, transaction-level "
-            "banking dataset."),
-          PageBreak()]
-
-    # 3 dataset
     cc = p["class_counts"]
-    s += [Paragraph("3. Dataset Collection", H1),
-          Paragraph("3.1 Selection criteria and candidates", H2),
-          P("Five criteria were set before choosing: (1) transaction-level banking records, (2) a fraud or threat "
-            "label, (3) an open licence permitting academic use, (4) a size that trains the three models on a laptop "
-            "in minutes, and (5) no personal data. The Week 1 plan also listed the Bank Account Fraud (BAF) dataset, "
-            "so it was assessed against the same criteria."),
-          table([["Candidate", "Type", "Size", "Label", "Licence", "Decision"],
-                 ["Bank Transaction Records along Suspicious Flags (Kaggle)", "Simulated bank account transactions",
-                  f"{p['rows']:,} rows", "isSuspicious", "MIT", "<b>Selected</b>: named in the CA1 proposal, meets all five criteria"],
-                 ["Bank Account Fraud suite (Jesus et al., NeurIPS 2022)", "Synthetic account-opening applications",
-                  "1M rows per variant", "fraud_bool", "CC BY-NC-SA 4.0",
-                  "Reserve: application fraud, not transactions; large for SVM"],
-                 ["PaySim (Lopez-Rojas et al., 2016)", "Simulated mobile-money transfers", "6.36M rows", "isFraud",
-                  "CC BY-SA 4.0", "Reserve: mobile money rather than bank accounts"],
-                 ["CICIDS2017", "Network flows", "about 2.8M flows", "Attack type", "Academic use",
-                  "Rejected: network traffic, not banking transactions"]],
-                [3.6, 3, 2, 1.8, 2, 3.6]),
-          Paragraph("3.2 Acquisition and verification", H2),
-          P(f"The dataset was downloaded with the Kaggle API: <font face='Courier'>kaggle datasets download -d "
-            f"{KAGGLE_ID} --unzip -p data</font>. The API token is kept in <font face='Courier'>~/.kaggle/</font> "
-            f"and is not committed. Kaggle metadata lists the licence as MIT and describes the data as a realistic "
-            f"simulation of bank transactions. The file <font face='Courier'>{p['file']}</font> is {p['size_mb']} MB; "
-            f"its SHA-256 checksum is recorded so later weeks can prove the same file is used:"),
-          Paragraph(f"<font face='Courier' size='7.5'>{p['sha256']}</font>", B),
-          Paragraph("3.3 Data dictionary", H2),
-          table([["Column", "Type", "Missing", "Unique", "Min", "Max", "Meaning"]] +
-                [[r["column"], r["dtype"], r["missing"], f"{r['unique']:,}", r["min"], r["max"], r["meaning"]] for _, r in dd.iterrows()],
-                [2, 1.4, 1.3, 1.4, 1.7, 2.1, 5.1]),
-          Paragraph("3.4 Initial quality audit", H2),
-          table([["Check", "Result", "Implication"],
-                 ["Rows x columns", f"{p['rows']:,} x {p['columns']}", "Small enough to run SVM without sampling"],
-                 ["Missing cells", f"{p['missing_cells']}", "No imputation needed"],
-                 ["Exact duplicate rows", f"{p['duplicate_rows']}", "No de-duplication needed"],
-                 ["Date parsing (dd-mm-yyyy)", f"{p['unparsed_dates']} failures; {p['date_min']} to {p['date_max']} "
-                  f"({p['distinct_days']} distinct days)", "Enables a time-ordered split and date features"],
-                 ["Negative values", f"debit/credit: 0; balance: {p['negative_balances']}", "Negative balances read as overdrafts; keep"],
-                 ["Rows with both debit and credit > 0", f"{p['rows_debit_and_credit']}", "Each row is one direction"],
-                 ["Rows with neither debit nor credit", f"{p['rows_no_amount']}", "Every row moves money"],
-                 ["Balance values unique", str(p["balance_unique"]), "Balance acts like a row ID; leakage risk"],
-                 ["Balance = previous balance + credit - debit", f"{p['balance_follows_prev_row_pct']}% of rows",
-                  "Rows are not one running account; balance is not a ledger"],
-                 ["Distinct descriptions", f"{p['distinct_descriptions']}", "Low-cardinality categorical; one-hot encode"]],
-                [4.5, 4.5, 6]),
-          Paragraph("3.5 Class distribution", H2),
-          P(f"{cc['1']:,} of {p['rows']:,} transactions ({p['suspicious_rate']:.1%}) are flagged suspicious, a "
-            f"{p['imbalance_ratio']}:1 ratio of normal to suspicious. This is only mildly imbalanced, far from "
-            f"card-fraud benchmarks (about 578:1), and much higher than a real bank's fraud rate. Two consequences: "
-            f"class weights should be enough and SMOTE is tested only as a comparison, and results cannot be read "
-            f"as real-world alert volumes. Precision, recall and F1 on the suspicious class stay the main metrics."),
-          *fig("w2_class_balance.png", "Figure 1. Class distribution of isSuspicious.", 9),
-          PageBreak(),
-          Paragraph("3.6 First look at the data", H2),
-          P(f"The suspicious rate differs sharply by description (Figure 2). {p['descriptions_always_clean']} of the "
-            f"{p['distinct_descriptions']} descriptions are never flagged, while some channels are flagged most of "
-            f"the time. The description field alone is therefore highly predictive. That is useful, but it also "
-            f"warns that models may learn the labelling rule rather than general threat behaviour. A test on "
-            f"descriptions held out of training will be added in model evaluation to check this. Descriptions "
-            f"split into two groups: payment channels such as PCA, IMPS and cash deposit are never flagged, while "
-            f"online merchants, ticket booking and crypto exchanges are flagged in roughly 70-75% of rows."),
-          *fig("w2_rate_by_description.png", "Figure 2. Share of suspicious transactions for the 15 most frequent descriptions."),
-          P(f"Suspicious transactions are larger. Among debit rows the median is "
-            f"{p['median_nonzero_debit_by_class']['1']:,.0f} for suspicious against "
-            f"{p['median_nonzero_debit_by_class']['0']:,.0f} for normal; among credit rows it is "
-            f"{p['median_nonzero_credit_by_class']['1']:,.0f} against {p['median_nonzero_credit_by_class']['0']:,.0f} "
-            f"(Figure 4). Amounts span several orders of magnitude, so a log transform or robust scaling will be used. "
-            f"Over time the data is not uniform (Figure 3): a typical month has about {p['median_rows_per_month']:,} "
-            f"rows and a suspicious rate near {p['median_monthly_rate']:.0%}, but {p['busiest_month']} holds "
-            f"{p['busiest_month_rows']:,} rows with a {p['busiest_month_rate']:.0%} rate. A random split would mix "
-            f"this spike into both train and test, so a time-ordered split will be reported alongside it."),
-          *fig("w2_monthly.png", "Figure 3. Monthly transaction volume (solid) and suspicious rate (dashed)."),
-          *fig("w2_amounts.png", "Figure 4. Distribution of log10 credit and debit amounts by class."),
-          Paragraph("Issues logged for Data Preprocessing (Week 3 onward)", H2),
-          table([["#", "Issue", "Planned action"],
-                 ["1", "date is text", "Parse; derive month, day of week, day of month"],
-                 ["2", "description is text with a channel prefix (e.g. NETTXN:)", "Split prefix and merchant; one-hot encode"],
-                 ["3", "Amounts are highly skewed", "log1p transform; RobustScaler for SVM"],
-                 ["4", "balance is unique per row", "Test with and without balance to avoid leakage"],
-                 ["5", f"{p['imbalance_ratio']}:1 class ratio", "Stratified split; class weights by default, SMOTE on training data only as a comparison"],
-                 ["6", f"Volume spike in {p['busiest_month']}", "Report a time-ordered split next to the random split"],
-                 ["7", "Description may encode the label", "Add held-out-description and rule-baseline checks"]],
-                [0.8, 6.2, 8]),
-          ]
+    s = [Paragraph("Week 2 Report: Literature Review and Dataset Collection", H1),
+         P("Project: Analysing the Role of Big Data Analytics for Cyber Threat Detection and Prevention in Banking "
+           "Organisations of Ireland<br/>Student: Jayanth Akarapu<br/>Supervisor: Dr. Prasanth Nayak<br/>"
+           "Module: Open Data Practice, Research Practicum"),
+         Paragraph("1. What this week covers", H2),
+         P("In my Gantt chart the literature review runs from August to the end of September, and dataset collection "
+           "happens in August. So this week I did two things. First, I went back over the 15 papers from Week 1 and "
+           "compared them with each other, instead of looking at them one at a time. Second, I chose the dataset, "
+           "downloaded it and checked it properly before any preprocessing starts in September."),
 
-    # 4 ethics, 5 status
-    s += [Paragraph("4. Ethics and Data Governance", H1),
-          P("The dataset is simulated and contains no names, account numbers or other personal data, so GDPR and the "
-            "Irish Data Protection Act 2018 are not engaged by the raw data. It is published under the MIT licence, "
-            "which permits academic use with attribution. Account-style numbers inside the description field (e.g. "
-            "PCA:5001234567:...) are placeholder values, not real identifiers, and are removed when the prefix is "
-            "split out. The file is stored locally, is excluded from version "
-            "control by .gitignore, and is identified by checksum. Because the data is simulated and its merchant "
-            "names are not Irish, results will be presented as evidence about methods, not as measurements of "
-            "Irish banks."),
-          Paragraph("5. Progress, Risks and Week 3 Plan", H1),
-          table([["Item", "Status / note"],
-                 ["Literature synthesis, comparison matrix, refined gaps", "Done (Section 2)"],
-                 ["Dataset selected against written criteria", "Done (Section 3.1)"],
-                 ["Dataset downloaded, checksummed, licence checked", "Done (Section 3.2)"],
-                 ["Data dictionary and quality audit", "Done; saved as data_dictionary.csv and dataset_profile.json"],
-                 ["Risk: labels may follow a simple rule", "Mitigated by a rule baseline and held-out-description test"],
-                 ["Risk: simulated data limits the Irish claim", "Stated as a limitation; Central Bank of Ireland statistics used for context"]],
-                [7, 8]),
-          Spacer(1, 6),
-          P("<b>Week 3 (Literature Review continues; Data Preprocessing starts):</b> add 3-5 papers on concept drift "
-            "and rule-versus-ML comparisons; start the preprocessing notebook (date parsing, description split, "
-            "log amounts, encoding); create the stratified 80/20 split with a fixed seed and save it for all later "
-            "experiments."),
-          Paragraph("References", H1)]
-    refs = [
-        "Ali, M., Raza, A., Akram, M.A., Arif, H. and Ali, A. (2025) 'Machine Learning-Driven Approaches to Cyber Threat Detection: Enhancing IoT Security', Journal of Informatics and IT.",
-        "Dhammayogi, M.B.D. and Pramartha, C.R.A. (2026) 'Early Detection of Digital Transaction Fraud in Banking Systems Using the Random Forest Algorithm', JITECS.",
-        "Hozouri, A., Mirzaei, A. and Effatparvar, M. (2025) 'A Comprehensive Survey on Intrusion Detection Systems with Advances in ML, DL and Emerging Cybersecurity Challenges', Discover Artificial Intelligence.",
-        "Jesus, S., Pombal, J., Alves, D., Cruz, A., Saleiro, P., Ribeiro, R., Gama, J. and Bizarro, P. (2022) 'Turning the Tables: Biased, Imbalanced, Dynamic Tabular Datasets for ML Evaluation', NeurIPS Datasets and Benchmarks Track.",
-        "kaggle.com (2025) Bank Transaction Records along Suspicious Flags. Available at: https://www.kaggle.com/datasets/charanmaik/bank-transaction-records-along-suspicious-flags",
-        "Kovacevic, A., Radenkovic, S. et al. (2025) 'Artificial Intelligence and Cybersecurity in the Banking Sector: Opportunities and Risks', Contemporary Issues in Economics and Business.",
-        "Kumar, B.H., Nuka, S.T., Malempati, M. et al. (2025) 'Big Data in Cybersecurity: Enhancing Threat Detection with AI and ML', Metallurgical and Materials Engineering.",
-        "Lopez-Rojas, E.A., Elmir, A. and Axelsson, S. (2016) 'PaySim: A Financial Mobile Money Simulator for Fraud Detection', 28th European Modeling and Simulation Symposium.",
-        "Naeem, W., Butt, M.A. and Javeid, U. (2026) 'Machine Learning-Based Fraud Detection Systems and Their Effectiveness in Reducing Cybersecurity Risks in Digital Banking', Social Science Review Archives.",
-        "Padmanaban, H., Sharma, Y.K., Sharma, P. et al. (2026) 'Adversarial Machine Learning Framework for Robust Banking Security: The ACTP Tool', Journal of The Institution of Engineers (India).",
-        "Sanda, A.M., Mukhtar, U.S. et al. (2026) 'Enhanced Banking Fraud Detection: A Comparative Analysis of Supervised Machine Learning Algorithms', FETICON Proceedings.",
-        "Sathupadi, K., Achar, S., Bhaskaran, S.V. et al. (2025) 'BankNet: Real-Time Big Data Analytics for Secure Internet Banking', Big Data and Cognitive Computing, 9(2), p. 24.",
-        "Sharafaldin, I., Lashkari, A.H. and Ghorbani, A.A. (2018) 'Toward Generating a New Intrusion Detection Dataset and Intrusion Traffic Characterization', ICISSP.",
-        "Full list of the 15 reviewed papers: Week 1 Literature Review (v2), references 1-15.",
-    ]
-    s += [Paragraph(f"{i}. {r}", ParagraphStyle("R", parent=B, fontSize=8.5, leading=11, alignment=0)) for i, r in enumerate(refs, 1)]
+         Paragraph("2. Literature review progress", H2),
+         P("When I compared the papers, the first thing I noticed is that tree ensembles keep coming out on top. "
+           "Random Forest was the best model in Sanda et al. (2026), with 97.2% accuracy, and Dhammayogi and "
+           "Pramartha (2026) found Random Forest and XGBoost almost level (ROC-AUC 0.992 and 0.995), with SVM "
+           "further behind at 0.935. Kumar et al. (2025) also report Random Forest ahead of SVM. This supports my "
+           "plan to compare Decision Tree, Random Forest and SVM, with Random Forest as the model to beat."),
+         P("The second thing is that the results are hard to compare. The papers use different datasets, "
+           "different splits and different ways of handling imbalance, and two of them, Naeem et al. (2026) and "
+           "Ullah et al. (2026), use simulated data. None of the papers compare their models with the simple rules "
+           "that banks already use, so it is not clear how much machine learning really adds. Because of this I will "
+           "use one fixed train and test split for every model, report precision, recall, F1 and ROC-AUC, and add a "
+           "simple rule-based baseline."),
+         P("Third, big data tools are described more than they are measured. Sathupadi et al. (2025) show Spark and "
+           "Kafka working with a BiLSTM at up to 1000 Mbps, but most other papers only mention these tools. I cannot "
+           "build a full Spark cluster in this project, but I can measure how training and prediction time grow as "
+           "the data gets bigger."),
+         P("Fourth, robustness is a known concern but rarely tested. Padmanaban et al. (2026) show that making a "
+           "model harder to fool brings accuracy down to 88.2%, and Kovacevic et al. (2025) warn about data "
+           "poisoning and evasion attacks. A simple check I can do is to train on earlier months and test on later "
+           "ones, and to test on merchants the model has not seen."),
+         P("Finally, explainability and regulation matter for banks. Dhammayogi and Pramartha (2026) and Baisholan "
+           "et al. (2025) use SHAP to explain predictions, and Laddi et al. (2025) keep data private with federated "
+           "learning. For an Irish bank, being able to explain why a transaction was flagged is a GDPR requirement, "
+           "so I will include feature importance in my results."),
+         P("Table 1 summarises what each paper used and found. Papers marked with * are my baseline papers."),
+         table([["No.", "Paper", "Method", "Data", "Main result"],
+                ["1*", "Sathupadi et al. (2025)", "BiLSTM with Spark and Kafka", "Internet banking transactions", "98.5% fraud detection accuracy"],
+                ["2", "Kumar et al. (2025)", "DL, RF, SVM, K-Means", "500,000 security incidents", "DL 96.8%, RF 94.1%, SVM 92.3%"],
+                ["3", "Kokogho et al. (2025)", "Review", "Fintech", "No experiments"],
+                ["4*", "Pospichal et al. (2026)", "RF with feature selection, SMOTE", "UNSW-NB15", "F1 0.93 to 0.98"],
+                ["5", "Baisholan et al. (2025)", "RF and XGBoost ensemble, SHAP", "European card data", "Recall 95%, AUC-PR 97%"],
+                ["6", "Padmanaban et al. (2026)", "RL with adversarial training", "Simulated attacks", "88.2% accuracy, 5.1% false positives"],
+                ["7*", "Hozouri et al. (2025)", "Survey of IDS", "CIC-IDS2017, KDDCup99, UNSW-NB15", "No experiments"],
+                ["8", "Laddi et al. (2025)", "Federated anomaly detection", "Kaggle network intrusion", "Privacy-preserving IDS"],
+                ["9", "Zhang (2025)", "Ensemble of 21 DL models", "BoT-IoT", "99.985% accuracy"],
+                ["10", "Naeem et al. (2026)", "LR, SVM, RF, LightGBM, XGBoost", "Simulated, 400 rows", "XGBoost 98.2% (template only)"],
+                ["11", "Dhammayogi and Pramartha (2026)", "RF, XGBoost, SVM with SHAP", "Digital banking fraud", "ROC-AUC 0.995, 0.992, 0.935"],
+                ["12*", "Sanda et al. (2026)", "LR, RF, SVM, GB, NN with SMOTE", "Kaggle banking fraud", "RF 97.2%, AUC 98.4%"],
+                ["13", "Eshra et al. (2025)", "Threat intelligence study", "Financial institutions", "33.7% lower breach likelihood"],
+                ["14", "Ullah et al. (2026)", "XGBoost and LSTM hybrid", "Simulated, 125,000 rows", "96.4% accuracy, ROC-AUC 0.982"],
+                ["15", "Kovacevic et al. (2025)", "Discussion paper", "Banking", "Adversarial AI risks"]],
+               [1, 3.6, 4, 3.8, 4.2]),
+         Paragraph("Table 1. Summary of the reviewed papers.", CAP),
+         P("From this comparison I have narrowed my research gaps to five points. There is no comparison with simple "
+           "rules. Results use different setups and cannot be compared. Big data claims are rarely measured. Changes "
+           "over time and attacks are rarely tested. And there is very little Irish or EU regulatory context. Each "
+           "of these is covered by a specific test in my plan."),
+         P("I also noticed that most of these studies use network traffic datasets such as UNSW-NB15 and BoT-IoT, "
+           "or simulated data. Network traffic is not the same as bank transactions, and simulated data cannot show "
+           "real performance. This is why I wanted an open dataset of labelled bank transactions."),
+
+         Paragraph("3. Dataset collection", H2),
+         P("Before choosing, I wrote down what I needed: bank transaction records, a label for suspicious or "
+           "fraudulent activity, an open licence, a size I can train on my laptop, and no personal data. I looked at "
+           "four options. The Bank Account Fraud dataset (Jesus et al., 2022) is about account applications, not "
+           "transactions. PaySim (Lopez-Rojas et al., 2016) is mobile money. CICIDS2017 is network traffic. The Kaggle "
+           "dataset \"Bank Transaction Records along Suspicious Flags\", which I named in my proposal, meets all five "
+           "points, so I chose it."),
+         P(f"I downloaded it with the Kaggle API. Kaggle lists the licence as MIT and describes the data as a "
+           f"simulation of bank transactions. The file is {p['file']} ({p['size_mb']} MB). I saved its SHA-256 "
+           f"checksum so I can show later that I used the same file throughout: "
+           f"<font face='Courier' size='8'>{p['sha256']}</font>"),
+         P(f"The dataset has {p['rows']:,} rows and {p['columns']} columns. Table 2 describes each column."),
+         table([["Column", "Type", "Unique values", "Range", "Meaning"]] +
+               [[r["column"], r["dtype"], f"{r['unique']:,}",
+                 f"{r['min']} to {r['max']}" if r["min"] != "" else "text", r["meaning"]] for _, r in dd.iterrows()],
+               [2.3, 1.5, 2.1, 3.6, 7.1]),
+         Paragraph("Table 2. Data dictionary.", CAP),
+         P(f"I then checked the data quality. There are no missing values and no duplicate rows. All dates follow "
+           f"the day-month-year format and run from {p['date_min']} to {p['date_max']}. Debit and credit are never "
+           f"negative, and every row has either a debit or a credit, never both. {p['negative_balances']} rows have "
+           f"a negative balance, which I read as overdrafts. The balance is different on every row and only matches "
+           f"the previous row's balance in {p['balance_follows_prev_row_pct']}% of cases, so the rows are not one "
+           f"running account. Because of that I will test the models with and without the balance column."),
+         P(f"{cc['1']:,} of the {p['rows']:,} transactions ({p['suspicious_rate']:.1%}) are marked as suspicious. That "
+           f"is much more balanced than real bank fraud, where the rate is well under 1%. It means class weights "
+           f"should be enough to handle the imbalance, but it also means I should not treat the number of alerts as "
+           f"realistic."),
+         *fig("w2_class_balance.png", "Figure 1. Normal and suspicious transactions.", 8),
+         P(f"The most important thing I found is how much the description column matters. {p['descriptions_always_clean']} "
+           f"of the {p['distinct_descriptions']} descriptions are never flagged. These are payment channels such as "
+           f"PCA, IMPS and cash deposits. Online shops, ticket booking sites and crypto exchanges are flagged in about "
+           f"70 to 75% of their rows (Figure 2). So a model could learn the labelling rule instead of real threat "
+           f"behaviour. To check this I will add a test where some descriptions are kept out of training."),
+         *fig("w2_rate_by_description.png", "Figure 2. Share of suspicious transactions for the 15 most common descriptions."),
+         P(f"Suspicious transactions are also bigger. For debits, the median suspicious amount is "
+           f"{p['median_nonzero_debit_by_class']['1']:,.0f} compared with {p['median_nonzero_debit_by_class']['0']:,.0f} "
+           f"for normal ones. Amounts vary a lot, so I will use a log transform (Figure 4). The data is also not "
+           f"spread evenly over time. A normal month has about {p['median_rows_per_month']:,} rows, but "
+           f"{p['busiest_month']} has {p['busiest_month_rows']:,} rows and a much higher suspicious rate (Figure 3). "
+           f"This is another reason to test on later months as well as on a random split."),
+         *fig("w2_monthly.png", "Figure 3. Transactions per month (solid line) and suspicious rate (dashed line)."),
+         *fig("w2_amounts.png", "Figure 4. Credit and debit amounts on a log scale."),
+
+         Paragraph("4. Ethics", H2),
+         P("The data is simulated and has no names, real account numbers or other personal details, so GDPR does not "
+           "apply to the raw file. The account-style numbers inside some descriptions are placeholders. The MIT "
+           "licence allows academic use. I keep the file on my own machine and do not upload it anywhere. Since the "
+           "data is simulated and not Irish, I will present my results as a test of the methods, not as a measurement "
+           "of Irish banks."),
+
+         Paragraph("5. Next week", H2),
+         P("In Week 3 I will keep reading, mainly papers on fraud patterns changing over time and on rules compared "
+           "with machine learning. I will also start preprocessing: converting the dates, splitting the description "
+           "into channel and merchant, log-transforming the amounts, and creating one fixed 80/20 train and test "
+           "split that I will use for all experiments."),
+
+         Paragraph("References", H2)]
+    refs = sorted([
+    "Baisholan, N., Dietz, J.E., Gnatyuk, S., Turdalyuly, M., Matson, E.T. and Baisholanova, K. (2025) FraudX AI: an interpretable machine learning framework for credit card fraud detection on imbalanced datasets. Computers, 14(4), 120. https://doi.org/10.3390/computers14040120",
+    "Dhammayogi, M.B.D. and Pramartha, C.R.A. (2026) Early detection of digital transaction fraud in banking systems using the Random Forest algorithm. Journal of Information Technology and Computer Science, 11(2), pp. 267-279. https://doi.org/10.25126/jitecs.2026112912",
+    "Eshra, S.A., Zohora, F.T., Akter, S., Rasul, I. and Hossain, A. (2025) The role of threat intelligence in preventing financially motivated cyberattacks. Journal of Engineering and Computational Intelligence Review, 3(2), pp. 20-37. https://doi.org/10.63544/f7hdvf20",
+    "Hozouri, A., Mirzaei, A. and Effatparvar, M. (2025) A comprehensive survey on intrusion detection systems with advances in machine learning, deep learning and emerging cybersecurity challenges. Discover Artificial Intelligence, 5(1), 314. https://doi.org/10.1007/s44163-025-00578-1",
+    "Kokogho, E., Okon, R., Omowole, B.M., Ewim, C.P. and Onwuzulike, O.C. (2025) Enhancing cybersecurity risk management in fintech through advanced analytics and machine learning. International Journal of Frontiers in Science and Technology Research, 8(1), pp. 1-23. https://doi.org/10.53294/ijfstr.2025.8.1.0023",
+    "Kovacevic, A., Radenkovic, S.D. and Nikolic, D. (2025) Artificial intelligence and cybersecurity in banking sector: opportunities and risks. In: Proceedings of the 8th International Scientific Conference Contemporary Issues in Economics, Business and Management (EBM 2024). Kragujevac: Faculty of Economics, pp. 425-433. https://doi.org/10.46793/ebm24.425k",
+    "Kumar, B.H., Nuka, S.T., Malempati, M., Sriram, H.K., Mashetty, S. and Kannan, S. (2025) Big data in cybersecurity: enhancing threat detection with AI and ML. Metallurgical and Materials Engineering, 31(3), pp. 12-20. https://doi.org/10.63278/1315",
+    "Laddi, M., Allagi, S., Rachh, R., Sambrekar, K. and Athanikar, S. (2025) An advanced cyber security model using federated machine learning approach for intrusion detection in networks. Journal of Computational and Cognitive Engineering, 4(2), pp. 223-235. https://doi.org/10.47852/bonviewjcce42023751",
+    "Naeem, W., Butt, M.A. and Javeid, U. (2026) Machine learning-based fraud detection systems and their effectiveness in reducing cybersecurity risks in digital banking. Social Science Review Archives, 4(2), pp. 2553-2573. https://doi.org/10.70670/sra.v4i2.2344",
+    "Padmanaban, H., Sharma, Y.K., Sharma, P. and Verma, C. (2026) Adversarial machine learning framework for robust banking security: the automated cyber threat detection and prevention (ACTP) tool. Journal of The Institution of Engineers (India): Series B, 107(3), pp. 1605-1623. https://doi.org/10.1007/s40031-026-01337-1",
+    "Pospichal, J., Augustin, A., Huraj, L., Strelec, P. and Gabriska, D. (2026) Random forest-based network intrusion detection with feature selection and class balancing on UNSW-NB15 traffic. Information, 17(9), 836. https://doi.org/10.3390/info17090836",
+    "Sanda, A.M., Mukhtar, U.S. and Abdulazeez, A.M. (2026) Enhanced banking fraud detection: a comparative analysis of supervised machine learning algorithms. FETICON Proceedings, 4(2), pp. 1-7. https://doi.org/10.63748/h1qaz029",
+    "Sathupadi, K., Achar, S., Bhaskaran, S.V., Faruqui, N. and Uddin, J. (2025) BankNet: real-time big data analytics for secure internet banking. Big Data and Cognitive Computing, 9(2), 24. https://doi.org/10.3390/bdcc9020024",
+    "Ullah, N., Ishaq, M., Rahman, F., Aslam, M.U. and Adil, F. (2026) An advanced AI-driven risk assessment framework for U.S. banking institutions: integrating predictive financial analytics, regulatory-aware governance and cybersecurity risk intelligence. Journal of Management Science Research Review, 5(2), pp. 3176-3204.",
+    "Zhang, H. (2025) Development of an intelligent intrusion detection system for IoT networks using deep learning. Discover Internet of Things, 5, 74. https://doi.org/10.1007/s43926-025-00177-7",
+    "Jesus, S., Pombal, J., Alves, D., Cruz, A., Saleiro, P., Ribeiro, R., Gama, J. and Bizarro, P. (2022) Turning the tables: biased, imbalanced, dynamic tabular datasets for ML evaluation. NeurIPS Datasets and Benchmarks Track.",
+    "Kaggle (2025) Bank Transaction Records along Suspicious Flags. Available at: https://www.kaggle.com/datasets/charanmaik/bank-transaction-records-along-suspicious-flags",
+    "Lopez-Rojas, E.A., Elmir, A. and Axelsson, S. (2016) PaySim: a financial mobile money simulator for fraud detection. 28th European Modeling and Simulation Symposium.",
+    ])
+    s += [Paragraph(r, REF) for r in refs]
     doc = SimpleDocTemplate(str(HERE / "Week2_Report.pdf"), pagesize=A4, leftMargin=2 * cm, rightMargin=2 * cm,
-                            topMargin=1.8 * cm, bottomMargin=1.8 * cm, title="Week 2 Progress Report - Jayanth Akarapu")
+                            topMargin=1.8 * cm, bottomMargin=1.8 * cm, title="Week 2 Report, Jayanth Akarapu")
     doc.build(s, onFirstPage=footer, onLaterPages=footer)
 
 
