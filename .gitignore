@@ -114,3 +114,9 @@ yashaswini-thesis/serverless-fault-localisation/data/runs/sim/
 # editors
 .idea/
 .vscode/
+
+# agent tool state
+.omc/
+
+# Kaggle ULB dataset is 150 MB (over the GitHub limit); re-download with the Kaggle API
+yashwanth-thesis/project/data/creditcard.csv
