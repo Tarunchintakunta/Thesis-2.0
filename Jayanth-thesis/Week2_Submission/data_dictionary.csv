@@ -1,0 +1,7 @@
+column,dtype,role,missing,unique,min,max,example,meaning
+date,object,feature,0,757,,,13-03-2023,"Transaction date (dd-mm-yyyy string, parsed to datetime in preprocessing)"
+description,object,feature,0,43,,,NETTXN:EBAY,"Channel / merchant code, e.g. NETTXN:EBAY (categorical text)"
+debit,float64,feature,0,18521,0.0,1793799.36,0.0,Amount leaving the account (0 when the row is a credit)
+credit,float64,feature,0,15083,0.0,1993110.41,928023.85,Amount entering the account (0 when the row is a debit)
+balance,float64,feature,0,33611,-720071.17,22218339.63,9163047.96,Account balance after the transaction
+isSuspicious,int64,target,0,2,0.0,1.0,1,"Target label: 1 = flagged suspicious, 0 = normal"

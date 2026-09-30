@@ -1,0 +1,42 @@
+{
+  "file": "transactions_Dataset.csv",
+  "size_mb": 2.13,
+  "sha256": "3863ecc55dd883f959c79362de9a2425ad8ac0ec05e5d6d71890488fc65d83f1",
+  "rows": 33611,
+  "columns": 6,
+  "missing_cells": 0,
+  "duplicate_rows": 0,
+  "unparsed_dates": 0,
+  "date_min": "2022-12-16",
+  "date_max": "2025-01-12",
+  "distinct_days": 757,
+  "distinct_descriptions": 43,
+  "negative_values": 310,
+  "rows_debit_and_credit": 0,
+  "rows_no_amount": 0,
+  "class_counts": {
+    "0": 19408,
+    "1": 14203
+  },
+  "suspicious_rate": 0.4226,
+  "imbalance_ratio": 1.37,
+  "median_nonzero_credit_by_class": {
+    "0": 416823.67,
+    "1": 596527.07
+  },
+  "median_nonzero_debit_by_class": {
+    "0": 115298.14,
+    "1": 571349.78
+  },
+  "negative_balances": 310,
+  "months": 26,
+  "median_rows_per_month": 724,
+  "busiest_month": "2023-03",
+  "busiest_month_rows": 10637,
+  "busiest_month_rate": 0.6003,
+  "median_monthly_rate": 0.2049,
+  "balance_unique": true,
+  "balance_follows_prev_row_pct": 2.15,
+  "descriptions_always_clean": 26,
+  "descriptions_with_suspicious": 17
+}
