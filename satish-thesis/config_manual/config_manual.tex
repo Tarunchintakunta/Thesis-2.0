@@ -6,24 +6,25 @@
 \usepackage{xurl}
 \usepackage[hidelinks]{hyperref}
 \setlength{\parskip}{4pt}
+\sloppy
 \setlength{\parindent}{0pt}
 \lstset{basicstyle=\ttfamily\small, backgroundcolor=\color{gray!8}, frame=single, rulecolor=\color{gray!40},
   breaklines=true, columns=fullflexible, keepspaces=true, showstringspaces=false}
 
 \title{Configuration Manual\\[4pt]\large Physics-Informed HVAC Energy Prediction under Incomplete Sensor Data}
 \author{Sathish Kumar Konda (25190890)\\MSc in Artificial Intelligence, National College of Ireland}
-\date{December 2026}
+\date{September 2026}
 
 \begin{document}
 \maketitle
 
 \section{Purpose}
-This manual explains how to set up the environment, obtain the data and reproduce every table and figure of the report. All commands are run from the project folder \texttt{satish-thesis/}.
+This manual explains how to set up the environment, obtain the data and reproduce every table and figure of the report. All commands are run from the project folder \nolinkurl{satish-thesis/}.
 
 \section{Hardware}
 \begin{table}[H]
 \centering\small
-\begin{tabular}{lll}
+\begin{tabular}{p{3.6cm}p{5.0cm}p{5.8cm}}
 \toprule
 Item & Used for the report & Minimum \\
 \midrule
@@ -76,19 +77,19 @@ pip install -r requirements.txt
 For an NVIDIA GPU on Windows or Linux, install the CUDA build of PyTorch from \url{https://pytorch.org} before the other requirements.
 
 \subsection{Google Colab}
-Open \texttt{notebooks/physics\_informed\_hvac.ipynb} in Colab (File, Open notebook, GitHub) and choose a GPU runtime if available. The first cell clones only this project with a sparse checkout and installs missing packages. No other step is needed.
+Open \nolinkurl{notebooks/physics_informed_hvac.ipynb} in Colab (File, Open notebook, GitHub) and choose a GPU runtime if available. The first cell clones only this project with a sparse checkout and installs missing packages. No other step is needed.
 
 \section{Data}
-The hourly table used by all experiments is bundled as \texttt{data/bldg59\_hourly.csv.gz}, so the steps below are optional. To rebuild it from the raw LBNL Building 59 files (Dryad, doi:10.7941/D1N33Q):
+The hourly table used by all experiments is bundled as \nolinkurl{data/bldg59_hourly.csv.gz}, so the steps below are optional. To rebuild it from the raw LBNL Building 59 files (Dryad, doi:10.7941/D1N33Q):
 \begin{enumerate}[nosep]
-\item Create a Kaggle API token (Kaggle, Settings, Create New Token) and save it as \texttt{\textasciitilde/.kaggle/kaggle.json}. Dryad itself blocks scripted downloads, so a Kaggle mirror of the same files is used.
+\item Create a Kaggle API token (Kaggle, Settings, Create New Token) and save it as \nolinkurl{~/.kaggle/kaggle.json}. Dryad itself blocks scripted downloads, so a Kaggle mirror of the same files is used.
 \item Run the download script and the preparation step:
 \end{enumerate}
 \begin{lstlisting}[language=bash]
 bash scripts/download_data.sh
 python src/prepare_data.py
 \end{lstlisting}
-This writes \texttt{data/processed/bldg59\_hourly.csv}, the compressed copy, \texttt{results/data\_dictionary.csv} and \texttt{results/data\_profile.json}. Raw files stay in \texttt{data/raw/}, which git ignores.
+This writes \nolinkurl{data/processed/bldg59_hourly.csv}, the compressed copy, \nolinkurl{results/data_dictionary.csv} and \nolinkurl{results/data_profile.json}. Raw files stay in \nolinkurl{data/raw/}, which git ignores.
 
 \section{Running the project}
 \subsection{Tests}
@@ -101,7 +102,7 @@ Expected output: \texttt{19 passed}.
 \begin{lstlisting}[language=bash]
 python src/experiment.py --quick
 \end{lstlisting}
-It trains every model for two epochs with one seed and writes files ending in \texttt{\_quick}. Use it to check the installation.
+It trains every model for two epochs with one seed and writes files ending in \nolinkurl{_quick}. Use it to check the installation.
 
 \subsection{Full experiment}
 \begin{lstlisting}[language=bash]
@@ -114,13 +115,13 @@ python src/analysis.py
 \item \texttt{--family tree|nn} runs one model family only;
 \item \texttt{--stage main|imputation} runs only the main grid or only the imputation sensitivity study.
 \end{itemize}
-Selected hyperparameters are cached in \texttt{results/chosen\_<task>\_<family>.json}; delete these files to re-tune. \texttt{analysis.py} writes tables to \texttt{results/tables/} (CSV and LaTeX) and figures to \texttt{figures/}.
+Selected hyperparameters are cached in \nolinkurl{results/chosen_<task>_<family>.json}; delete these files to re-tune. \texttt{analysis.py} writes tables to \nolinkurl{results/tables/} (CSV and LaTeX) and figures to \nolinkurl{figures/}.
 
 \subsection{Notebook}
 \begin{lstlisting}[language=bash]
 jupyter notebook notebooks/physics_informed_hvac.ipynb
 \end{lstlisting}
-With \texttt{RUN\_FULL = False} (default) it runs the tests, the smoke run and the analysis on the stored results (about 5 minutes). With \texttt{RUN\_FULL = True} it re-runs the full experiment first. To execute it without a browser:
+With \nolinkurl{RUN_FULL = False} (default) it runs the tests, the smoke run and the analysis on the stored results (about 5 minutes). With \nolinkurl{RUN_FULL = True} it re-runs the full experiment first. To execute it without a browser:
 \begin{lstlisting}[language=bash]
 jupyter nbconvert --to notebook --execute --inplace notebooks/physics_informed_hvac.ipynb
 \end{lstlisting}
@@ -138,20 +139,20 @@ latexmk -pdf thesis.tex
 \toprule
 File & Content \\
 \midrule
-\texttt{results/metrics\_<task>\_<family>.csv} & One row per model, seed, pattern and rate: MAE, RMSE, MAPE, $R^2$, NRMSE, negative-prediction share, temperature RMSE and RC residual. \\
-\texttt{results/predictions\_<task>\_<family>.npz} & Test predictions for every model, seed and condition, targets and timestamps. \\
-\texttt{results/tuning\_<task>\_<family>.csv} & Every tuning trial and its validation RMSE. \\
-\texttt{results/physics\_coefs\_<task>\_nn.csv} & Learned RC coefficients per seed. \\
-\texttt{results/plausibility\_*.csv}, \texttt{cost\_*.csv} & Outdoor-temperature response test; training and inference time. \\
-\texttt{results/imputation\_estimate\_*.csv} & Mean and CART imputation runs. \\
-\texttt{results/tables/}, \texttt{figures/} & Everything shown in the report. \\
+\nolinkurl{results/metrics_<task>_<family>.csv} & One row per model, seed, pattern and rate: MAE, RMSE, MAPE, $R^2$, NRMSE, negative-prediction share, temperature RMSE and RC residual. \\
+\nolinkurl{results/predictions_<task>_<family>.npz} & Test predictions for every model, seed and condition, targets and timestamps. \\
+\nolinkurl{results/tuning_<task>_<family>.csv} & Every tuning trial and its validation RMSE. \\
+\nolinkurl{results/physics_coefs_<task>_nn.csv} & Learned RC coefficients per seed. \\
+\nolinkurl{results/plausibility_*.csv}, \nolinkurl{cost_*.csv} & Outdoor-temperature response test; training and inference time. \\
+\nolinkurl{results/imputation_estimate_*.csv} & Mean and CART imputation runs. \\
+\nolinkurl{results/tables/}, \nolinkurl{figures/} & Everything shown in the report. \\
 \bottomrule
 \end{tabular}
 \end{table}
 
 \section{Troubleshooting}
 \begin{itemize}[nosep]
-\item \textbf{Segmentation fault or a hang on macOS when XGBoost and PyTorch are used in one Python process.} Both ship an OpenMP runtime. Always run \texttt{src/experiment.py}, which keeps them in separate processes; do not import \texttt{xgboost} in the same session as a PyTorch training loop.
+\item \textbf{Segmentation fault or a hang on macOS when XGBoost and PyTorch are used in one Python process.} Both ship an OpenMP runtime. Always run \nolinkurl{src/experiment.py}, which keeps them in separate processes; do not import \texttt{xgboost} in the same session as a PyTorch training loop.
 \item \textbf{MPS not used.} Check \texttt{python -c "import torch; print(torch.backends.mps.is\_available())"}; it needs macOS 12.3+ and an arm64 Python.
 \item \textbf{Small numeric differences between runs on GPU.} MPS and CUDA kernels are not bit-deterministic; differences are well inside the seed-to-seed spread reported in the tables.
 \item \textbf{\texttt{kaggle: command not found}.} Install it with \texttt{pip install kaggle}, or skip the download and use the bundled table.
