@@ -1,0 +1,32 @@
+WEEK 1 SUBMISSION SUMMARY
+=========================
+
+Student: Yashwanth
+MSc Course: Big Data Analytics (Research Practicum)
+Project Title: Determining the Role of Big Data Applications in Fraud Detection and Financial Security in Financial Institutions of Ireland
+
+1. Deliverables Completed:
+-------------------------
+- Literature Review PDF generated (covering 15 peer-reviewed papers from 2023-2026).
+- 4 Designated baseline papers identified and curated.
+- Research gaps identified and mapped to the study's scope.
+- Literature papers folder structure established.
+
+2. Designated Baseline Papers:
+-----------------------------
+- Paper 4: Salunke et al. (2025). "Fraud detection: A hybrid approach with logistic regression, decision tree, and random forest", Cureus. (Primary methodological baseline).
+- Paper 5: Saeed & Abdulazeez (2024). "Credit card fraud detection using KNN, random forest and logistic regression algorithms", Indonesian Journal of Computer Science.
+- Paper 7: Andrade-Arenas & Yactayo-Arias (2025). "Comparative analysis of machine learning models for credit card fraud detection using SMOTE", IJACSA.
+- Paper 15: Afriyie et al. (2023). "A supervised machine learning algorithm for detecting and predicting fraud in credit card transactions", Decision Analytics Journal.
+
+3. Research Gaps Addressed:
+---------------------------
+- Lack of validation within the Irish regulatory context (GDPR, Central Bank of Ireland, PSD2/PSD3 compliance).
+- Insufficient evaluation of ML models under extreme class imbalance (577:1 ratio).
+- Need for integrated feature importance analysis to explain model decisions (Right to Explanation - GDPR).
+
+4. Relevance to Irish Financial Institutions:
+--------------------------------------------
+- Addresses Central Bank of Ireland mandates for robust fraud systems (e.g., reported €160M loss in 2024).
+- Aligns detection frameworks with European Union General Data Protection Regulation (GDPR) and Payment Services Directive (PSD2/PSD3) for Strong Customer Authentication (SCA).
+- Establishes a scalable ML framework pipeline (using Random Forest + class weighting) that can be integrated into Irish banking's big data architectures (e.g., Apache Spark/Kafka).
