@@ -1,0 +1,13 @@
+{
+  "seed": 42,
+  "rows_raw": 284807,
+  "rows_dedup": 283726,
+  "train_rows": 198608,
+  "test_rows": 85118,
+  "train_fraud": 331,
+  "test_fraud": 142,
+  "leak_test_rows_also_in_train": 456,
+  "leak_fraud_rows_also_in_train": 7,
+  "best_model": "Random Forest",
+  "runtime_seconds": 370.09434604644775
+}
