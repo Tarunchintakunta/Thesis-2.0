@@ -1,0 +1,11 @@
+pandas
+numpy
+scikit-learn>=1.5
+imbalanced-learn
+statsmodels
+shap
+matplotlib
+seaborn
+kaggle
+nbformat
+nbconvert
