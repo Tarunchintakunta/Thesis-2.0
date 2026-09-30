@@ -54,7 +54,8 @@ print("project root:", ROOT)
 print("python:", sys.version.split()[0])"""),
     code("""def run(*args):
     \"\"\"Run a project script in a fresh interpreter and stream its output.\"\"\"
-    env = {**os.environ, "PYTHONUNBUFFERED": "1", "PYTHONWARNINGS": "ignore"}
+    env = {**os.environ, "PYTHONUNBUFFERED": "1", "PYTHONWARNINGS": "ignore",
+           "PYTHONPATH": os.pathsep.join([str(ROOT / "src"), os.environ.get("PYTHONPATH", "")])}
     proc = subprocess.Popen([sys.executable, *args], cwd=ROOT, env=env, stdout=subprocess.PIPE,
                             stderr=subprocess.STDOUT, text=True, encoding="utf-8", errors="replace")
     for line in proc.stdout:
@@ -84,7 +85,7 @@ display(df.describe().T.round(2))"""),
 pd.DataFrame({"natural gaps (%)": profile["raw_missing_pct"],
               "correlation with HVAC": profile["corr_with_hvac"]}).round(3)"""),
     md("## 3. Unit tests"),
-    code("""run("-m", "pytest", "tests", "-q", "-p", "no:cacheprovider")"""),
+    code("""run("-m", "pytest", "tests", "-q", "--color=no", "-p", "no:cacheprovider")"""),
     md("""## 4. Experiment
 
 `src/experiment.py` runs two tasks. **estimate** is the primary task and follows the baseline: hourly HVAC energy is predicted from building and weather sensors without the HVAC meter history. **forecast** is supplementary: the next hour is predicted with the meter history as an extra input. The tree family (XGBoost and naive baselines) and the neural family run in separate processes."""),
