@@ -9,6 +9,26 @@ The principal baseline is the Bayesian neural network of Mahajan et al. (2024,
 *Sustainability* 16(22) 9943, doi:10.3390/su16229943), which uses the same building, target and
 test window (July-December 2020) but assumes complete, forward-filled data.
 
+## Headline results
+
+Estimation task, test set July-December 2020, complete sensors (mean of five seeds):
+
+| Model | RMSE (kWh) | MAE (kWh) | MAPE |
+|---|---|---|---|
+| BNN, published (Mahajan et al., 2024) | 9.65 | 7.06 | 0.350 |
+| MC-LSTM, published | 11.86 | 8.21 | 0.450 |
+| BNN, re-implemented with the paper's inputs | 12.11 | 9.51 | 0.405 |
+| **PI-GRU (proposed)** | **9.01** | **5.70** | **0.216** |
+| GRU-aux (PI-GRU without physics term) | 8.91 | 5.73 | 0.215 |
+| XGBoost (same mask-aware features) | 7.97 | 6.03 | 0.291 |
+
+- The PI-GRU beats the published baseline on every metric and is 20% more accurate than the
+  re-implemented baseline when 40% of readings are lost to contiguous outages.
+- Random (MCAR) loss barely matters; contiguous multi-sensor outages raise RMSE by 15-23%.
+- Mask and time-since-last features are the most effective protection (10% lower RMSE at 40% outages).
+- The physics term itself is neutral for accuracy and lowers the heat-balance residual by 10% on
+  complete data; the envelope time constant is not identifiable from this building's data.
+
 ## Layout
 
 | Path | Content |
