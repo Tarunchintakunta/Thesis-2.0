@@ -1,0 +1,33 @@
+PROJECT: Analysing the Role of Big Data Analytics for Cyber Threat Detection and Prevention in Banking Organisations of Ireland
+STUDENT: Jayanth Akarapu
+REPORT: Week 2 Submission - Literature Review (continued) and Dataset Collection
+
+GANTT POSITION:
+Literature Review (Aug - end Sep) continues; Dataset Collection (Aug) is completed this week.
+Data Preprocessing (Sep - end Oct) starts next.
+
+WORK COMPLETED:
+1. Literature synthesis: the 15 Week 1 papers compared across five themes (tree-ensemble dominance,
+   non-comparable reported scores, unmeasured big data claims, drift/robustness, EU/Irish governance).
+2. Method comparison matrix covering models, datasets, class-balance handling, results and use in this study.
+3. Five refined research gaps (G1-G5), each mapped to a research question and a planned test.
+4. Dataset selected against five written criteria; BAF, PaySim and CICIDS2017 assessed and set aside.
+5. Kaggle "Bank Transaction Records along Suspicious Flags" downloaded via the Kaggle API, licence (MIT)
+   checked, SHA-256 checksum recorded.
+6. Data dictionary and quality audit: 33,611 rows x 6 columns, no missing values, no duplicates,
+   dates Dec 2022 - Jan 2025, 42.3% suspicious (1.37:1).
+7. First-look findings logged for preprocessing: description strongly predicts the label (leakage risk),
+   a volume spike in March 2023, skewed amounts, balance unique per row.
+
+FILES INCLUDED:
+- Week2_Report.pdf                     : the Week 2 report (8 pages)
+- week2.py                             : reproduces every number, figure and the PDF
+- dataset_profile.json                 : quality-audit numbers quoted in the report
+- data_dictionary.csv                  : column-level dictionary
+- suspicious_rate_by_description.csv   : suspicious rate per description
+- figures/                             : four Week 2 figures
+
+REPRODUCE:  python Week2_Submission/week2.py   (from the Jayanth-thesis folder)
+
+NEXT WEEK (Week 3): add 3-5 papers on concept drift and rule-vs-ML comparisons; start preprocessing
+(date parsing, description split, log amounts, encoding); create and save the fixed stratified 80/20 split.
