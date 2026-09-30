@@ -1,0 +1,22 @@
+\begin{table}[H]
+\centering\small
+\caption{Complete-data test accuracy (Jul--Dec 2020, hourly HVAC kWh). Published rows are from \citet{mahajan2024bnn}; our rows are mean $\pm$ s.d. over five seeds.}\label{tab:baseline}
+\begin{tabular}{lrrrr}
+\toprule
+model & MAE & RMSE & MAPE & R2 \\
+\midrule
+QRF (published) & 17.17 & 21.67 & 0.40 & -- \\
+MC-LSTM (published) & 8.21 & 11.86 & 0.45 & -- \\
+BNN (published) & 7.06 & 9.65 & 0.35 & -- \\
+XGBoost & 6.03 $\pm$ 0.29 & 7.97 $\pm$ 0.45 & 0.291 $\pm$ 0.024 & 0.634 $\pm$ 0.042 \\
+GRU-aux & 5.73 $\pm$ 0.64 & 8.91 $\pm$ 0.57 & 0.215 $\pm$ 0.033 & 0.542 $\pm$ 0.059 \\
+PI-GRU & 5.70 $\pm$ 0.43 & 9.01 $\pm$ 0.72 & 0.216 $\pm$ 0.022 & 0.530 $\pm$ 0.076 \\
+GRU & 5.65 $\pm$ 0.68 & 9.07 $\pm$ 0.67 & 0.205 $\pm$ 0.027 & 0.525 $\pm$ 0.069 \\
+PI-GRU-nomask & 6.01 $\pm$ 0.51 & 9.24 $\pm$ 0.65 & 0.229 $\pm$ 0.033 & 0.507 $\pm$ 0.070 \\
+LSTM & 6.04 $\pm$ 0.95 & 9.44 $\pm$ 1.09 & 0.237 $\pm$ 0.041 & 0.482 $\pm$ 0.120 \\
+BNN & 6.27 $\pm$ 0.50 & 10.42 $\pm$ 0.83 & 0.231 $\pm$ 0.017 & 0.373 $\pm$ 0.098 \\
+BNN-paper & 9.51 $\pm$ 0.87 & 12.11 $\pm$ 0.57 & 0.405 $\pm$ 0.012 & 0.155 $\pm$ 0.079 \\
+Profile & 10.65 $\pm$ 0.00 & 14.28 $\pm$ 0.00 & 0.577 $\pm$ 0.000 & -0.173 $\pm$ 0.000 \\
+\bottomrule
+\end{tabular}
+\end{table}

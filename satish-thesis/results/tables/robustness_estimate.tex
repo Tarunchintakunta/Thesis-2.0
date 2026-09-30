@@ -1,0 +1,19 @@
+\begin{table}[H]
+\centering\small
+\caption{Test RMSE (kWh) under controlled sensor loss, estimate task, mean of five seeds. Slope: RMSE increase per 10 percentage points of missing readings (mean $\pm$ s.d. over seeds).}\label{tab:robust_estimate}
+\begin{tabular}{lrrrrrrr}
+\toprule
+model & complete & mcar 20\% & mcar 40\% & block 20\% & block 40\% & mcar slope & block slope \\
+\midrule
+BNN & 10.42 $\pm$ 0.83 & 10.05 & 9.72 & 10.81 & 11.39 & -0.170 $\pm$ 0.087 & 0.298 $\pm$ 0.205 \\
+BNN-paper & 12.11 $\pm$ 0.57 & 12.16 & 12.30 & 12.77 & 12.97 & 0.048 $\pm$ 0.013 & 0.201 $\pm$ 0.123 \\
+Profile & 14.28 $\pm$ 0.00 & 14.28 & 14.28 & 14.28 & 14.28 & -0.000 $\pm$ 0.000 & -0.000 $\pm$ 0.000 \\
+XGBoost & 7.97 $\pm$ 0.45 & 8.09 & 8.25 & 8.70 & 9.52 & 0.070 $\pm$ 0.026 & 0.373 $\pm$ 0.051 \\
+GRU-aux & 8.91 $\pm$ 0.57 & 8.89 & 8.89 & 9.59 & 10.38 & -0.003 $\pm$ 0.061 & 0.417 $\pm$ 0.152 \\
+PI-GRU & 9.01 $\pm$ 0.72 & 8.98 & 8.96 & 9.78 & 10.36 & -0.010 $\pm$ 0.041 & 0.418 $\pm$ 0.116 \\
+GRU & 9.07 $\pm$ 0.67 & 9.04 & 9.01 & 9.77 & 10.29 & -0.007 $\pm$ 0.063 & 0.373 $\pm$ 0.193 \\
+PI-GRU-nomask & 9.24 $\pm$ 0.65 & 9.27 & 9.40 & 10.30 & 11.41 & 0.035 $\pm$ 0.024 & 0.543 $\pm$ 0.112 \\
+LSTM & 9.44 $\pm$ 1.09 & 9.38 & 9.30 & 10.12 & 10.61 & -0.031 $\pm$ 0.051 & 0.347 $\pm$ 0.234 \\
+\bottomrule
+\end{tabular}
+\end{table}

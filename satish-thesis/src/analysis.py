@@ -190,7 +190,8 @@ def physics_tables(task):
     t = pd.DataFrame({k: [fmt(a, b, 4) for a, b in zip(g.mean()[k], g.std()[k])] for k in cols}, index=g.mean().index)
     t["tau_h"] = [fmt(a, b, 1) for a, b in zip(g.mean()["tau_h"], g.std()["tau_h"])]
     ref = json.loads((RES / f"ref_rc_{task}.json").read_text(encoding="utf-8"))
-    t.loc["Least-squares RC (train)"] = [f"{1 / ref['a']:.1f}", f"{ref['b']:.4f}", f"{ref['c']:.4f}", f"{ref['d']:.4f}",
+    tau_ref = f"{1 / ref['a']:.1f}" if ref["a"] > 0 else f"n.i. ($a$={ref['a']:.1e})"
+    t.loc["Least-squares RC (train)"] = [tau_ref, f"{ref['b']:.4f}", f"{ref['c']:.4f}", f"{ref['d']:.4f}",
                                          f"{ref['e']:.4f}"]
     t = t.reset_index().rename(columns={"index": "model", "tau_h": "$\\tau$ (h)", "b_eta_over_C": "$b$",
                                         "c_beta_over_C": "$c$", "d_gamma_over_C": "$d$", "e_offset": "$e$"})
@@ -232,7 +233,7 @@ def cost_table(task):
 
 
 def imputation_table():
-    parts = [pd.read_csv(RES / f"imputation_estimate_{f}.csv") for f in ("tree", "nn")]
+    parts = [pd.read_csv(f) for f in (RES / f"imputation_estimate_{k}.csv" for k in ("tree", "nn")) if f.exists()]
     main = pd.concat([pd.read_csv(RES / f"metrics_estimate_{f}.csv") for f in ("tree", "nn")])
     main = main[main.model.isin(["XGBoost", "GRU-aux", "PI-GRU"]) & main.seed.isin([0, 1, 2])].assign(imputer="locf")
     d = pd.concat(parts + [main])
@@ -322,7 +323,8 @@ def fig_robustness(m, task, models):
             x = np.array(rs) * 100
             a.plot(x, mean, color=COLORS[name], marker=MARKERS[name], label=name,
                    ls="--" if name in ("PI-GRU-nomask", "Seasonal") else "-")
-            a.fill_between(x, np.array(mean) - sd, np.array(mean) + sd, color=COLORS[name], alpha=0.12, lw=0)
+            if name in ("PI-GRU", "XGBoost"):
+                a.fill_between(x, np.array(mean) - sd, np.array(mean) + sd, color=COLORS[name], alpha=0.15, lw=0)
         a.set_title({"mcar": "Random point loss (MCAR)", "block": "Contiguous outages", "block_meter": "Outages incl. meter"}[pat])
         a.set_xlabel("readings removed (%)")
     np.atleast_1d(ax)[0].set_ylabel("test RMSE (kWh)")
@@ -342,8 +344,8 @@ def fig_baseline(s):
     fig, ax = plt.subplots(figsize=(7.2, 3.2))
     y = np.arange(len(names))[::-1]
     ax.barh(y, vals, xerr=errs, color=col, height=0.6, error_kw={"lw": 1, "ecolor": "#52514e"})
-    for yi, v in zip(y, vals):
-        ax.text(v + 0.3, yi, f"{v:.2f}", va="center", fontsize=8, color="#0b0b0b")
+    for yi, v, e in zip(y, vals, errs):
+        ax.text(v + e + 0.3, yi, f"{v:.2f}", va="center", fontsize=8, color="#0b0b0b")
     ax.set_yticks(y, names)
     ax.set_xlabel("test RMSE (kWh), complete data, Jul-Dec 2020")
     ax.grid(axis="y", visible=False)
@@ -413,11 +415,13 @@ def fig_coefs(task):
         for i, name in enumerate(["PI-GRU", "PI-GRU-nomask"]):
             v = c[c.model == name][col]
             a.scatter(np.full(len(v), i) + np.linspace(-0.08, 0.08, len(v)), v, color=COLORS[name], s=30, zorder=3)
-        a.axhline(refv, color="#8a8984", ls="--", lw=1.2, label="least-squares RC")
+        if refv > 0 and col != "tau_h" or ref["a"] > 0:
+            a.axhline(refv, color="#8a8984", ls="--", lw=1.2, label="least-squares RC")
         a.set_xticks([0, 1], ["PI-GRU", "PI-GRU-nomask"])
         a.set_xlim(-0.5, 1.5)
         a.set_ylabel(lab)
-        a.legend(fontsize=8)
+        if a.get_legend_handles_labels()[0]:
+            a.legend(fontsize=8)
     fig.tight_layout()
     fig.savefig(FIG / f"physics_coefs_{task}.png")
     plt.close(fig)

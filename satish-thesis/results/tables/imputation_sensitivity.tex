@@ -1,0 +1,15 @@
+\begin{table}[H]
+\centering\small
+\caption{Test RMSE (kWh) by imputation method, estimation task, mean of three seeds.}\label{tab:imputation}
+\begin{tabular}{lrrrrrr}
+\toprule
+model & imputer & block 20\% & block 40\% & mcar 20\% & mcar 40\% & none 0\% \\
+\midrule
+GRU-aux & locf & 9.590000 & 10.160000 & 8.630000 & 8.620000 & 8.610000 \\
+PI-GRU & locf & 9.830000 & 10.110000 & 8.810000 & 8.750000 & 8.820000 \\
+XGBoost & cart & 8.310000 & 9.040000 & 7.930000 & 8.450000 & 7.560000 \\
+XGBoost & locf & 8.780000 & 9.490000 & 8.080000 & 8.190000 & 7.960000 \\
+XGBoost & mean & 9.210000 & 10.830000 & 8.660000 & 9.700000 & 8.050000 \\
+\bottomrule
+\end{tabular}
+\end{table}
