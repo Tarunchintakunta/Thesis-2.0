@@ -1,17 +1,18 @@
 PROJECT: Analysing the Role of Big Data Analytics for Cyber Threat Detection and Prevention in Banking Organisations of Ireland
 STUDENT: Jayanth Akarapu
-REPORT: Week 1 Submission - Literature Review Completion
+REPORT: Week 1 Submission, Literature Review
 
-SUMMARY OF WORK COMPLETED:
-1. Literature Review: Surveyed 15 peer-reviewed papers published between 2025-2026 relevant to Big Data, ML-driven cyber threat detection, Intrusion Detection Systems (IDS), Banking Fraud Detection, and Predictive Analytics within the banking sector.
-2. Structured Analysis: Developed a structured evaluation framework for each paper covering: Scope, Methodology/Results, Identified Research Gaps, Future Findings, and Baseline Designation.
-3. Baseline Identification: Designated 4 key papers as methodological baselines to guide the development of the ML-based fraud detection system.
-4. Documentation: Developed and executed an automated Python script (using fpdf2) to compile structured summaries of all 15 papers into a professional Literature Review PDF.
+WORK COMPLETED:
+1. Read and reviewed 15 papers published between January 2025 and September 2026.
+2. Checked every paper against Crossref, Semantic Scholar or the publisher page (title, authors, year,
+   venue, DOI). Results quoted in the review are taken from each paper's abstract.
+3. Grouped the papers into four areas: big data in banking security, machine learning for threat and
+   fraud detection, intrusion detection, and threat intelligence, risk and regulation.
+4. Chose four baseline papers: Sanda et al. (2026), Sathupadi et al. (2025), Pospichal et al. (2026)
+   and Hozouri et al. (2025).
+5. Wrote down the research gaps that the project will address.
 
 FILES INCLUDED:
-- Week1_Literature_Review_v2.pdf: The finalized literature review document.
-- generate_week1_pdf_v2.py: The script used to generate the PDF report.
-- /papers/: folder containing the accessible PDF papers downloaded during the review.
-
-STATUS:
-Week 1 tasks are complete. Moving into Week 2 focuses on Literature Review refinement and initial Dataset Collection (Bank Account Fraud Dataset).
+- Week1_Literature_Review.pdf : the literature review
+- week1_lit_review.py         : script that builds the PDF
+- papers/                     : PDFs of the papers that were freely available
