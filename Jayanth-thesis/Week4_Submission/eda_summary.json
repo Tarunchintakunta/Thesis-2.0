@@ -1,0 +1,10 @@
+{
+  "rows": 33611,
+  "columns_raw": 6,
+  "date_min": "2022-12-16",
+  "date_max": "2025-01-12",
+  "suspicious": 14203,
+  "normal": 19408,
+  "suspicious_rate": 0.4225699919669156,
+  "unique_descriptions": 43
+}
