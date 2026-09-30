@@ -1,0 +1,15 @@
+column,unit,source,description
+hvac_kwh,kWh,ele.csv hvac_N + hvac_S,"HVAC electricity in the hour (forecast target, also lagged input)"
+t_in,degC,zone_temp_interior.csv,Median of 16 indoor air-temperature loggers
+t_out,degC,site_weather.csv air_temp_set_1,"Outdoor air temperature, LBNL weather station"
+rh_out,%,site_weather.csv relative_humidity_set_1,Outdoor relative humidity
+solar,W/m2,site_weather.csv solar_radiation_set_1,Global solar radiation
+q_int,kW,ele.csv mels_N + mels_S + lig_S,"Plug-load and lighting power, internal heat-gain proxy"
+t_sa,degC,rtu_sa_t.csv mean of 4 RTUs,Supply-air temperature
+t_ra,degC,rtu_ra_t.csv mean of 4 RTUs,Return-air temperature
+fan,%,rtu_fan_spd.csv supply-fan VFD mean,Supply-fan speed feedback
+natural_gap,0/1,derived,1 if any column was missing in the raw data for this hour
+valid,0/1,derived,1 if all columns are present after short-gap filling
+local_hour,h,derived,"Hour of day, America/Los_Angeles"
+local_dow,0-6,derived,"Day of week (Monday = 0), local time"
+local_month,1-12,derived,"Month, local time"
