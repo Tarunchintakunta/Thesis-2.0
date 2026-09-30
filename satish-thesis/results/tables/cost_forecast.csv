@@ -1,0 +1,9 @@
+model,train (s),epochs / trees,inference ($\mu$s/sample)
+BNN,26.2 ± 11.9,8,45.5
+BNN-paper,13.1 ± 2.3,3,46.8
+GRU,23.6 ± 6.8,5,7.3
+GRU-aux,21.8 ± 6.4,4,4.6
+LSTM,7.7 ± 4.6,5,20.8
+PI-GRU,24.4 ± 6.0,5,4.5
+PI-GRU-nomask,28.4 ± 7.2,6,4.5
+XGBoost,0.7 ± 0.2,106,0.3

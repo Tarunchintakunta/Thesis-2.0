@@ -1,0 +1,9 @@
+model,$\partial E/\partial T_{out}$ (kWh/K),implausible (%),RC residual block 40%,RC residual block_meter 40%,RC residual mcar 40%,RC residual none 0%
+BNN,-0.15 ± 0.06,81.3 ± 6.8,--,--,--,--
+BNN-paper,1.30 ± 0.18,8.1 ± 6.7,--,--,--,--
+GRU,0.10 ± 0.05,38.2 ± 14.5,--,--,--,--
+GRU-aux,0.08 ± 0.04,35.6 ± 18.5,0.279,0.293,0.137,0.104
+LSTM,0.12 ± 0.05,30.3 ± 13.5,--,--,--,--
+PI-GRU,0.11 ± 0.03,26.6 ± 12.7,0.287,0.284,0.147,0.121
+PI-GRU-nomask,0.08 ± 0.05,36.5 ± 13.4,0.332,0.322,0.150,0.132
+XGBoost,0.06 ± 0.02,2.1 ± 1.5,--,--,--,--

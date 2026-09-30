@@ -211,5 +211,263 @@
         "p_holm": 1.0
       }
     ]
+  },
+  "forecast": {
+    "complete_RMSE": {
+      "BNN": 4.646,
+      "BNN-paper": 12.103,
+      "GRU": 3.852,
+      "GRU-aux": 3.919,
+      "LSTM": 4.065,
+      "PI-GRU": 3.949,
+      "PI-GRU-nomask": 3.987,
+      "Persistence": 3.748,
+      "Seasonal": 9.97,
+      "XGBoost": 3.743
+    },
+    "significance": [
+      {
+        "pattern": "none",
+        "rate": 0.0,
+        "reference": "XGBoost",
+        "dRMSE": 0.2073,
+        "dRMSE_pct": 5.5375,
+        "ci_lo": 0.0905,
+        "ci_hi": 0.3305,
+        "wilcoxon_p": 0.0012,
+        "p_holm": 0.0156
+      },
+      {
+        "pattern": "none",
+        "rate": 0.0,
+        "reference": "GRU-aux",
+        "dRMSE": 0.0306,
+        "dRMSE_pct": 0.7807,
+        "ci_lo": -0.0041,
+        "ci_hi": 0.0702,
+        "wilcoxon_p": 0.1425,
+        "p_holm": 0.7124
+      },
+      {
+        "pattern": "mcar",
+        "rate": 0.1,
+        "reference": "XGBoost",
+        "dRMSE": 0.2315,
+        "dRMSE_pct": 6.1822,
+        "ci_lo": 0.1115,
+        "ci_hi": 0.3686,
+        "wilcoxon_p": 0.0001,
+        "p_holm": 0.002
+      },
+      {
+        "pattern": "mcar",
+        "rate": 0.1,
+        "reference": "GRU-aux",
+        "dRMSE": 0.0397,
+        "dRMSE_pct": 1.0085,
+        "ci_lo": 0.0035,
+        "ci_hi": 0.0801,
+        "wilcoxon_p": 0.0584,
+        "p_holm": 0.3507
+      },
+      {
+        "pattern": "mcar",
+        "rate": 0.2,
+        "reference": "Persistence",
+        "dRMSE": 0.269,
+        "dRMSE_pct": 7.1776,
+        "ci_lo": 0.1232,
+        "ci_hi": 0.4327,
+        "wilcoxon_p": 0.0012,
+        "p_holm": 0.0156
+      },
+      {
+        "pattern": "mcar",
+        "rate": 0.2,
+        "reference": "GRU-aux",
+        "dRMSE": 0.0428,
+        "dRMSE_pct": 1.0776,
+        "ci_lo": 0.0062,
+        "ci_hi": 0.0868,
+        "wilcoxon_p": 0.0092,
+        "p_holm": 0.0734
+      },
+      {
+        "pattern": "mcar",
+        "rate": 0.3,
+        "reference": "Persistence",
+        "dRMSE": 0.2895,
+        "dRMSE_pct": 7.7242,
+        "ci_lo": 0.1419,
+        "ci_hi": 0.453,
+        "wilcoxon_p": 0.0006,
+        "p_holm": 0.0079
+      },
+      {
+        "pattern": "mcar",
+        "rate": 0.3,
+        "reference": "GRU-aux",
+        "dRMSE": 0.0483,
+        "dRMSE_pct": 1.2109,
+        "ci_lo": 0.0088,
+        "ci_hi": 0.0901,
+        "wilcoxon_p": 0.0097,
+        "p_holm": 0.0734
+      },
+      {
+        "pattern": "mcar",
+        "rate": 0.4,
+        "reference": "Persistence",
+        "dRMSE": 0.3313,
+        "dRMSE_pct": 8.8401,
+        "ci_lo": 0.1863,
+        "ci_hi": 0.4988,
+        "wilcoxon_p": 0.0,
+        "p_holm": 0.0002
+      },
+      {
+        "pattern": "mcar",
+        "rate": 0.4,
+        "reference": "GRU-aux",
+        "dRMSE": 0.0597,
+        "dRMSE_pct": 1.4848,
+        "ci_lo": 0.0202,
+        "ci_hi": 0.1032,
+        "wilcoxon_p": 0.0004,
+        "p_holm": 0.0066
+      },
+      {
+        "pattern": "block",
+        "rate": 0.1,
+        "reference": "Persistence",
+        "dRMSE": 0.2383,
+        "dRMSE_pct": 6.359,
+        "ci_lo": 0.1014,
+        "ci_hi": 0.3922,
+        "wilcoxon_p": 0.0033,
+        "p_holm": 0.0366
+      },
+      {
+        "pattern": "block",
+        "rate": 0.1,
+        "reference": "GRU-aux",
+        "dRMSE": 0.046,
+        "dRMSE_pct": 1.1679,
+        "ci_lo": 0.0126,
+        "ci_hi": 0.0809,
+        "wilcoxon_p": 0.0072,
+        "p_holm": 0.0658
+      },
+      {
+        "pattern": "block",
+        "rate": 0.2,
+        "reference": "Persistence",
+        "dRMSE": 0.329,
+        "dRMSE_pct": 8.78,
+        "ci_lo": 0.1906,
+        "ci_hi": 0.4839,
+        "wilcoxon_p": 0.0,
+        "p_holm": 0.0002
+      },
+      {
+        "pattern": "block",
+        "rate": 0.2,
+        "reference": "GRU-aux",
+        "dRMSE": 0.084,
+        "dRMSE_pct": 2.1038,
+        "ci_lo": 0.0424,
+        "ci_hi": 0.1302,
+        "wilcoxon_p": 0.0001,
+        "p_holm": 0.0009
+      },
+      {
+        "pattern": "block",
+        "rate": 0.3,
+        "reference": "Persistence",
+        "dRMSE": 0.3453,
+        "dRMSE_pct": 9.2149,
+        "ci_lo": 0.2108,
+        "ci_hi": 0.4877,
+        "wilcoxon_p": 0.0,
+        "p_holm": 0.0
+      },
+      {
+        "pattern": "block",
+        "rate": 0.3,
+        "reference": "GRU-aux",
+        "dRMSE": 0.074,
+        "dRMSE_pct": 1.8405,
+        "ci_lo": 0.0312,
+        "ci_hi": 0.1223,
+        "wilcoxon_p": 0.0004,
+        "p_holm": 0.0066
+      },
+      {
+        "pattern": "block",
+        "rate": 0.4,
+        "reference": "Persistence",
+        "dRMSE": 0.3892,
+        "dRMSE_pct": 10.3848,
+        "ci_lo": 0.2734,
+        "ci_hi": 0.5152,
+        "wilcoxon_p": 0.0,
+        "p_holm": 0.0
+      },
+      {
+        "pattern": "block",
+        "rate": 0.4,
+        "reference": "GRU-aux",
+        "dRMSE": 0.0454,
+        "dRMSE_pct": 1.1089,
+        "ci_lo": 0.0053,
+        "ci_hi": 0.0856,
+        "wilcoxon_p": 0.0066,
+        "p_holm": 0.0658
+      },
+      {
+        "pattern": "block_meter",
+        "rate": 0.2,
+        "reference": "LSTM",
+        "dRMSE": 0.072,
+        "dRMSE_pct": 1.2387,
+        "ci_lo": -0.0809,
+        "ci_hi": 0.2242,
+        "wilcoxon_p": 0.5321,
+        "p_holm": 0.9579
+      },
+      {
+        "pattern": "block_meter",
+        "rate": 0.2,
+        "reference": "GRU-aux",
+        "dRMSE": -0.0743,
+        "dRMSE_pct": -1.2472,
+        "ci_lo": -0.1492,
+        "ci_hi": 0.0077,
+        "wilcoxon_p": 0.2395,
+        "p_holm": 0.9579
+      },
+      {
+        "pattern": "block_meter",
+        "rate": 0.4,
+        "reference": "GRU",
+        "dRMSE": 0.0074,
+        "dRMSE_pct": 0.1019,
+        "ci_lo": -0.0844,
+        "ci_hi": 0.1021,
+        "wilcoxon_p": 0.2967,
+        "p_holm": 0.9579
+      },
+      {
+        "pattern": "block_meter",
+        "rate": 0.4,
+        "reference": "GRU-aux",
+        "dRMSE": -0.0667,
+        "dRMSE_pct": -0.9057,
+        "ci_lo": -0.1537,
+        "ci_hi": 0.0261,
+        "wilcoxon_p": 0.3044,
+        "p_holm": 0.9579
+      }
+    ]
   }
 }

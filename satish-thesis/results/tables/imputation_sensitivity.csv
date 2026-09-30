@@ -1,6 +1,10 @@
 model,imputer,block 20%,block 40%,mcar 20%,mcar 40%,none 0%
+GRU-aux,cart,9.28,10.44,8.92,8.35,9.25
 GRU-aux,locf,9.59,10.16,8.63,8.62,8.61
+GRU-aux,mean,9.73,11.93,9.29,9.21,9.26
+PI-GRU,cart,9.72,10.68,9.37,8.55,9.86
 PI-GRU,locf,9.83,10.11,8.81,8.75,8.82
+PI-GRU,mean,9.46,11.29,8.83,8.72,8.81
 XGBoost,cart,8.31,9.04,7.93,8.45,7.56
 XGBoost,locf,8.78,9.49,8.08,8.19,7.96
 XGBoost,mean,9.21,10.83,8.66,9.7,8.05

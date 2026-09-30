@@ -1,0 +1,22 @@
+\begin{table}[H]
+\centering\small
+\caption{Test RMSE (kWh) by operating stratum, forecast task, mean of five seeds.}\label{tab:strata_forecast}
+\begin{adjustbox}{max width=\textwidth}
+\begin{tabular}{lrrrrr}
+\toprule
+model & condition & occupied & unoccupied & mild T\_out & extreme T\_out \\
+\midrule
+PI-GRU & none 0\% & 4.700000 & 3.460000 & 3.740000 & 4.670000 \\
+PI-GRU & block 40\% & 4.900000 & 3.640000 & 3.960000 & 4.770000 \\
+GRU-aux & none 0\% & 4.670000 & 3.430000 & 3.710000 & 4.650000 \\
+GRU-aux & block 40\% & 4.870000 & 3.590000 & 3.910000 & 4.750000 \\
+XGBoost & none 0\% & 4.550000 & 3.200000 & 3.650000 & 4.080000 \\
+XGBoost & block 40\% & 4.620000 & 3.230000 & 3.700000 & 4.090000 \\
+BNN-paper & none 0\% & 11.850000 & 12.240000 & 10.940000 & 15.900000 \\
+BNN-paper & block 40\% & 13.080000 & 12.890000 & 11.990000 & 16.170000 \\
+Persistence & none 0\% & 4.540000 & 3.220000 & 3.700000 & 3.950000 \\
+Persistence & block 40\% & 4.540000 & 3.220000 & 3.700000 & 3.950000 \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table}

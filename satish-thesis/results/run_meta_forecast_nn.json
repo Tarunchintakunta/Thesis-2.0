@@ -1,5 +1,5 @@
 {
-  "task": "estimate",
+  "task": "forecast",
   "family": "nn",
   "device": "mps",
   "train": 16912,
@@ -20,7 +20,7 @@
       "2020-12-31 22:00"
     ]
   },
-  "started": "2026-09-30 23:17",
+  "started": "2026-09-30 22:59",
   "torch": "2.11.0",
-  "finished": "2026-09-30 23:26"
+  "finished": "2026-09-30 23:17"
 }

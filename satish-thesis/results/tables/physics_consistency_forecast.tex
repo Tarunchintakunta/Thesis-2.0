@@ -1,0 +1,20 @@
+\begin{table}[H]
+\centering\small
+\caption{Physical consistency, forecast task. Response of predicted HVAC energy to +1\,K outdoor temperature in cooling hours, share of cooling hours where the response is negative, and RMS residual (K/h) of the least-squares RC balance for dual-head models.}\label{tab:phys_forecast}
+\begin{adjustbox}{max width=\textwidth}
+\begin{tabular}{lrrrrrr}
+\toprule
+model & $\partial E/\partial T_{out}$ (kWh/K) & implausible (\%) & RC residual block 40\% & RC residual block\_meter 40\% & RC residual mcar 40\% & RC residual none 0\% \\
+\midrule
+BNN & -0.15 $\pm$ 0.06 & 81.3 $\pm$ 6.8 & -- & -- & -- & -- \\
+BNN-paper & 1.30 $\pm$ 0.18 & 8.1 $\pm$ 6.7 & -- & -- & -- & -- \\
+GRU & 0.10 $\pm$ 0.05 & 38.2 $\pm$ 14.5 & -- & -- & -- & -- \\
+GRU-aux & 0.08 $\pm$ 0.04 & 35.6 $\pm$ 18.5 & 0.279 & 0.293 & 0.137 & 0.104 \\
+LSTM & 0.12 $\pm$ 0.05 & 30.3 $\pm$ 13.5 & -- & -- & -- & -- \\
+PI-GRU & 0.11 $\pm$ 0.03 & 26.6 $\pm$ 12.7 & 0.287 & 0.284 & 0.147 & 0.121 \\
+PI-GRU-nomask & 0.08 $\pm$ 0.05 & 36.5 $\pm$ 13.4 & 0.332 & 0.322 & 0.150 & 0.132 \\
+XGBoost & 0.06 $\pm$ 0.02 & 2.1 $\pm$ 1.5 & -- & -- & -- & -- \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table}

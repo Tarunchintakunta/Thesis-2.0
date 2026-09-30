@@ -1,0 +1,22 @@
+\begin{table}[H]
+\centering\small
+\caption{Test RMSE (kWh) under controlled sensor loss, forecast task, mean of five seeds. Slope: RMSE increase per 10 percentage points of missing readings (mean $\pm$ s.d. over seeds).}\label{tab:robust_forecast}
+\begin{adjustbox}{max width=\textwidth}
+\begin{tabular}{lrrrrrrr}
+\toprule
+model & complete & mcar 20\% & mcar 40\% & block 20\% & block 40\% & mcar slope & block slope \\
+\midrule
+BNN-paper & 12.10 $\pm$ 0.55 & 12.15 & 12.28 & 12.78 & 12.96 & 0.047 $\pm$ 0.011 & 0.199 $\pm$ 0.125 \\
+XGBoost & 3.74 $\pm$ 0.02 & 3.75 & 3.76 & 3.77 & 3.78 & 0.004 $\pm$ 0.001 & 0.010 $\pm$ 0.005 \\
+Persistence & 3.75 $\pm$ 0.00 & 3.75 & 3.75 & 3.75 & 3.75 & -0.000 $\pm$ 0.000 & -0.000 $\pm$ 0.000 \\
+GRU & 3.85 $\pm$ 0.06 & 3.90 & 3.93 & 3.92 & 3.91 & 0.019 $\pm$ 0.009 & 0.020 $\pm$ 0.010 \\
+GRU-aux & 3.92 $\pm$ 0.05 & 3.97 & 4.02 & 3.99 & 4.09 & 0.025 $\pm$ 0.009 & 0.042 $\pm$ 0.007 \\
+PI-GRU & 3.95 $\pm$ 0.10 & 4.02 & 4.08 & 4.08 & 4.14 & 0.032 $\pm$ 0.014 & 0.048 $\pm$ 0.019 \\
+PI-GRU-nomask & 3.99 $\pm$ 0.05 & 4.02 & 4.02 & 4.04 & 4.07 & 0.008 $\pm$ 0.004 & 0.019 $\pm$ 0.011 \\
+LSTM & 4.07 $\pm$ 0.20 & 4.10 & 4.13 & 4.10 & 4.09 & 0.018 $\pm$ 0.012 & 0.015 $\pm$ 0.021 \\
+BNN & 4.65 $\pm$ 0.36 & 4.75 & 4.83 & 4.83 & 4.83 & 0.042 $\pm$ 0.025 & 0.042 $\pm$ 0.069 \\
+Seasonal & 9.97 $\pm$ 0.00 & 9.97 & 9.97 & 9.97 & 9.97 & -0.000 $\pm$ 0.000 & -0.000 $\pm$ 0.000 \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table}

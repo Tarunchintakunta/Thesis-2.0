@@ -1,0 +1,11 @@
+model,condition,occupied,unoccupied,mild T_out,extreme T_out
+PI-GRU,none 0%,4.7,3.46,3.74,4.67
+PI-GRU,block 40%,4.9,3.64,3.96,4.77
+GRU-aux,none 0%,4.67,3.43,3.71,4.65
+GRU-aux,block 40%,4.87,3.59,3.91,4.75
+XGBoost,none 0%,4.55,3.2,3.65,4.08
+XGBoost,block 40%,4.62,3.23,3.7,4.09
+BNN-paper,none 0%,11.85,12.24,10.94,15.9
+BNN-paper,block 40%,13.08,12.89,11.99,16.17
+Persistence,none 0%,4.54,3.22,3.7,3.95
+Persistence,block 40%,4.54,3.22,3.7,3.95
