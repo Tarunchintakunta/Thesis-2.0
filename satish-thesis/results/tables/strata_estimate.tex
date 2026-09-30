@@ -1,9 +1,10 @@
 \begin{table}[H]
 \centering\small
 \caption{Test RMSE (kWh) by operating stratum, estimate task, mean of five seeds.}\label{tab:strata_estimate}
+\begin{adjustbox}{max width=\textwidth}
 \begin{tabular}{lrrrrr}
 \toprule
-model & condition & occupied & unoccupied & mild T_out & extreme T_out \\
+model & condition & occupied & unoccupied & mild T\_out & extreme T\_out \\
 \midrule
 PI-GRU & none 0\% & 9.160000 & 8.930000 & 7.110000 & 14.260000 \\
 PI-GRU & block 40\% & 10.830000 & 10.090000 & 9.160000 & 14.160000 \\
@@ -15,4 +16,5 @@ BNN-paper & none 0\% & 11.860000 & 12.250000 & 10.950000 & 15.890000 \\
 BNN-paper & block 40\% & 13.090000 & 12.890000 & 12.000000 & 16.190000 \\
 \bottomrule
 \end{tabular}
+\end{adjustbox}
 \end{table}

@@ -1,0 +1,14 @@
+\section{Conclusion and Future Work}\label{sec:concl}
+
+This project asked whether a physics-informed, mask-aware recurrent network predicts hourly HVAC energy more accurately than conventional models, including the published baseline, when a building's sensors are incomplete. On LBNL Building 59, with the baseline's own target, split and metrics, the PI-GRU beats the published BNN of \citet{mahajan2024bnn} on every metric (RMSE 9.01 against 9.65\,kWh, MAE 5.70 against 7.06\,kWh, MAPE 0.22 against 0.35) and stays 20\% better than the re-implemented baseline under 40\% contiguous sensor outages. XGBoost on the same mask-aware features is more accurate still in RMSE (7.97\,kWh).
+
+The objectives were met. A reproducible benchmark with identical seeded masks was built (O1); the baseline was re-implemented and compared with five conventional models and two ablations (O2); accuracy, robustness, physical consistency and cost were evaluated with five seeds, bootstrap intervals and Holm-adjusted tests (O3); and the baseline was beaten on its own protocol (O4). The hypotheses were answered honestly: the PI-GRU did not beat the best conventional model (H1 rejected), the physics term did not improve accuracy over its matched twin (H2 not supported), and it lowered the heat-balance residual on complete data without a meaningful accuracy cost (H3 partly supported). Random sensor loss proved almost harmless and contiguous outages harmful, and mask awareness, not physics, gave the largest robustness gain.
+
+\textbf{Future work.}
+\begin{itemize}[nosep]
+\item Replicate on buildings where the metered energy covers the whole plant and where indoor temperatures vary more, so that the RC parameters are identifiable.
+\item Use a second-order RC model with zone temperatures, or a hard-constrained architecture such as a physically consistent network \citep{dinatale2022pcnn}, where zone-level data allow it.
+\item Add realistic sensor faults (drift, stuck values, bias) to the outage generator.
+\item Combine the strong tabular model with the recurrent model, for example by stacking, and add calibrated uncertainty under sensor loss, which was the focus of the baseline.
+\item Evaluate transfer across buildings from the same data programme.
+\end{itemize}

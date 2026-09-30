@@ -1,6 +1,7 @@
 \begin{table}[H]
 \centering\small
 \caption{Test RMSE (kWh) by imputation method, estimation task, mean of three seeds.}\label{tab:imputation}
+\begin{adjustbox}{max width=\textwidth}
 \begin{tabular}{lrrrrrr}
 \toprule
 model & imputer & block 20\% & block 40\% & mcar 20\% & mcar 40\% & none 0\% \\
@@ -12,4 +13,5 @@ XGBoost & locf & 8.780000 & 9.490000 & 8.080000 & 8.190000 & 7.960000 \\
 XGBoost & mean & 9.210000 & 10.830000 & 8.660000 & 9.700000 & 8.050000 \\
 \bottomrule
 \end{tabular}
+\end{adjustbox}
 \end{table}

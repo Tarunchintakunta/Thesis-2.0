@@ -1,6 +1,7 @@
 \begin{table}[H]
 \centering\small
 \caption{Test RMSE (kWh) under controlled sensor loss, estimate task, mean of five seeds. Slope: RMSE increase per 10 percentage points of missing readings (mean $\pm$ s.d. over seeds).}\label{tab:robust_estimate}
+\begin{adjustbox}{max width=\textwidth}
 \begin{tabular}{lrrrrrrr}
 \toprule
 model & complete & mcar 20\% & mcar 40\% & block 20\% & block 40\% & mcar slope & block slope \\
@@ -16,4 +17,5 @@ PI-GRU-nomask & 9.24 $\pm$ 0.65 & 9.27 & 9.40 & 10.30 & 11.41 & 0.035 $\pm$ 0.02
 LSTM & 9.44 $\pm$ 1.09 & 9.38 & 9.30 & 10.12 & 10.61 & -0.031 $\pm$ 0.051 & 0.347 $\pm$ 0.234 \\
 \bottomrule
 \end{tabular}
+\end{adjustbox}
 \end{table}

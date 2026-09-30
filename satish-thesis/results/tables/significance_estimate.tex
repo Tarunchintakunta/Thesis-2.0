@@ -1,6 +1,7 @@
 \begin{table}[H]
 \centering\small
 \caption{PI-GRU minus reference, estimate task. Negative values favour PI-GRU. CI: day-block bootstrap (2,000 resamples) on seed-averaged errors; $p$: Wilcoxon signed-rank on daily MSE, Holm-adjusted.}\label{tab:sig_estimate}
+\begin{adjustbox}{max width=\textwidth}
 \begin{tabular}{lrrrrr}
 \toprule
 condition & reference & $\Delta$RMSE & $\Delta$\% & 95\% CI & $p_{Holm}$ \\
@@ -25,4 +26,5 @@ block 40\% & XGBoost & +0.87 & +9.1 & [-0.05, +1.81] & 0.22 \\
 block 40\% & GRU-aux & -0.00 & -0.0 & [-0.15, +0.13] & 1 \\
 \bottomrule
 \end{tabular}
+\end{adjustbox}
 \end{table}

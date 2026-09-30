@@ -1,21 +1,23 @@
 \begin{table}[H]
 \centering\small
 \caption{Hourly variables used in this study.}\label{tab:dict}
-\begin{tabular}{lrrr}
+\begin{adjustbox}{max width=\textwidth}
+\begin{tabular}{llp{5.2cm}p{5.6cm}}
 \toprule
 column & unit & source & description \\
 \midrule
 hvac\_kwh & kWh & ele.csv hvac\_N + hvac\_S & HVAC electricity in the hour (forecast target, also lagged input) \\
-t\_in & degC & zone\_temp\_interior.csv & Median of 16 indoor air-temperature loggers \\
-t\_out & degC & site\_weather.csv air\_temp\_set\_1 & Outdoor air temperature, LBNL weather station \\
+t\_in & °C & zone\_temp\_interior.csv & Median of 16 indoor air-temperature loggers \\
+t\_out & °C & site\_weather.csv air\_temp\_set\_1 & Outdoor air temperature, LBNL weather station \\
 rh\_out & \% & site\_weather.csv relative\_humidity\_set\_1 & Outdoor relative humidity \\
-solar & W/m2 & site\_weather.csv solar\_radiation\_set\_1 & Global solar radiation \\
+solar & W/m$^2$ & site\_weather.csv solar\_radiation\_set\_1 & Global solar radiation \\
 q\_int & kW & ele.csv mels\_N + mels\_S + lig\_S & Plug-load and lighting power, internal heat-gain proxy \\
-t\_sa & degC & rtu\_sa\_t.csv mean of 4 RTUs & Supply-air temperature \\
-t\_ra & degC & rtu\_ra\_t.csv mean of 4 RTUs & Return-air temperature \\
+t\_sa & °C & rtu\_sa\_t.csv mean of 4 RTUs & Supply-air temperature \\
+t\_ra & °C & rtu\_ra\_t.csv mean of 4 RTUs & Return-air temperature \\
 fan & \% & rtu\_fan\_spd.csv supply-fan VFD mean & Supply-fan speed feedback \\
-local\_hour & h & derived & Hour of day, America/Los_Angeles \\
+local\_hour & h & derived & Hour of day, America/Los\_Angeles \\
 local\_dow & 0-6 & derived & Day of week (Monday = 0), local time \\
 \bottomrule
 \end{tabular}
+\end{adjustbox}
 \end{table}

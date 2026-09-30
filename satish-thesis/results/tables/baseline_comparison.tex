@@ -1,6 +1,7 @@
 \begin{table}[H]
 \centering\small
 \caption{Complete-data test accuracy (Jul--Dec 2020, hourly HVAC kWh). Published rows are from \citet{mahajan2024bnn}; our rows are mean $\pm$ s.d. over five seeds.}\label{tab:baseline}
+\begin{adjustbox}{max width=\textwidth}
 \begin{tabular}{lrrrr}
 \toprule
 model & MAE & RMSE & MAPE & R2 \\
@@ -19,4 +20,5 @@ BNN-paper & 9.51 $\pm$ 0.87 & 12.11 $\pm$ 0.57 & 0.405 $\pm$ 0.012 & 0.155 $\pm$
 Profile & 10.65 $\pm$ 0.00 & 14.28 $\pm$ 0.00 & 0.577 $\pm$ 0.000 & -0.173 $\pm$ 0.000 \\
 \bottomrule
 \end{tabular}
+\end{adjustbox}
 \end{table}

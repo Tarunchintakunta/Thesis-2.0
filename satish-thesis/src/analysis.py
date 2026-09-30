@@ -48,10 +48,13 @@ def summary(m, cols=("MAE", "RMSE", "MAPE", "R2")):
     return g.mean().join(g.std().fillna(0), rsuffix="_sd")
 
 
-def to_latex(df, path, caption, label):
-    body = df.to_latex(index=False, escape=False, column_format="l" + "r" * (df.shape[1] - 1))
+def to_latex(df, path, caption, label, colspec=None):
+    esc = lambda v: v.replace("_", r"\_") if isinstance(v, str) and "$" not in v and r"\_" not in v else v
+    df = df.rename(columns=esc).map(esc)
+    body = df.to_latex(index=False, escape=False, column_format=colspec or "l" + "r" * (df.shape[1] - 1))
     body = body.replace("±", r"$\pm$").replace("%", r"\%")
-    path.write_text(f"\\begin{{table}}[H]\n\\centering\\small\n\\caption{{{caption}}}\\label{{{label}}}\n{body}\\end{{table}}\n", encoding="utf-8")
+    path.write_text(f"\\begin{{table}}[H]\n\\centering\\small\n\\caption{{{caption}}}\\label{{{label}}}\n"
+                    f"\\begin{{adjustbox}}{{max width=\\textwidth}}\n{body}\\end{{adjustbox}}\n\\end{{table}}\n", encoding="utf-8")
 
 
 def day_ids(p):
@@ -255,9 +258,11 @@ def tuning_table(task):
 def data_tables():
     d = pd.read_csv(RES / "data_dictionary.csv")
     d = d[~d.column.isin(["natural_gap", "valid", "local_month"])]
-    d = d.assign(column=d.column.str.replace("_", r"\_", regex=False), source=d.source.str.replace("_", r"\_", regex=False))
+    esc = lambda c: d[c].str.replace("_", r"\_", regex=False)
+    d = d.assign(column=esc("column"), source=esc("source"), description=esc("description"),
+                 unit=d.unit.str.replace("degC", "°C").str.replace("W/m2", "W/m$^2$"))
     to_latex(d[["column", "unit", "source", "description"]], TAB / "data_dictionary.tex",
-             "Hourly variables used in this study.", "tab:dict")
+             "Hourly variables used in this study.", "tab:dict", colspec="llp{5.2cm}p{5.6cm}")
     prof = json.loads((RES / "data_profile.json").read_text(encoding="utf-8"))
     g = pd.DataFrame({"channel": list(prof["raw_missing_pct"]),
                       "natural gaps (%)": [f"{v:.2f}" for v in prof["raw_missing_pct"].values()],

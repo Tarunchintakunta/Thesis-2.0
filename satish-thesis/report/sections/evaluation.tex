@@ -1,0 +1,82 @@
+\section{Evaluation}\label{sec:eval}
+
+All numbers are test-set results (1 July--31 December 2020, 4{,}414 hours) as mean $\pm$ standard deviation over five seeds, unless stated otherwise. Tuning trials are listed in the \texttt{tuning} tables of the results folder; the selected configurations are XGBoost with depth 8 and learning rate 0.05, the BNN with learning rate $3\cdot10^{-4}$ and batch 128, the LSTM with 64 units and learning rate $3\cdot10^{-3}$, and the GRU backbone with 128 units, learning rate $10^{-3}$ and dropout 0.1.
+
+\subsection{Comparison with the baseline paper}\label{sec:eval_base}
+Table~\ref{tab:baseline} and Figure~\ref{fig:baseline} compare every model on complete data with the numbers published by \citet{mahajan2024bnn} for the same building, target and test window.
+
+\input{tables/baseline_comparison.tex}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.92\textwidth]{baseline_comparison.png}
+\caption{Complete-data test RMSE. Grey: published by \citet{mahajan2024bnn}. Error bars: one standard deviation over five seeds.}\label{fig:baseline}
+\end{figure}
+
+\textbf{The baseline is beaten on every metric.} The PI-GRU reaches an RMSE of $9.01 \pm 0.72$\,kWh, an MAE of $5.70 \pm 0.43$\,kWh and a MAPE of $0.216 \pm 0.022$, against 9.65, 7.06 and 0.35 for the published BNN: 7\% lower RMSE, 19\% lower MAE and 38\% lower MAPE. XGBoost on the same features has the lowest RMSE ($7.97 \pm 0.45$, 17\% below the published BNN), while the recurrent models have the lowest MAE and MAPE (GRU 5.65 and 0.205). All five recurrent models and XGBoost beat all three published models on all three metrics; only the BNN on our features falls short on RMSE (10.42).
+
+\textbf{The re-implementation is credible.} The BNN re-implemented with the baseline's own inputs (BNN-paper) scores $12.11 \pm 0.57$\,kWh RMSE, $9.51$\,MAE and $0.405$\,MAPE. That lies between the published BNN and QRF and next to the published MC-LSTM (11.86, 8.21, 0.45). The residual gap to the published BNN is plausibly due to the two inputs that are not in the public release (wind speed and the maintenance-event flag) and to training for early-stopped epochs instead of 2{,}000. Comparing the rows in Table~\ref{tab:baseline} separates the sources of the gain: moving the same BNN from the baseline's inputs to this project's inputs (mask, time-since-last and previous-hour features) lowers RMSE from 12.11 to 10.42 (14\%); adding 24-hour temporal context with a recurrent network lowers it further to about 9.0 (another 13\%).
+
+\subsection{Robustness to sensor loss}\label{sec:eval_robust}
+Table~\ref{tab:robust_estimate} and Figure~\ref{fig:robust} show how RMSE changes as readings are removed.
+
+\input{tables/robustness_estimate.tex}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{robustness_estimate.png}
+\caption{Test RMSE against the share of sensor readings removed (estimation task). Bands: $\pm$ one standard deviation for PI-GRU and XGBoost.}\label{fig:robust}
+\end{figure}
+
+\textbf{RQ1 and RQ2: random loss is harmless, outages are not.} Under MCAR, RMSE is essentially flat for every model up to 40\% loss (slopes between $-0.03$ and $+0.07$\,kWh per 10 points). Hourly building signals change slowly, so the last observation carried forward is almost as good as the missing reading, and the mask features tell the model how stale it is. The BNN on our features even improves slightly, which suggests that the masked training pool regularises it. Contiguous outages are different: at 40\% loss the RMSE of XGBoost rises by 19\% (7.97 to 9.52), of the PI-GRU by 15\% (9.01 to 10.36), of GRU-aux by 17\% and of the PI-GRU without mask features by 23\% (9.24 to 11.41). The baseline model under the same outages (BNN-paper) degrades by only 7\%, but from a much worse starting point; at 40\% block loss the PI-GRU is still 20\% better than it (10.36 against 12.97). Figure~\ref{fig:degradation} shows the relative degradation.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.92\textwidth]{degradation_estimate.png}
+\caption{RMSE increase over complete data under contiguous outages.}\label{fig:degradation}
+\end{figure}
+
+\subsection{Is the gain due to physics? Statistical tests and ablations}\label{sec:eval_sig}
+Table~\ref{tab:sig_estimate} tests the PI-GRU against the best conventional model at each condition (always XGBoost) and against its architecture-matched twin without the physics term (GRU-aux).
+
+\input{tables/significance_estimate.tex}
+
+\textbf{H1 is rejected.} XGBoost has a lower RMSE than the PI-GRU at every condition, by 9--18\%. The day-block bootstrap intervals include zero at most conditions and no difference survives the Holm adjustment, but XGBoost is better in 40 of the 45 seed-condition pairs. The pre-registered success criterion (5\% lower RMSE than the best conventional model at 20--40\% loss) is not met.
+
+\textbf{H2 is not supported.} The PI-GRU and GRU-aux differ by between $-0.6\%$ and $+2.0\%$ in RMSE, with intervals that straddle zero and Holm-adjusted $p$-values of 1.0. With the validation-selected weight $\lambda = 0.03$, the physics term neither helps nor hurts accuracy. Larger weights hurt (Figure~\ref{fig:lambda}): validation RMSE rises monotonically from 5.36 at $\lambda=0.03$ to 7.42 at $\lambda=3$, against 5.53 for $\lambda=0$.
+
+\textbf{Mask awareness matters more than physics.} Removing the mask and time-since-last features (PI-GRU-nomask) raises the RMSE under 40\% block outages from 10.36 to 11.41 (10\%) and the outage slope from 0.42 to 0.54\,kWh per 10 points. This is the clearest single ablation effect in the study.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.48\textwidth]{lambda_sensitivity_estimate.png}
+\caption{Validation RMSE against the physics weight $\lambda$ (seed 0).}\label{fig:lambda}
+\end{figure}
+
+\subsection{Physical consistency and learned parameters}\label{sec:eval_phys}
+\input{tables/physics_consistency_estimate.tex}
+
+\textbf{H3 is partly supported.} On complete data the physics term lowers the RC-balance residual of the PI-GRU by 10\% relative to GRU-aux (0.112 against 0.124\,K/h) at a cost of 1.1\% in RMSE, inside the 2\% tolerance. The advantage shrinks to 3\% at 40\% MCAR loss and disappears under 40\% block outages (0.266 against 0.268). Without mask features the residual is highest (0.138 and 0.315). The outdoor-temperature test tells a less favourable story: every model predicts, on average, more HVAC energy when the outdoor temperature rises (0.33--1.26\,kWh/K in cooling hours), which is physically right, but the recurrent models do the opposite in 28--35\% of individual cooling hours, against 7\% for XGBoost and the baseline BNN. The physics term does not reduce this share (29.4\% against 28.2\%).
+
+\input{tables/physics_coefs_estimate.tex}
+
+The learned time constant of the PI-GRU is $\tau = 48.9 \pm 6.2$\,h, which is within the range expected for a steel-framed office building with a curtain wall, and it is stable across seeds. However, a least-squares fit of the same RC balance on clean training data gives a conductance of essentially zero (and of the wrong sign), so the time constant is \emph{not identifiable} from building-level data. The indoor temperature is held within a narrow band by the HVAC system (standard deviation 0.8\,K over the whole period), and the rooftop-unit meter covers only part of the heating and cooling plant. The learned $\tau$ therefore reflects the positivity constraint and the initialisation as much as the data (Figure~\ref{fig:coefs}). This is the main reason why the physics term cannot add information here: the prior is too weakly coupled to the observed energy.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.92\textwidth]{physics_coefs_estimate.png}
+\caption{Learned time constant and HVAC gain across five seeds.}\label{fig:coefs}
+\end{figure}
+
+\subsection{Operating strata}\label{sec:eval_strata}
+\input{tables/strata_estimate.tex}
+
+The strata explain why XGBoost wins on RMSE while the recurrent models win on MAE. In mild outdoor conditions (between the 10th and 90th percentile of the test period) the PI-GRU is slightly better than XGBoost on complete data (7.11 against 7.29\,kWh). In extreme conditions its error is 40\% higher (14.26 against 10.22): the recurrent models extrapolate poorly to temperatures outside the range seen in training, and a few large errors dominate the RMSE. Occupied and unoccupied hours behave alike. Figure~\ref{fig:trace} shows an August week.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{trace_estimate.png}
+\caption{Measured and predicted HVAC energy for one test week (seed 0), with complete sensors and with 40\% of readings lost to contiguous outages.}\label{fig:trace}
+\end{figure}
+
+\input{sections/evaluation_extra}

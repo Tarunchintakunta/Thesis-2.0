@@ -1,13 +1,15 @@
 \begin{table}[H]
 \centering\small
 \caption{Learned RC coefficients (estimate task, mean $\pm$ s.d. over five seeds) against a least-squares fit on clean training data.}\label{tab:coef_estimate}
+\begin{adjustbox}{max width=\textwidth}
 \begin{tabular}{lrrrrr}
 \toprule
 model & $\tau$ (h) & $b$ & $c$ & $d$ & $e$ \\
 \midrule
 PI-GRU & 48.9 $\pm$ 6.2 & 0.0025 $\pm$ 0.0005 & 0.0055 $\pm$ 0.0008 & 0.0045 $\pm$ 0.0005 & 0.1957 $\pm$ 0.0029 \\
 PI-GRU-nomask & 39.1 $\pm$ 9.4 & 0.0016 $\pm$ 0.0007 & 0.0074 $\pm$ 0.0016 & 0.0060 $\pm$ 0.0012 & 0.1962 $\pm$ 0.0037 \\
-Least-squares RC (train) & -64279.0 & 0.0005 & 0.0027 & 0.1399 & -0.0527 \\
+Least-squares RC (train) & n.i. ($a$=-1.6e-05) & 0.0005 & 0.0027 & 0.1399 & -0.0527 \\
 \bottomrule
 \end{tabular}
+\end{adjustbox}
 \end{table}

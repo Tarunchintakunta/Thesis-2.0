@@ -19,3 +19,4 @@ config_manual/*.fls
 config_manual/*.fdb_latexmk
 logs/
 results/*_quick*
+report/build.log

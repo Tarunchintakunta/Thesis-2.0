@@ -5,24 +5,30 @@ Figure~\ref{fig:arch} shows the pipeline. The hourly table passes through the ma
 
 \begin{figure}[H]
 \centering
-\begin{tikzpicture}[node distance=0.45cm and 0.5cm, every node/.style={font=\small},
-  box/.style={draw, rounded corners=2pt, fill=#1, minimum height=0.85cm, align=center, text width=2.35cm},
+\begin{adjustbox}{max width=\textwidth}
+\begin{tikzpicture}[x=1.15cm, every node/.style={font=\small},
+  box/.style={draw, rounded corners=2pt, fill=#1, minimum height=1.0cm, align=center, text width=2.9cm},
   box/.default=white, arr/.style={-{Stealth[length=2mm]}, semithick}]
-\node[box=gray!8] (raw) {Building 59 CSV files};
-\node[box=gray!8, right=of raw] (hour) {Hourly table\\(UTC, 9 channels)};
-\node[box=blue!6, right=of hour] (mask) {Mask generator\\MCAR / block};
-\node[box=blue!6, right=of mask] (imp) {Causal imputer\\LOCF / mean / CART};
-\node[box=blue!6, below=0.9cm of imp] (feat) {Features: value, mask, time since last, calendar};
-\node[box=orange!10, left=of feat, text width=3.2cm] (gru) {GRU encoder over 24 h window};
-\node[box=orange!10, below left=0.6cm and -0.4cm of gru, text width=2.1cm] (he) {Energy head $\hat E_t$};
-\node[box=orange!10, below right=0.6cm and -0.4cm of gru, text width=2.1cm] (ht) {Temperature head $\hat T_t$};
-\node[box=green!8, left=1.6cm of he, text width=3.3cm] (rc) {RC balance with learned $a,b,c,d>0$};
-\node[box=gray!8, below=0.6cm of ht, text width=3.4cm] (loss) {$\mathcal L = \ell_E + \alpha\,\ell_T + \lambda\,\ell_{phys}$};
+\node[box=gray!8]  (raw)  at (0,0)    {Building 59\\CSV files};
+\node[box=gray!8]  (hour) at (3.0,0)  {Hourly table\\9 channels};
+\node[box=blue!6]  (mask) at (6.0,0)  {Mask generator\\MCAR / block};
+\node[box=blue!6]  (imp)  at (9.0,0)  {Causal imputer\\LOCF / mean / CART};
+\node[box=blue!6]  (feat) at (12.0,0) {Value, mask,\\time since last,\\calendar};
+\node[box=orange!10, text width=3.0cm] (gru) at (9.0,-2.1) {GRU encoder\\24 h window};
+\node[box=orange!10] (he) at (6.0,-3.9) {Energy head $\hat E_t$};
+\node[box=orange!10] (ht) at (12.0,-3.9) {Temperature\\head $\hat T_t$};
+\node[box=green!8, text width=3.4cm] (rc) at (1.8,-3.9) {RC balance, Eq.~(1)\\learned $a,b,c,d>0$\\measured drivers};
+\node[box=gray!8, text width=5.0cm] (loss) at (9.0,-5.7) {$\mathcal L = \ell_E + \alpha\,\ell_T + \lambda\,\ell_{phys}$};
 \draw[arr] (raw) -- (hour); \draw[arr] (hour) -- (mask); \draw[arr] (mask) -- (imp); \draw[arr] (imp) -- (feat);
-\draw[arr] (feat) -- (gru); \draw[arr] (gru) -- (he); \draw[arr] (gru) -- (ht);
-\draw[arr] (he) -- (rc); \draw[arr] (ht.south) |- (loss.west); \draw[arr] (he.south) |- (loss.west);
-\draw[arr] (rc.south) |- (loss.west);
+\draw[arr] (feat.south) |- (gru.east);
+\draw[arr] (gru.south) -- ++(0,-0.4) -| (he.north);
+\draw[arr] (gru.south) -- ++(0,-0.4) -| (ht.north);
+\draw[arr] (he.west) -- (rc.east);
+\draw[arr] (he.south) |- ([yshift=0.15cm]loss.west);
+\draw[arr] (ht.south) |- (loss.east);
+\draw[arr] (rc.south) |- ([yshift=-0.2cm]loss.west);
 \end{tikzpicture}
+\end{adjustbox}
 \caption{Pipeline and PI-GRU architecture. Blue: shared data path used by every model. Orange: network. Green: physics term, active only during training.}\label{fig:arch}
 \end{figure}
 

@@ -1,6 +1,7 @@
 \begin{table}[H]
 \centering\small
 \caption{Computational cost, estimate task (mean over seeds).}\label{tab:cost_estimate}
+\begin{adjustbox}{max width=\textwidth}
 \begin{tabular}{lrrr}
 \toprule
 model & train (s) & epochs / trees & inference ($\mu$s/sample) \\
@@ -15,4 +16,5 @@ PI-GRU-nomask & 34.4 $\pm$ 18.2 & 8 & 4.5 \\
 XGBoost & 0.9 $\pm$ 0.1 & 20 & 0.2 \\
 \bottomrule
 \end{tabular}
+\end{adjustbox}
 \end{table}
