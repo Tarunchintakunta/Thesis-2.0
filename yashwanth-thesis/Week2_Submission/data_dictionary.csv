@@ -1,0 +1,32 @@
+column,dtype,role,missing,unique,min,max,mean,std,meaning
+Time,float64,feature,0,124592,0.0,172792.0,94813.86,47488.146,Seconds since the first transaction in the file
+V1,float64,feature,0,275663,-56.41,2.45,0.0,1.959,PCA component of anonymised original features
+V2,float64,feature,0,275663,-72.72,22.06,0.0,1.651,PCA component of anonymised original features
+V3,float64,feature,0,275663,-48.33,9.38,-0.0,1.516,PCA component of anonymised original features
+V4,float64,feature,0,275663,-5.68,16.88,0.0,1.416,PCA component of anonymised original features
+V5,float64,feature,0,275663,-113.74,34.8,0.0,1.38,PCA component of anonymised original features
+V6,float64,feature,0,275663,-26.16,73.3,0.0,1.332,PCA component of anonymised original features
+V7,float64,feature,0,275663,-43.56,120.59,-0.0,1.237,PCA component of anonymised original features
+V8,float64,feature,0,275663,-73.22,20.01,0.0,1.194,PCA component of anonymised original features
+V9,float64,feature,0,275663,-13.43,15.59,-0.0,1.099,PCA component of anonymised original features
+V10,float64,feature,0,275663,-24.59,23.75,0.0,1.089,PCA component of anonymised original features
+V11,float64,feature,0,275663,-4.8,12.02,0.0,1.021,PCA component of anonymised original features
+V12,float64,feature,0,275663,-18.68,7.85,-0.0,0.999,PCA component of anonymised original features
+V13,float64,feature,0,275663,-5.79,7.13,0.0,0.995,PCA component of anonymised original features
+V14,float64,feature,0,275663,-19.21,10.53,0.0,0.959,PCA component of anonymised original features
+V15,float64,feature,0,275663,-4.5,8.88,0.0,0.915,PCA component of anonymised original features
+V16,float64,feature,0,275663,-14.13,17.32,0.0,0.876,PCA component of anonymised original features
+V17,float64,feature,0,275663,-25.16,9.25,-0.0,0.849,PCA component of anonymised original features
+V18,float64,feature,0,275663,-9.5,5.04,0.0,0.838,PCA component of anonymised original features
+V19,float64,feature,0,275663,-7.21,5.59,0.0,0.814,PCA component of anonymised original features
+V20,float64,feature,0,275663,-54.5,39.42,0.0,0.771,PCA component of anonymised original features
+V21,float64,feature,0,275663,-34.83,27.2,0.0,0.735,PCA component of anonymised original features
+V22,float64,feature,0,275663,-10.93,10.5,-0.0,0.726,PCA component of anonymised original features
+V23,float64,feature,0,275663,-44.81,22.53,0.0,0.624,PCA component of anonymised original features
+V24,float64,feature,0,275663,-2.84,4.58,0.0,0.606,PCA component of anonymised original features
+V25,float64,feature,0,275663,-10.3,7.52,0.0,0.521,PCA component of anonymised original features
+V26,float64,feature,0,275663,-2.6,3.52,0.0,0.482,PCA component of anonymised original features
+V27,float64,feature,0,275663,-22.57,31.61,-0.0,0.404,PCA component of anonymised original features
+V28,float64,feature,0,275663,-15.43,33.85,-0.0,0.33,PCA component of anonymised original features
+Amount,float64,feature,0,32767,0.0,25691.16,88.35,250.12,"Transaction amount (EUR, not scaled)"
+Class,int64,target,0,2,0.0,1.0,0.002,0.042,"Target label: 1 = fraud, 0 = legitimate"

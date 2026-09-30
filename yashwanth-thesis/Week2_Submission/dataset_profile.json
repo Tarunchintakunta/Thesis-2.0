@@ -1,0 +1,47 @@
+{
+  "file": "creditcard.csv",
+  "size_mb": 150.8,
+  "sha256": "76274b691b16a6c49d3f159c883398e03ccd6d1ee12d9d8ee38f4b4b98551a89",
+  "rows": 284807,
+  "columns": 31,
+  "missing_cells": 0,
+  "duplicate_rows": 1081,
+  "duplicate_fraud_rows": 19,
+  "class_counts": {
+    "0": 284315,
+    "1": 492
+  },
+  "class_counts_dedup": {
+    "0": 283253,
+    "1": 473
+  },
+  "fraud_rate_pct": 0.173,
+  "imbalance_ratio": 577.9,
+  "time_span_hours": 48.0,
+  "zero_amount_rows": 1825,
+  "amount_max": 25691.16,
+  "median_amount_by_class": {
+    "0": 22.0,
+    "1": 9.25
+  },
+  "mean_amount_by_class": {
+    "0": 88.29,
+    "1": 122.21
+  },
+  "max_fraud_amount": 2125.87,
+  "pca_abs_mean_max": 0.0,
+  "pca_std_range": [
+    0.33,
+    1.959
+  ],
+  "top_corr_with_class": {
+    "V17": 0.326,
+    "V14": 0.303,
+    "V12": 0.261,
+    "V10": 0.217,
+    "V16": 0.197,
+    "V3": 0.193
+  },
+  "night_fraud_rate_pct": 0.518,
+  "day_fraud_rate_pct": 0.141
+}
