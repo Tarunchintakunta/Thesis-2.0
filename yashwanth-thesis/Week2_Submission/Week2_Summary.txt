@@ -1,0 +1,41 @@
+WEEK 2 SUBMISSION SUMMARY
+=========================
+
+Student: Yashwanth
+Project Title: Determining the Role of Big Data Applications in Fraud Detection and Financial Security in Financial Institutions of Ireland
+
+Gantt position (12-week plan): W2 = Literature Review (W1-W3) + Dataset Collection (W2-W3).
+Data Preprocessing starts in W3; EDA in W4.
+
+1. Literature Review (continued):
+---------------------------------
+- 15 Week 1 papers synthesised across five themes: Random Forest leadership, SMOTE precision/recall
+  trade-off and leakage risk, metric choice, dominance of one benchmark dataset, and the missing Irish context.
+- Method comparison matrix (models, data, class-balance handling, reported result, use in this study).
+- Five refined research gaps (G1-G5) mapped to the research questions.
+
+2. Dataset Collection:
+----------------------
+- Selection criteria written down; ULB Credit Card Fraud (selected), IEEE-CIS, PaySim and BAF compared.
+- Downloaded via the Kaggle API; licence DbCL-1.0; SHA-256 checksum recorded.
+- Central Bank of Ireland 2022-2024 payment fraud statistics collected as Irish context data.
+- Quality audit: 284,807 rows x 31 columns, no missing values, 1,081 duplicate rows (19 fraud),
+  492 frauds (0.173%, 578:1). After de-duplication: 283,253 legitimate, 473 fraud.
+- First look: fraud median amount 9.25 vs 22.00; fraud rate 0.52% at night vs 0.14% by day;
+  top correlated features V17, V14, V12, V10 (consistent with baseline Paper 15).
+
+3. Files Included:
+------------------
+- Week2_Report.pdf        : the Week 2 report (8 pages)
+- week2.py                : reproduces every number, figure and the PDF
+- dataset_profile.json    : quality-audit numbers quoted in the report
+- data_dictionary.csv     : all 31 columns
+- figures/                : four Week 2 figures
+
+Reproduce:  python Week2_Submission/week2.py   (from the yashwanth-thesis folder)
+
+4. Next Week (W3):
+------------------
+- Add 3-5 papers on resampling leakage, PR-AUC, and Irish/EU regulation of automated fraud decisions.
+- Close dataset collection with the final de-duplicated modelling set.
+- Start preprocessing: drop duplicates, scale Time and Amount, save a fixed stratified split.
