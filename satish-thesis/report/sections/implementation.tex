@@ -1,0 +1,29 @@
+\section{Implementation}\label{sec:impl}
+
+The artefact is a Python 3.13 code base of five modules and one notebook (Table~\ref{tab:modules}). It uses pandas and NumPy for data handling, scikit-learn \citep{pedregosa2011sklearn} for the CART imputer, XGBoost 3.2 \citep{chen2016xgboost} and PyTorch 2.11 \citep{paszke2019pytorch}. Versions are pinned in \texttt{requirements.txt}.
+
+\begin{table}[H]
+\centering\small
+\caption{Code modules.}\label{tab:modules}
+\begin{tabular}{p{4.2cm}p{10.6cm}}
+\toprule
+File & Role \\
+\midrule
+\texttt{src/prepare\_data.py} & Builds the hourly table from the raw files, flags impossible readings and natural gaps, writes the data dictionary and profile. \\
+\texttt{src/masking.py} & MCAR and block masks, LOCF/mean/CART imputers fitted on training rows, mask and time-since-last features. \\
+\texttt{src/models.py} & GRU/LSTM forecasters with optional temperature head, RC physics module, Bayesian layers and BNN, early-stopped training, device selection. \\
+\texttt{src/experiment.py} & Split, tuning, five-seed training and refit, evaluation grid, plausibility test, imputation sensitivity. \\
+\texttt{src/analysis.py} & Bootstrap and Wilcoxon tests, Holm adjustment, all tables and figures. \\
+\texttt{tests/test\_pipeline.py} & 19 unit tests (leakage, masking, scaling, physics, metrics, split). \\
+\texttt{notebooks/physics\_informed\_hvac.ipynb} & End-to-end run on Colab, Jupyter, macOS or Windows. \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Leakage control.} Imputation is strictly causal: LOCF only looks back, and the CART imputer uses other channels at the same hour. A unit test perturbs all values after an hour $h$ and checks that no feature at or before $h$ changes. Scaling and imputation statistics are computed on training rows, and a test checks that changing the test data leaves them unchanged. The split is chronological and a test checks that train, validation and test do not overlap and that every target is observed.
+
+\textbf{Masks.} Masks are generated on the whole timeline from a seed that encodes the purpose (training pool, validation or test), the seed number and the scenario index, so masks are reproducible and identical across models. Tests check that the removed share matches the nominal rate, that block outages are contiguous and at least six hours long, that natural gaps never reappear and that the meter is untouched unless requested.
+
+\textbf{Training.} Recurrent models are trained with AdamW, batch size 256, 120 steps per epoch sampled from the nine-version training pool, gradient clipping at 1.0 and early stopping (patience 6) on the mean validation RMSE over five validation conditions. The BNN uses the baseline's batch sizes and learning rates. After selection, every model is refitted on train plus validation for the best epoch count (XGBoost: best number of trees).
+
+\textbf{Hardware and portability.} The device is chosen automatically: CUDA, then Apple-silicon MPS, then CPU. The experiments in this report ran on an Apple-silicon laptop with MPS for the recurrent models. XGBoost and PyTorch each ship their own OpenMP runtime; on macOS, loading both in one process crashed or deadlocked PyTorch. The runner therefore trains the tree family and the neural family in separate processes. Because masks depend only on seeds, the families still see identical inputs. The notebook detects whether it is inside the repository, clones only this project with a sparse checkout when it is not (for example on Colab), installs missing packages, and runs every script in a fresh interpreter, which works the same way on Windows, macOS and Linux. A 0.8\,MB compressed copy of the hourly table is bundled, so no Kaggle credentials are needed to reproduce the results.

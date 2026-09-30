@@ -1,0 +1,54 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[british]{babel}
+\usepackage[a4paper,margin=2.5cm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[round,authoryear]{natbib}
+\usepackage{graphicx,booktabs,float,caption,xcolor,enumitem,tikz,amsmath,array}
+\usetikzlibrary{positioning,arrows.meta}
+\usepackage{xurl}
+\usepackage[hidelinks]{hyperref}
+\graphicspath{{../figures/}}
+\makeatletter
+\def\input@path{{../results/}}
+\makeatother
+\setlength{\parskip}{4pt}
+\setlength{\parindent}{0pt}
+\captionsetup{font=small}
+
+\begin{document}
+
+\begin{titlepage}
+\centering
+\vspace*{2.5cm}
+{\LARGE\bfseries Physics-Informed Machine Learning for Robust Building Energy Prediction under Incomplete Sensor Data\par}
+\vspace{1.5cm}
+{\Large MSc Research Project\par}
+\vspace{1.2cm}
+{\large Sathish Kumar Konda\par}
+\vspace{0.3cm}
+Student ID: 25190890\par
+\vspace{0.6cm}
+MSc in Artificial Intelligence\par
+National College of Ireland\par
+\vfill
+{\large December 2026\par}
+\end{titlepage}
+
+\input{sections/abstract}
+\newpage
+\tableofcontents
+\newpage
+
+\input{sections/introduction}
+\input{sections/related_work}
+\input{sections/methodology}
+\input{sections/design}
+\input{sections/implementation}
+\input{sections/evaluation}
+\input{sections/discussion}
+\input{sections/conclusion}
+
+\bibliographystyle{agsm}
+\bibliography{refs}
+
+\end{document}

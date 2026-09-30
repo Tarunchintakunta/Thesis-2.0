@@ -1,0 +1,55 @@
+\section{Research Methodology}\label{sec:method}
+
+\subsection{Research design}
+The study is a quantitative computational experiment in the design-science tradition: an artefact (the PI-GRU) is built and compared with known alternatives under controlled conditions. A case study would describe one deployment without controlled comparison, and a purely analytical study could not show whether an approximate physics prior helps on noisy operational data. The independent variables are the model, the missingness pattern (MCAR or contiguous block) and the missingness rate (0, 10, 20, 30, 40\%). The dependent variables are MAE, RMSE, MAPE, $R^2$, NRMSE, the RMSE increase over complete data and its slope, the RC-balance residual, the share of physically implausible responses, and training and inference time.
+
+\textbf{Hypotheses.} H1: at 20--40\% missing readings the PI-GRU has a lower RMSE than the best conventional model. H2: the PI-GRU has a lower RMSE than its architecture-matched twin without the physics term ($\lambda=0$). H3: the physics term lowers the RC-balance residual without raising complete-data RMSE by more than 2\%. The success criterion fixed before the experiments was a reduction of at least 5\% in RMSE against the best conventional model at one or more rates between 20\% and 40\%. It is used to interpret results, not to hide contrary ones.
+
+\subsection{Dataset}\label{sec:data}
+The data are the cleaned release of LBNL Building 59 \citep{luo2022dataset,hong2022dryad}, obtained through a Kaggle mirror of the Dryad files because Dryad blocks scripted downloads. The files used are the whole-building electricity meters, the site weather station, the 16 indoor temperature loggers and the four rooftop units' supply-air temperature, return-air temperature and supply-fan speed. All series are averaged to hourly values on a UTC index; calendar variables use local time (America/Los\_Angeles). Table~\ref{tab:dict} lists the resulting variables.
+
+\input{tables/data_dictionary.tex}
+
+Three design decisions follow from the data. First, the Wi-Fi and camera occupancy counts are missing for most of August 2018--February 2020 in the release, so plug-load plus lighting power is used as the internal-gain proxy; it is also the physically direct quantity, because electricity used indoors ends up as heat. Second, supply-air readings of 0\,°F and fan speeds outside 0--100\% are treated as missing. Third, gaps of up to three hours are filled by time interpolation inside the curated table; longer natural gaps stay missing and are never used as targets. After this, 86\% of the hours are complete; natural gaps are mostly in the supply-air temperature in 2018 and in the HVAC meter (Table~\ref{tab:gaps}).
+
+\input{tables/natural_gaps.tex}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{data_overview.png}
+\caption{Daily mean HVAC energy (top) and outdoor and indoor temperature (bottom), with the chronological split.}\label{fig:data}
+\end{figure}
+
+\subsection{Tasks and split}
+\textbf{Estimation (primary task).} Following \citet{mahajan2024bnn}, the model predicts the HVAC energy of hour $t$ from the building and weather sensors up to and including hour $t$, without the HVAC meter history. This is the setting in which sensor loss matters: the model has to infer HVAC energy from the building's thermal state and drivers, which is what a physics prior describes. It is also the setting of a virtual meter or of a model that runs on forecast weather.
+
+\textbf{Forecasting (supplementary task).} The model predicts the next hour's HVAC energy with the meter history as an extra input. This shows how much the meter history dominates and adds a stress test in which the meter itself is lost.
+
+\textbf{Split.} The split reproduces the baseline's test window: training 1 March 2018--31 March 2020, validation 1 April--30 June 2020, test 1 July--31 December 2020 (4{,}414 hourly targets). Training starts in March 2018 because the indoor loggers start on 22 February 2018. Model selection uses the validation quarter only. Every model is then refitted on training plus validation for the selected number of epochs or trees, so the final models, like the baseline's, see about 2.5 years of data; the test set is used once. All scaling and imputation statistics come from the training rows only.
+
+\subsection{Controlled sensor loss}
+Masks are applied to the eight sensor channels after the split, on top of the natural gaps. The HVAC meter is masked only in the forecasting stress test.
+\begin{itemize}[nosep]
+\item \textbf{MCAR:} each observed reading is removed independently with probability $r$.
+\item \textbf{Block outages:} outages of 6--72 hours, each hitting one to three channels at once (for example a rooftop-unit controller losing supply-air temperature, return-air temperature and fan speed together), are drawn until a share $r$ of the observed readings is removed.
+\end{itemize}
+Rates are 10, 20, 30 and 40\%, with five seeds. The mask for a given seed, pattern and rate is the same for every model, so all comparisons are paired. Figure~\ref{fig:masks} shows the two patterns.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{mask_examples.png}
+\caption{Two weeks of the MCAR and block masks at 30\% (blue = removed).}\label{fig:masks}
+\end{figure}
+
+Missing readings are imputed causally by last observation carried forward (LOCF), the method the baseline uses, with the training mean before the first observation. Mean and iterative CART imputation are tested as alternatives. Each channel also gets a binary observation mask and the scaled time since its last observation \citep{che2018grud}. Models are trained on a pool of nine versions of the training data (complete, and MCAR and block masks at each rate, with training-only seeds), so that every model learns under the same missingness it is later tested on.
+
+\subsection{Evaluation}
+Accuracy is measured by MAE, RMSE, MAPE (hours with at least 1\,kWh, to avoid division by near-zero), $R^2$ and NRMSE (RMSE over mean load). Robustness is the RMSE increase over complete data and the least-squares slope of RMSE against the missing rate, in kWh per 10 percentage points. Physical consistency is measured three ways: the RMS residual of a least-squares RC balance fitted on clean training data, applied to the dual-head models' predicted temperature and energy; the change in predicted HVAC energy when the outdoor temperature input is raised by 1\,K; and the share of cooling hours in which that change is negative, which is physically implausible because warmer outdoor air raises the cooling load. Training and inference time record the cost of the physics.
+
+Every model is trained with five seeds. For each condition, the PI-GRU is compared with the best conventional model at that condition and with its $\lambda=0$ twin. The 95\% confidence interval of the RMSE difference is a day-block bootstrap \citep{kunsch1989bootstrap} with 2{,}000 resamples on seed-averaged squared errors, which respects the dependence between hours of the same day. A Wilcoxon signed-rank test on daily MSE gives a $p$-value, and Holm's method \citep{holm1979simple} adjusts for the number of conditions. Errors are also split by occupied and unoccupied hours and by mild and extreme outdoor temperature.
+
+\subsection{Fair comparison}
+All trainable models use the same data, features, masks, split and early-stopping rule (patience 6 on mean validation RMSE over five validation conditions). Each model family gets the same tuning budget of five validation trials: XGBoost over depth and learning rate, the BNN over the baseline's own learning-rate and batch-size grid, the LSTM and the GRU over hidden size, learning rate, weight decay and dropout. The GRU architecture is tuned on the $\lambda=0$ dual-head model, so the physics term has no influence on it; the PI-GRU then tunes only $\lambda$ over five values. The ablations reuse the PI-GRU's configuration.
+
+\subsection{Ethical considerations}
+No people were recruited and no personal data were collected. The dataset is public and licensed for reuse (CC0 on Dryad), and it is cited as required. The Wi-Fi and camera counts, the only person-related data in the release, are not used; the internal-gain proxy is electricity. The models are presented as decision-support tools, not as autonomous HVAC controllers, and their limits are reported. Experiments were kept small (early stopping, five-trial tuning, laptop hardware) to limit energy use. Generative-AI assistance used in preparing code and text is declared in the submission as required by NCI policy.

@@ -1,0 +1,45 @@
+\section{Related Work}\label{sec:lit}
+
+\subsection{Data-driven building energy prediction}
+Data-driven prediction of building energy use is a mature field. \citet{amasyali2018review} review more than a hundred studies and find that artificial neural networks and support vector regression dominate, that most studies predict at hourly or daily resolution, and that few test models outside the conditions they were trained on. Gradient-boosted trees \citep{chen2016xgboost} and recurrent networks \citep{hochreiter1997lstm,cho2014gru} have since become standard strong baselines for tabular and sequential energy data.
+
+\citet{luo2022dataset} published the dataset used here: three years (2018--2020) of energy, HVAC, indoor-environment, weather and occupancy data from LBNL Building 59, an office building in Berkeley, California, with more than 300 points. They document the raw gaps and release a cleaned version, which shows that missing data are a property of the system, not an artefact.
+
+\textbf{Principal baseline.} \citet{mahajan2024bnn} use this dataset to predict hourly HVAC and total electricity demand. Their inputs are season, weekend and duty-hour flags, a maintenance-event flag, average interior zone temperature, solar radiation, relative humidity, air temperature, wind speed and electricity load. Missing values are filled by copying the previous hour. They train a Bayesian neural network (three layers of 512, 512 and 128 units, trained by variational inference \citep{blundell2015weight}) and an MC-dropout LSTM \citep{gal2016dropout} on about 2.5 years and test on the last six months of 2020, with a quantile random forest as benchmark. For HVAC on the full test set they report RMSE 9.65\,kWh, MAE 7.06\,kWh and MAPE 0.35 (BNN), 11.86, 8.21 and 0.45 (MC-LSTM) and 21.67, 17.17 and 0.40 (QRF). Their focus is uncertainty quantification. The limits that matter here are that the evaluation assumes complete, forward-filled data, the model contains no physical knowledge and each hour is predicted without temporal context. This study adopts their target, split and metrics so that results are directly comparable, and then asks what happens when the sensors fail.
+
+\subsection{Missing data in building datasets}
+\citet{rubin1976missing} distinguishes data missing completely at random (MCAR) from data missing at random or not at random. In buildings, loss is rarely MCAR: a controller outage removes several points for hours or days. \citet{kim2023imputation} compare imputation methods for residential energy, behaviour and environment data and find that the best method depends on gap length and variable type. \citet{lee2024missing} compare median, $k$-nearest-neighbour, CART and XGBoost imputation for building energy benchmarking and show that the imputation choice changes both the reconstructed distribution and the downstream model. Both studies judge imputation by reconstruction or benchmark quality, not by the robustness of a downstream predictor.
+
+In machine learning more broadly, \citet{che2018grud} show that recurrent networks can exploit missingness itself: feeding the observation mask and the time since the last observation (GRU-D) improves prediction on clinical time series. This project borrows that idea: every model receives the mask and a time-since-last-observation feature, so it can tell a measured value from a carried-forward one.
+
+\subsection{Physics-informed models of building thermal dynamics}
+Physics-informed learning combines data with physical laws through soft penalties, constrained architectures or hybrid models \citep{raissi2019pinn,karniadakis2021piml}. \citet{karniadakis2021piml} note that physics adds information beyond the labels but that balancing data and physics losses of different scales is difficult. Grey-box RC models are the standard low-order physics of buildings; \citet{bacher2011greybox} show how to select such models for the heat dynamics of a building from data.
+
+\citet{gokhale2022pinn} encode thermal dynamics in a PINN that predicts room temperature, energy and an unobserved thermal-mass state; it needs less training data and extrapolates further than a plain network. \citet{dinatale2022pcnn} propose Physically Consistent Neural Networks whose structure guarantees a sensible response to heating inputs and to neighbouring and outdoor temperatures, with accuracy similar to black-box networks. \citet{chen2023physcon} integrate a thermal model with a neural network (PhysCon) for thermal modelling and demand-response control. Structural constraints give stronger guarantees but need zone-level power and building parameters that public operational data rarely provide. \citet{ma2025review} review PIML for building energy and name the balance between accuracy and physical consistency, the choice of physics prior and validation on real buildings as open problems. None of these studies removes sensors at inference time.
+
+\subsection{Physics-informed imputation and energy prediction}
+\citet{liguori2024opening} couple a denoising autoencoder with a thermal-balance equation to impute temperature, heating and cooling data. The physics term barely changes reconstruction error on complete data but improves robustness as the missing rate grows and yields interpretable coefficients. This suggests that the benefit of physics lies in graceful degradation, not in best-case accuracy. Their endpoint is imputation, not energy prediction. \citet{michalakopoulos2024pinn} use a PINN whose network estimates envelope and thermal properties that feed heat-loss equations, predicting the energy efficiency of 256 residential buildings from static audit data. It is an energy-prediction PINN, but with static inputs and no sensor loss.
+
+\subsection{Critical evidence map and research gap}\label{sec:gap}
+Table~\ref{tab:evidence} summarises the evidence. Each stream supplies a piece of the design; none combines operational HVAC prediction, physics and controlled sensor loss.
+
+\begin{table}[H]
+\centering\small
+\caption{Critical evidence map.}\label{tab:evidence}
+\begin{tabular}{p{3.3cm}p{3.1cm}p{3.6cm}p{4.2cm}}
+\toprule
+Study & Focus & Used in this project & Limitation creating the gap \\
+\midrule
+\citet{mahajan2024bnn} & BNN / MC-LSTM, HVAC of Bldg 59 & Target, split, metrics; BNN re-implemented as principal baseline & Complete forward-filled data; no physics; no temporal context \\
+\citet{luo2022dataset} & Bldg 59 dataset & Data source & Curated data need controlled re-masking \\
+\citet{kim2023imputation}; \citet{lee2024missing} & Missing-data handling & Imputers (LOCF, mean, CART) & No downstream physics-informed comparison \\
+\citet{che2018grud} & RNNs with missing values & Mask and time-since-last features & Not physics-aware; clinical data \\
+\citet{gokhale2022pinn}; \citet{dinatale2022pcnn}; \citet{chen2023physcon} & Physics-guided thermal models & RC balance, positive coefficients & Sensor-outage robustness not evaluated \\
+\citet{liguori2024opening} & Physics-informed imputation & Soft thermal residual; robustness framing & Imputation, not energy prediction \\
+\citet{michalakopoulos2024pinn} & PINN energy prediction & PINN energy framing & Static audit inputs; no sensor loss \\
+\citet{ma2025review} & PIML review & Open problems & Calls for real-building validation \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Gap.} There is no controlled test of whether an approximate building-physics prior reduces the error of an operational HVAC energy predictor when its input sensors fail, and no such test against the published baseline for the same building. This project fills that gap with identical masks for every model, random and contiguous outages, an architecture-matched ablation that isolates the physics term, and joint reporting of accuracy, robustness slope and physical consistency.

@@ -1,0 +1,49 @@
+\section{Introduction}\label{sec:intro}
+
+\subsection{Background}
+Office buildings now carry dense sensor networks. Building-management systems log electricity use, supply- and return-air temperatures, fan speeds, indoor temperatures and on-site weather every few minutes. Facility managers use these streams to predict heating, ventilation and air-conditioning (HVAC) energy, to detect faults and to plan demand response. Buildings account for a large share of electricity use, and HVAC is usually the largest controllable end use, so accurate HVAC prediction has direct cost and carbon value \citep{amasyali2018review}.
+
+Real sensor data are rarely complete. Sensors fail, controllers drop off the network, loggers drift, and some points are never installed because they are expensive or intrusive. The public three-year dataset of LBNL Building 59 \citep{luo2022dataset}, used in this project, shows the problem clearly. Even after the authors' curation, the supply-air temperature is missing for 7.9\% of the hours, the HVAC meter for 4.6\% and the Wi-Fi occupancy counts for more than half of the period (Section~\ref{sec:data}).
+
+Purely data-driven models learn statistical associations between inputs and energy. When an input disappears at run time, the model sees a pattern it was never trained on, and its prediction can become both inaccurate and physically implausible. Physics-informed machine learning (PIML) adds prior physical knowledge, such as an energy balance, to the architecture or to the loss function \citep{karniadakis2021piml,raissi2019pinn}. For buildings, a first-order resistance--capacitance (RC) model links indoor temperature change to outdoor temperature, internal gains, solar gains and HVAC power \citep{bacher2011greybox}. Such a prior can constrain a neural network when parts of the data are missing.
+
+\subsection{Problem statement and baseline}
+The principal baseline of this project is \citet{mahajan2024bnn}. That study predicts hourly HVAC energy of LBNL Building 59 from weather, indoor temperature, other electricity loads and calendar variables with a Bayesian neural network (BNN). It trains on about 2.5 years and tests on the last six months of 2020, and reports a test RMSE of 9.65\,kWh, an MAE of 7.06\,kWh and a MAPE of 0.35 for the BNN (11.86, 8.21 and 0.45 for an MC-dropout LSTM). This is the closest published work: same building, same target, same test window.
+
+The baseline has three gaps that this project addresses:
+\begin{enumerate}[nosep]
+\item \textbf{Complete data only.} Missing values are forward-filled before modelling and the models are never tested with missing sensors. Its robustness to sensor loss is unknown.
+\item \textbf{No physical knowledge.} The BNN is a generic multilayer perceptron. Nothing ties its predictions to the heat balance of the building.
+\item \textbf{No temporal context and no missingness signal.} Each hour is predicted from that hour's readings only, and an imputed value looks the same to the model as a measured one.
+\end{enumerate}
+Physics-informed building models exist \citep{gokhale2022pinn,dinatale2022pcnn,chen2023physcon}, and so do studies of missing building data \citep{kim2023imputation,lee2024missing,liguori2024opening}. They are, however, rarely brought together: no study found in this review tests whether a physics prior protects an operational HVAC energy predictor when its input sensors fail (Section~\ref{sec:gap}).
+
+\subsection{Research question and objectives}
+\textbf{Research question.} \emph{To what extent does a mask-aware, physics-informed recurrent network improve hourly HVAC energy prediction over conventional machine-learning models, including the published baseline, when the building's input sensors are incomplete?}
+
+\textbf{Sub-questions.}
+\begin{enumerate}[label=RQ\arabic*,nosep]
+\item How does accuracy change as 10--40\% of the sensor readings are removed?
+\item Does the answer differ between random point loss (MCAR) and contiguous multi-sensor outages?
+\item Does the physics term reduce physical inconsistency (balance residual, implausible responses), and are the learned thermal parameters credible?
+\end{enumerate}
+
+\textbf{Objectives.}
+\begin{enumerate}[label=O\arabic*,nosep]
+\item Build a reproducible benchmark with a fixed chronological split and identical, seeded missingness masks for every model.
+\item Re-implement the baseline BNN and implement strong conventional baselines (profile, XGBoost, LSTM, GRU) and the proposed physics-informed GRU (PI-GRU) with architecture-matched ablations.
+\item Evaluate accuracy, robustness, physical consistency and computational cost with five seeds, bootstrap confidence intervals and paired tests.
+\item Beat the published baseline on its own protocol and state when the physics prior helps, is neutral, or hurts.
+\end{enumerate}
+
+\subsection{Contributions}
+\begin{itemize}[nosep]
+\item A sensor-loss benchmark for Building 59 with MCAR and contiguous outages at four rates, applied identically to every model, plus a meter-outage stress test.
+\item A mask-aware PI-GRU that jointly predicts HVAC energy and indoor temperature and is regularised by a learnable RC heat balance with positive coefficients.
+\item A faithful re-implementation of the baseline BNN, whose complete-data errors fall close to the published ones, and a direct comparison on the baseline's protocol.
+\item Evidence, with confidence intervals and ablations, on where the accuracy gain comes from: the temporal, mask-aware architecture, the auxiliary temperature task or the physics term.
+\item An open, one-command pipeline and a notebook that runs on Colab, Jupyter, macOS and Windows with CUDA, Apple-silicon MPS or CPU.
+\end{itemize}
+
+\subsection{Structure of the report}
+Section~\ref{sec:lit} reviews related work and identifies the gap. Section~\ref{sec:method} describes the research design, data and evaluation protocol. Section~\ref{sec:design} specifies the models, and Section~\ref{sec:impl} the implementation. Section~\ref{sec:eval} presents the results and Section~\ref{sec:disc} discusses them. Section~\ref{sec:concl} concludes.

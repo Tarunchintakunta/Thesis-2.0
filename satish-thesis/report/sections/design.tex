@@ -1,0 +1,79 @@
+\section{Design Specification}\label{sec:design}
+
+\subsection{Overview}
+Figure~\ref{fig:arch} shows the pipeline. The hourly table passes through the mask generator, the causal imputer and the feature builder, which emits, for every hour, the eight standardised sensor values, their eight observation masks, their eight scaled times since last observation and five calendar terms (hour and weekday as sine/cosine pairs and a weekend flag). All models consume these same features; the recurrent models read a 24-hour window, the tabular models read the target hour plus the previous hour's sensor values.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[node distance=0.45cm and 0.5cm, every node/.style={font=\small},
+  box/.style={draw, rounded corners=2pt, fill=#1, minimum height=0.85cm, align=center, text width=2.35cm},
+  box/.default=white, arr/.style={-{Stealth[length=2mm]}, semithick}]
+\node[box=gray!8] (raw) {Building 59 CSV files};
+\node[box=gray!8, right=of raw] (hour) {Hourly table\\(UTC, 9 channels)};
+\node[box=blue!6, right=of hour] (mask) {Mask generator\\MCAR / block};
+\node[box=blue!6, right=of mask] (imp) {Causal imputer\\LOCF / mean / CART};
+\node[box=blue!6, below=0.9cm of imp] (feat) {Features: value, mask, time since last, calendar};
+\node[box=orange!10, left=of feat, text width=3.2cm] (gru) {GRU encoder over 24 h window};
+\node[box=orange!10, below left=0.6cm and -0.4cm of gru, text width=2.1cm] (he) {Energy head $\hat E_t$};
+\node[box=orange!10, below right=0.6cm and -0.4cm of gru, text width=2.1cm] (ht) {Temperature head $\hat T_t$};
+\node[box=green!8, left=1.6cm of he, text width=3.3cm] (rc) {RC balance with learned $a,b,c,d>0$};
+\node[box=gray!8, below=0.6cm of ht, text width=3.4cm] (loss) {$\mathcal L = \ell_E + \alpha\,\ell_T + \lambda\,\ell_{phys}$};
+\draw[arr] (raw) -- (hour); \draw[arr] (hour) -- (mask); \draw[arr] (mask) -- (imp); \draw[arr] (imp) -- (feat);
+\draw[arr] (feat) -- (gru); \draw[arr] (gru) -- (he); \draw[arr] (gru) -- (ht);
+\draw[arr] (he) -- (rc); \draw[arr] (ht.south) |- (loss.west); \draw[arr] (he.south) |- (loss.west);
+\draw[arr] (rc.south) |- (loss.west);
+\end{tikzpicture}
+\caption{Pipeline and PI-GRU architecture. Blue: shared data path used by every model. Orange: network. Green: physics term, active only during training.}\label{fig:arch}
+\end{figure}
+
+\subsection{Physics prior}
+A first-order RC model treats the building as one thermal capacitance $C$ connected to outdoor air through a conductance $UA$ and heated or cooled by internal gains, solar gains and the HVAC system \citep{bacher2011greybox}. With a one-hour step and hourly means,
+\begin{equation}
+T_t - T_{t-1} = a\,(T^{out}_t - T_{t-1}) + b\, m_t\, E_t + c\, Q^{int}_t + d\, S_t + e, \label{eq:rc}
+\end{equation}
+where $T$ is the indoor temperature, $E$ the HVAC energy, $Q^{int}$ the plug-load and lighting power, $S$ the solar radiation (kW/m$^2$), $a = UA/C$, $b=\eta/C$, $c=\beta/C$ and $d=\gamma/C$. The HVAC mode $m_t = \tanh\!\big((T^{sa}_t - T^{ra}_t)/2\big)$ is positive when the rooftop units supply air warmer than the return air (heating) and negative when they cool; it is close to zero in fan-only operation. The coefficients $a,b,c,d$ pass through a softplus, so they are always positive, and $e$ absorbs unmodelled constant gains. The time constant $\tau = 1/a$ is reported as an interpretability check.
+
+The balance is deliberately simple. Building 59 has four rooftop units, fan-coil units and a central chilled- and hot-water plant \citep{mahajan2024bnn}; only the rooftop-unit electricity is in the HVAC meter, and zone-level flows are not available. A hard structural constraint would therefore be mis-specified. A soft residual with a tuned weight lets the data override the prior where it is wrong \citep{karniadakis2021piml,ma2025review}.
+
+\subsection{Proposed model: PI-GRU}
+The PI-GRU encodes the 24-hour feature window with a GRU \citep{cho2014gru}, applies dropout and a ReLU layer, and has two linear heads: HVAC energy $\hat E_t$ and indoor temperature $\hat T_t$. The loss is
+\begin{equation}
+\mathcal L = \mathrm{Huber}(\hat E_t, E_t) + \alpha\,\mathrm{Huber}(\hat T_t, T_t) + \lambda\, \frac{\sum w_t\,\mathrm{Huber}(r_t)}{\sum w_t},\qquad
+r_t = \frac{(\hat T_t - T_{t-1}) - \mathrm{RHS}_t(\hat E_t)}{\sigma_{\Delta T}}, \label{eq:loss}
+\end{equation}
+with targets standardised on the training set, $\alpha = 1$, and $\mathrm{RHS}_t$ the right-hand side of Eq.~\eqref{eq:rc} evaluated with the predicted energy. Two design choices make the term useful under sensor loss:
+\begin{itemize}[nosep]
+\item \textbf{The residual uses measured drivers.} During training the true outdoor temperature, internal gains, solar radiation, mode and previous indoor temperature are known, even when the network's own inputs are masked. The physics term therefore teaches the network to output energy--temperature pairs that are consistent with the real thermal state, which is exactly the information it has to reconstruct when sensors fail. At test time the residual is not needed.
+\item \textbf{The residual is mask-aware.} The weight $w_t$ is zero wherever a driver of Eq.~\eqref{eq:rc} is naturally missing, so the prior is never enforced on fabricated values.
+\end{itemize}
+
+\subsection{Baselines and ablations}
+\begin{itemize}[nosep]
+\item \textbf{Profile:} mean HVAC energy for the same hour of day and weekday in the training data; needs no sensors.
+\item \textbf{BNN-paper:} re-implementation of the baseline \citep{mahajan2024bnn}: a mean-field Bayesian network \citep{blundell2015weight} with layers of 512, 512 and 128 units, a Gaussian likelihood with softplus scale, the negative log-likelihood plus KL loss, log-transformed and standardised target, and the baseline's inputs (indoor temperature, outdoor temperature, humidity, solar radiation, other electricity, season and calendar flags, duty hours). Wind speed and the maintenance-event flag are not in the released files. Predictions average 30 posterior samples.
+\item \textbf{BNN:} the same network on this project's features (with masks and previous-hour values), to separate the feature set from the model class.
+\item \textbf{XGBoost:} gradient-boosted trees \citep{chen2016xgboost} on the tabular features.
+\item \textbf{LSTM} \citep{hochreiter1997lstm} and \textbf{GRU}: energy-only recurrent networks on the same window.
+\item \textbf{GRU-aux:} the PI-GRU with $\lambda = 0$. It has the same architecture, inputs and auxiliary temperature head, so the difference between PI-GRU and GRU-aux isolates the physics term.
+\item \textbf{PI-GRU-nomask:} the PI-GRU without mask and time-since-last features, which isolates mask awareness.
+\end{itemize}
+For the forecasting task, persistence (last hour's energy) and seasonal persistence (same hour yesterday) replace the profile, and all models also receive the meter channel.
+
+\subsection{Alternatives considered}
+\begin{table}[H]
+\centering\small
+\caption{Design alternatives and the reason for the choice made.}\label{tab:alternatives}
+\begin{tabular}{p{3.6cm}p{4.3cm}p{6.6cm}}
+\toprule
+Decision & Alternatives & Choice and reason \\
+\midrule
+Physics integration & Hard structure (PCNN, PhysCon), hybrid simulation & Soft residual: zone flows and plant power are unobserved, so a hard structure would be mis-specified; $\lambda$ can be tuned and ablated. \\
+Thermal model order & 2R2C or higher-order RC & 1R1C: identifiable from building-level data; higher orders need wall or zone temperatures that are not in the release. \\
+Backbone & Temporal MLP, transformer & GRU: fewer parameters than an LSTM, strong on short multivariate windows, cheap on a laptop GPU. \\
+Missing-data handling & Impute only; GRU-D decay & Imputation plus mask and time-since-last features: model-agnostic, so every baseline gets the same information. \\
+Imputer & Linear interpolation, KNN, matrix factorisation & LOCF (as in the baseline) with mean and CART as sensitivity checks; interpolation uses future values and would leak. \\
+Occupancy input & Wi-Fi or camera counts & Plug-load and lighting power: available for the whole period and a direct heat-gain measure; avoids person-related data. \\
+Uncertainty & Full BNN or ensembles for all models & Point forecasts with five seeds; the BNN keeps its probabilistic form to stay faithful to the baseline. \\
+\bottomrule
+\end{tabular}
+\end{table}
