@@ -1,0 +1,4 @@
+model,best_params,cv_pr_auc,cv_pr_auc_sd
+Logistic Regression,"{""clf__C"": 1.0}",0.7462604025975965,0.025696879330128708
+Decision Tree,"{""clf__max_depth"": 20, ""clf__min_samples_leaf"": 10}",0.7377848586690674,0.0171244391329287
+Random Forest,"{""clf__max_depth"": null, ""clf__min_samples_leaf"": 1}",0.8395840787390026,0.006901423180237729
