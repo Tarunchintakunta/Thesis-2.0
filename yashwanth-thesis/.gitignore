@@ -1,0 +1,10 @@
+project/data/
+project/results/pipeline_run.log
+kaggle.json
+report/*.aux
+report/*.log
+report/*.out
+report/*.toc
+report/*.fls
+report/*.fdb_latexmk
+report/*.blg
