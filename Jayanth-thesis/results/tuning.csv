@@ -1,0 +1,4 @@
+model,best_params,cv_f1
+Decision Tree,"{""clf__max_depth"": 10, ""clf__min_samples_leaf"": 5}",0.9963180938103184
+Random Forest,"{""clf__max_depth"": 20, ""clf__min_samples_leaf"": 1}",0.9963180938103184
+SVM (RBF),"{""clf__C"": 10, ""clf__gamma"": ""scale""}",0.9874219759249634

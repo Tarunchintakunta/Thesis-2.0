@@ -1,0 +1,5 @@
+best,other,best_only_correct,other_only_correct,statistic,p_value
+Decision Tree,Logistic Regression,29,1,1.0,5.774199962615967e-08
+Decision Tree,Random Forest,0,0,0.0,1.0
+Decision Tree,SVM (RBF),39,1,1.0,7.457856554538012e-11
+Decision Tree,Gradient Boosting,2,1,1.0,1.0

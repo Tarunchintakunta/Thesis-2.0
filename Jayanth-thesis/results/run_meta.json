@@ -1,0 +1,7 @@
+{
+  "best_model": "Decision Tree",
+  "runtime_seconds": 234.5810558795929,
+  "seed": 42,
+  "train_rows": 26888,
+  "test_rows": 6723
+}
