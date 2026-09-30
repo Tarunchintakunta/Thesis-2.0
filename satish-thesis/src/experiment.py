@@ -62,6 +62,14 @@ BNN_DEVICE = torch.device("cuda") if DEVICE.type == "cuda" else torch.device("cp
 torch.set_num_threads(8)
 
 
+def load_hourly():
+    """Hourly table from src/prepare_data.py, or the bundled compressed copy when raw data is absent."""
+    path = ROOT / "data" / "processed" / "bldg59_hourly.csv"
+    if not path.exists():
+        path = ROOT / "data" / "bldg59_hourly.csv.gz"
+    return pd.read_csv(path, parse_dates=["time"], index_col="time")
+
+
 def rmse(y, p):
     return float(np.sqrt(np.mean((y - p) ** 2)))
 
@@ -81,7 +89,7 @@ def mask_seed(kind, seed, k):
 
 class Data:
     def __init__(self, imputer="locf", task="estimate"):
-        df = pd.read_csv(ROOT / "data" / "processed" / "bldg59_hourly.csv", parse_dates=["time"], index_col="time")
+        df = load_hourly()
         self.df, self.time = df, df.index
         n = len(df)
         period = np.full(n, "", dtype=object)
@@ -94,6 +102,7 @@ class Data:
         base = (np.arange(n) >= 167) & same_period & ~np.isnan(e_next)
         self.rows = {k: np.where(base & (period == k))[0] for k in PERIODS}
         self.rows["train"] = self.rows["train"][~np.isnan(t_next[self.rows["train"]])]
+        self.rows["fit"] = np.r_[self.rows["train"], self.rows["val"][~np.isnan(t_next[self.rows["val"]])]]
         self.fb = FeatureBuilder(df, np.isin(np.arange(n), self.rows["train"]), imputer)
         self.ye, self.yt = e_next, t_next
         nxt = lambda c: np.r_[df[c].to_numpy(float)[1:], np.nan]
@@ -108,16 +117,19 @@ class Data:
                          float(np.nanstd(t_next[tr])), float(np.nanstd((t_next - self.tnow)[tr])))
         log_e = np.log1p(np.clip(e_next[tr], 0, None))
         self.log_mu, self.log_sd = float(log_e.mean()), float(log_e.std())
-        prof = pd.Series(e_next[tr]).groupby([hour[tr + 1], dow[tr + 1]]).mean()
+        fit = self.rows["fit"]
+        prof = pd.Series(e_next[fit]).groupby([hour[fit + 1], dow[fit + 1]]).mean()
         self.profile = prof.reindex(pd.MultiIndex.from_arrays([hour, dow])).to_numpy()
         k = len(CHANNELS)
         self.task, self.shift = task, int(task == "estimate")
+        month = {3 * k + 4, 3 * k + 5}  # two seasonal cycles are too few to learn month effects
         if task == "estimate":
-            self.cols = [i for i in range(3 * k + 7) if i % k != E or i >= 3 * k]
-            self.nomask_cols = list(range(E)) + list(range(3 * k, 3 * k + 7))
+            self.cols = [i for i in range(3 * k + 7) if (i % k != E or i >= 3 * k) and i not in month]
+            self.nomask_cols = [i for i in list(range(E)) + list(range(3 * k, 3 * k + 7)) if i not in month]
         else:
-            self.cols = list(range(3 * k + 7))
-            self.nomask_cols = FeatureBuilder.no_mask_columns()
+            self.cols = [i for i in range(3 * k + 7) if i not in month]
+            self.nomask_cols = [i for i in FeatureBuilder.no_mask_columns() if i not in month]
+        self.tab_cols = self.cols + list(range(3 * k + 7, 3 * k + 13))
         self.cache = {}
 
     def frame(self, pattern, rate, seed):
@@ -134,7 +146,7 @@ class Data:
 
     def tab(self, frame, imp, rows):
         if self.task == "forecast":
-            return tabular(frame, imp, rows, self.fb.mu[E], self.fb.sd[E])
+            return tabular(frame, imp, rows, self.fb.mu[E], self.fb.sd[E])[:, self.tab_cols]
         return np.column_stack([frame[rows + 1][:, self.cols], frame[rows][:, :E]]).astype(np.float32)
 
     def paper_features(self, frame, rows):
@@ -152,10 +164,10 @@ class Data:
 class Pool:
     """Training pool: the 9 training scenarios (clean + 4 MCAR + 4 block rates) stacked on the device."""
 
-    def __init__(self, data, seed, cols):
+    def __init__(self, data, seed, cols, rows):
         frames = [data.frame(p, r, mask_seed("train", seed, k))[0] for k, (p, r) in enumerate(TRAIN_SCEN)]
         self.F = torch.as_tensor(np.stack(frames), device=DEVICE)
-        self.rows, self.cols = data.rows["train"], cols
+        self.rows, self.cols = rows, cols
         t = lambda a: torch.as_tensor(np.nan_to_num(a), dtype=torch.float32, device=DEVICE)
         self.ye, self.yt, self.tnow, self.drv, self.w = t(data.ye), t(data.yt), t(data.tnow), t(data.drv), t(data.w)
         self.offsets = torch.arange(-WINDOW + 1 + data.shift, 1 + data.shift, device=DEVICE)
@@ -167,52 +179,72 @@ class Pool:
         return x, self.ye[h], self.yt[h], self.tnow[h], self.drv[h], self.w[h]
 
 
-def fit_recurrent(data, name, cfg, lam, seed, epochs):
+def refit(fit_once, epochs, do_refit):
+    """Early-stop on validation, then (final runs) retrain on train + validation for the chosen epoch count."""
+    model, info = fit_once("train", epochs, True)
+    if do_refit:
+        t0 = info["train_s"]
+        model, info2 = fit_once("fit", info["best_epoch"], False)
+        info = {**info, "train_s": t0 + info2["train_s"]}
+    return model, info
+
+
+def fit_recurrent(data, name, cfg, lam, seed, epochs, do_refit=False):
     spec = NEURAL[name]
     cols = data.nomask_cols if spec.get("nomask") else data.cols
-    pool = Pool(data, seed, cols)
     rows = data.rows["val"]
     xs = [data.windows(data.frame(p, r, mask_seed("val", 0, k))[0], rows, cols) for k, (p, r) in enumerate(VAL_SCEN)]
     val = lambda m: float(np.mean([rmse(data.ye[rows], predict(m, x, data.sc)[0]) for x in xs]))
-    torch.manual_seed(seed)
-    model = Recurrent(len(cols), cfg["hidden"], cfg["dropout"],
-                      spec["cell"], spec["dual"], spec["physics"]).to(DEVICE)
     lam = lam if spec["physics"] else 0.0
-    info = train(model, pool.batch, lambda m, b: recurrent_loss(m, b, data.sc, lam), val,
-                 lr=cfg["lr"], wd=cfg["wd"], epochs=epochs, seed=seed)
+
+    def fit_once(rows_key, n_epochs, early):
+        pool = Pool(data, seed, cols, data.rows[rows_key])
+        torch.manual_seed(seed)
+        model = Recurrent(len(cols), cfg["hidden"], cfg["dropout"], spec["cell"], spec["dual"], spec["physics"]).to(DEVICE)
+        info = train(model, pool.batch, lambda m, b: recurrent_loss(m, b, data.sc, lam), val if early else None,
+                     lr=cfg["lr"], wd=cfg["wd"], epochs=n_epochs, seed=seed)
+        return model, info
+
+    model, info = refit(fit_once, epochs, do_refit)
     return Predictor(data, "nn", model, cols), model, info
 
 
-def fit_bnn(data, name, cfg, seed, epochs):
-    tr = data.rows["train"]
-    X = np.concatenate([data.bnn_features(name, *data.frame(p, r, mask_seed("train", seed, k)), tr)
-                        for k, (p, r) in enumerate(TRAIN_SCEN)])
-    y = np.tile((np.log1p(np.clip(data.ye[tr], 0, None)) - data.log_mu) / data.log_sd, len(TRAIN_SCEN))
-    X, y = torch.as_tensor(X, device=BNN_DEVICE), torch.as_tensor(y, dtype=torch.float32, device=BNN_DEVICE)
+def fit_bnn(data, name, cfg, seed, epochs, do_refit=False):
     rows = data.rows["val"]
     xv = [data.bnn_features(name, *data.frame(p, r, mask_seed("val", 0, k)), rows) for k, (p, r) in enumerate(VAL_SCEN)]
-    torch.manual_seed(seed)
-    model = BNN(X.shape[1]).to(BNN_DEVICE)
     pred = lambda m, x: predict_bnn(m, x, data.log_mu, data.log_sd, samples=10)
     val = lambda m: float(np.mean([rmse(data.ye[rows], pred(m, x)) for x in xv]))
 
-    def batch(rng):
-        i = torch.as_tensor(rng.integers(0, len(X), cfg["bs"]), device=BNN_DEVICE)
-        return X[i], y[i]
+    def fit_once(rows_key, n_epochs, early):
+        tr = data.rows[rows_key]
+        X = np.concatenate([data.bnn_features(name, *data.frame(p, r, mask_seed("train", seed, k)), tr)
+                            for k, (p, r) in enumerate(TRAIN_SCEN)])
+        y = np.tile((np.log1p(np.clip(data.ye[tr], 0, None)) - data.log_mu) / data.log_sd, len(TRAIN_SCEN))
+        X, y = torch.as_tensor(X, device=BNN_DEVICE), torch.as_tensor(y, dtype=torch.float32, device=BNN_DEVICE)
 
-    info = train(model, batch, lambda m, b: bnn_loss(m, b, len(X)), val, lr=cfg["lr"], wd=0.0, epochs=epochs, seed=seed)
+        def batch(rng):
+            i = torch.as_tensor(rng.integers(0, len(X), cfg["bs"]), device=BNN_DEVICE)
+            return X[i], y[i]
+
+        torch.manual_seed(seed)
+        model = BNN(X.shape[1]).to(BNN_DEVICE)
+        info = train(model, batch, lambda m, b: bnn_loss(m, b, len(X)), val if early else None, lr=cfg["lr"], wd=0.0,
+                     epochs=n_epochs, seed=seed)
+        return model, info
+
+    model, info = refit(fit_once, epochs, do_refit)
     return Predictor(data, "bnn", model, name=name), model, info
 
 
 def fit_neural(data, name, chosen, seed, epochs):
     if NEURAL[name].get("kind") == "bnn":
-        return fit_bnn(data, name, chosen["BNN"], seed, epochs)
+        return fit_bnn(data, name, chosen["BNN"], seed, epochs, do_refit=True)
     cfg = chosen["LSTM"] if name == "LSTM" else chosen["GRU"]
-    return fit_recurrent(data, name, cfg, chosen.get("lambda", 0.0), seed, epochs)
+    return fit_recurrent(data, name, cfg, chosen.get("lambda", 0.0), seed, epochs, do_refit=True)
 
 
 # ----------------------------------------------------------------------------- tree family
-def fit_xgb(data, cfg, seed):
+def fit_xgb(data, cfg, seed, do_refit=False):
     def design(scen, kind, rows):
         parts = [(data.frame(p, r, mask_seed(kind, 0 if kind == "val" else seed, k)), rows) for k, (p, r) in enumerate(scen)]
         X = np.concatenate([data.tab(f, i, rw) for (f, i), rw in parts])
@@ -225,6 +257,11 @@ def fit_xgb(data, cfg, seed):
                          early_stopping_rounds=100, random_state=seed, **cfg)
     m.fit(Xtr, ytr, eval_set=[(Xva, yva)], verbose=False)
     info = {"val_rmse": rmse(yva, m.predict(Xva)), "epochs": int(m.best_iteration) + 1, "train_s": time.time() - t0}
+    if do_refit:
+        Xf, yf = design(TRAIN_SCEN, "train", data.rows["fit"])
+        m = xgb.XGBRegressor(n_estimators=info["epochs"], subsample=0.8, colsample_bytree=0.8, tree_method="hist",
+                             n_jobs=8, random_state=seed, **cfg).fit(Xf, yf)
+        info["train_s"] = time.time() - t0
     return Predictor(data, "xgb", m), m, info
 
 
@@ -233,7 +270,7 @@ def tune(data, family, quick):
     tag = f"{data.task}_{family}"
     path = RES / f"chosen_{tag}.json"
     if path.exists() and not quick:
-        return json.loads(path.read_text())
+        return json.loads(path.read_text(encoding="utf-8"))
     rows, ep = [], (2 if quick else 40)
     strip = lambda r, keys: {k: r[k] for k in keys}
     best = lambda name: min((r for r in rows if r["model"] == name), key=lambda r: r["val_rmse"])
@@ -263,7 +300,7 @@ def tune(data, family, quick):
                   "lambda": best("PI-GRU")["lambda"]}
     pd.DataFrame(rows).to_csv(RES / f"tuning_{tag}{'_quick' if quick else ''}.csv", index=False)
     if not quick:
-        path.write_text(json.dumps(chosen, indent=2))
+        path.write_text(json.dumps(chosen, indent=2), encoding="utf-8")
     return chosen
 
 
@@ -359,12 +396,12 @@ def fit_family(data, family, chosen, seed, quick, names=tuple(NEURAL)):
             preds = {"Persistence": Predictor(data, "persistence"), "Seasonal": Predictor(data, "seasonal")}
         else:
             preds = {"Profile": Predictor(data, "profile")}
-        preds["XGBoost"], _, info = fit_xgb(data, chosen["XGBoost"], seed)
+        preds["XGBoost"], _, info = fit_xgb(data, chosen["XGBoost"], seed, do_refit=True)
         cost.append({"model": "XGBoost", "seed": seed, "train_s": info["train_s"], "epochs_or_trees": info["epochs"]})
         return preds, cost, coefs, hist
     for name in names:
         preds[name], model, info = fit_neural(data, name, chosen, seed, 2 if quick else 40)
-        cost.append({"model": name, "seed": seed, "train_s": info["train_s"], "epochs_or_trees": info["epochs"]})
+        cost.append({"model": name, "seed": seed, "train_s": info["train_s"], "epochs_or_trees": info["best_epoch"]})
         hist[f"{name}|{seed}"] = info["history"]
         if getattr(model, "physics", None) is not None:
             coefs.append({"model": name, "seed": seed, "lambda": chosen["lambda"], **model.physics.describe()})
@@ -393,13 +430,13 @@ def run_main(data, family, chosen, seeds, quick):
     pd.DataFrame(cost).to_csv(RES / f"cost{tag}.csv", index=False)
     if coefs:
         pd.DataFrame(coefs).to_csv(RES / f"physics_coefs{tag}.csv", index=False)
-        (RES / f"train_history{tag}.json").write_text(json.dumps(hist))
+        (RES / f"train_history{tag}.json").write_text(json.dumps(hist), encoding="utf-8")
     extra = {}
     if family == "tree":
         r = data.rows["test"]
         extra = {"y": data.ye[r], "t": data.time[r + 1].astype("int64").to_numpy(), "drv": data.drv[r],
                  "local_hour": data.df["local_hour"].to_numpy()[r + 1], "local_dow": data.df["local_dow"].to_numpy()[r + 1]}
-        (RES / f"ref_rc_{data.task}.json").write_text(json.dumps(dict(zip("abcde", map(float, coef))), indent=2))
+        (RES / f"ref_rc_{data.task}.json").write_text(json.dumps(dict(zip("abcde", map(float, coef))), indent=2), encoding="utf-8")
     np.savez_compressed(RES / f"predictions{tag}.npz", **store, **extra)
 
 
@@ -444,7 +481,7 @@ def main():
     if a.stage in ("all", "imputation") and a.task == "estimate":
         run_imputation(a.task, a.family, chosen, [0] if a.quick else [0, 1, 2], a.quick)
     meta["finished"] = time.strftime("%Y-%m-%d %H:%M")
-    (RES / f"run_meta_{a.task}_{a.family}{'_quick' if a.quick else ''}.json").write_text(json.dumps(meta, indent=2))
+    (RES / f"run_meta_{a.task}_{a.family}{'_quick' if a.quick else ''}.json").write_text(json.dumps(meta, indent=2), encoding="utf-8")
 
 
 if __name__ == "__main__":

@@ -140,7 +140,8 @@ def bnn_loss(model, batch, n_train):
 
 
 def train(model, sample_batch, loss_fn, val_fn, lr=1e-3, wd=1e-4, epochs=40, steps=120, patience=6, seed=0):
-    """sample_batch(rng) -> batch; loss_fn(model, batch) -> loss; val_fn(model) -> validation RMSE (kWh)."""
+    """sample_batch(rng) -> batch; loss_fn(model, batch) -> loss; val_fn(model) -> validation RMSE (kWh).
+    With val_fn=None the model trains for exactly `epochs` epochs (refit on train + validation)."""
     torch.manual_seed(seed)
     rng = np.random.default_rng(seed)
     opt = torch.optim.AdamW(model.parameters(), lr=lr, weight_decay=wd)
@@ -155,6 +156,8 @@ def train(model, sample_batch, loss_fn, val_fn, lr=1e-3, wd=1e-4, epochs=40, ste
             nn.utils.clip_grad_norm_(model.parameters(), 1.0)
             opt.step()
         model.eval()
+        if val_fn is None:
+            continue
         v = val_fn(model)
         history.append(v)
         if v < best - 1e-4:
@@ -164,9 +167,11 @@ def train(model, sample_batch, loss_fn, val_fn, lr=1e-3, wd=1e-4, epochs=40, ste
             bad += 1
             if bad >= patience:
                 break
-    model.load_state_dict(best_state)
+    if best_state is not None:
+        model.load_state_dict(best_state)
     model.eval()
-    return {"val_rmse": best, "epochs": ep + 1, "train_s": time.time() - t0, "history": history}
+    best_epoch = int(np.argmin(history)) + 1 if history else epochs
+    return {"val_rmse": best, "epochs": ep + 1, "best_epoch": best_epoch, "train_s": time.time() - t0, "history": history}
 
 
 @torch.no_grad()
