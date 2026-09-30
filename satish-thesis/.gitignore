@@ -17,3 +17,5 @@ config_manual/*.out
 config_manual/*.toc
 config_manual/*.fls
 config_manual/*.fdb_latexmk
+logs/
+results/*_quick*

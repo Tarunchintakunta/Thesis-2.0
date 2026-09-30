@@ -12,7 +12,7 @@ import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[1]
 RAW, OUT = ROOT / "data" / "raw", ROOT / "data" / "processed"
-START, END = "2018-06-01", "2020-12-31 23:00"
+START, END = "2018-03-01", "2020-12-31 23:00"
 F_TO_C = lambda f: (f - 32.0) * 5.0 / 9.0
 
 
