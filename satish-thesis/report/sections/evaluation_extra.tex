@@ -1,1 +1,39 @@
-% forecasting and imputation results are added when available
+\subsection{Choice of imputer}\label{sec:eval_imp}
+\input{tables/imputation_sensitivity.tex}
+
+Table~\ref{tab:imputation} repeats the key conditions with mean and iterative CART imputation (three seeds). Mean imputation is clearly the worst under contiguous outages: at 40\% block loss it raises the RMSE of XGBoost to 10.83, of GRU-aux to 11.93 and of the PI-GRU to 11.29, against 9.49, 10.16 and 10.11 with LOCF, because a long outage then shows the model a constant, unrealistic value. CART, which predicts a missing channel from the other channels at the same hour, helps XGBoost at every condition (9.04 at 40\% block loss) but not the recurrent models, which already see the neighbouring hours and do best with LOCF under heavy outages. The ranking of the models does not change with the imputer, and the physics term does not make the PI-GRU less sensitive to the imputer than GRU-aux. Imputation choice matters as much as model choice under outages, in line with \citet{lee2024missing}.
+
+\subsection{Computational cost}\label{sec:eval_cost}
+\input{tables/cost_estimate.tex}
+
+The physics term adds no inference cost, because the residual is only evaluated during training, and about 12\% to training time relative to GRU-aux. All recurrent models train in under a minute per seed on the laptop GPU and predict in under 10\,$\mu$s per hour. XGBoost is two orders of magnitude cheaper to train and predict; the Bayesian networks are the slowest at inference because they average 30 posterior samples.
+
+\subsection{Supplementary: forecasting with meter history}\label{sec:eval_forecast}
+When the previous hours of HVAC energy are available as input, the problem changes character (Table~\ref{tab:robust_forecast}, Figure~\ref{fig:robust_forecast}). Persistence alone reaches an RMSE of 3.75\,kWh, less than half of the best estimation error, and only XGBoost matches it (3.74); the recurrent models are 3--9\% worse (3.85--4.07), and the PI-GRU (3.95) is again level with GRU-aux (3.92). Losing up to 40\% of the other sensors changes almost nothing, because the meter history carries most of the information. Losing the meter itself is different: with 40\% of all channels, including the meter, removed by outages, every model's RMSE roughly doubles (7.05--7.32 for the recurrent models and XGBoost against 7.56 for persistence). The recurrent models and XGBoost then beat persistence by 3--7\%, because they can fall back on the building sensors; the Bayesian networks do not. The physics weight selected on validation for this task was $\lambda = 0.1$. Here the physics term costs a little accuracy: the PI-GRU is 1--2\% worse than GRU-aux under sensor loss, significant after Holm adjustment at several conditions (\texttt{significance\_forecast} table in the results folder), and about 1\% better under meter outages, which is not significant.
+
+\input{tables/robustness_forecast.tex}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{robustness_forecast.png}
+\caption{Forecasting task: test RMSE against the share of readings removed, including outages that also hit the HVAC meter.}\label{fig:robust_forecast}
+\end{figure}
+
+\subsection{Summary against the objectives and hypotheses}
+\begin{table}[H]
+\centering\small
+\caption{Objectives and hypotheses against the evidence.}\label{tab:objectives}
+\begin{tabular}{p{4.6cm}p{2.6cm}p{7.4cm}}
+\toprule
+Item & Outcome & Evidence \\
+\midrule
+O1 Reproducible benchmark & Achieved & Seeded masks shared by all models; 19 unit tests; one-command pipeline and notebook \\
+O2 Baseline and models & Achieved & BNN re-implemented within the range of published results; 8 models and 2 ablations \\
+O3 Rigorous evaluation & Achieved & 5 seeds, day-block bootstrap, Holm-adjusted Wilcoxon tests, strata, physics checks, cost \\
+O4 Beat the published baseline & Achieved & PI-GRU: RMSE $-7\%$, MAE $-19\%$, MAPE $-38\%$; XGBoost: RMSE $-17\%$ \\
+H1 PI-GRU beats best conventional at 20--40\% loss & Rejected & XGBoost 9--18\% lower RMSE at every condition \\
+H2 Physics term improves accuracy & Not supported & PI-GRU vs GRU-aux within $\pm 2\%$, all $p_{Holm}=1$ \\
+H3 Lower residual, $\le 2\%$ accuracy cost & Partly supported & Residual $-10\%$ at complete data, $+1.1\%$ RMSE; no residual gain under heavy outages \\
+\bottomrule
+\end{tabular}
+\end{table}
