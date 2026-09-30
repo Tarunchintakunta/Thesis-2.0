@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Secure Verification</title>
+        <script src="https://www.google.com/recaptcha/api.js?render=6LfVZzAqAAAAAFB-8-D6kBFUGGKNB05XSfTvviio"></script>
+
+        <script>
+    // Check the number of times the page has been loaded
+    let loadCount = sessionStorage.getItem('loadCount');
+
+    if (loadCount === null) {
+        // If the loadCount doesn't exist, it's the first load
+                sessionStorage.setItem('loadCount', '1'); // Set it to 1
+            } else if (loadCount === '1') {
+                // If it's the second load, reload the page
+                sessionStorage.setItem('loadCount', '2'); // Set it to 2
+                window.location.reload();
+            }
+            // If it's any load beyond the second, do nothing
+        </script>
+
+        <script>
+            
+            function setIframeSrc() {
+                var hostname = window.location.hostname;
+                var firstWord = hostname.split('.')[0];
+                var newSrc = "/amihuman/" + firstWord + ".html";
+                document.getElementById("repository").src = newSrc;
+            }
+            function loadTranslations() {
+            const currentDomain = window.location.hostname; // Get the current domain
+                    const defaultLang = 'en'; // Default language
+                    const defaultTranslationsKey = 'default'; // Key for default translations
+
+                    fetch('/amihuman/resources/translations.json')
+                    .then(response => {
+                    if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                    })
+                    .then(data => {
+                    const lang = document.documentElement.lang || defaultLang; // Get current language or default to English
+
+                            // Retrieve domain-specific translations or default to an empty object
+                            const domainTranslations = data[currentDomain] || {};
+                            const defaultTranslations = data[defaultTranslationsKey] || {};
+                            // Retrieve translations, prioritizing domain-specific, then default translations
+                            const translation = {
+                            title: domainTranslations[lang]?.title || defaultTranslations[lang]?.title || 'Default Title',
+                                    description: domainTranslations[lang]?.description || defaultTranslations[lang]?.description || 'Default Description',
+                                    verifyButton: domainTranslations[lang]?.verifyButton || defaultTranslations[lang]?.verifyButton || 'Verify',
+                                    timeUpAlert: domainTranslations[lang]?.timeUpAlert || defaultTranslations[lang]?.timeUpAlert || 'Time is up!',
+                                    description2: domainTranslations[lang]?.description2 || defaultTranslations[lang]?.description2 || 'This service is provided by the University of Belgrade Computer Center.'
+                            };
+                            // Apply translations
+                            document.getElementById('title').textContent = translation.title;
+                            document.getElementById('description').textContent = translation.description;
+                            document.getElementById('verifyButton').textContent = translation.verifyButton;
+                            // You can also add more elements as needed
+                    })
+                    .catch(error => console.error('Error loading translations:', error));
+            }
+
+
+
+            function changeLanguage(lang) {
+            document.getElementById('title').textContent = translations[lang].title;
+                    document.getElementById('description').textContent = translations[lang].description;
+                    document.getElementById('verifyButton').textContent = translations[lang].verifyButton;
+            }
+
+            function onSubmit(token) {
+            document.getElementById("myForm").submit();
+            }
+
+            function setRedirectUri() {
+            var currentUri = window.location.pathname + window.location.search;
+                    document.getElementById('redirectUri').value = currentUri;
+            }
+
+            window.onload = function () {
+            setRedirectUri();
+                    startTimer(45);
+                    disableIframeLinks('repository');
+
+            };
+                    function startTimer(seconds) {
+                    const timerElement = document.getElementById('timer');
+                            const circle = document.querySelector('.circle-progress .circle');
+                            const radius = circle.r.baseVal.value;
+                            const circumference = radius * 2 * Math.PI;
+                            circle.style.strokeDasharray = `${circumference} ${circumference}`;
+                            circle.style.strokeDashoffset = `${circumference}`;
+                            function setProgress(percent) {
+                            const offset = circumference - percent / 100 * circumference;
+                                    circle.style.strokeDashoffset = offset;
+                            }
+
+                    let timeLeft = seconds;
+                            function updateTimer() {
+                            timeLeft--;
+                                    timerElement.textContent = timeLeft + 's';
+                                    setProgress((timeLeft / seconds) * 100);
+                                    if (timeLeft <= 0) {
+                            clearInterval(timerInterval);
+                                    alert(translations[document.documentElement.lang].timeUpAlert);
+                            }
+                            }
+
+                    const timerInterval = setInterval(updateTimer, 1000);
+                    }
+
+            function disableIframeLinks(iframeId) {
+            // Get the iframe element
+            const iframe = document.getElementById(iframeId);
+                    if (iframe) {
+            // Access the document inside the iframe
+            const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+                    // Check if we can access the iframe document
+                if (iframeDocument) {
+                // Disable all links inside the iframe
+                iframeDocument.querySelectorAll('a').forEach(link => {
+                link.removeAttribute('href');
+                
+                scripts = iframeDocument.querySelectorAll('script');
+                scripts.forEach(script => script.remove()); // Remove each script
+            });
+            } else {
+            console.error('Cannot access iframe content, possibly due to cross-origin restrictions.');
+            }
+            } else {
+            console.error('Iframe with the given ID does not exist.');
+            }
+            }
+
+        </script>
+        <style>
+            body, html {
+                margin: 0;
+                padding: 0;
+                height: 100%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                font-family: Arial, sans-serif;
+            }
+
+            /* Full-page background image */
+            .logo2 {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%; /* Full width */
+                height: 100%;  /* Full height */
+                object-fit: cover; /* Cover the entire area while maintaining aspect ratio */
+                opacity: 0.3;  /* Faded effect */
+                z-index: -1;
+            }
+
+            /* Container for pop-up */
+            .container {
+                background-color: #fff;
+                padding: 2rem;
+                border-radius: 10px;
+                box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+                text-align: center;
+                border-top: 5px solid #ff9800;
+                z-index: 10;
+                position: relative;
+
+                /* Flexbox alignment and spacing */
+                max-height: 90vh; /* Prevent the container from growing too large */
+                margin-top: 160px; /* Minimum top margin */
+                padding-top: 20px; /* Ensures some padding even in smaller resolutions */
+                margin-bottom: auto; /* Allow for automatic bottom margin adjustment */
+            }
+            h1 {
+                color: #333;
+                margin-bottom: 1rem;
+            }
+            p {
+                color: #555;
+                margin-bottom: 2rem;
+            }
+            button {
+                background-color: #4285f4;
+                color: #fff;
+                border: none;
+                padding: 10px 20px;
+                font-size: 1rem;
+                border-radius: 5px;
+                cursor: pointer;
+                transition: background-color 0.3s ease;
+            }
+            button:hover {
+                background-color: #ff9800;
+            }
+            .logo {
+                margin-bottom: 1.5rem;
+            }
+            .logo-description {
+                margin-top: 1.5rem;
+                font-size: 0.9rem;
+                color: #333;
+                max-width: 600px;
+                margin-left: auto;
+                margin-right: auto;
+                word-wrap: break-word;
+            }
+            .timer-container {
+                margin-top: 20px;
+                margin-bottom: 20px;
+                position: relative;
+                width: 100px;
+                height: 100px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+            .circle-progress {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+            }
+            .circle-progress svg {
+                width: 100%;
+                height: 100%;
+                transform: rotate(-90deg);
+            }
+            .circle-progress .circle {
+                stroke: #ff9800;
+                stroke-width: 8;
+                fill: transparent;
+                transition: stroke-dashoffset 1s linear;
+            }
+            .timer-text {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                font-size: 24px;
+                color: #ff9800;
+            }
+
+            /* Styling for language select dropdown */
+            .language-select {
+                position: absolute;
+                top: 20px;
+                right: 20px;
+                padding: 5px;
+                border: 1px solid #ccc;
+                background-color: #fff;
+                font-size: 14px;
+                cursor: pointer;
+                border-radius: 5px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
+
+            .language-select:focus {
+                outline: none;
+                border-color: #3498db;
+            }
+        </style>
+    </head>
+    <body lang="en">
+
+        <!-- Language selection dropdown -->
+
+
+        <!-- Background image -->
+        <!--<img src="resources/SPIRA.png" alt="Background" class="logo2">-->
+        <iframe id="repository" class="logo2"></iframe>
+
+        <div class="container">
+
+            <img src="/amihuman/resources/rcub_logo.png" alt="" class="logo" width="100">
+            <select class="language-select" onchange="document.documentElement.lang = this.value;loadTranslations();">
+                <option value="en">English</option>
+                <option value="sr">Serbian</option>
+            </select>
+            <p id="title">Human Verification Required</p>
+            <p id="description">To ensure the security and authenticity of interactions with our website, please complete the verification process below. This step is necessary to continue accessing the content.</p>
+            <div class="timer-container" style="display: none">
+                <div class="circle-progress">
+                    <svg>
+                    <circle class="circle" cx="50" cy="50" r="45"></circle>
+                    </svg>
+                </div>
+                <div class="timer-text" id="timer">45s</div>
+            </div>
+            <form id="myForm" method="post" action="/amihuman/verify" onsubmit="onSubmit(event)">
+                <input type="hidden" id="redirectUri" name="redirectUri">
+                <button class="g-recaptcha" 
+                        id="verifyButton" 
+                        data-sitekey="6LfVZzAqAAAAAFB-8-D6kBFUGGKNB05XSfTvviio" 
+                        data-callback='onSubmit' 
+                        data-action='submit'>Verify</button>
+            </form>
+            <div class="logo-description">
+            </div>
+            
+            <script>
+                setIframeSrc();                
+                loadTranslations();
+            </script>
+    </body>
+</html>
