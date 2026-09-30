@@ -88,6 +88,7 @@ def main():
     (ROOT / "results").mkdir(exist_ok=True)
     df, gap = build()
     df.round(4).to_csv(OUT / "bldg59_hourly.csv")
+    df.round(4).to_csv(ROOT / "data" / "bldg59_hourly.csv.gz", compression={"method": "gzip", "mtime": 0})
     pd.DataFrame(DICTIONARY, columns=["column", "unit", "source", "description"]).to_csv(
         ROOT / "results" / "data_dictionary.csv", index=False)
     num = df.drop(columns=["natural_gap", "valid", "local_hour", "local_dow", "local_month"])
@@ -99,7 +100,7 @@ def main():
         "summary": num.describe().round(3).to_dict(),
         "corr_with_hvac": num.corr()["hvac_kwh"].round(3).to_dict(),
     }
-    (ROOT / "results" / "data_profile.json").write_text(json.dumps(profile, indent=2))
+    (ROOT / "results" / "data_profile.json").write_text(json.dumps(profile, indent=2), encoding="utf-8")
     print(json.dumps({k: profile[k] for k in ("rows", "start", "end", "raw_missing_pct", "valid_rows_pct", "corr_with_hvac")}, indent=1))
 
 
