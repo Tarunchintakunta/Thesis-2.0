@@ -23,7 +23,6 @@ Only after Uday finals closed. Prefer **deeper AWS** where soft residuals were â
 |--------|------|-----------------------------------|-------|
 | Uday | AWS | After Ã—3 lite: optional **deeper disconnect schedule** or more msgs/cell if Free-Tier headroom | Keep baseline=QoS0, proposed=QoS1 |
 | Chaitanya | AWS | Confirmatory Init **nâ‰¥30** package_size + runtime_compare (was soft) | baseline=default package; proposed=optimised |
-| Rasool | AWS | Optional W1/W2 cells or n>1 on W3/W4 | baseline=on-demand; proposed=provisioned (or K1 vs K3 as designed) |
 | Anji | AWS | Optional live n>1 on same 4 cells | baseline=MRC5/VT90 as control; proposed=MRC1/VT30 as designed |
 | Nemi | AWS | Deeper FL rounds / more rows if budget | baseline=centralised; proposed=FL |
 | Pooja | AWS | Multi-step or longer live scale loop | baseline=HPA; proposed=PAKS |
@@ -36,7 +35,7 @@ Only after Uday finals closed. Prefer **deeper AWS** where soft residuals were â
 
 ## Done (artefact packs)
 
-Anji, Chaitanya, Yashaswini, Rasool, Varun, Vikas, Nemi, Venkat, Mehak, Pooja, Vishvaksen finals/campaign packs on disk.  
+Anji, Chaitanya, Yashaswini, Varun, Vikas, Nemi, Venkat, Mehak, Pooja, Vishvaksen finals/campaign packs on disk.  
 Rubric evidence matrices + gap hunt written (pointers only).
 
 ## Explicitly deferred

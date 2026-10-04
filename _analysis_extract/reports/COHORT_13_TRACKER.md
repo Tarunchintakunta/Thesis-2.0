@@ -14,9 +14,8 @@
 | 1 | Anji | **~90%** | proposal.docx | Yes (sole hard) |
 | 2 | Varun | **~90%** (live lite done; full FinOps open) | RIC_CA2.txt | Yes |
 | 3 | Yashaswini | **~88%** | proposal.docx | Yes |
-| 4 | Rasool | **~74%** | proposal.docx | Yes |
-| 5 | Chaitanya | 67% | proposal.docx | Yes |
-| 6 | Vikas | **~74%** (campaign empty; was falsely 100 on scoreboard) | proposal.docx | Yes |
+| 4 | Chaitanya | 67% | proposal.docx | Yes |
+| 5 | Vikas | **~74%** (campaign empty; was falsely 100 on scoreboard) | proposal.docx | Yes |
 | 7 | Venkat | **100%** | venkat_ca2.txt | Soft only |
 | 8 | Nemi | **~64%** | CA2.txt | Yes |
 | 9 | Mehak | **~88%** | **NOT FOUND** → `CA2_COMMITMENTS.md` | Yes |
@@ -38,12 +37,11 @@
 - Genuine AWS goal list unchanged (8 CA2-verified); Mehak/Pooja/Uday/Vishvaksen not on AWS list
 - **None at 100% yet**
 
-- 2026-09-20b: Rasool intro/eval — no production/Cost-Explorer overclaim
 - 2026-09-20b: Nemi README — PoC metrics; Docker/Helm/Opacus demoted
 - 2026-09-20b: Chaitanya abstract — ADOPT band proxy-only
 - 2026-09-20b: Vikas eval — acknowledge live pilot path + empty campaign
 - 2026-09-20b: Added `CA2_COMMITMENTS.md` for Mehak/Pooja/Uday/Vishvaksen (binding until real CA2 exists)
 - 2026-09-20c: Mehak/Pooja/Uday/Vishvaksen claim hygiene — STATUS &lt;100%, eval↔CSV, bib `note={doi:}`, residual notes; still NOT COMPLETE; no AWS
-- 2026-09-20d: Anji/Varun/Yashaswini/Rasool/Nemi claim hygiene raise — eval↔JSON, STATUS demote, DOI notes, residual notes; still NOT COMPLETE; no AWS
+- 2026-09-20d: Anji/Varun/Yashaswini/Nemi claim hygiene raise — eval↔JSON, STATUS demote, DOI notes, residual notes; still NOT COMPLETE; no AWS
 - 2026-09-20e: Anji packaging-dedup + phase run-count reconcile → ~90%; READY_FOR_AWS=yes (sole=live SQS); no AWS
 - 2026-09-20e: Varun temporal-holdout forecast fix; Yashaswini CausalRCA quarantine; both READY_FOR_AWS=yes; still NOT COMPLETE; no AWS apply

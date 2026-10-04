@@ -22,9 +22,6 @@ This repository contains 14 MSc thesis projects in Cloud Computing. This documen
 | chaitanya-thesis | 25171216 | ✅ | ❌ | ✅ | HIGH | Lambda cold-start; local proxy benchmarks; live AWS ready but not run |
 | mehak-thesis | - | ✅ | ❌ | ✅ | HIGH | Multi-head attention; synthetic telemetry; 5-seed results |
 | Nemi | 24303046 | ✅ | ❌ | ✅ | HIGH | Federated IDS; local simulation; 30-round experiment on synthetic data |
-| pooja-thesis | - | ✅ | ❌ | ✅ | HIGH | Kubernetes autoscaling; 5-seed results; synthetic workloads |
-| rassool-thesis | 24205478 | ✅ | ❌ | ✅ | MEDIUM | DynamoDB partition keys; moto tests; live AWS ready but not run |
-| uday-thesis | - | ✅ | ❌ | ❓ | MEDIUM | IoT reliability; report complete; test status unclear |
 | Varun | 23398639 | ✅ | ❌ | ✅ | HIGH | S3 cost optimization; local simulator; real experiments on synthetic data |
 | venkat-bora-thesis | 25164414 | ✅ | ❌ | ✅ | MEDIUM | Matrix scaling; **local Dask only**, no EC2; honest about simulation |
 | vikas-thesis | X25178849 | ✅ | ❌ | ✅ | HIGH | Lambda idempotency; moto tests; live AWS ready but not run |
@@ -165,32 +162,6 @@ This repository contains 14 MSc thesis projects in Cloud Computing. This documen
 - Synthetic cyclical workloads only (no real cluster traces)
 - No live Kubernetes deployment
 - Parameters chosen from literature (no exhaustive sweep)
-
----
-
-### 6. rassool-thesis (DynamoDB Partition Key Evaluation)
-
-**Student:** Rasool Basha Durbesula (24205478)  
-**Topic:** Partition-Key Design and Capacity Mode in Amazon DynamoDB: An Empirical Performance-Cost Evaluation
-
-**Completion Status:**
-- ✅ **Report:** `latex_report/projectReport.pdf` (compiled)
-- ✅ **Code:** Terraform IaC, workload generator, Lambda handlers, seed loader, cost model, analysis
-- ✅ **Tests:** Unit tests + handler tests against moto
-- ✅ **Results:** Design checks (arithmetic predictions); **SCHEMA ONLY** - no real DynamoDB results
-- ❌ **Live AWS:** Full runbook provided, but **NOT executed**
-- ✅ **Documentation:** Configuration manual, analysis plan, assumptions, runbook
-
-**CA Fulfillment:** **MEDIUM**
-- Complete artefact ready for deployment
-- Honest: `results/SCHEMA.md` explicitly states "[TO BE FILLED FROM EXPERIMENT]"
-- Baseline paper verified (Pantelić et al. 2026, DOI: 10.3390/fi18010053)
-- Design checks predict capacity needs, but no throttle or latency measurements
-
-**Known Gaps:**
-- **No DynamoDB results** (requires ~$80 AWS budget)
-- No actual latency, throttle, or cost data
-- Smoke test on moto only (not DynamoDB data)
 
 ---
 
@@ -354,8 +325,8 @@ This repository contains 14 MSc thesis projects in Cloud Computing. This documen
 **High CA Fulfillment (9 projects):**
 - anji-thesis, chaitanya-thesis, mehak-thesis, Nemi, pooja-thesis, Varun, vikas-thesis, vishvaksen-thesis, yashaswini-thesis
 
-**Medium CA Fulfillment (3 projects):**
-- rassool-thesis (no DynamoDB results), uday-thesis (unclear test/results status), venkat-bora-thesis (local-only, honest about no EC2)
+**Medium CA Fulfillment (2 projects):**
+- uday-thesis (unclear test/results status), venkat-bora-thesis (local-only, honest about no EC2)
 
 ### By Report Status
 
@@ -365,7 +336,7 @@ This repository contains 14 MSc thesis projects in Cloud Computing. This documen
 ### By Testing
 
 - **Tests Passing:** 10/12 projects have confirmed passing tests
-- **Tests Unclear:** 2/12 projects (uday-thesis, rassool-thesis has tests but partial coverage noted)
+- **Tests Unclear:** 1/12 project (uday-thesis)
 
 ### By Live AWS Deployment
 
@@ -378,7 +349,7 @@ This repository contains 14 MSc thesis projects in Cloud Computing. This documen
 
 **CRITICAL:** No project in this cohort (excluding kasi-thesis) has executed live AWS experiments. All results are from:
 - Local simulators (anji, chaitanya proxy, Varun, vikas moto check)
-- Synthetic data generators (mehak, Nemi, pooja, rassool design checks)
+- Synthetic data generators (mehak, Nemi, pooja)
 - Public benchmark datasets (yashaswini RCAEval)
 - Local Dask clusters (venkat-bora)
 
@@ -444,9 +415,8 @@ Most projects follow this structure:
 ./Varun/latex_report/projectReport.pdf
 ./Varun/VarunGampa_RIC_CA2.pdf
 ./Varun/23398639_RIC1_varunGampa.pdf
-./pooja-thesis/latex_report/projectReport.pdf
-./rassool-thesis/latex_report/projectReport.pdf
-./chaitanya-thesis/latex_report/projectReport.pdf
+./mehak-thesis/latex_report/projectReport.pdf
+./venkat-bora-thesis/latex_report/projectReport.pdf
 ./uday-thesis/iot-reliability/latex_report/projectReport.pdf
 ./mehak-thesis/latex_report/projectReport.pdf
 ./venkat-bora-thesis/latex_report/projectReport.pdf

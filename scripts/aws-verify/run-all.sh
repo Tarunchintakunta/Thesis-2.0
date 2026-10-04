@@ -36,7 +36,6 @@ run_verification() {
 
 # AWS-backed projects
 run_verification "varun-s3.sh" "Varun - S3"
-run_verification "rassool-dynamodb.sh" "Rassool - DynamoDB"
 run_verification "chaitanya-lambda.sh" "Chaitanya - Lambda"
 run_verification "yashaswini-serverless.sh" "Yashaswini - Serverless"
 run_verification "anji-sqs.sh" "Anji - SQS"

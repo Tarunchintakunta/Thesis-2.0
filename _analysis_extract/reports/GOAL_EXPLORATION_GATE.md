@@ -1,7 +1,7 @@
 # Goal Exploration Gate — In-Scope Theses Only
 
 **Goal:** AWS deploy/eval to 100% CA2 alignment  
-**In scope:** Anji, Varun, Yashaswini, Rasool, Chaitanya, Vikas, Venkat, Nemi  
+**In scope:** Anji, Varun, Yashaswini, Chaitanya, Vikas, Venkat, Nemi  
 **Excluded:** Kasi (and mehak/pooja/uday/vishvaksen from AWS table)
 
 ## Exploration status (authoritative for gate)
@@ -14,7 +14,6 @@
 | Anji | anji_alignment.md | 72% | DONE |
 | Varun | varun_alignment.md | 58% | DONE |
 | Yashaswini | yashaswini_alignment.md | 62% | DONE |
-| Rasool | rassool_alignment.md | 62% | DONE |
 | Venkat | venkat_alignment.md | 63% | DONE |
 
 **Exploration gate: 8/8 DONE.**
