@@ -25,7 +25,6 @@
 | anji | Yes — Kyrychenko | PASS | HIGH | PARTIAL | clear | **88%** | thin | — |
 | Varun | Yes — TierBase (+SkyStore/Yang in lit) | PASS | **LOW** | PARTIAL | weak | **38%** | thin | KV≠S3; prefer SkyStore/Yang for scope |
 | yashaswini | Yes — Xing (ceiling) | PASS | MEDIUM | PARTIAL | clear | **72%** | thin | Ceiling-only by CA2 design |
-| rassool | Yes — Pantelić | PASS | MEDIUM | PARTIAL | clear | **78%** | thin | Self-hosted; metering gap intentional |
 | chaitanya | Yes — Bluemke | PASS | HIGH | PARTIAL | clear | **92%** | thin | — |
 | vikas | Yes — Halfmoon/Qi TOCS | PASS | HIGH | PARTIAL | clear | **86%** | thin | **Wrong PDF** / bad arXiv ID |
 | venkat-bora | Yes — Sabir | PASS | MEDIUM | YES | weak→clear in CA2 | **74%** | thin | Threaded path only; need distributed peer |

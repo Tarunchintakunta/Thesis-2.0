@@ -19,7 +19,6 @@
 |--------|:------------------:|:--------:|-----------|------------|
 | Anji | soft (n>1) | Lite 4/4 destroyed; relative-rank fidelity | **~96%** | **NOT COMPLETE** |
 | Chaitanya | soft (full-n) | Init+H4+H3-lite; Holm on lite $n$ | **~97%** | **NOT COMPLETE** |
-| Rasool | soft (W1/W2) | Live 12/12 destroyed; exploratory n=1 stats | **~94%** | **NOT COMPLETE** |
 | Varun | **yes** (fuller FinOps) | Lite done destroyed; metadata module | **~93%** | **NOT COMPLETE** |
 | Nemi | **no** (closed) | Lite EC2+S3+CW destroyed | **100%** | **CA2 floor COMPLETE** |
 | Vikas | **yes** (campaign) | **empty** (`deliveries.jsonl` 0 B; pilot done) | **~74%** | **NOT COMPLETE** |

@@ -12,7 +12,6 @@ Legend: OK = on-disk evidence · GAP = needs artefact work · SOFT = beyond-CA2 
 | Anji | OK | OK | OK | OK | OK | campaign scripts | SOFT live n>1 |
 | Chaitanya | OK (default vs optimised) | OK H1 finals | OK | OK | OK | live pack | SOFT n≥30 Init |
 | Yashaswini | OK (off vs policy/full) | OK | OK | OK | OK | run_final_lite_leg3 | SOFT |
-| Rasool | OK (K/mode contrasts) | OK | OK | OK | OK | run_final_keycell | SOFT W1/W2 |
 | Varun | OK (Lifecycle vs RIC) | OK e1–e3 | OK | OK | OK | packs | SOFT |
 | Vikas | OK (P1 vs P2/P3) | OK campaign | OK | OK | OK | campaign | re-run only if code changes |
 | Nemi | OK (centralised vs FL) | OK | OK | OK | OK | live-cloud-fl | SOFT deeper FL |

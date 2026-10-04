@@ -62,7 +62,6 @@ Raise path = fold final-3 **pos+neg** into STATUS/eval/conclusions vs RQ + basel
 | Venkat | **raised** | matched Free-Tier final-3; matmul ok; **neg:** n=250 single-shot; n=500 timed_out historically | report prose polish |
 | Pooja | **raised** | k3s final-3; **neg:** HPA/PAKS not monotone; LSTM < persistence MAE | report prose polish |
 | Nemi | **raised** | cloud FL lite final-3; **neg:** not 50-round/2.5M; vs Saklani depth | report prose polish |
-| Rasool | **raised** | W3/W4 final-3 ×3; **neg:** n=1 exploratory only; W1/W2 soft | report prose polish |
 | Vishvaksen | **raised** | labelled-oracle final-3; **neg:** scanner recall gaps; no apply | soft Verdet optional |
 | Vikas | **raised** | full campaign N=1000×3×3; E1–E3 supported; **neg:** P1 dups; moto≠AWS | soft LaTeX optional |
 | Uday | **partial** | lite 16-cell; final-3 in flight; **neg:** d60≡d300; QoS1 latency cost | finish final-3 + fold |

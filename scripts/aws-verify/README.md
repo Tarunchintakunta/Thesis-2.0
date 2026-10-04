@@ -47,8 +47,6 @@ export AWS_REGION="eu-west-1"  # or your preferred region
 # Run verification against live AWS
 DRY_RUN=0 bash scripts/aws-verify/run-all.sh
 
-# Or individual project
-DRY_RUN=0 bash scripts/aws-verify/rassool-dynamodb.sh
 ```
 
 ### Using Makefile Targets
@@ -73,7 +71,6 @@ These projects claim AWS artifacts and support both simulation and live deployme
 | Project | Script | AWS Services | Simulation Mode |
 |---------|--------|--------------|-----------------|
 | Varun - S3 Optimization | `varun-s3.sh` | S3, CloudWatch | ✓ DRY_RUN |
-| Rassool - DynamoDB | `rassool-dynamodb.sh` | DynamoDB, Lambda, S3 | ✓ moto/local |
 | Chaitanya - Lambda | `chaitanya-lambda.sh` | Lambda, EventBridge | ✓ proxy benchmarks |
 | Yashaswini - Fault Localization | `yashaswini-serverless.sh` | Lambda, CloudWatch, X-Ray | ✓ sim mode |
 | Anji - SQS Reliability | `anji-sqs.sh` | SQS, Lambda | ✓ DRY_RUN |

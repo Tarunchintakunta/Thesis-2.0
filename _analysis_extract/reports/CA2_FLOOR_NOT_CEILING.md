@@ -11,5 +11,5 @@
 
 ## Near-100 application
 - Yashaswini: lite Leg 3 + PDF + CausalRCA quarantine/waiver is enough for COMPLETE; CausalRCA-90 / 30-min cells are optional beyond-CA2 enhancements.
-- Anji / Chaitanya / Rasool: confirmatory $n$ and extra cells are **improvements beyond lite CA2 smoke**, encouraged when Free Tier / concurrency allow.
+- Anji / Chaitanya: confirmatory $n$ and extra cells are **improvements beyond lite CA2 smoke**, encouraged when Free Tier / concurrency allow.
 - Varun: fuller FinOps remains both CA2 and beyond-CA2 value — pursue when capacity free.

@@ -13,7 +13,6 @@
 | 1 | Anji | **100** | yes | no | INITIAL_EVAL_PASS=yes; live final-3 **DONE**; baseline in `FINAL3_BASELINE.md` |
 | 2 | Chaitanya | **100** | raised→yes path | no | final-3 **DONE**; Rubric fold Init H1 pos+neg vs Bluemke |
 | 3 | Yashaswini | **100** | yes | no | INITIAL_EVAL_PASS=yes; live final-3 **DONE**; soft CausalRCA/PDF beyond-CA2 |
-| 4 | Rasool | **100** | raised→yes path | no | final-3 **DONE**; Rubric fold W3/W4 pos+neg; W1/W2 soft |
 | 5 | Varun | **100** | yes | no | INITIAL_EVAL_PASS=yes; live final-3 **DONE** (e1–e3 + BASELINE_COMPARE); handoff deferred |
 | 6 | Vikas | **100** | raised→yes path | no | campaign pack = final-scale; Rubric fold E1–E3 pos+neg; P4 quarantined |
 | 7 | Nemi | **100** | raised→yes path | no | final-3 **DONE**; Rubric fold FL lite pos+neg |
@@ -44,4 +43,4 @@ Vishvaksen 2026-09-21: labelled-oracle method confirmed → **100%** CA2 floor.
 
 Uday floor close 2026-09-21: Free-Tier **lite 16-cell** live apply→collect→destroy + DESIGN_RATIONALE; formal 600k-msg volume scoped beyond floor → **100%**.
 
-2026-09-21 INITIAL_EVAL gates: Chaitanya / Yashaswini / Rasool / Nemi / Uday — existing live method rounds recorded under `initial_eval_1/`; CA2 re-check still **100%** → `INITIAL_EVAL_PASS=yes`.
+2026-09-21 INITIAL_EVAL gates: Chaitanya / Yashaswini / Nemi / Uday — existing live method rounds recorded under `initial_eval_1/`; CA2 re-check still **100%** → `INITIAL_EVAL_PASS=yes`.
